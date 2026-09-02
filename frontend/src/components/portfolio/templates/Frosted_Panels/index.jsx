@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -33,7 +33,7 @@ import {
   Layers3,
   BriefcaseBusiness,
   CalendarDays,
-  Phone
+  Phone,
 } from 'lucide-react';
 
 /**
@@ -76,7 +76,7 @@ export default function FrostedPanels() {
     { id: 'projects', label: 'Projects' },
     { id: 'experience', label: 'Experience' },
     { id: 'testimonials', label: 'Testimonials' },
-    { id: 'contact', label: 'Contact' }
+    { id: 'contact', label: 'Contact' },
   ];
 
   // Soft pastel glass themes for skill categories using optimized colors and bg-white/25
@@ -91,7 +91,7 @@ export default function FrostedPanels() {
         accent: '#4f46e5',
         accentLight: 'rgba(139, 92, 246, 0.2)',
         bar: 'bg-gradient-to-r from-[#4f46e5] to-[#0ea5e9]',
-        icon: <Code2 className="w-4 h-4 text-[#4f46e5]" />
+        icon: <Code2 className="w-4 h-4 text-[#4f46e5]" />,
       };
     } else if (cat.includes('back')) {
       return {
@@ -102,7 +102,7 @@ export default function FrostedPanels() {
         accent: '#14b8a6',
         accentLight: 'rgba(20, 184, 166, 0.2)',
         bar: 'bg-gradient-to-r from-teal-500 to-emerald-400',
-        icon: <Database className="w-4 h-4 text-teal-600" />
+        icon: <Database className="w-4 h-4 text-teal-600" />,
       };
     } else if (cat.includes('dev') || cat.includes('ops')) {
       return {
@@ -113,7 +113,7 @@ export default function FrostedPanels() {
         accent: '#0ea5e9',
         accentLight: 'rgba(76, 201, 255, 0.2)',
         bar: 'bg-gradient-to-r from-[#0ea5e9] to-[#4f46e5]',
-        icon: <Cloud className="w-4 h-4 text-sky-600" />
+        icon: <Cloud className="w-4 h-4 text-sky-600" />,
       };
     } else {
       return {
@@ -124,7 +124,7 @@ export default function FrostedPanels() {
         accent: '#6366f1',
         accentLight: 'rgba(255, 95, 210, 0.2)',
         bar: 'bg-gradient-to-r from-[#6366f1] to-[#4f46e5]',
-        icon: <Palette className="w-4 h-4 text-[#6366f1]" />
+        icon: <Palette className="w-4 h-4 text-[#6366f1]" />,
       };
     }
   };
@@ -136,11 +136,12 @@ export default function FrostedPanels() {
   };
 
   return (
-    <div
-      className="min-h-screen text-[#1b1435] font-sans overflow-x-hidden relative selection:bg-indigo-200 selection:text-indigo-900"
-    >
+    <div className="min-h-screen text-[#1b1435] font-sans overflow-x-hidden relative selection:bg-indigo-200 selection:text-indigo-900">
       {/* Full-page fixed background so gradient+blobs cover the whole scrollable page */}
-      <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, #ece9f6 0%, #dde6f4 45%, #edf2fb 100%)' }} />
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{ background: 'linear-gradient(135deg, #ece9f6 0%, #dde6f4 45%, #edf2fb 100%)' }}
+      />
 
       {/* ========================================================================= */}
       {/* 0. DYNAMIC GRADIENT BACKGROUND BLOBS (Pink #6366f1, Purple #4f46e5, Blue #0ea5e9) */}
@@ -157,7 +158,7 @@ export default function FrostedPanels() {
             y: [0, -50, 30, 0],
             scale: [1, 1.15, 0.92, 1],
           }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute top-[-10%] left-[-5%] w-[450px] md:w-[800px] h-[450px] md:h-[800px] rounded-full bg-gradient-to-br from-[#6366f1]/20 via-[#818cf8]/15 to-[#4f46e5]/8 blur-[100px] md:blur-[140px] opacity-70"
         />
 
@@ -168,7 +169,7 @@ export default function FrostedPanels() {
             y: [0, 40, -30, 0],
             scale: [1, 0.92, 1.12, 1],
           }}
-          transition={{ duration: 24, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute top-[15%] right-[-5%] w-[400px] md:w-[700px] h-[400px] md:h-[700px] rounded-full bg-gradient-to-tr from-[#0ea5e9]/20 via-[#38bdf8]/15 to-[#4f46e5]/10 blur-[100px] md:blur-[130px] opacity-65"
         />
 
@@ -179,7 +180,7 @@ export default function FrostedPanels() {
             y: [0, 40, 15, 0],
             scale: [1, 1.08, 0.95, 1],
           }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute top-[45%] left-[5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[#4f46e5]/15 to-[#6366f1]/8 blur-[110px] md:blur-[140px] opacity-60"
         />
 
@@ -189,7 +190,7 @@ export default function FrostedPanels() {
             x: [0, -20, 20, 0],
             y: [0, -30, 40, 0],
           }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute top-[75%] right-[10%] w-[450px] h-[450px] rounded-full bg-[#0ea5e9]/12 blur-[120px] opacity-50"
         />
 
@@ -199,12 +200,10 @@ export default function FrostedPanels() {
             x: [0, 25, -15, 0],
             y: [0, 20, -25, 0],
           }}
-          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute top-[130%] left-[30%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-[#6366f1]/12 to-[#0ea5e9]/8 blur-[140px] opacity-55"
         />
       </div>
-
-
 
       {/* ========================================================================= */}
       {/* 1. FLOATING FROSTED GLASS NAVBAR (bg-white/40, blur-2xl, border-white/50) */}
@@ -215,14 +214,19 @@ export default function FrostedPanels() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4"
       >
-        <nav className={`w-full max-w-6xl bg-white/20 backdrop-blur-2xl border-t border-l border-white/50 border-r border-b border-white/35 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.04)] px-6 py-3.5 flex items-center justify-between transition-all duration-500 relative group hover:bg-white/30 hover:border-white/50 hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.08)] ${scrolled ? 'bg-white/35 backdrop-blur-3xl shadow-xl' : ''}`}>
+        <nav
+          className={`w-full max-w-6xl bg-white/20 backdrop-blur-2xl border-t border-l border-white/50 border-r border-b border-white/35 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.04)] px-6 py-3.5 flex items-center justify-between transition-all duration-500 relative group hover:bg-white/30 hover:border-white/50 hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.08)] ${scrolled ? 'bg-white/35 backdrop-blur-3xl shadow-xl' : ''}`}
+        >
           <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-indigo-500/5 to-sky-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
           {/* Left: Brand / Logo */}
           <a href="#home" className="flex items-center gap-3 relative z-10">
             <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#6366f1] via-[#4f46e5] to-[#0ea5e9] p-[2px] shadow-[0_2px_10px_rgba(139,92,247,0.15)] flex items-center justify-center hover:scale-105 transition-transform duration-300">
               <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-black text-sm tracking-tight text-[#1b1435]">
-                {data.personal.name.split(' ').map(n => n[0]).join('')}
+                {data.personal.name
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')}
               </div>
             </div>
             <span className="font-black text-[#1b1435] tracking-tight text-lg hover:text-[#4f46e5] transition-colors duration-300">
@@ -249,7 +253,7 @@ export default function FrostedPanels() {
                     <motion.div
                       layoutId="navHover"
                       className="absolute inset-0 rounded-full bg-[#1b1435]/[0.04] border border-white/40"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                   )}
 
@@ -257,7 +261,7 @@ export default function FrostedPanels() {
                     <motion.div
                       layoutId="navActive"
                       className="absolute bottom-0 left-3 right-3 lg:left-4 lg:right-4 h-[2px] bg-gradient-to-r from-[#6366f1] to-[#0ea5e9] shadow-[0_1px_8px_rgba(255,95,210,0.4)]"
-                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 25 }}
                     />
                   )}
                 </a>
@@ -280,7 +284,8 @@ export default function FrostedPanels() {
 
           {/* Hamburger Mobile Menu Toggle Button */}
           <div className="md:hidden relative z-20">
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-full bg-white/50 border border-white/40 text-[#1b1435] hover:bg-white/80 transition-colors focus:outline-none"
               aria-label="Toggle navigation menu"
@@ -310,10 +315,11 @@ export default function FrostedPanels() {
                     setActiveSection(link.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`px-4 py-3 rounded-xl text-base font-bold transition-all flex items-center justify-between ${activeSection === link.id
-                    ? 'bg-gradient-to-r from-[#6366f1]/5 to-[#4f46e5]/5 border border-[#4f46e5]/10 text-[#4f46e5]'
-                    : 'text-[#5f6885] hover:text-[#1b1435] hover:bg-slate-50'
-                    }`}
+                  className={`px-4 py-3 rounded-xl text-base font-bold transition-all flex items-center justify-between ${
+                    activeSection === link.id
+                      ? 'bg-gradient-to-r from-[#6366f1]/5 to-[#4f46e5]/5 border border-[#4f46e5]/10 text-[#4f46e5]'
+                      : 'text-[#5f6885] hover:text-[#1b1435] hover:bg-slate-50'
+                  }`}
                 >
                   <span>{link.label}</span>
                   {activeSection === link.id && (
@@ -355,7 +361,6 @@ export default function FrostedPanels() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center w-full relative z-10">
-
           {/* Left Hero Column - Left aligned perfectly with logo */}
           <div className="lg:col-span-7 flex flex-col items-start text-left space-y-3 lg:space-y-3.5 z-10">
             <motion.div
@@ -376,7 +381,7 @@ export default function FrostedPanels() {
               className="space-y-0.5 select-none"
             >
               <p className="text-[#6366f1] text-xs font-extrabold uppercase tracking-widest pl-1 font-mono">
-                {data.personal.tagline || "Creative Technologist"}
+                {data.personal.tagline || 'Creative Technologist'}
               </p>
 
               <h1 className="text-3xl sm:text-4xl lg:text-4xl xl:text-5xl font-black tracking-tight leading-[1.08] text-[#1b1435]">
@@ -418,7 +423,7 @@ export default function FrostedPanels() {
               </motion.a>
 
               <motion.a
-                whileHover={{ scale: 1.02, y: -1, backgroundColor: "rgba(255, 255, 255, 0.8)" }}
+                whileHover={{ scale: 1.02, y: -1, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
                 whileTap={{ scale: 0.98 }}
                 href="#contact"
                 className="w-full sm:w-auto text-center px-5 py-3 rounded-2xl border border-white/40 bg-white/25 text-[#1b1435] font-bold text-xs tracking-wider backdrop-blur-xl shadow-lg transition-all flex items-center justify-center gap-1.5"
@@ -435,13 +440,20 @@ export default function FrostedPanels() {
             >
               <div className="flex -space-x-2.5">
                 {[
-                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
-                  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-                  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
-                  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face"
+                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face',
+                  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+                  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
                 ].map((avatarUrl, idx) => (
-                  <div key={idx} className="w-7.5 h-7.5 rounded-full border-2 border-white overflow-hidden shadow-sm">
-                    <img src={avatarUrl} alt="Client avatar" className="w-full h-full object-cover" />
+                  <div
+                    key={idx}
+                    className="w-7.5 h-7.5 rounded-full border-2 border-white overflow-hidden shadow-sm"
+                  >
+                    <img
+                      src={avatarUrl}
+                      alt="Client avatar"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 ))}
                 <div className="w-7.5 h-7.5 rounded-full border-2 border-white bg-gradient-to-r from-[#6366f1] to-[#4f46e5] flex items-center justify-center text-[8px] font-bold text-white shadow-sm">
@@ -451,7 +463,8 @@ export default function FrostedPanels() {
               <div className="text-[#5f6885] text-[11px] leading-snug">
                 <span className="text-[#1b1435] font-bold">Trusted by global partners.</span>
                 <span className="block mt-0.5 opacity-90">
-                  Delivered over {data.stats.projectsCompleted || 48} premium platforms with {data.stats.yearsExperience || 5}+ years of experience.
+                  Delivered over {data.stats.projectsCompleted || 48} premium platforms with{' '}
+                  {data.stats.yearsExperience || 5}+ years of experience.
                 </span>
               </div>
             </motion.div>
@@ -464,7 +477,6 @@ export default function FrostedPanels() {
 
             {/* Centered Cards Stack with identical widths */}
             <div className="flex flex-col gap-4 w-full max-w-[370px] relative z-10">
-
               {/* Card 1: Profile Panel */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
@@ -484,11 +496,17 @@ export default function FrostedPanels() {
                     <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-white shadow-sm" />
                   </div>
                   <div className="text-left min-w-0">
-                    <h3 className="text-sm font-black text-[#1b1435] leading-tight truncate">{data.personal.name}</h3>
-                    <p className="text-[11px] text-[#4f46e5] font-semibold leading-snug mt-0.5 truncate">{data.personal.title.split('&')[0].trim()}</p>
+                    <h3 className="text-sm font-black text-[#1b1435] leading-tight truncate">
+                      {data.personal.name}
+                    </h3>
+                    <p className="text-[11px] text-[#4f46e5] font-semibold leading-snug mt-0.5 truncate">
+                      {data.personal.title.split('&')[0].trim()}
+                    </p>
                     <div className="flex items-center gap-1 mt-1">
                       <MapPin className="w-3.5 h-3.5 text-[#6366f1] flex-shrink-0" />
-                      <span className="text-[10px] text-[#5f6885] font-sans leading-none truncate">{data.personal.location}</span>
+                      <span className="text-[10px] text-[#5f6885] font-sans leading-none truncate">
+                        {data.personal.location}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -507,11 +525,15 @@ export default function FrostedPanels() {
                   {[
                     { label: 'Projects', value: data.stats.projectsCompleted || 48 },
                     { label: 'Clients', value: data.stats.happyClients || 32 },
-                    { label: 'Years', value: data.stats.yearsExperience || 5 }
+                    { label: 'Years', value: data.stats.yearsExperience || 5 },
                   ].map((s, i) => (
                     <div key={i} className="text-center px-2">
-                      <span className="text-base font-black text-transparent bg-clip-text bg-gradient-to-b from-[#4f46e5] to-[#6366f1] block leading-none">{s.value}+</span>
-                      <span className="text-[9px] text-[#5f6885] uppercase tracking-wider font-sans block mt-1.5">{s.label}</span>
+                      <span className="text-base font-black text-transparent bg-clip-text bg-gradient-to-b from-[#4f46e5] to-[#6366f1] block leading-none">
+                        {s.value}+
+                      </span>
+                      <span className="text-[9px] text-[#5f6885] uppercase tracking-wider font-sans block mt-1.5">
+                        {s.label}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -531,16 +553,24 @@ export default function FrostedPanels() {
                     <div className="w-5 h-5 rounded-md bg-[#6366f1]/10 border border-[#6366f1]/20 flex items-center justify-center">
                       <Cpu className="w-3 h-3 text-[#6366f1]" />
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#4f46e5] font-sans">Capabilities</span>
-                    <span className="ml-auto text-[8px] px-2 py-0.5 rounded-full bg-green-50 border border-green-200 text-green-700 font-sans font-semibold">LIVE</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#4f46e5] font-sans">
+                      Capabilities
+                    </span>
+                    <span className="ml-auto text-[8px] px-2 py-0.5 rounded-full bg-green-50 border border-green-200 text-green-700 font-sans font-semibold">
+                      LIVE
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                     {data.skills.slice(0, 4).map((skill, i) => (
                       <div key={i} className="space-y-1.5 text-left">
                         <div className="flex justify-between items-center">
-                          <span className="text-[10px] text-[#1b1435] font-semibold font-sans truncate max-w-[65px]">{skill.name}</span>
-                          <span className="text-[9px] text-[#4f46e5] font-bold font-sans">{skill.level}%</span>
+                          <span className="text-[10px] text-[#1b1435] font-semibold font-sans truncate max-w-[65px]">
+                            {skill.name}
+                          </span>
+                          <span className="text-[9px] text-[#4f46e5] font-bold font-sans">
+                            {skill.level}%
+                          </span>
                         </div>
                         <div className="h-1.5 w-full rounded-full bg-white/50 border border-white/60 overflow-hidden">
                           <div
@@ -553,7 +583,6 @@ export default function FrostedPanels() {
                   </div>
                 </div>
               </motion.div>
-
             </div>
           </div>
         </div>
@@ -571,7 +600,7 @@ export default function FrostedPanels() {
             className="text-[100px] sm:text-[180px] md:text-[240px] font-black tracking-widest opacity-[0.03]"
             style={{
               WebkitTextStroke: '2px rgba(27, 20, 53, 0.4)',
-              WebkitTextFillColor: 'transparent'
+              WebkitTextFillColor: 'transparent',
             }}
           >
             JOURNEY
@@ -580,15 +609,42 @@ export default function FrostedPanels() {
 
         {/* Dynamic soft pink/blue vector mountain overlay in background */}
         <div className="absolute bottom-0 right-0 left-0 h-[280px] md:h-[450px] overflow-hidden pointer-events-none opacity-40 z-0">
-          <svg viewBox="0 0 1440 400" className="absolute bottom-0 w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 400L280 200L510 320L850 110L1150 250L1440 90V400H0Z" fill="url(#mountainGradIndigo)" opacity="0.18" />
-            <path d="M150 400L450 160L800 280L1180 120L1440 210V400H150Z" fill="url(#mountainGradSky)" opacity="0.15" />
+          <svg
+            viewBox="0 0 1440 400"
+            className="absolute bottom-0 w-full h-full"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 400L280 200L510 320L850 110L1150 250L1440 90V400H0Z"
+              fill="url(#mountainGradIndigo)"
+              opacity="0.18"
+            />
+            <path
+              d="M150 400L450 160L800 280L1180 120L1440 210V400H150Z"
+              fill="url(#mountainGradSky)"
+              opacity="0.15"
+            />
             <defs>
-              <linearGradient id="mountainGradIndigo" x1="720" y1="90" x2="720" y2="400" gradientUnits="userSpaceOnUse">
+              <linearGradient
+                id="mountainGradIndigo"
+                x1="720"
+                y1="90"
+                x2="720"
+                y2="400"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop stopColor="#6366f1" stopOpacity="0.3" />
                 <stop offset="1" stopColor="#dde4f2" stopOpacity="0" />
               </linearGradient>
-              <linearGradient id="mountainGradSky" x1="795" y1="120" x2="795" y2="400" gradientUnits="userSpaceOnUse">
+              <linearGradient
+                id="mountainGradSky"
+                x1="795"
+                y1="120"
+                x2="795"
+                y2="400"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop stopColor="#0ea5e9" stopOpacity="0.25" />
                 <stop offset="1" stopColor="#dde4f2" stopOpacity="0" />
               </linearGradient>
@@ -597,10 +653,8 @@ export default function FrostedPanels() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 items-center w-full z-10">
-
           {/* Left Column: Overlapping Glass Panels */}
           <div className="lg:col-span-5 relative flex items-center justify-center h-[380px] sm:h-[450px] w-full">
-
             {/* Primary Portrait Card (bg-white/30, blur-2xl, border border-white/50, shadow-xl, rounded-3xl) */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -644,8 +698,12 @@ export default function FrostedPanels() {
                   className="w-full h-full object-cover opacity-85 hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute bottom-4 left-4 right-4 text-left z-20">
-                  <span className="text-[8px] uppercase font-bold tracking-widest text-[#0ea5e9] font-mono">Inspiration</span>
-                  <p className="text-[#1b1435] text-xs font-black leading-tight">Live On Your Own Terms</p>
+                  <span className="text-[8px] uppercase font-bold tracking-widest text-[#0ea5e9] font-mono">
+                    Inspiration
+                  </span>
+                  <p className="text-[#1b1435] text-xs font-black leading-tight">
+                    Live On Your Own Terms
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -658,7 +716,10 @@ export default function FrostedPanels() {
                 About Me
               </span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[#1b1435] leading-tight">
-                Crafting With <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">Precision & Design</span>
+                Crafting With{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">
+                  Precision & Design
+                </span>
               </h2>
             </div>
 
@@ -682,8 +743,12 @@ export default function FrostedPanels() {
                     <MapPin className="w-5 h-5 text-[#6366f1]" />
                   </div>
                   <div>
-                    <span className="text-[10px] text-[#5f6885] uppercase block tracking-wider font-semibold font-mono">Current Base</span>
-                    <span className="text-sm font-bold text-[#1b1435]">{data.personal.location}</span>
+                    <span className="text-[10px] text-[#5f6885] uppercase block tracking-wider font-semibold font-mono">
+                      Current Base
+                    </span>
+                    <span className="text-sm font-bold text-[#1b1435]">
+                      {data.personal.location}
+                    </span>
                   </div>
                 </div>
 
@@ -692,8 +757,12 @@ export default function FrostedPanels() {
                     <BadgeCheck className="w-5 h-5 text-[#0ea5e9]" />
                   </div>
                   <div>
-                    <span className="text-[10px] text-[#5f6885] uppercase block tracking-wider font-semibold font-mono">Key Focus</span>
-                    <span className="text-sm font-bold text-[#1b1435]">{data.personal.title.split('&')[1]?.trim() || "Creative Engineering"}</span>
+                    <span className="text-[10px] text-[#5f6885] uppercase block tracking-wider font-semibold font-mono">
+                      Key Focus
+                    </span>
+                    <span className="text-sm font-bold text-[#1b1435]">
+                      {data.personal.title.split('&')[1]?.trim() || 'Creative Engineering'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -701,7 +770,10 @@ export default function FrostedPanels() {
 
             <div className="border-l-2 border-[#6366f1] pl-4 py-1.5 text-left">
               <p className="text-[#5f6885] italic text-sm md:text-base font-light">
-                "{data.personal.tagline || 'Building the future, one elegant line of code at a time.'}"
+                "
+                {data.personal.tagline ||
+                  'Building the future, one elegant line of code at a time.'}
+                "
               </p>
             </div>
           </div>
@@ -721,10 +793,14 @@ export default function FrostedPanels() {
             <span>Tech Stack</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[#1b1435]">
-            Core <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">Capabilities</span>
+            Core{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">
+              Capabilities
+            </span>
           </h2>
           <p className="text-[#5f6885] text-base max-w-2xl font-normal">
-            A comprehensive matrix of technologies and toolsets I specialize in. Rendered as 3D layered pastel block cards.
+            A comprehensive matrix of technologies and toolsets I specialize in. Rendered as 3D
+            layered pastel block cards.
           </p>
         </div>
 
@@ -745,7 +821,7 @@ export default function FrostedPanels() {
                 onMouseLeave={() => setHoveredSkill(null)}
                 className="relative bg-white/30 backdrop-blur-2xl border-t border-l border-white/50 border-r border-b border-white/35 rounded-3xl shadow-xl transition-all duration-350 hover:bg-white/35 hover:shadow-2xl p-6 cursor-default select-none flex flex-col justify-between overflow-hidden group hover:scale-[1.02]"
                 style={{
-                  boxShadow: isHovered ? `0 12px 30px -4px ${theme.accentLight}` : ''
+                  boxShadow: isHovered ? `0 12px 30px -4px ${theme.accentLight}` : '',
                 }}
               >
                 <div
@@ -784,7 +860,7 @@ export default function FrostedPanels() {
                       initial={{ width: 0 }}
                       whileInView={{ width: `${skill.level}%` }}
                       viewport={{ once: true }}
-                      transition={{ duration: 1.2, delay: 0.1, ease: "easeOut" }}
+                      transition={{ duration: 1.2, delay: 0.1, ease: 'easeOut' }}
                       className={`h-full rounded-full ${theme.bar} relative`}
                       style={{ boxShadow: `0 0 8px ${theme.accentLight}` }}
                     >
@@ -811,10 +887,14 @@ export default function FrostedPanels() {
             <span>Showcase</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[#1b1435]">
-            Selected <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">Projects</span>
+            Selected{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">
+              Projects
+            </span>
           </h2>
           <p className="text-[#5f6885] text-base max-w-2xl font-normal">
-            A grid of client platforms and production-ready applications I've engineered from scratch.
+            A grid of client platforms and production-ready applications I've engineered from
+            scratch.
           </p>
         </div>
 
@@ -845,7 +925,10 @@ export default function FrostedPanels() {
                   {/* Glowing tags */}
                   <div className="absolute top-4 left-4 flex gap-1.5">
                     {project.techStack.slice(0, 2).map((tech, idx) => (
-                      <span key={idx} className="text-[8px] uppercase tracking-widest font-black px-2 py-0.5 rounded bg-white/80 backdrop-blur border border-white/80 font-mono text-[#4f46e5] shadow-sm">
+                      <span
+                        key={idx}
+                        className="text-[8px] uppercase tracking-widest font-black px-2 py-0.5 rounded bg-white/80 backdrop-blur border border-white/80 font-mono text-[#4f46e5] shadow-sm"
+                      >
                         {tech}
                       </span>
                     ))}
@@ -914,7 +997,10 @@ export default function FrostedPanels() {
             <span>Timeline</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[#1b1435]">
-            Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">Journey</span>
+            Professional{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">
+              Journey
+            </span>
           </h2>
           <p className="text-[#5f6885] text-base max-w-xl mx-auto font-normal">
             A comprehensive log of my engineering and leadership milestones at global tech teams.
@@ -944,7 +1030,9 @@ export default function FrostedPanels() {
                     <h3 className="text-lg md:text-xl font-extrabold text-[#1b1435] group-hover/exp:text-[#6366f1] transition-colors">
                       {exp.role}
                     </h3>
-                    <span className="text-sky-600 font-bold text-sm tracking-wide">{exp.company}</span>
+                    <span className="text-sky-600 font-bold text-sm tracking-wide">
+                      {exp.company}
+                    </span>
                   </div>
                   <span className="px-3.5 py-1 rounded-full border border-white/40 bg-white/25 backdrop-blur-xl text-xs font-semibold text-[#4f46e5] tracking-wider font-mono w-fit flex items-center gap-1.5 shadow-sm">
                     <CalendarDays className="w-3.5 h-3.5 text-[#6366f1]" />
@@ -974,10 +1062,14 @@ export default function FrostedPanels() {
             <span>Testimonial</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[#1b1435]">
-            Client <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">Reviews</span>
+            Client{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">
+              Reviews
+            </span>
           </h2>
           <p className="text-[#5f6885] text-base max-w-2xl font-normal">
-            Genuine accounts of projects delivered ahead of schedule and collaborations that built beautiful platforms.
+            Genuine accounts of projects delivered ahead of schedule and collaborations that built
+            beautiful platforms.
           </p>
         </div>
 
@@ -1004,8 +1096,12 @@ export default function FrostedPanels() {
                   <img src={test.avatar} alt={test.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
-                  <h4 className="text-[#1b1435] font-extrabold text-sm md:text-base">{test.name}</h4>
-                  <span className="text-[#5f6885] text-xs md:text-sm font-light font-mono block mt-0.5">{test.role}</span>
+                  <h4 className="text-[#1b1435] font-extrabold text-sm md:text-base">
+                    {test.name}
+                  </h4>
+                  <span className="text-[#5f6885] text-xs md:text-sm font-light font-mono block mt-0.5">
+                    {test.role}
+                  </span>
                 </div>
               </div>
             </motion.div>
@@ -1021,7 +1117,6 @@ export default function FrostedPanels() {
         className="py-16 md:py-20 px-6 md:px-12 max-w-6xl mx-auto z-10 relative flex flex-col justify-center scroll-mt-24 lg:scroll-mt-28"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-6 items-start w-full">
-
           {/* Left Contact Details Panel */}
           <div className="lg:col-span-5 text-left space-y-6 md:space-y-8">
             <div className="space-y-3">
@@ -1030,10 +1125,14 @@ export default function FrostedPanels() {
                 <span>Get in touch</span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[#1b1435] leading-tight">
-                Let's Build Something <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">Extraordinary</span>
+                Let's Build Something{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#4f46e5] to-[#0ea5e9]">
+                  Extraordinary
+                </span>
               </h2>
               <p className="text-[#5f6885] text-sm md:text-base font-normal leading-relaxed max-w-md">
-                Have a project idea, query, or want to integrate creative systems? Send a message and let's collaborate.
+                Have a project idea, query, or want to integrate creative systems? Send a message
+                and let's collaborate.
               </p>
             </div>
 
@@ -1047,21 +1146,29 @@ export default function FrostedPanels() {
                   <Mail className="w-5 h-5 text-[#6366f1]" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-[#5f6885] uppercase tracking-wider block font-semibold font-mono">Direct Email</span>
-                  <span className="text-sm font-extrabold text-[#1b1435] group-hover:text-[#6366f1] transition-colors">{data.socials.email}</span>
+                  <span className="text-[10px] text-[#5f6885] uppercase tracking-wider block font-semibold font-mono">
+                    Direct Email
+                  </span>
+                  <span className="text-sm font-extrabold text-[#1b1435] group-hover:text-[#6366f1] transition-colors">
+                    {data.socials.email}
+                  </span>
                 </div>
               </a>
 
               <a
-                href={`tel:${data.socials.phone || "+15551234567"}`}
+                href={`tel:${data.socials.phone || '+15551234567'}`}
                 className="flex items-center gap-4 p-4 bg-white/30 backdrop-blur-2xl border-t border-l border-white/50 border-r border-b border-white/35 rounded-3xl shadow-xl transition-all duration-350 hover:bg-white/35 hover:shadow-2xl group hover:scale-[1.01]"
               >
                 <div className="w-11 h-11 rounded-xl bg-indigo-500/5 border border-indigo-500/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                   <Phone className="w-5 h-5 text-[#4f46e5]" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-[#5f6885] uppercase tracking-wider block font-semibold font-mono">Phone</span>
-                  <span className="text-sm font-extrabold text-[#1b1435] group-hover:text-[#4f46e5] transition-colors">{data.socials.phone || "+1 (555) 123-4567"}</span>
+                  <span className="text-[10px] text-[#5f6885] uppercase tracking-wider block font-semibold font-mono">
+                    Phone
+                  </span>
+                  <span className="text-sm font-extrabold text-[#1b1435] group-hover:text-[#4f46e5] transition-colors">
+                    {data.socials.phone || '+1 (555) 123-4567'}
+                  </span>
                 </div>
               </a>
 
@@ -1070,8 +1177,12 @@ export default function FrostedPanels() {
                   <MapPin className="w-5 h-5 text-[#0ea5e9]" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-[#5f6885] uppercase tracking-wider block font-semibold font-mono">Location</span>
-                  <span className="text-sm font-extrabold text-[#1b1435]">{data.personal.location}</span>
+                  <span className="text-[10px] text-[#5f6885] uppercase tracking-wider block font-semibold font-mono">
+                    Location
+                  </span>
+                  <span className="text-sm font-extrabold text-[#1b1435]">
+                    {data.personal.location}
+                  </span>
                 </div>
               </div>
             </div>
@@ -1079,9 +1190,21 @@ export default function FrostedPanels() {
             {/* Social Medias Frosted Row (bg-white/30, border border-white/50) */}
             <div className="flex gap-3">
               {[
-                { icon: <Github className="w-5 h-5" />, href: data.socials.github, title: 'GitHub' },
-                { icon: <Linkedin className="w-5 h-5" />, href: data.socials.linkedin, title: 'LinkedIn' },
-                { icon: <Twitter className="w-5 h-5" />, href: data.socials.twitter, title: 'Twitter' }
+                {
+                  icon: <Github className="w-5 h-5" />,
+                  href: data.socials.github,
+                  title: 'GitHub',
+                },
+                {
+                  icon: <Linkedin className="w-5 h-5" />,
+                  href: data.socials.linkedin,
+                  title: 'LinkedIn',
+                },
+                {
+                  icon: <Twitter className="w-5 h-5" />,
+                  href: data.socials.twitter,
+                  title: 'Twitter',
+                },
               ].map((soc, idx) => (
                 <motion.a
                   key={idx}
@@ -1127,7 +1250,8 @@ export default function FrostedPanels() {
                     </div>
                     <h4 className="text-xl font-bold text-slate-800">Transmission Successful</h4>
                     <p className="text-[#5f6885] text-sm max-w-xs font-normal">
-                      Your message has been beamed securely. I will reach out to you shortly. Thank you!
+                      Your message has been beamed securely. I will reach out to you shortly. Thank
+                      you!
                     </p>
                   </motion.div>
                 ) : (
@@ -1140,7 +1264,9 @@ export default function FrostedPanels() {
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] text-[#5f6885] uppercase tracking-widest pl-1 font-mono font-semibold">Your Name</label>
+                        <label className="text-[10px] text-[#5f6885] uppercase tracking-widest pl-1 font-mono font-semibold">
+                          Your Name
+                        </label>
                         <input
                           type="text"
                           required
@@ -1150,7 +1276,9 @@ export default function FrostedPanels() {
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] text-[#5f6885] uppercase tracking-widest pl-1 font-mono font-semibold">Your Email</label>
+                        <label className="text-[10px] text-[#5f6885] uppercase tracking-widest pl-1 font-mono font-semibold">
+                          Your Email
+                        </label>
                         <input
                           type="email"
                           required
@@ -1161,7 +1289,9 @@ export default function FrostedPanels() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] text-[#5f6885] uppercase tracking-widest pl-1 font-mono font-semibold">Your Message</label>
+                      <label className="text-[10px] text-[#5f6885] uppercase tracking-widest pl-1 font-mono font-semibold">
+                        Your Message
+                      </label>
                       <textarea
                         required
                         rows="5"
@@ -1202,11 +1332,16 @@ export default function FrostedPanels() {
               <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#818cf8] via-[#4f46e5] to-[#38bdf8] p-[1.5px] flex items-center justify-center shadow-sm">
                 <div className="w-full h-full rounded-full bg-white/90 flex items-center justify-center">
                   <span className="text-[7px] font-black text-[#4f46e5]">
-                    {data.personal.name.split(' ').map(n => n[0]).join('')}
+                    {data.personal.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')}
                   </span>
                 </div>
               </div>
-              <span className="text-sm font-black text-[#1b1435] tracking-tight">{data.personal.name}</span>
+              <span className="text-sm font-black text-[#1b1435] tracking-tight">
+                {data.personal.name}
+              </span>
             </div>
             <p className="text-[11px] text-[#5f6885] font-normal pl-8">
               Crafting beautiful digital experiences.
@@ -1220,8 +1355,16 @@ export default function FrostedPanels() {
           <div className="flex items-center gap-3 z-10">
             {[
               { icon: <Github className="w-4 h-4" />, href: data.socials.github, title: 'GitHub' },
-              { icon: <Linkedin className="w-4 h-4" />, href: data.socials.linkedin, title: 'LinkedIn' },
-              { icon: <Mail className="w-4 h-4" />, href: `mailto:${data.socials.email}`, title: 'Email' }
+              {
+                icon: <Linkedin className="w-4 h-4" />,
+                href: data.socials.linkedin,
+                title: 'LinkedIn',
+              },
+              {
+                icon: <Mail className="w-4 h-4" />,
+                href: `mailto:${data.socials.email}`,
+                title: 'Email',
+              },
             ].map((soc, idx) => (
               <a
                 key={idx}
@@ -1250,7 +1393,6 @@ export default function FrostedPanels() {
           </div>
         </motion.footer>
       </section>
-
     </div>
   );
 }

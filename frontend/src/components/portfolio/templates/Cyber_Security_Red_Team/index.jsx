@@ -1,18 +1,18 @@
-import { NavBar } from "./NavBar";
-import { HeroSection } from "./HeroSection";
-import { OperatorProfile } from "./OperatorProfile";
-import { Arsenal } from "./Arsenal";
-import { MissionTimeline } from "./MissionTimeline";
-import { Operations } from "./Operations";
-import { Testimonials } from "./Credentials";
-import { SecureChannel } from "./SecureChannel";
-import { Footer } from "./Footer";
+import { NavBar } from './NavBar';
+import { HeroSection } from './HeroSection';
+import { OperatorProfile } from './OperatorProfile';
+import { Arsenal } from './Arsenal';
+import { MissionTimeline } from './MissionTimeline';
+import { Operations } from './Operations';
+import { Testimonials } from './Credentials';
+import { SecureChannel } from './SecureChannel';
+import { Footer } from './Footer';
 
 export default function App() {
   return (
     <div
       style={{
-        background: "#050505",
+        background: '#050505',
         fontFamily: "'Inter', sans-serif",
       }}
     >

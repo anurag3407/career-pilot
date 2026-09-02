@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { Sparkles, Loader2, Check, X, Briefcase } from 'lucide-react'
-import toast from 'react-hot-toast'
-import { enhanceApi } from '../../services/api'
+import { useState } from 'react';
+import { Sparkles, Loader2, Check, X, Briefcase } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { enhanceApi } from '../../services/api';
 
 /**
  * ResumeTailor — One-Click Resume Tailor.
@@ -16,54 +16,54 @@ import { enhanceApi } from '../../services/api'
  *   onTailored  - called with the new resume text when the user accepts
  */
 export default function ResumeTailor({ resumeText, jobRole: initialRole, onTailored }) {
-  const [open, setOpen] = useState(false)
-  const [jobDescription, setJobDescription] = useState('')
-  const [jobRole, setJobRole] = useState(initialRole || '')
-  const [loading, setLoading] = useState(false)
-  const [tailored, setTailored] = useState(null)
+  const [open, setOpen] = useState(false);
+  const [jobDescription, setJobDescription] = useState('');
+  const [jobRole, setJobRole] = useState(initialRole || '');
+  const [loading, setLoading] = useState(false);
+  const [tailored, setTailored] = useState(null);
 
   const handleTailor = async () => {
     if (!resumeText || !resumeText.trim()) {
-      toast.error('No resume to tailor')
-      return
+      toast.error('No resume to tailor');
+      return;
     }
     if (!jobDescription.trim() || jobDescription.trim().length < 20) {
-      toast.error('Paste a job description (at least 20 characters)')
-      return
+      toast.error('Paste a job description (at least 20 characters)');
+      return;
     }
-    setLoading(true)
-    setTailored(null)
-    const toastId = toast.loading('Tailoring resume to job…')
+    setLoading(true);
+    setTailored(null);
+    const toastId = toast.loading('Tailoring resume to job…');
     try {
-      const res = await enhanceApi.tailorResume(resumeText, jobDescription, jobRole)
-      const text = res?.data?.tailoredText || res?.tailoredText
+      const res = await enhanceApi.tailorResume(resumeText, jobDescription, jobRole);
+      const text = res?.data?.tailoredText || res?.tailoredText;
       if (!text) {
-        toast.error('Empty response', { id: toastId })
-        return
+        toast.error('Empty response', { id: toastId });
+        return;
       }
-      setTailored({ text, jobRole })
-      toast.success('Tailored resume ready — review and apply', { id: toastId })
+      setTailored({ text, jobRole });
+      toast.success('Tailored resume ready — review and apply', { id: toastId });
     } catch (err) {
-      toast.error(err.message || 'Tailoring failed', { id: toastId })
+      toast.error(err.message || 'Tailoring failed', { id: toastId });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleAccept = () => {
-    if (tailored && onTailored) onTailored(tailored.text)
-    setTailored(null)
-    setJobDescription('')
-    toast.success('Tailored resume applied')
-  }
+    if (tailored && onTailored) onTailored(tailored.text);
+    setTailored(null);
+    setJobDescription('');
+    toast.success('Tailored resume applied');
+  };
 
-  const handleReject = () => setTailored(null)
+  const handleReject = () => setTailored(null);
 
   return (
     <div className="rounded-lg border border-border bg-card p-3">
       <button
         type="button"
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-sky-500"
       >
         <Sparkles className="w-4 h-4" />
@@ -79,7 +79,7 @@ export default function ResumeTailor({ resumeText, jobRole: initialRole, onTailo
             <input
               type="text"
               value={jobRole}
-              onChange={e => setJobRole(e.target.value)}
+              onChange={(e) => setJobRole(e.target.value)}
               placeholder="e.g. Senior Frontend Engineer"
               className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/50"
             />
@@ -91,7 +91,7 @@ export default function ResumeTailor({ resumeText, jobRole: initialRole, onTailo
             </label>
             <textarea
               value={jobDescription}
-              onChange={e => setJobDescription(e.target.value)}
+              onChange={(e) => setJobDescription(e.target.value)}
               rows={6}
               placeholder="Paste the full job description here. The AI will rewrite your resume to highlight the most relevant experience, skills, and keywords."
               className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/50 resize-y"
@@ -151,5 +151,5 @@ export default function ResumeTailor({ resumeText, jobRole: initialRole, onTailo
         </div>
       )}
     </div>
-  )
+  );
 }

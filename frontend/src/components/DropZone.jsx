@@ -1,7 +1,7 @@
-import { useCallback, useState, useRef, useEffect } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { Upload, FileText, X, CheckCircle, AlertCircle } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { useCallback, useState, useRef, useEffect } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { Upload, FileText, X, CheckCircle, AlertCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function DropZone({
   onFileSelect,
@@ -9,70 +9,70 @@ export default function DropZone({
   maxSizeMB = 5,
   multiple = false,
 }) {
-  const maxSizeBytes = maxSizeMB * 1024 * 1024
-  const [previews, setPreviews] = useState([])
-  const [uploadProgress, setUploadProgress] = useState({})
-  const intervalsRef = useRef([])
+  const maxSizeBytes = maxSizeMB * 1024 * 1024;
+  const [previews, setPreviews] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState({});
+  const intervalsRef = useRef([]);
 
   const simulateProgress = (fileName) => {
-    let progress = 0
-    setUploadProgress((prev) => ({ ...prev, [fileName]: 0 }))
+    let progress = 0;
+    setUploadProgress((prev) => ({ ...prev, [fileName]: 0 }));
     const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 15) + 5
+      progress += Math.floor(Math.random() * 15) + 5;
       if (progress >= 100) {
-        progress = 100
-        clearInterval(interval)
+        progress = 100;
+        clearInterval(interval);
       }
-      setUploadProgress((prev) => ({ ...prev, [fileName]: progress }))
-    }, 150)
-    intervalsRef.current.push(interval)
-  }
+      setUploadProgress((prev) => ({ ...prev, [fileName]: progress }));
+    }, 150);
+    intervalsRef.current.push(interval);
+  };
 
   const onDrop = useCallback(
     (acceptedFiles, rejectedFiles) => {
       if (rejectedFiles && rejectedFiles.length > 0) {
         rejectedFiles.forEach((file) => {
           if (file.errors?.[0]?.code === 'file-too-large') {
-            const sizeMB = (file.file.size / (1024 * 1024)).toFixed(2)
-            toast.error(`"${file.file.name}" (${sizeMB}MB) exceeds ${maxSizeMB}MB limit`)
+            const sizeMB = (file.file.size / (1024 * 1024)).toFixed(2);
+            toast.error(`"${file.file.name}" (${sizeMB}MB) exceeds ${maxSizeMB}MB limit`);
           } else if (file.errors?.[0]?.code === 'file-invalid-type') {
-            toast.error(`"${file.file.name}" is not a PDF file`)
+            toast.error(`"${file.file.name}" is not a PDF file`);
           } else {
-            toast.error(`"${file.file.name}" could not be added`)
+            toast.error(`"${file.file.name}" could not be added`);
           }
-        })
-        return
+        });
+        return;
       }
 
-      if (acceptedFiles.length === 0) return
+      if (acceptedFiles.length === 0) return;
 
       const newPreviews = acceptedFiles.map((file) => ({
         name: file.name,
         size: (file.size / (1024 * 1024)).toFixed(2),
         file,
-      }))
+      }));
 
-      setPreviews((prev) => (multiple ? [...prev, ...newPreviews] : newPreviews))
+      setPreviews((prev) => (multiple ? [...prev, ...newPreviews] : newPreviews));
 
-      acceptedFiles.forEach((file) => simulateProgress(file.name))
+      acceptedFiles.forEach((file) => simulateProgress(file.name));
 
       if (multiple) {
-        acceptedFiles.forEach((file) => onFileSelect(file))
+        acceptedFiles.forEach((file) => onFileSelect(file));
       } else {
-        onFileSelect(acceptedFiles[0])
+        onFileSelect(acceptedFiles[0]);
       }
     },
     [onFileSelect, maxSizeMB, maxSizeBytes, multiple]
-  )
+  );
 
   const removeFile = (fileName) => {
-    setPreviews((prev) => prev.filter((p) => p.name !== fileName))
+    setPreviews((prev) => prev.filter((p) => p.name !== fileName));
     setUploadProgress((prev) => {
-      const updated = { ...prev }
-      delete updated[fileName]
-      return updated
-    })
-  }
+      const updated = { ...prev };
+      delete updated[fileName];
+      return updated;
+    });
+  };
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     onDrop,
@@ -81,14 +81,14 @@ export default function DropZone({
     maxSize: maxSizeBytes,
     multiple,
     disabled,
-  })
+  });
 
   useEffect(() => {
-  return () => {
-    intervalsRef.current.forEach((id) => clearInterval(id))
-    intervalsRef.current = []
-  }
-}, [])
+    return () => {
+      intervalsRef.current.forEach((id) => clearInterval(id));
+      intervalsRef.current = [];
+    };
+  }, []);
 
   return (
     <div className="w-full space-y-4">
@@ -98,11 +98,13 @@ export default function DropZone({
         className={`
           relative border-2 border-dashed rounded-xl p-10 text-center cursor-pointer
           transition-all duration-300 group
-          ${isDragReject
-            ? 'border-red-500 bg-red-500/10'
-            : isDragActive
-            ? 'border-primary bg-primary/10 scale-[1.01]'
-            : 'border-border hover:border-primary/50 bg-card hover:bg-muted/50'}
+          ${
+            isDragReject
+              ? 'border-red-500 bg-red-500/10'
+              : isDragActive
+                ? 'border-primary bg-primary/10 scale-[1.01]'
+                : 'border-border hover:border-primary/50 bg-card hover:bg-muted/50'
+          }
           ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}
         `}
       >
@@ -111,11 +113,13 @@ export default function DropZone({
         <div className="flex flex-col items-center gap-3">
           <div
             className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300
-              ${isDragReject
-                ? 'bg-red-500/20'
-                : isDragActive
-                ? 'bg-primary/20 scale-110'
-                : 'bg-muted group-hover:bg-primary/10'}
+              ${
+                isDragReject
+                  ? 'bg-red-500/20'
+                  : isDragActive
+                    ? 'bg-primary/20 scale-110'
+                    : 'bg-muted group-hover:bg-primary/10'
+              }
             `}
           >
             {isDragReject ? (
@@ -130,7 +134,9 @@ export default function DropZone({
           {isDragReject ? (
             <p className="text-red-500 font-medium">Only PDF files are accepted</p>
           ) : isDragActive ? (
-            <p className="text-primary font-medium text-lg">Drop {multiple ? 'files' : 'file'} here...</p>
+            <p className="text-primary font-medium text-lg">
+              Drop {multiple ? 'files' : 'file'} here...
+            </p>
           ) : (
             <>
               <div>
@@ -154,8 +160,8 @@ export default function DropZone({
       {previews.length > 0 && (
         <div className="space-y-3">
           {previews.map((preview) => {
-            const progress = uploadProgress[preview.name] ?? 0
-            const isDone = progress === 100
+            const progress = uploadProgress[preview.name] ?? 0;
+            const isDone = progress === 100;
 
             return (
               <div
@@ -196,8 +202,8 @@ export default function DropZone({
                   ) : (
                     <button
                       onClick={(e) => {
-                        e.stopPropagation()
-                        removeFile(preview.name)
+                        e.stopPropagation();
+                        removeFile(preview.name);
                       }}
                       className="p-1 rounded-md hover:bg-muted transition-colors"
                     >
@@ -206,10 +212,10 @@ export default function DropZone({
                   )}
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       )}
     </div>
-  )
+  );
 }

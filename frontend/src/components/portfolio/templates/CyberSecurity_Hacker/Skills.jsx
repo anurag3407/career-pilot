@@ -34,25 +34,30 @@ export default function Skills({ skills }) {
         <div className="mb-12 border border-[#00ff41]/30 bg-[#00ff41]/5 p-4">
           <div className="flex items-center gap-3 border-b border-[#00ff41]/20 pb-3 mb-4">
             <Terminal size={16} className="text-[#00ff41]" />
-            <span className="text-[#00ff41] text-sm tracking-widest uppercase">root@system:~# ./enumerate_skills.sh</span>
-            <span className="ml-auto text-[10px] text-[#00ff41]/50">STATUS: {booting ? 'SCANNING...' : 'COMPLETED'}</span>
+            <span className="text-[#00ff41] text-sm tracking-widest uppercase">
+              root@system:~# ./enumerate_skills.sh
+            </span>
+            <span className="ml-auto text-[10px] text-[#00ff41]/50">
+              STATUS: {booting ? 'SCANNING...' : 'COMPLETED'}
+            </span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {skills.map((skill, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="skill-hex relative group bg-black border border-[#00ff41]/30 hover:border-[#00ff41] hover:bg-[#00ff41]/10 px-4 py-3 transition-all duration-300 flex items-center justify-center cursor-crosshair overflow-hidden"
-                style={{ 
+                style={{
                   animationDelay: `${i * 50}ms`,
                   opacity: booting ? 0 : 1,
                   transform: booting ? 'translateY(10px)' : 'translateY(0)',
-                  transition: 'opacity 0.3s ease-out, transform 0.3s ease-out, background 0.2s, border 0.2s'
+                  transition:
+                    'opacity 0.3s ease-out, transform 0.3s ease-out, background 0.2s, border 0.2s',
                 }}
               >
                 {/* Glitch overlay on hover */}
                 <div className="absolute inset-0 bg-[#00ff41] mix-blend-overlay opacity-0 group-hover:opacity-20 pointer-events-none" />
-                
+
                 <span className="text-[#00ff41]/80 group-hover:text-white text-xs text-center font-bold tracking-wider relative z-10">
                   {skill.name}
                 </span>
@@ -66,7 +71,10 @@ export default function Skills({ skills }) {
             {booting ? (
               <span className="animate-pulse">Analyzing system capabilities...</span>
             ) : (
-              <span>Found {skills.length} operational modules. Awaiting next command_<span className="animate-pulse">█</span></span>
+              <span>
+                Found {skills.length} operational modules. Awaiting next command_
+                <span className="animate-pulse">█</span>
+              </span>
             )}
           </div>
         </div>

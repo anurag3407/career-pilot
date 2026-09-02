@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Parses a stat string like "10K+", "95%", "2.5x", "50K+"
  * Returns { numeric: number, suffix: string }
  */
 function parseStat(value) {
-  if (value === undefined || value === null) return { numeric: null, suffix: "" };
+  if (value === undefined || value === null) return { numeric: null, suffix: '' };
   const strValue = String(value);
   const match = strValue.match(/^([\d.]+)([A-Za-z%+x]*)$/);
   if (!match) return { numeric: null, suffix: strValue };
@@ -26,7 +26,7 @@ function easeOutCubic(t) {
  *   duration (number)      — animation duration in ms, default 2000
  */
 export default function AnimatedCounter({ value, duration = 2000 }) {
-  const [display, setDisplay] = useState("0");
+  const [display, setDisplay] = useState('0');
   const ref = useRef(null);
   const rafId = useRef(null);
   const hasAnimatedRef = useRef(false);
@@ -36,7 +36,7 @@ export default function AnimatedCounter({ value, duration = 2000 }) {
   // Reset animation state when the target value changes
   useEffect(() => {
     hasAnimatedRef.current = false;
-    setDisplay("0");
+    setDisplay('0');
   }, [value]);
 
   useEffect(() => {
@@ -61,9 +61,7 @@ export default function AnimatedCounter({ value, duration = 2000 }) {
             const easedProgress = easeOutCubic(progress);
             const current = easedProgress * numeric;
 
-            setDisplay(
-              isDecimal ? current.toFixed(1) : Math.floor(current).toString()
-            );
+            setDisplay(isDecimal ? current.toFixed(1) : Math.floor(current).toString());
 
             if (progress < 1) {
               rafId.current = requestAnimationFrame(step);
@@ -79,13 +77,12 @@ export default function AnimatedCounter({ value, duration = 2000 }) {
     );
 
     if (ref.current) observer.observe(ref.current);
-    
+
     return () => {
       observer.disconnect();
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, [numeric, duration, value]);
-
 
   if (numeric === null) return <span ref={ref}>{String(value)}</span>;
 

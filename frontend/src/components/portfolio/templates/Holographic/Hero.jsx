@@ -1,13 +1,13 @@
-import React from "react";
-import { ArrowRight, Sparkles, Zap, ShieldCheck, Orbit } from "lucide-react";
+import React from 'react';
+import { ArrowRight, Sparkles, Zap, ShieldCheck, Orbit } from 'lucide-react';
 
 const statCards = [
-  { value: "12+", label: "portfolio modules" },
-  { value: "99%", label: "glass clarity" },
-  { value: "24/7", label: "immersive glow" },
+  { value: '12+', label: 'portfolio modules' },
+  { value: '99%', label: 'glass clarity' },
+  { value: '24/7', label: 'immersive glow' },
 ];
 
-const highlights = ["React", "Tailwind", "Motion-ready"];
+const highlights = ['React', 'Tailwind', 'Motion-ready'];
 
 export default function Hero() {
   return (
@@ -44,12 +44,20 @@ export default function Hero() {
             </div>
 
             <div className="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
-              <a href="#portfolio" aria-label="Explore the portfolio section" className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-500 px-6 py-3.5 font-semibold text-slate-950 shadow-[0_0_30px_rgba(34,211,238,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_45px_rgba(168,85,247,0.35)]">
+              <a
+                href="#portfolio"
+                aria-label="Explore the portfolio section"
+                className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-500 px-6 py-3.5 font-semibold text-slate-950 shadow-[0_0_30px_rgba(34,211,238,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_45px_rgba(168,85,247,0.35)]"
+              >
                 Explore Portfolio
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
 
-              <a href="#work" aria-label="View work examples" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/6 px-6 py-3.5 font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-300/35 hover:bg-white/10 hover:shadow-[0_0_28px_rgba(56,189,248,0.14)]">
+              <a
+                href="#work"
+                aria-label="View work examples"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/6 px-6 py-3.5 font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-300/35 hover:bg-white/10 hover:shadow-[0_0_28px_rgba(56,189,248,0.14)]"
+              >
                 View Work
                 <Zap className="h-4 w-4 text-cyan-300" />
               </a>
@@ -80,9 +88,13 @@ export default function Hero() {
 
                 <div className="relative flex items-center justify-between gap-4">
                   <div className="space-y-1">
-                    <p className="text-xs uppercase tracking-[0.35em] text-cyan-200/70">Live interface</p>
+                    <p className="text-xs uppercase tracking-[0.35em] text-cyan-200/70">
+                      Live interface
+                    </p>
                     <h2 className="text-2xl font-bold text-white">Alex Morgan</h2>
-                    <p className="max-w-xs text-sm text-slate-300">Creative developer shaping immersive digital identities.</p>
+                    <p className="max-w-xs text-sm text-slate-300">
+                      Creative developer shaping immersive digital identities.
+                    </p>
                   </div>
 
                   <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/25 bg-gradient-to-br from-cyan-400/20 via-blue-500/15 to-fuchsia-500/20 shadow-[0_0_35px_rgba(34,211,238,0.22)]">
@@ -104,7 +116,9 @@ export default function Hero() {
                           className="flex items-end justify-between border-b border-white/8 pb-3 last:border-b-0 last:pb-0"
                         >
                           <span className="text-2xl font-bold text-white">{stat.value}</span>
-                          <span className="text-xs uppercase tracking-[0.25em] text-slate-400">{stat.label}</span>
+                          <span className="text-xs uppercase tracking-[0.25em] text-slate-400">
+                            {stat.label}
+                          </span>
                         </div>
                       ))}
                     </div>

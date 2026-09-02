@@ -1,13 +1,13 @@
-import Groq from "groq-sdk";
+import Groq from 'groq-sdk';
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export const extractResumeFromPDF = async (base64PDF) => {
   const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+    model: 'llama-3.3-70b-versatile',
     messages: [
       {
-        role: "user",
+        role: 'user',
         content: `I am going to give you a base64-encoded PDF resume. Extract and summarize all the key information from it including: name, contact info, skills, work experience, education, projects, certifications, and any other relevant details. Return it as clean structured text.
 
 Base64 PDF data: ${base64PDF.substring(0, 8000)}
@@ -19,26 +19,26 @@ Extract whatever you can from this data and structure it clearly.`,
     temperature: 0.3,
   });
 
-  return completion.choices[0]?.message?.content || "";
+  return completion.choices[0]?.message?.content || '';
 };
 
 export const generateCoverLetter = async ({
   resumeText,
   jobDescription,
-  companyName = "",
-  hiringManager = "",
-  tone = "formal",
+  companyName = '',
+  hiringManager = '',
+  tone = 'formal',
 }) => {
   const toneGuide = {
-    formal: "professional and formal",
-    conversational: "friendly and conversational",
-    enthusiastic: "energetic and enthusiastic",
+    formal: 'professional and formal',
+    conversational: 'friendly and conversational',
+    enthusiastic: 'energetic and enthusiastic',
   };
 
-  const today = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  const today = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 
   const prompt = `You are an expert cover letter writer. Generate a complete, properly formatted cover letter.
@@ -49,8 +49,8 @@ ${resumeText}
 JOB DESCRIPTION:
 ${jobDescription}
 
-${companyName ? `COMPANY: ${companyName}` : ""}
-${hiringManager ? `HIRING MANAGER: ${hiringManager}` : ""}
+${companyName ? `COMPANY: ${companyName}` : ''}
+${hiringManager ? `HIRING MANAGER: ${hiringManager}` : ''}
 TONE: ${toneGuide[tone] || toneGuide.formal}
 DATE: ${today}
 
@@ -61,7 +61,7 @@ Write a complete cover letter with this exact structure:
 4. Blank line
 5. Subject line: "Re: Application for [Role]"
 6. Blank line
-7. Salutation (Dear ${hiringManager || "Hiring Manager"},)
+7. Salutation (Dear ${hiringManager || 'Hiring Manager'},)
 8. Blank line
 9. Opening paragraph - strong hook connecting your background to the role
 10. Blank line
@@ -77,11 +77,11 @@ Write a complete cover letter with this exact structure:
 Output ONLY the cover letter, nothing else.`;
 
   const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [{ role: "user", content: prompt }],
+    model: 'llama-3.3-70b-versatile',
+    messages: [{ role: 'user', content: prompt }],
     max_tokens: 1200,
     temperature: 0.7,
   });
 
-  return completion.choices[0]?.message?.content || "";
+  return completion.choices[0]?.message?.content || '';
 };

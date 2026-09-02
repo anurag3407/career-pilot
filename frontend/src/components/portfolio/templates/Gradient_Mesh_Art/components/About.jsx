@@ -1,17 +1,15 @@
-import React from "react";
-import data from "../../../../../data/dummy_data.json";
-import { MapPin, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import React from 'react';
+import data from '../../../../../data/dummy_data.json';
+import { MapPin, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function About() {
   return (
     <section className="relative py-28 px-6 md:px-20">
-      
       {/* background accent */}
       <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/5 to-white/0 opacity-40" />
 
       <div className="max-w-7xl mx-auto relative">
-
         {/* SECTION TITLE */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -25,21 +23,20 @@ export default function About() {
           </div>
 
           <h2 className="text-5xl md:text-6xl font-black">
-            A bit more{" "}
+            A bit more{' '}
             <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-300 text-transparent bg-clip-text">
               about me
             </span>
           </h2>
 
           <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
-            Blending creativity, engineering, and design thinking to build
-            immersive digital experiences.
+            Blending creativity, engineering, and design thinking to build immersive digital
+            experiences.
           </p>
         </motion.div>
 
         {/* MAIN GRID */}
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-
           {/* IMAGE SIDE */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -67,13 +64,12 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-
             {/* STATS */}
             <div className="grid grid-cols-3 gap-4 mb-10">
               {[
-                { label: "Years", value: data.stats.yearsExperience },
-                { label: "Projects", value: data.stats.projectsCompleted },
-                { label: "Clients", value: data.stats.happyClients },
+                { label: 'Years', value: data.stats.yearsExperience },
+                { label: 'Projects', value: data.stats.projectsCompleted },
+                { label: 'Clients', value: data.stats.happyClients },
               ].map((item, i) => (
                 <div
                   key={i}
@@ -98,9 +94,7 @@ export default function About() {
 
             {/* BIO */}
             <div className="bg-linear-to-br from-sky-600/20 to-pink-600/20 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
-              <p className="text-gray-300 leading-relaxed text-lg">
-                {data.personal.bio}
-              </p>
+              <p className="text-gray-300 leading-relaxed text-lg">{data.personal.bio}</p>
 
               {/* location */}
               <div className="flex items-center gap-2 mt-6 text-gray-400">

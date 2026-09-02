@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import React, { useState, useEffect, useCallback } from 'react';
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import {
   Github,
   Linkedin,
@@ -14,10 +14,10 @@ import {
   Briefcase,
   Star,
   User,
-} from "lucide-react";
+} from 'lucide-react';
 
 /* ─── Captcha tile helpers ─── */
-const TILE_CATEGORIES = ["robot", "human"];
+const TILE_CATEGORIES = ['robot', 'human'];
 
 /** Generates a grid of 9 tiles, each labeled robot | human randomly */
 function generateGrid() {
@@ -562,15 +562,15 @@ const styles = `
    CAPTCHA GATE
    ═══════════════════════════════════════════════════════════ */
 const TILES = [
-  { emoji: "🤖", label: "robot" },
-  { emoji: "🧑‍💻", label: "human" },
-  { emoji: "⚙️", label: "robot" },
-  { emoji: "👾", label: "robot" },
-  { emoji: "👩‍🎨", label: "human" },
-  { emoji: "🦾", label: "robot" },
-  { emoji: "🧑‍🚀", label: "human" },
-  { emoji: "🔩", label: "robot" },
-  { emoji: "🧑‍🔬", label: "human" },
+  { emoji: '🤖', label: 'robot' },
+  { emoji: '🧑‍💻', label: 'human' },
+  { emoji: '⚙️', label: 'robot' },
+  { emoji: '👾', label: 'robot' },
+  { emoji: '👩‍🎨', label: 'human' },
+  { emoji: '🦾', label: 'robot' },
+  { emoji: '🧑‍🚀', label: 'human' },
+  { emoji: '🔩', label: 'robot' },
+  { emoji: '🧑‍🔬', label: 'human' },
 ];
 
 function shuffleTiles() {
@@ -585,10 +585,8 @@ function CaptchaGate({ onVerified }) {
   const [attempts, setAttempts] = useState(0);
 
   const toggle = (id) => {
-    if (feedback === "success") return;
-    setTiles((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, selected: !t.selected } : t))
-    );
+    if (feedback === 'success') return;
+    setTiles((prev) => prev.map((t) => (t.id === id ? { ...t, selected: !t.selected } : t)));
     setFeedback(null);
   };
 
@@ -598,16 +596,16 @@ function CaptchaGate({ onVerified }) {
   };
 
   const verify = () => {
-    const selectedRobot = tiles.filter((t) => t.selected && t.label === "robot").length;
-    const missedRobot = tiles.filter((t) => !t.selected && t.label === "robot").length;
-    const wrongSelected = tiles.filter((t) => t.selected && t.label === "human").length;
+    const selectedRobot = tiles.filter((t) => t.selected && t.label === 'robot').length;
+    const missedRobot = tiles.filter((t) => !t.selected && t.label === 'robot').length;
+    const wrongSelected = tiles.filter((t) => t.selected && t.label === 'human').length;
 
     if (wrongSelected === 0 && missedRobot === 0 && selectedRobot > 0) {
-      setFeedback("success");
+      setFeedback('success');
       setTimeout(onVerified, 900);
     } else {
       setAttempts((a) => a + 1);
-      setFeedback("error");
+      setFeedback('error');
       setTimeout(() => {
         setTiles(shuffleTiles());
         setFeedback(null);
@@ -624,7 +622,8 @@ function CaptchaGate({ onVerified }) {
           <h1 className="cpg-gate-title">Human Verification Required</h1>
         </div>
         <p className="cpg-gate-sub">
-          Select all tiles that show a <span style={{ color: "#4ade80", fontWeight: 600 }}>robot</span> to unlock the portfolio.
+          Select all tiles that show a{' '}
+          <span style={{ color: '#4ade80', fontWeight: 600 }}>robot</span> to unlock the portfolio.
         </p>
 
         <p className="cpg-prompt">
@@ -635,34 +634,40 @@ function CaptchaGate({ onVerified }) {
           {tiles.map((tile) => (
             <div
               key={tile.id}
-              className={`cpg-tile${tile.selected ? " selected" : ""}`}
+              className={`cpg-tile${tile.selected ? ' selected' : ''}`}
               onClick={() => toggle(tile.id)}
               role="checkbox"
               aria-checked={tile.selected}
               aria-label={`Tile ${tile.id + 1}`}
             >
               <span className="cpg-tile-emoji">{tile.emoji}</span>
-              <span>{tile.selected ? "✓ selected" : "click to select"}</span>
+              <span>{tile.selected ? '✓ selected' : 'click to select'}</span>
             </div>
           ))}
         </div>
 
         <div className="cpg-actions">
-          <button type="button" className="cpg-refresh-btn" onClick={refresh} title="Get new challenge">
+          <button
+            type="button"
+            className="cpg-refresh-btn"
+            onClick={refresh}
+            title="Get new challenge"
+          >
             <RefreshCw size={13} /> Refresh
           </button>
-          <button type="button"
+          <button
+            type="button"
             className="cpg-verify-btn"
             onClick={verify}
-            disabled={feedback === "success"}
+            disabled={feedback === 'success'}
           >
-            {feedback === "success" ? "Verified ✓" : "Verify & Enter"}
+            {feedback === 'success' ? 'Verified ✓' : 'Verify & Enter'}
           </button>
         </div>
 
         {feedback && (
           <div className={`cpg-feedback ${feedback}`}>
-            {feedback === "success" ? (
+            {feedback === 'success' ? (
               <>
                 <CheckCircle size={15} /> Human confirmed. Loading portfolio…
               </>
@@ -670,16 +675,14 @@ function CaptchaGate({ onVerified }) {
               <>
                 <AlertCircle size={15} />
                 {attempts <= 1
-                  ? "Incorrect. Select only the robots."
-                  : "Still wrong! Make sure to select ALL robots."}
+                  ? 'Incorrect. Select only the robots.'
+                  : 'Still wrong! Make sure to select ALL robots.'}
               </>
             )}
           </div>
         )}
 
-        <p className="cpg-footer-note">
-          Protected by CAPTCHA v2.1 · 0 data collected
-        </p>
+        <p className="cpg-footer-note">Protected by CAPTCHA v2.1 · 0 data collected</p>
       </div>
     </div>
   );
@@ -692,22 +695,30 @@ function Portfolio({ data }) {
   const { personal, socials, stats, skills, projects, experience, testimonials } = data;
 
   const statItems = [
-    { value: stats?.projectsCompleted ?? "50+", label: "Projects" },
-    { value: stats?.yearsExperience ?? "5+", label: "Years Exp." },
-    { value: stats?.clientsSatisfied ?? "30+", label: "Clients" },
-    { value: stats?.contributions ?? "200+", label: "Contributions" },
+    { value: stats?.projectsCompleted ?? '50+', label: 'Projects' },
+    { value: stats?.yearsExperience ?? '5+', label: 'Years Exp.' },
+    { value: stats?.clientsSatisfied ?? '30+', label: 'Clients' },
+    { value: stats?.contributions ?? '200+', label: 'Contributions' },
   ];
 
   return (
     <div className="cpg-portfolio">
       {/* Nav */}
       <nav className="cpg-nav">
-        <span className="cpg-nav-brand">// {personal.name?.split(" ")[0].toLowerCase()}.dev</span>
+        <span className="cpg-nav-brand">// {personal.name?.split(' ')[0].toLowerCase()}.dev</span>
         <ul className="cpg-nav-links">
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#experience">Experience</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li>
+            <a href="#skills">Skills</a>
+          </li>
+          <li>
+            <a href="#projects">Projects</a>
+          </li>
+          <li>
+            <a href="#experience">Experience</a>
+          </li>
+          <li>
+            <a href="#contact">Contact</a>
+          </li>
         </ul>
         <div className="cpg-verified-badge">
           <CheckCircle size={10} /> verified human
@@ -728,7 +739,7 @@ function Portfolio({ data }) {
               </span>
             )}
             {personal.availability && (
-              <span className="cpg-hero-meta-item" style={{ color: "#4ade80" }}>
+              <span className="cpg-hero-meta-item" style={{ color: '#4ade80' }}>
                 ● {personal.availability}
               </span>
             )}
@@ -740,7 +751,12 @@ function Portfolio({ data }) {
               </a>
             )}
             {socials?.linkedin && (
-              <a className="cpg-social-btn" href={socials.linkedin} target="_blank" rel="noreferrer">
+              <a
+                className="cpg-social-btn"
+                href={socials.linkedin}
+                target="_blank"
+                rel="noreferrer"
+              >
                 <Linkedin size={13} /> LinkedIn
               </a>
             )}
@@ -756,7 +772,7 @@ function Portfolio({ data }) {
             <img
               src={personal.avatar}
               alt={personal.name}
-              style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }}
+              style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
             />
           ) : (
             <span>🧑‍💻</span>
@@ -809,7 +825,9 @@ function Portfolio({ data }) {
               {Array.isArray(project.techStack) && (
                 <div className="cpg-project-tags">
                   {project.techStack.slice(0, 4).map((tech, j) => (
-                    <span key={j} className="cpg-tag">{tech}</span>
+                    <span key={j} className="cpg-tag">
+                      {tech}
+                    </span>
                   ))}
                 </div>
               )}
@@ -859,14 +877,17 @@ function Portfolio({ data }) {
       {/* Footer */}
       <footer className="cpg-footer" id="contact">
         <p>
-          Built with ♥ by {personal.name} ·{" "}
+          Built with ♥ by {personal.name} ·{' '}
           {socials?.email && (
-            <a href={`mailto:${socials.email}`} style={{ color: "#4ade80", textDecoration: "none" }}>
+            <a
+              href={`mailto:${socials.email}`}
+              style={{ color: '#4ade80', textDecoration: 'none' }}
+            >
               {socials.email}
             </a>
           )}
         </p>
-        <p style={{ marginTop: 6, color: "#333" }}>
+        <p style={{ marginTop: 6, color: '#333' }}>
           // access_granted: true · verification_method: captcha_v2
         </p>
       </footer>

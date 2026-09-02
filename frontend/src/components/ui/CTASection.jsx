@@ -1,12 +1,8 @@
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 
-const perks = [
-  "No credit card required",
-  "Free forever plan",
-  "Cancel anytime",
-];
+const perks = ['No credit card required', 'Free forever plan', 'Cancel anytime'];
 
 export default function CTASection() {
   return (
@@ -37,7 +33,8 @@ export default function CTASection() {
           </h2>
 
           <p className="mx-auto mt-8 max-w-lg text-lg font-medium leading-relaxed text-muted-foreground">
-            Join thousands of professionals who have transformed their job search. Free to start, powerful to scale.
+            Join thousands of professionals who have transformed their job search. Free to start,
+            powerful to scale.
           </p>
 
           <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">

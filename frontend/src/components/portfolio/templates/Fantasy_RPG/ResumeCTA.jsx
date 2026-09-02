@@ -9,30 +9,30 @@ import {
   Star,
   Flame,
   BookOpen,
-  Gem
+  Gem,
 } from 'lucide-react';
-import "./ResumeCTA.css";
+import './ResumeCTA.css';
 
 export default function ResumeCTA({
-  resumeUrl = "#",
-  portfolioUrl = "#",
-  characterName = "THE ADVENTURER",
-  characterClass = "Fullstack Alchemist",
+  resumeUrl = '#',
+  portfolioUrl = '#',
+  characterName = 'THE ADVENTURER',
+  characterClass = 'Fullstack Alchemist',
   characterLevel = 42,
   achievements = [
-    { icon: "⚔️", label: "100+ Quests Completed" },
-    { icon: "🏆", label: "Guild Rank: Legendary" },
-    { icon: "📜", label: "Ancient Scrolls Mastered" },
-  ]
+    { icon: '⚔️', label: '100+ Quests Completed' },
+    { icon: '🏆', label: 'Guild Rank: Legendary' },
+    { icon: '📜', label: 'Ancient Scrolls Mastered' },
+  ],
 }) {
   const [visible, setVisible] = useState(false);
   const [glowPulse, setGlowPulse] = useState(false);
   const sectionRef = useRef(null);
   const sanitizeUrl = (url) => {
-  if (!url || url === '#') return '#';
-  if (/^https?:\/\//i.test(url)) return url;
-  return '#';
-};
+    if (!url || url === '#') return '#';
+    if (/^https?:\/\//i.test(url)) return url;
+    return '#';
+  };
 
   // Fade-in on scroll (matches Projects.jsx pattern)
   useEffect(() => {
@@ -55,18 +55,18 @@ export default function ResumeCTA({
 
   // Alternating glow pulse
   useEffect(() => {
-    const interval = setInterval(() => setGlowPulse(p => !p), 2500);
+    const interval = setInterval(() => setGlowPulse((p) => !p), 2500);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <>
-
       <section
         id="resume-cta"
         ref={sectionRef}
-        className={`relative min-h-screen w-full bg-[#0a090e] text-amber-100/90 py-20 px-4 sm:px-6 lg:px-8 border-t-4 border-b-4 border-amber-900/60 overflow-hidden select-none transition-all duration-700 ${visible ? 'opacity-100' : 'opacity-0'
-          }`}
+        className={`relative min-h-screen w-full bg-[#0a090e] text-amber-100/90 py-20 px-4 sm:px-6 lg:px-8 border-t-4 border-b-4 border-amber-900/60 overflow-hidden select-none transition-all duration-700 ${
+          visible ? 'opacity-100' : 'opacity-0'
+        }`}
       >
         {/* Background dot pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(#201910_1px,transparent_1px)] [background-size:32px_32px] pointer-events-none opacity-45" />
@@ -84,7 +84,6 @@ export default function ResumeCTA({
         </div>
 
         <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-12">
-
           {/* ── Section Header ── */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-3">
@@ -92,10 +91,15 @@ export default function ResumeCTA({
               <span className="font-fantasy-game text-xs tracking-[0.3em] text-amber-500/80 uppercase">
                 Guild Registry · Official Document
               </span>
-              <Scroll className="w-5 h-5 text-amber-500 rpg-cta-floating-rune" style={{ animationDelay: '1s' }} />
+              <Scroll
+                className="w-5 h-5 text-amber-500 rpg-cta-floating-rune"
+                style={{ animationDelay: '1s' }}
+              />
             </div>
-            <h2 className="font-fantasy-title text-4xl sm:text-5xl font-black text-amber-100 tracking-wide uppercase mb-3"
-              style={{ textShadow: '0 0 30px rgba(212,175,55,0.4)' }}>
+            <h2
+              className="font-fantasy-title text-4xl sm:text-5xl font-black text-amber-100 tracking-wide uppercase mb-3"
+              style={{ textShadow: '0 0 30px rgba(212,175,55,0.4)' }}
+            >
               Claim the Sacred Scroll
             </h2>
             <div className="flex items-center justify-center gap-4">
@@ -116,13 +120,19 @@ export default function ResumeCTA({
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-8 border-b border-amber-900/40">
               {/* Avatar badge */}
               <div className="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-amber-700 to-amber-950 border-2 border-amber-500 rounded-xl flex flex-col items-center justify-center shadow-[inset_0_2px_8px_rgba(255,255,255,0.15)]">
-                <span className="font-fantasy-game text-[10px] text-amber-300 tracking-wider">LVL</span>
-                <span className="font-fantasy-game text-2xl text-amber-100 font-bold leading-none">{characterLevel}</span>
+                <span className="font-fantasy-game text-[10px] text-amber-300 tracking-wider">
+                  LVL
+                </span>
+                <span className="font-fantasy-game text-2xl text-amber-100 font-bold leading-none">
+                  {characterLevel}
+                </span>
               </div>
 
               <div className="text-center sm:text-left">
-                <h3 className="font-fantasy-title text-2xl font-black text-amber-200 tracking-widest uppercase"
-                  style={{ textShadow: '0 0 12px rgba(212,175,55,0.3)' }}>
+                <h3
+                  className="font-fantasy-title text-2xl font-black text-amber-200 tracking-widest uppercase"
+                  style={{ textShadow: '0 0 12px rgba(212,175,55,0.3)' }}
+                >
                   {characterName}
                 </h3>
                 <p className="font-fantasy-game text-sm text-amber-500/80 mt-1">{characterClass}</p>
@@ -142,7 +152,10 @@ export default function ResumeCTA({
               {/* Achievements */}
               <div className="flex flex-col gap-2 flex-1">
                 {achievements.map((a, i) => (
-                  <div key={i} className="flex items-center gap-2 font-fantasy-game text-xs text-amber-300/80">
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 font-fantasy-game text-xs text-amber-300/80"
+                  >
                     <span>{a.icon}</span>
                     <span>{a.label}</span>
                   </div>
@@ -151,14 +164,19 @@ export default function ResumeCTA({
             </div>
 
             {/* Scroll flavor text */}
-            <div className="relative mb-8 p-5 rounded-lg text-center"
-              style={{ background: 'rgba(180,140,59,0.06)', border: '1px solid rgba(180,140,59,0.2)' }}>
+            <div
+              className="relative mb-8 p-5 rounded-lg text-center"
+              style={{
+                background: 'rgba(180,140,59,0.06)',
+                border: '1px solid rgba(180,140,59,0.2)',
+              }}
+            >
               <BookOpen className="absolute top-3 left-3 w-4 h-4 text-amber-700/50" />
               <Gem className="absolute top-3 right-3 w-4 h-4 text-amber-700/50" />
               <p className="font-fantasy-body text-sm leading-relaxed italic text-amber-200/70 px-4">
                 "Herein lies the complete chronicle of this hero's conquests — every battle fought,
-                every arcane framework mastered, every kingdom of code erected from nothing.
-                The worthy adventurer who claims this scroll shall uncover the full legend."
+                every arcane framework mastered, every kingdom of code erected from nothing. The
+                worthy adventurer who claims this scroll shall uncover the full legend."
               </p>
             </div>
 
@@ -198,7 +216,6 @@ export default function ResumeCTA({
               <Flame className="w-3 h-3 text-amber-600" />
             </div>
           </div>
-
         </div>
       </section>
     </>

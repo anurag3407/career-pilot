@@ -1,34 +1,31 @@
-import React from "react";
+import React from 'react';
 
 const GitHubProfileTheme = ({ portfolioData }) => {
   const {
-    name = "Your Name",
-    username = "github-username",
-    bio = "Full Stack Developer | Open Source Enthusiast",
-    avatar = "https://github.com/identicons/default.png",
-    location = "India",
+    name = 'Your Name',
+    username = 'github-username',
+    bio = 'Full Stack Developer | Open Source Enthusiast',
+    avatar = 'https://github.com/identicons/default.png',
+    location = 'India',
     projects = [],
     skills = [],
     experience = [],
   } = portfolioData || {};
 
   const contributionLevels = [
-    "bg-[#161b22]",
-    "bg-[#0e4429]",
-    "bg-[#006d32]",
-    "bg-[#26a641]",
-    "bg-[#39d353]",
+    'bg-[#161b22]',
+    'bg-[#0e4429]',
+    'bg-[#006d32]',
+    'bg-[#26a641]',
+    'bg-[#39d353]',
   ];
 
   return (
     <div className="min-h-screen bg-[#0d1117] text-[#c9d1d9] font-sans p-6">
-
       {/* ── MAIN LAYOUT ── */}
       <div className="max-w-6xl mx-auto flex gap-6 flex-col md:flex-row">
-
         {/* ── LEFT SIDEBAR ── */}
         <div className="w-full md:w-64 flex-shrink-0">
-
           {/* Avatar */}
           <img
             src={avatar}
@@ -44,16 +41,12 @@ const GitHubProfileTheme = ({ portfolioData }) => {
           <p className="text-sm text-[#c9d1d9] mb-3">{bio}</p>
 
           {/* Location */}
-          {location && (
-            <p className="text-sm text-[#8b949e] mb-4">📍 {location}</p>
-          )}
+          {location && <p className="text-sm text-[#8b949e] mb-4">📍 {location}</p>}
 
           {/* Skills */}
           {skills.length > 0 && (
             <div className="border-t border-[#30363d] pt-4">
-              <h3 className="text-sm font-semibold text-[#f0f6fc] mb-2">
-                Skills
-              </h3>
+              <h3 className="text-sm font-semibold text-[#f0f6fc] mb-2">Skills</h3>
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill, i) => (
                   <span
@@ -70,14 +63,10 @@ const GitHubProfileTheme = ({ portfolioData }) => {
           {/* Experience */}
           {experience.length > 0 && (
             <div className="border-t border-[#30363d] pt-4 mt-4">
-              <h3 className="text-sm font-semibold text-[#f0f6fc] mb-2">
-                Experience
-              </h3>
+              <h3 className="text-sm font-semibold text-[#f0f6fc] mb-2">Experience</h3>
               {experience.map((exp, i) => (
                 <div key={i} className="mb-3">
-                  <p className="text-sm font-medium text-[#f0f6fc]">
-                    {exp.role}
-                  </p>
+                  <p className="text-sm font-medium text-[#f0f6fc]">{exp.role}</p>
                   <p className="text-xs text-[#8b949e]">{exp.company}</p>
                   <p className="text-xs text-[#8b949e]">{exp.duration}</p>
                 </div>
@@ -88,7 +77,6 @@ const GitHubProfileTheme = ({ portfolioData }) => {
 
         {/* ── RIGHT MAIN CONTENT ── */}
         <div className="flex-1">
-
           {/* ── CONTRIBUTION GRAPH ── */}
           <div className="mb-8">
             <h2 className="text-base font-semibold text-[#f0f6fc] border-b border-[#30363d] pb-2 mb-4">
@@ -118,10 +106,7 @@ const GitHubProfileTheme = ({ portfolioData }) => {
             <div className="flex items-center gap-1 mt-2 text-xs text-[#8b949e]">
               <span>Less</span>
               {contributionLevels.map((cls, i) => (
-                <div
-                  key={i}
-                  className={`w-[11px] h-[11px] rounded-sm ${cls}`}
-                />
+                <div key={i} className={`w-[11px] h-[11px] rounded-sm ${cls}`} />
               ))}
               <span>More</span>
             </div>
@@ -141,19 +126,17 @@ const GitHubProfileTheme = ({ portfolioData }) => {
                   <div className="flex items-center gap-2">
                     <span>📁</span>
                     <a
-                      href={project.link || "#"}
+                      href={project.link || '#'}
                       className="text-[#58a6ff] text-sm font-semibold hover:underline"
                     >
-                      {project.name || "Project Name"}
+                      {project.name || 'Project Name'}
                     </a>
                   </div>
                   <p className="text-xs text-[#8b949e] flex-1">
-                    {project.description || "No description provided."}
+                    {project.description || 'No description provided.'}
                   </p>
                   <div className="flex gap-4 text-xs text-[#8b949e]">
-                    <span className="text-[#f0f6fc]">
-                      ● {project.language || "JavaScript"}
-                    </span>
+                    <span className="text-[#f0f6fc]">● {project.language || 'JavaScript'}</span>
                     <span>⭐ {project.stars || 0}</span>
                     <span>🍴 {project.forks || 0}</span>
                   </div>
@@ -161,7 +144,6 @@ const GitHubProfileTheme = ({ portfolioData }) => {
               ))}
             </div>
           </div>
-
         </div>
       </div>
     </div>

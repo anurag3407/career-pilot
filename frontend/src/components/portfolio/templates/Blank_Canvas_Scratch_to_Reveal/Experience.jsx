@@ -7,22 +7,24 @@ export default function Experience() {
   const { experience } = usePortfolio();
 
   return (
-    <section 
-      id="experience" 
+    <section
+      id="experience"
       className="relative py-28 md:py-36 px-6 border-b border-slate-900/60 overflow-hidden"
     >
       <div className="max-w-5xl mx-auto relative z-10">
         <div className="text-center mb-20 md:mb-28">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="mb-4"
           >
-            <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">[[ 03 // Journey ]]</span>
+            <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">
+              [[ 03 // Journey ]]
+            </span>
           </motion.div>
-          
-          <motion.h2 
+
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -31,8 +33,8 @@ export default function Experience() {
           >
             Professional Experience
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -53,8 +55,8 @@ export default function Experience() {
             {experience.map((item, index) => {
               const isEven = index % 2 === 0;
               return (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`flex flex-col md:flex-row items-stretch w-full ${
                     isEven ? 'md:flex-row-reverse' : ''
                   }`}

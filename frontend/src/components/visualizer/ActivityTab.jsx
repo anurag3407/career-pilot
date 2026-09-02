@@ -1,12 +1,27 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend, BarChart, Bar,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  BarChart,
+  Bar,
 } from 'recharts';
 import {
-  TrendingUp, Sparkles, Loader2, RefreshCw, BarChart3, GitCommit,
-  Users, Activity as ActivityIcon, ChevronRight,
+  TrendingUp,
+  Sparkles,
+  Loader2,
+  RefreshCw,
+  BarChart3,
+  GitCommit,
+  Users,
+  Activity as ActivityIcon,
+  ChevronRight,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
@@ -54,13 +69,8 @@ function buildChartData(weekly, topAuthors) {
 }
 
 const AuthorChip = ({ name, commits, color }) => (
-  <div
-    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs"
-  >
-    <span
-      className="w-2 h-2 rounded-full shrink-0"
-      style={{ backgroundColor: color }}
-    />
+  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs">
+    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
     <span className="text-slate-200 font-medium truncate max-w-[140px]" title={name}>
       {name}
     </span>
@@ -90,10 +100,12 @@ const TrendBadge = ({ trend }) => {
   };
   const cls = palette[trend] || palette.steady;
   return (
-    <span className={cn(
-      'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-bold uppercase tracking-wider',
-      cls
-    )}>
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-bold uppercase tracking-wider',
+        cls
+      )}
+    >
       <TrendingUp className="w-3 h-3" />
       {trend}
     </span>
@@ -118,9 +130,7 @@ const DetailedInsightCard = ({ detailed, busiestAuthor }) => {
       </div>
 
       {detailed.trendExplanation && (
-        <p className="text-sm text-slate-300 leading-relaxed">
-          {detailed.trendExplanation}
-        </p>
+        <p className="text-sm text-slate-300 leading-relaxed">{detailed.trendExplanation}</p>
       )}
       {detailed.cadenceChange && (
         <p className="text-xs text-slate-400 leading-relaxed">
@@ -136,10 +146,7 @@ const DetailedInsightCard = ({ detailed, busiestAuthor }) => {
           </h4>
           <ul className="flex flex-col gap-1.5">
             {peaks.map((p, i) => (
-              <li
-                key={`${p.week}-${i}`}
-                className="flex items-start gap-2 text-xs text-slate-300"
-              >
+              <li key={`${p.week}-${i}`} className="flex items-start gap-2 text-xs text-slate-300">
                 <span className="font-mono text-emerald-300 shrink-0 w-[88px]">{p.week}</span>
                 <span className="text-slate-500 shrink-0">+{p.commits}</span>
                 <span className="text-slate-400">{p.reason}</span>
@@ -151,15 +158,10 @@ const DetailedInsightCard = ({ detailed, busiestAuthor }) => {
 
       {valleys.length > 0 && (
         <div>
-          <h4 className="text-xs font-bold text-rose-300 uppercase tracking-wider mb-2">
-            Valleys
-          </h4>
+          <h4 className="text-xs font-bold text-rose-300 uppercase tracking-wider mb-2">Valleys</h4>
           <ul className="flex flex-col gap-1.5">
             {valleys.map((v, i) => (
-              <li
-                key={`${v.week}-${i}`}
-                className="flex items-start gap-2 text-xs text-slate-300"
-              >
+              <li key={`${v.week}-${i}`} className="flex items-start gap-2 text-xs text-slate-300">
                 <span className="font-mono text-rose-300 shrink-0 w-[88px]">{v.week}</span>
                 <span className="text-slate-500 shrink-0">{v.commits}</span>
                 <span className="text-slate-400">{v.reason}</span>
@@ -214,7 +216,9 @@ const ActivityTab = () => {
         if (!cancelled) setActivityLoading(false);
       }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [sessionId, activity, activityLoading, setActivity, setActivityLoading, setActivityError]);
 
   const { rows, series } = useMemo(
@@ -376,12 +380,7 @@ const ActivityTab = () => {
             Top contributors
           </span>
           {topAuthors.slice(0, 5).map((a, i) => (
-            <AuthorChip
-              key={a.name}
-              name={a.name}
-              commits={a.commits}
-              color={AUTHOR_COLORS[i]}
-            />
+            <AuthorChip key={a.name} name={a.name} commits={a.commits} color={AUTHOR_COLORS[i]} />
           ))}
         </div>
       )}
@@ -401,11 +400,7 @@ const ActivityTab = () => {
             <AreaChart data={rows} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
               <defs>
                 {series.map((name, i) => (
-                  <linearGradient
-                    key={name}
-                    id={`grad-${name}`}
-                    x1="0" y1="0" x2="0" y2="1"
-                  >
+                  <linearGradient key={name} id={`grad-${name}`} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={AUTHOR_COLORS[i]} stopOpacity={0.7} />
                     <stop offset="100%" stopColor={AUTHOR_COLORS[i]} stopOpacity={0.05} />
                   </linearGradient>
@@ -419,12 +414,7 @@ const ActivityTab = () => {
                 tickFormatter={(v) => v.slice(5)}
                 minTickGap={20}
               />
-              <YAxis
-                stroke="#94a3b8"
-                tick={{ fontSize: 11 }}
-                allowDecimals={false}
-                width={36}
-              />
+              <YAxis stroke="#94a3b8" tick={{ fontSize: 11 }} allowDecimals={false} width={36} />
               <Tooltip
                 contentStyle={{
                   background: '#0a0f1c',
@@ -437,10 +427,7 @@ const ActivityTab = () => {
                 formatter={(value, name) => [value, name]}
               />
               {series.length > 1 && (
-                <Legend
-                  wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
-                  iconType="circle"
-                />
+                <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} iconType="circle" />
               )}
               {series.map((name, i) => (
                 <Area
@@ -466,9 +453,7 @@ const ActivityTab = () => {
           transition={{ duration: 0.3 }}
           className="bg-white/5 border border-white/10 rounded-2xl p-4 md:p-6"
         >
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">
-            Code volume per week
-          </h3>
+          <h3 className="text-sm font-semibold text-slate-300 mb-4">Code volume per week</h3>
           <div className="h-[240px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={rows} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
@@ -492,7 +477,12 @@ const ActivityTab = () => {
                 />
                 <Legend wrapperStyle={{ fontSize: 12 }} iconType="circle" />
                 <Bar dataKey="__added" name="Lines added" fill="#34d399" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="__removed" name="Lines removed" fill="#f87171" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="__removed"
+                  name="Lines removed"
+                  fill="#f87171"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -528,21 +518,16 @@ const ActivityTab = () => {
         </div>
 
         {insight?.summary ? (
-          <p className="text-slate-200 leading-relaxed text-sm">
-            {insight.summary}
-          </p>
+          <p className="text-slate-200 leading-relaxed text-sm">{insight.summary}</p>
         ) : (
           <p className="text-slate-500 text-sm italic">
-            No AI insight available — set an AI provider key (e.g. GEMINI_API_KEY)
-            to enable commentary.
+            No AI insight available — set an AI provider key (e.g. GEMINI_API_KEY) to enable
+            commentary.
           </p>
         )}
 
         {activityDetailed && (
-          <DetailedInsightCard
-            detailed={activityDetailed}
-            busiestAuthor={busiestAuthor}
-          />
+          <DetailedInsightCard detailed={activityDetailed} busiestAuthor={busiestAuthor} />
         )}
       </motion.div>
     </div>

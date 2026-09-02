@@ -12,7 +12,9 @@ const serverIcons = [
 
 export default function ServerSidebar({ avatar, name, forceShow = false }) {
   return (
-    <div className={`${forceShow ? 'flex' : 'hidden md:flex'} flex-col items-center w-[72px] min-w-[72px] bg-[#1E1F22] py-3 gap-2 overflow-y-auto select-none`}>
+    <div
+      className={`${forceShow ? 'flex' : 'hidden md:flex'} flex-col items-center w-[72px] min-w-[72px] bg-[#1E1F22] py-3 gap-2 overflow-y-auto select-none`}
+    >
       {/* Home Server Icon */}
       <motion.div
         whileHover={{ borderRadius: '35%' }}

@@ -15,7 +15,10 @@ export default function Template() {
   if (!data) return null;
 
   return (
-    <div className="min-h-screen text-foreground bg-background overflow-hidden relative" style={{ background: '#0a0a0a' }}>
+    <div
+      className="min-h-screen text-foreground bg-background overflow-hidden relative"
+      style={{ background: '#0a0a0a' }}
+    >
       <Hero data={data} />
       <About data={data} />
       <Skills skills={data.skills} />

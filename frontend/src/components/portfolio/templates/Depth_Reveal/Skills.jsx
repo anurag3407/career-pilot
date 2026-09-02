@@ -28,17 +28,25 @@ const Skills = ({ skills = [] }) => (
       initial="hidden"
       whileInView="show"
       viewport={{ once: false, amount: 0.25 }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.06 } } }}
+      variants={{
+        hidden: {},
+        show: { transition: { staggerChildren: 0.06, delayChildren: 0.06 } },
+      }}
       className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5"
     >
       {skills.map((skill) => {
         const parsedLevel = Number(skill?.level);
-        const clampedLevel = Number.isFinite(parsedLevel) ? Math.min(100, Math.max(0, parsedLevel)) : 0;
+        const clampedLevel = Number.isFinite(parsedLevel)
+          ? Math.min(100, Math.max(0, parsedLevel))
+          : 0;
 
         return (
           <motion.div
             key={`${skill?.name || 'skill'}-${skill?.category || 'general'}`}
-            variants={{ hidden: { opacity: 0, y: 24, scale: 0.78, rotateX: 16 }, show: { opacity: 1, y: 0, scale: 1, rotateX: 0 } }}
+            variants={{
+              hidden: { opacity: 0, y: 24, scale: 0.78, rotateX: 16 },
+              show: { opacity: 1, y: 0, scale: 1, rotateX: 0 },
+            }}
             whileHover={{ y: -5, scale: 1.02 }}
             className="p-3 md:p-5 bg-slate-900/70 border border-slate-800 rounded-2xl shadow-[0_0_0_1px_rgba(34,211,238,0.06)]"
             style={{ transformPerspective: 800 }}

@@ -1,7 +1,7 @@
-import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
-import ExperienceRow from '../../shared/ExperienceRow'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import Section from '../../shared/Section';
+import ExperienceRow from '../../shared/ExperienceRow';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * Modern Sidebar — two-column resume template.
@@ -17,15 +17,14 @@ import OrderedSections from '../../shared/OrderedSections'
  * the right main column; the left sidebar acts as a fixed header slot.
  */
 export default function ModernSidebar() {
-  const { personal, experience, education, projects, skills, certifications } =
-    useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   const initials = (personal.name || 'U')
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map(s => s[0]?.toUpperCase())
-    .join('')
+    .map((s) => s[0]?.toUpperCase())
+    .join('');
 
   const nodes = {
     summary: personal.summary ? (
@@ -34,42 +33,44 @@ export default function ModernSidebar() {
       </Section>
     ) : null,
 
-    experience: experience.length > 0 ? (
-      <Section title="Experience" accent="#0f766e" uppercase={false}>
-        {experience.map((e, i) => (
-          <ExperienceRow
-            key={i}
-            exp={e}
-            roleColor="#0f172a"
-            companyColor="#0f766e"
-            periodColor="#6b7280"
-            bulletColor="#374151"
-            fontSize="10pt"
-          />
-        ))}
-      </Section>
-    ) : null,
+    experience:
+      experience.length > 0 ? (
+        <Section title="Experience" accent="#0f766e" uppercase={false}>
+          {experience.map((e, i) => (
+            <ExperienceRow
+              key={i}
+              exp={e}
+              roleColor="#0f172a"
+              companyColor="#0f766e"
+              periodColor="#6b7280"
+              bulletColor="#374151"
+              fontSize="10pt"
+            />
+          ))}
+        </Section>
+      ) : null,
 
-    projects: projects.length > 0 ? (
-      <Section title="Projects" accent="#0f766e" uppercase={false}>
-        {projects.map((p, i) => (
-          <article key={i} style={{ marginBottom: '4mm' }}>
-            <h3 style={{ margin: 0, fontSize: '10.5pt', fontWeight: 700, color: '#0f172a' }}>
-              {p.title || 'Project'}
-            </h3>
-            {p.description && (
-              <p style={{ margin: '1mm 0', color: '#374151' }}>{p.description}</p>
-            )}
-            {p.techStack.length > 0 && (
-              <div style={{ fontSize: '9pt', color: '#0f766e', fontWeight: 600 }}>
-                {p.techStack.join(' · ')}
-              </div>
-            )}
-          </article>
-        ))}
-      </Section>
-    ) : null,
-  }
+    projects:
+      projects.length > 0 ? (
+        <Section title="Projects" accent="#0f766e" uppercase={false}>
+          {projects.map((p, i) => (
+            <article key={i} style={{ marginBottom: '4mm' }}>
+              <h3 style={{ margin: 0, fontSize: '10.5pt', fontWeight: 700, color: '#0f172a' }}>
+                {p.title || 'Project'}
+              </h3>
+              {p.description && (
+                <p style={{ margin: '1mm 0', color: '#374151' }}>{p.description}</p>
+              )}
+              {p.techStack.length > 0 && (
+                <div style={{ fontSize: '9pt', color: '#0f766e', fontWeight: 600 }}>
+                  {p.techStack.join(' · ')}
+                </div>
+              )}
+            </article>
+          ))}
+        </Section>
+      ) : null,
+  };
 
   return (
     <div
@@ -216,7 +217,7 @@ export default function ModernSidebar() {
         />
       </main>
     </div>
-  )
+  );
 }
 
 function SidebarSection({ title, children }) {
@@ -238,15 +239,13 @@ function SidebarSection({ title, children }) {
       </h2>
       {children}
     </section>
-  )
+  );
 }
 
 function ContactLine({ label, value, short }) {
-  if (!value) return null
+  if (!value) return null;
   // Strip protocol for cleaner display
-  const display = short
-    ? value.replace(/^https?:\/\//, '').replace(/^www\./, '')
-    : value
+  const display = short ? value.replace(/^https?:\/\//, '').replace(/^www\./, '') : value;
   return (
     <div style={{ marginBottom: '2.5mm', fontSize: '9pt', lineHeight: 1.35 }}>
       <div
@@ -262,5 +261,5 @@ function ContactLine({ label, value, short }) {
       </div>
       <div style={{ color: '#ffffff', wordBreak: 'break-word' }}>{display}</div>
     </div>
-  )
+  );
 }

@@ -1,18 +1,17 @@
-import React from "react";
-import data from "../../../../../data/dummy_data.json";
-import { Mail, Github, Linkedin, Twitter, Send } from "lucide-react";
-import { motion } from "framer-motion";
+import React from 'react';
+import data from '../../../../../data/dummy_data.json';
+import { Mail, Github, Linkedin, Twitter, Send } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Contact() {
-    const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  alert("Message sent successfully!");
-};
+    alert('Message sent successfully!');
+  };
 
   return (
     <section className="relative py-32 px-6 md:px-20 overflow-hidden" id="contact">
-
       {/* BACKGROUND GLOW */}
       <div className="absolute inset-0">
         <div className="absolute w-[500px] h-[500px] bg-pink-500/20 blur-[120px] top-[-200px] left-[-100px]" />
@@ -20,7 +19,6 @@ export default function Contact() {
       </div>
 
       <div className="max-w-7xl mx-auto relative">
-
         {/* TITLE */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -29,21 +27,19 @@ export default function Contact() {
           className="text-center mb-16"
         >
           <h2 className="text-5xl md:text-6xl font-black">
-            Let’s build something{" "}
+            Let’s build something{' '}
             <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-300 text-transparent bg-clip-text">
               amazing
             </span>
           </h2>
 
           <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
-            Have an idea, collaboration, or opportunity? I’m always open to
-            meaningful work.
+            Have an idea, collaboration, or opportunity? I’m always open to meaningful work.
           </p>
         </motion.div>
 
         {/* MAIN CARD */}
         <div className="grid lg:grid-cols-2 gap-10">
-
           {/* LEFT INFO PANEL */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -57,12 +53,9 @@ export default function Contact() {
               p-10
             "
           >
-            <h3 className="text-2xl font-bold mb-6">
-              Contact Information
-            </h3>
+            <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
 
             <div className="space-y-6 text-gray-300">
-
               <div className="flex items-center gap-3">
                 <Mail className="text-cyan-300" />
                 <span>{data.socials.email}</span>
@@ -92,8 +85,8 @@ export default function Contact() {
               </div>
 
               <p className="text-sm text-gray-400 mt-10 leading-relaxed">
-                Response time: usually within 24–48 hours. I prefer working on
-                product-driven, impactful projects.
+                Response time: usually within 24–48 hours. I prefer working on product-driven,
+                impactful projects.
               </p>
             </div>
           </motion.div>
@@ -147,7 +140,6 @@ export default function Contact() {
               Send Message <Send size={18} />
             </button>
           </motion.form>
-
         </div>
       </div>
     </section>

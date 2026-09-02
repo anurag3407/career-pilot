@@ -15,13 +15,26 @@ export function WelcomeContent({ data }) {
           animate={{ opacity: 1, scale: 1 }}
           className="bg-gradient-to-r from-[#5865F2] to-[#EB459E] rounded-lg p-6 sm:p-8 text-center"
         >
-          <img src={p.avatar} alt={p.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-4 border-4 border-white/20 object-cover" />
+          <img
+            src={p.avatar}
+            alt={p.name}
+            className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-4 border-4 border-white/20 object-cover"
+          />
           <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">{p.name}</h1>
           <p className="text-white/80 text-base sm:text-lg mb-4">{p.title}</p>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-white/90 text-sm">
-            <div className="flex items-center gap-1"><MapPin className="w-4 h-4" />{p.location}</div>
-            <div className="flex items-center gap-1"><Calendar className="w-4 h-4" />{st.yearsExperience}+ Years</div>
-            <div className="flex items-center gap-1"><Sparkles className="w-4 h-4" />{st.projectsCompleted} Projects</div>
+            <div className="flex items-center gap-1">
+              <MapPin className="w-4 h-4" />
+              {p.location}
+            </div>
+            <div className="flex items-center gap-1">
+              <Calendar className="w-4 h-4" />
+              {st.yearsExperience}+ Years
+            </div>
+            <div className="flex items-center gap-1">
+              <Sparkles className="w-4 h-4" />
+              {st.projectsCompleted} Projects
+            </div>
           </div>
         </motion.div>
       </div>
@@ -36,15 +49,30 @@ export function WelcomeContent({ data }) {
         index={0}
       >
         <div className="space-y-2">
-          <p>👋 Welcome to <span className="font-semibold text-white">{p.name}'s Portfolio Server</span>!</p>
+          <p>
+            👋 Welcome to{' '}
+            <span className="font-semibold text-white">{p.name}'s Portfolio Server</span>!
+          </p>
           <p>Feel free to explore the channels on the left to learn more:</p>
           <div className="bg-[#2B2D31] rounded-lg p-3 mt-2 text-sm space-y-1 border-l-4 border-[#5865F2]">
-            <p><span className="text-[#00AFF4]">#about-me</span> — Learn about {p.name.split(' ')[0]}</p>
-            <p><span className="text-[#00AFF4]">#skills</span> — Tech stack & expertise</p>
-            <p><span className="text-[#00AFF4]">#projects</span> — Featured work & builds</p>
-            <p><span className="text-[#00AFF4]">#experience</span> — Career timeline</p>
-            <p><span className="text-[#00AFF4]">#testimonials</span> — What others say</p>
-            <p><span className="text-[#00AFF4]">#contact</span> — Get in touch</p>
+            <p>
+              <span className="text-[#00AFF4]">#about-me</span> — Learn about {p.name.split(' ')[0]}
+            </p>
+            <p>
+              <span className="text-[#00AFF4]">#skills</span> — Tech stack & expertise
+            </p>
+            <p>
+              <span className="text-[#00AFF4]">#projects</span> — Featured work & builds
+            </p>
+            <p>
+              <span className="text-[#00AFF4]">#experience</span> — Career timeline
+            </p>
+            <p>
+              <span className="text-[#00AFF4]">#testimonials</span> — What others say
+            </p>
+            <p>
+              <span className="text-[#00AFF4]">#contact</span> — Get in touch
+            </p>
           </div>
         </div>
       </Message>
@@ -99,7 +127,10 @@ export function AboutContent({ data }) {
         isBot
         index={2}
       >
-        <p>Check out <span className="text-[#00AFF4]">#skills</span> to see {p.name.split(' ')[0]}'s tech stack! 🛠️</p>
+        <p>
+          Check out <span className="text-[#00AFF4]">#skills</span> to see {p.name.split(' ')[0]}'s
+          tech stack! 🛠️
+        </p>
       </Message>
     </div>
   );

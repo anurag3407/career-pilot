@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MessageSquare } from 'lucide-react';
 
-const GlowingCard = ({ children, className = "", delay = 0 }) => (
+const GlowingCard = ({ children, className = '', delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.6, ease: "easeOut", delay }}
+    viewport={{ once: true, margin: '-100px' }}
+    transition={{ duration: 0.6, ease: 'easeOut', delay }}
     whileHover={{ y: -6, transition: { duration: 0.2 } }}
     className={`relative group rounded-2xl border border-indigo-500/10 hover:border-cyan-400/40 bg-[#0a0d24]/60 backdrop-blur-md hover:shadow-[0_0_35px_rgba(34,211,238,0.12)] transition-all duration-300 ${className}`}
   >
@@ -26,7 +26,9 @@ export default function Testimonials({ data }) {
             <MessageSquare size={20} />
           </div>
           <div>
-            <span className="text-cyan-400 text-xs font-bold tracking-wider uppercase">Endorsements</span>
+            <span className="text-cyan-400 text-xs font-bold tracking-wider uppercase">
+              Endorsements
+            </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">Recommendations</h2>
           </div>
         </div>
@@ -34,14 +36,18 @@ export default function Testimonials({ data }) {
         {/* Recommendations Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {(data.testimonials || []).map((t, idx) => (
-            <GlowingCard key={t.name} className="p-6 flex flex-col justify-between h-full" delay={idx * 0.08}>
+            <GlowingCard
+              key={t.name}
+              className="p-6 flex flex-col justify-between h-full"
+              delay={idx * 0.08}
+            >
               <div>
-                <span className="text-cyan-500/30 text-5xl font-serif leading-none select-none">“</span>
-                <p className="text-gray-300 text-sm leading-relaxed italic mb-6">
-                  {t.text}
-                </p>
+                <span className="text-cyan-500/30 text-5xl font-serif leading-none select-none">
+                  “
+                </span>
+                <p className="text-gray-300 text-sm leading-relaxed italic mb-6">{t.text}</p>
               </div>
-              
+
               <div className="flex items-center gap-3.5 pt-4 border-t border-indigo-500/10">
                 {t.avatar && (
                   <img

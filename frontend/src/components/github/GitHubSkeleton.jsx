@@ -4,11 +4,7 @@
  * Layout: Profile card + Stats bar + Repo grid
  */
 
-const SkeletonBlock = ({ className = '' }) => (
-  <div
-    className={`bg-muted rounded ${className}`}
-  />
-);
+const SkeletonBlock = ({ className = '' }) => <div className={`bg-muted rounded ${className}`} />;
 
 const ProfileCardSkeleton = () => (
   <div className="animate-pulse bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col items-center gap-4">
@@ -48,7 +44,6 @@ const RepoCardSkeleton = () => (
 const GitHubSkeleton = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-8">
-
       <div className="max-w-xs mx-auto w-full">
         <ProfileCardSkeleton />
       </div>
@@ -67,7 +62,6 @@ const GitHubSkeleton = () => {
           ))}
         </div>
       </div>
-
     </div>
   );
 };

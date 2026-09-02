@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 // Import Modular Components
@@ -22,10 +22,12 @@ export default function StaggerGridPortfolio() {
       <Experience />
       <Testimonials />
       <Contact />
-      
+
       {/* Footer */}
       <footer className="bg-zinc-900 text-zinc-500 text-center py-8">
-        <p>© {new Date().getFullYear()} {data.personal.name}. All rights reserved.</p>
+        <p>
+          © {new Date().getFullYear()} {data.personal.name}. All rights reserved.
+        </p>
       </footer>
     </div>
   );

@@ -10,7 +10,7 @@ const Hero = ({ data }) => {
       <motion.div
         initial={{ rotateY: -90, opacity: 0 }}
         animate={{ rotateY: 0, opacity: 1 }}
-        transition={{ duration: 0.8, type: "spring" }}
+        transition={{ duration: 0.8, type: 'spring' }}
         className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 relative overflow-hidden"
       >
         {/* Card Suit Decorations */}
@@ -23,10 +23,14 @@ const Hero = ({ data }) => {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring" }}
+            transition={{ delay: 0.2, type: 'spring' }}
             className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-purple-600 shadow-xl"
           >
-            <img src={personal.avatar || "https://via.placeholder.com/128"} alt={personal.name} className="w-full h-full object-cover" />
+            <img
+              src={personal.avatar || 'https://via.placeholder.com/128'}
+              alt={personal.name}
+              className="w-full h-full object-cover"
+            />
           </motion.div>
 
           <div className="inline-block px-6 py-2 bg-purple-100 rounded-full mb-4">
@@ -36,15 +40,58 @@ const Hero = ({ data }) => {
           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-4">{personal.name}</h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-4 font-medium">{personal.title}</p>
           <div className="flex items-center justify-center gap-2 text-gray-500 mb-6">
-            <MapPin className="w-4 h-4" /><span>{personal.location}</span>
+            <MapPin className="w-4 h-4" />
+            <span>{personal.location}</span>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">{personal.bio}</p>
 
           <div className="flex flex-wrap justify-center gap-4">
-            {socials.github && <motion.a whileHover={{ scale: 1.1 }} href={socials.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-700"><Github className="w-5 h-5" />GitHub</motion.a>}
-            {socials.linkedin && <motion.a whileHover={{ scale: 1.1 }} href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 bg-blue-700 text-white rounded-xl hover:bg-blue-600"><Linkedin className="w-5 h-5" />LinkedIn</motion.a>}
-            {socials.twitter && <motion.a whileHover={{ scale: 1.1 }} href={socials.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 bg-sky-500 text-white rounded-xl hover:bg-sky-400"><Twitter className="w-5 h-5" />Twitter</motion.a>}
-            {socials.email && <motion.a whileHover={{ scale: 1.1 }} href={`mailto:${socials.email}`} className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-500"><Mail className="w-5 h-5" />Email</motion.a>}
+            {socials.github && (
+              <motion.a
+                whileHover={{ scale: 1.1 }}
+                href={socials.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-700"
+              >
+                <Github className="w-5 h-5" />
+                GitHub
+              </motion.a>
+            )}
+            {socials.linkedin && (
+              <motion.a
+                whileHover={{ scale: 1.1 }}
+                href={socials.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-blue-700 text-white rounded-xl hover:bg-blue-600"
+              >
+                <Linkedin className="w-5 h-5" />
+                LinkedIn
+              </motion.a>
+            )}
+            {socials.twitter && (
+              <motion.a
+                whileHover={{ scale: 1.1 }}
+                href={socials.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-sky-500 text-white rounded-xl hover:bg-sky-400"
+              >
+                <Twitter className="w-5 h-5" />
+                Twitter
+              </motion.a>
+            )}
+            {socials.email && (
+              <motion.a
+                whileHover={{ scale: 1.1 }}
+                href={`mailto:${socials.email}`}
+                className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-500"
+              >
+                <Mail className="w-5 h-5" />
+                Email
+              </motion.a>
+            )}
           </div>
         </div>
       </motion.div>

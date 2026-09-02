@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { ArrowUpRight, FolderKanban } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { ArrowUpRight, FolderKanban } from 'lucide-react';
 const projects = [
   {
-    title: "FoldAI",
+    title: 'FoldAI',
     description:
-      "AI-powered productivity assistant with clean workflow automation and smart collaboration tools.",
-    tech: ["React", "OpenAI", "Tailwind"],
-    rotate: "rotate-1",
+      'AI-powered productivity assistant with clean workflow automation and smart collaboration tools.',
+    tech: ['React', 'OpenAI', 'Tailwind'],
+    rotate: 'rotate-1',
   },
   {
-    title: "PaperStack",
-    description:
-      "Minimal task management platform inspired by origami-style organization systems.",
-    tech: ["Next.js", "MongoDB", "TypeScript"],
-    rotate: "-rotate-1",
+    title: 'PaperStack',
+    description: 'Minimal task management platform inspired by origami-style organization systems.',
+    tech: ['Next.js', 'MongoDB', 'TypeScript'],
+    rotate: '-rotate-1',
   },
   {
-    title: "Crease Studio",
-    description:
-      "Creative collaboration workspace for designers, developers, and visual thinkers.",
-    tech: ["Firebase", "Framer Motion", "Node.js"],
-    rotate: "rotate-2",
+    title: 'Crease Studio',
+    description: 'Creative collaboration workspace for designers, developers, and visual thinkers.',
+    tech: ['Firebase', 'Framer Motion', 'Node.js'],
+    rotate: 'rotate-2',
   },
 ];
 
@@ -44,9 +42,7 @@ export default function Projects() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 border-2 border-black bg-white px-5 py-2 shadow-[6px_6px_0px_#000]">
             <FolderKanban size={18} />
-            <span className="font-mono text-xs uppercase tracking-widest">
-              Origami Portfolio
-            </span>
+            <span className="font-mono text-xs uppercase tracking-widest">Origami Portfolio</span>
           </div>
 
           <h2 className="mt-6 text-5xl md:text-6xl font-black tracking-tight text-black">
@@ -54,8 +50,8 @@ export default function Projects() {
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-gray-700 text-lg leading-relaxed">
-            Every project is folded like paper — layered, intentional, and
-            structured with precision to reflect creative engineering.
+            Every project is folded like paper — layered, intentional, and structured with precision
+            to reflect creative engineering.
           </p>
         </div>
 
@@ -73,7 +69,7 @@ export default function Projects() {
                 [transform-style:preserve-3d]
                 hover:[transform:perspective(800px)_rotateX(6deg)_rotateY(-6deg)]
                 ${project.rotate}
-                ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+                ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}
               `}
             >
               {/* Fold Corner */}
@@ -84,11 +80,10 @@ export default function Projects() {
 
               {/* Title Row */}
               <div className="flex items-start justify-between mb-5">
-                <h3 className="text-2xl font-extrabold text-black">
-                  {project.title}
-                </h3>
+                <h3 className="text-2xl font-extrabold text-black">{project.title}</h3>
 
-                <button type="button"
+                <button
+                  type="button"
                   aria-label={`Open ${project.title}`}
                   className="h-10 w-10 flex items-center justify-center border-2 border-black bg-[#f7efe3] transition-transform group-hover:rotate-12"
                 >
@@ -97,9 +92,7 @@ export default function Projects() {
               </div>
 
               {/* Description */}
-              <p className="text-gray-700 leading-relaxed mb-6">
-                {project.description}
-              </p>
+              <p className="text-gray-700 leading-relaxed mb-6">{project.description}</p>
 
               {/* Tech Stack */}
               <div className="flex flex-wrap gap-2">
@@ -121,7 +114,10 @@ export default function Projects() {
 
         {/* CTA */}
         <div className="mt-20 text-center">
-          <button type="button" className="border-2 border-black bg-black px-10 py-4 text-white font-bold shadow-[6px_6px_0px_#cbb89d] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_#cbb89d]">
+          <button
+            type="button"
+            className="border-2 border-black bg-black px-10 py-4 text-white font-bold shadow-[6px_6px_0px_#cbb89d] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_#cbb89d]"
+          >
             View All Projects
           </button>
         </div>
@@ -137,26 +133,20 @@ export default function Projects() {
             className="relative w-[90%] max-w-lg border-2 border-black bg-[#f8f4ec] p-6 shadow-[10px_10px_0px_#000]"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-2xl font-bold mb-2">
-              {activeProject.title}
-            </h2>
+            <h2 className="text-2xl font-bold mb-2">{activeProject.title}</h2>
 
-            <p className="text-gray-700 mb-4">
-              {activeProject.description}
-            </p>
+            <p className="text-gray-700 mb-4">{activeProject.description}</p>
 
             <div className="flex flex-wrap gap-2">
               {activeProject.tech.map((t) => (
-                <span
-                  key={t}
-                  className="border border-black px-2 py-1 text-xs"
-                >
+                <span key={t} className="border border-black px-2 py-1 text-xs">
                   {t}
                 </span>
               ))}
             </div>
 
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setActiveProject(null)}
               className="mt-6 border-2 border-black bg-black text-white px-4 py-2"
             >

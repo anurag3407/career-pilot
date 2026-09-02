@@ -8,77 +8,83 @@ const defaultEducation = [
     degree: 'Master of Science in Computer Science',
     school: 'Stanford University',
     period: '2016 – 2018',
-    description: 'Specialized in Intelligent Systems and Distributed Software Architectures. Graduated with Honors.'
+    description:
+      'Specialized in Intelligent Systems and Distributed Software Architectures. Graduated with Honors.',
   },
   {
     degree: 'Bachelor of Science in Software Engineering',
     school: 'UC Berkeley',
     period: '2012 – 2016',
-    description: 'Double minor in Cognitive Science & Art Practice. Active lead in open-source developer student groups.'
-  }
+    description:
+      'Double minor in Cognitive Science & Art Practice. Active lead in open-source developer student groups.',
+  },
 ];
 
 const defaultCertifications = [
   {
     name: 'AWS Certified Solutions Architect',
     issuer: 'Amazon Web Services',
-    date: '2023'
+    date: '2023',
   },
   {
     name: 'Certified Kubernetes Administrator (CKA)',
     issuer: 'Cloud Native Computing Foundation',
-    date: '2022'
-  }
+    date: '2022',
+  },
 ];
 
 const defaultAwards = [
   {
     title: 'Awwwards Site of the Day',
     event: 'Portfolio Showcase Exhibit',
-    date: '2025'
+    date: '2025',
   },
   {
     title: 'First Place Winner',
     event: 'Global Tech Hackathon (Vercel Core Prize)',
-    date: '2023'
-  }
+    date: '2023',
+  },
 ];
 
 export default function Education() {
   const { portfolioData } = usePortfolio();
 
   // Safely resolve education from various potential schema keys
-  const education = portfolioData?.education?.length > 0
-    ? portfolioData.education.map(e => ({
-        degree: e.degree || e.degreeName || e.fieldOfStudy || 'Degree',
-        school: e.school || e.schoolName || e.institution || 'University',
-        period: e.period || e.year || `${e.startDate || ''} – ${e.endDate || ''}`.trim() || 'Period',
-        description: e.description || e.details || ''
-      }))
-    : defaultEducation;
+  const education =
+    portfolioData?.education?.length > 0
+      ? portfolioData.education.map((e) => ({
+          degree: e.degree || e.degreeName || e.fieldOfStudy || 'Degree',
+          school: e.school || e.schoolName || e.institution || 'University',
+          period:
+            e.period || e.year || `${e.startDate || ''} – ${e.endDate || ''}`.trim() || 'Period',
+          description: e.description || e.details || '',
+        }))
+      : defaultEducation;
 
-  const certifications = portfolioData?.certifications?.length > 0
-    ? portfolioData.certifications.map(c => ({
-        name: c.name || c.title || 'Certification',
-        issuer: c.issuer || c.organization || 'Issuer',
-        date: c.date || c.year || 'Date'
-      }))
-    : defaultCertifications;
+  const certifications =
+    portfolioData?.certifications?.length > 0
+      ? portfolioData.certifications.map((c) => ({
+          name: c.name || c.title || 'Certification',
+          issuer: c.issuer || c.organization || 'Issuer',
+          date: c.date || c.year || 'Date',
+        }))
+      : defaultCertifications;
 
-  const awards = portfolioData?.awards?.length > 0
-    ? portfolioData.awards.map(a => ({
-        title: a.title || a.name || 'Award',
-        event: a.event || a.organization || 'Event',
-        date: a.date || a.year || 'Date'
-      }))
-    : defaultAwards;
+  const awards =
+    portfolioData?.awards?.length > 0
+      ? portfolioData.awards.map((a) => ({
+          title: a.title || a.name || 'Award',
+          event: a.event || a.organization || 'Event',
+          date: a.date || a.year || 'Date',
+        }))
+      : defaultAwards;
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.15 }
-    }
+      transition: { staggerChildren: 0.15 },
+    },
   };
 
   const cardVariants = {
@@ -87,27 +93,29 @@ export default function Education() {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { duration: 0.7, ease: 'easeOut' }
-    }
+      transition: { duration: 0.7, ease: 'easeOut' },
+    },
   };
 
   return (
-    <section 
-      id="education" 
+    <section
+      id="education"
       className="relative py-28 md:py-36 px-6 border-b border-slate-900/60 overflow-hidden"
     >
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-20 md:mb-28">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="mb-4"
           >
-            <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">[[ 05 // Credentials ]]</span>
+            <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">
+              [[ 05 // Credentials ]]
+            </span>
           </motion.div>
-          
-          <motion.h2 
+
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -116,8 +124,8 @@ export default function Education() {
           >
             Education & Recognition
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -128,7 +136,7 @@ export default function Education() {
           </motion.p>
         </div>
 
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -146,7 +154,7 @@ export default function Education() {
 
             <div className="space-y-6">
               {education.map((item, idx) => (
-                <motion.div 
+                <motion.div
                   key={idx}
                   variants={cardVariants}
                   className="relative bg-[#040409]/90 border border-slate-900 rounded-xl overflow-hidden group hover:border-slate-800 transition-all duration-300"
@@ -154,7 +162,7 @@ export default function Education() {
                   <div className="p-6 h-full relative">
                     {/* Ruled Notebook Paper Aesthetic */}
                     <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:100%_1.5rem] pointer-events-none z-0 opacity-80" />
-                    
+
                     {/* Neutral margin line */}
                     <div className="absolute left-6 top-0 bottom-0 w-[1px] bg-white/10 z-0" />
 

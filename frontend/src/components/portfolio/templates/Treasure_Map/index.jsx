@@ -1,7 +1,17 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin, Compass, Skull, Zap } from 'lucide-react';
+import {
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  ExternalLink,
+  MapPin,
+  Compass,
+  Skull,
+  Zap,
+} from 'lucide-react';
 
 /**
  * Treasure Map Portfolio Template
@@ -13,7 +23,15 @@ import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin, Compass, Skull, 
 const MapDecoration = ({ className = '' }) => (
   <svg className={`absolute ${className}`} viewBox="0 0 100 100" width="100" height="100">
     {/* Compass Rose */}
-    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+    <circle
+      cx="50"
+      cy="50"
+      r="45"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="0.5"
+      opacity="0.3"
+    />
     <line x1="50" y1="10" x2="50" y2="90" stroke="currentColor" strokeWidth="1" opacity="0.3" />
     <line x1="10" y1="50" x2="90" y2="50" stroke="currentColor" strokeWidth="1" opacity="0.3" />
     <polygon points="50,15 45,35 50,30 55,35" fill="currentColor" opacity="0.3" />
@@ -26,7 +44,7 @@ const DottedPath = ({ from, to }) => {
 
   const distance = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
   const angle = Math.atan2(to.y - from.y, to.x - from.x);
-  
+
   return (
     <svg
       className="absolute pointer-events-none"
@@ -143,7 +161,14 @@ const Hero = () => (
       transition={{ duration: 2, repeat: Infinity }}
       className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-yellow-700"
     >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <polyline points="6 9 12 15 18 9"></polyline>
       </svg>
     </motion.div>
@@ -188,10 +213,10 @@ const About = () => (
 
         {/* Bio */}
         <div>
-          <h2 className="text-4xl font-bold text-yellow-900 mb-6 font-serif">The Treasure Hunter</h2>
-          <p className="text-yellow-800 text-lg leading-relaxed mb-6 italic">
-            {data.personal.bio}
-          </p>
+          <h2 className="text-4xl font-bold text-yellow-900 mb-6 font-serif">
+            The Treasure Hunter
+          </h2>
+          <p className="text-yellow-800 text-lg leading-relaxed mb-6 italic">{data.personal.bio}</p>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4 mt-8">
@@ -334,7 +359,10 @@ const Projects = () => (
               {/* Tech Stack */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {project.techStack.slice(0, 3).map((tech, j) => (
-                  <span key={j} className="px-3 py-1 text-xs font-semibold bg-yellow-200 text-yellow-900 rounded-full">
+                  <span
+                    key={j}
+                    className="px-3 py-1 text-xs font-semibold bg-yellow-200 text-yellow-900 rounded-full"
+                  >
                     {tech}
                   </span>
                 ))}

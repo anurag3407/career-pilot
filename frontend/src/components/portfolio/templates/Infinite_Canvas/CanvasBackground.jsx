@@ -1,5 +1,5 @@
-import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import React from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export default function CanvasBackground() {
   const prefersReducedMotion = useReducedMotion();
@@ -15,7 +15,7 @@ export default function CanvasBackground() {
             linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px)
           `,
-          backgroundSize: "80px 80px",
+          backgroundSize: '80px 80px',
         }}
       />
 
@@ -24,9 +24,8 @@ export default function CanvasBackground() {
         aria-hidden="true"
         className="fixed inset-0 pointer-events-none opacity-[0.03]"
         style={{
-          backgroundImage:
-            "radial-gradient(circle, white 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
+          backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
         }}
       />
 
@@ -44,7 +43,7 @@ export default function CanvasBackground() {
         transition={{
           duration: 22,
           repeat: Infinity,
-          ease: "linear",
+          ease: 'linear',
         }}
         className="fixed top-20 left-10 w-[28rem] h-[28rem] rounded-full bg-cyan-500/10 blur-[140px] pointer-events-none"
       />
@@ -63,7 +62,7 @@ export default function CanvasBackground() {
         transition={{
           duration: 28,
           repeat: Infinity,
-          ease: "linear",
+          ease: 'linear',
         }}
         className="fixed bottom-20 right-10 w-[30rem] h-[30rem] rounded-full bg-purple-500/10 blur-[150px] pointer-events-none"
       />
@@ -96,50 +95,15 @@ export default function CanvasBackground() {
         aria-hidden="true"
         className="fixed inset-0 w-full h-full pointer-events-none opacity-[0.04]"
       >
-        <line
-          x1="10%"
-          y1="20%"
-          x2="35%"
-          y2="30%"
-          stroke="white"
-          strokeWidth="1"
-        />
+        <line x1="10%" y1="20%" x2="35%" y2="30%" stroke="white" strokeWidth="1" />
 
-        <line
-          x1="35%"
-          y1="30%"
-          x2="65%"
-          y2="18%"
-          stroke="white"
-          strokeWidth="1"
-        />
+        <line x1="35%" y1="30%" x2="65%" y2="18%" stroke="white" strokeWidth="1" />
 
-        <line
-          x1="65%"
-          y1="18%"
-          x2="85%"
-          y2="35%"
-          stroke="white"
-          strokeWidth="1"
-        />
+        <line x1="65%" y1="18%" x2="85%" y2="35%" stroke="white" strokeWidth="1" />
 
-        <line
-          x1="20%"
-          y1="70%"
-          x2="55%"
-          y2="80%"
-          stroke="white"
-          strokeWidth="1"
-        />
+        <line x1="20%" y1="70%" x2="55%" y2="80%" stroke="white" strokeWidth="1" />
 
-        <line
-          x1="55%"
-          y1="80%"
-          x2="85%"
-          y2="60%"
-          stroke="white"
-          strokeWidth="1"
-        />
+        <line x1="55%" y1="80%" x2="85%" y2="60%" stroke="white" strokeWidth="1" />
       </svg>
     </>
   );

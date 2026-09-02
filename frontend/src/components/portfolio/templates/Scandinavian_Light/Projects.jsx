@@ -52,8 +52,12 @@ export default function Projects({ data }) {
                   ) : null}
                 </div>
                 <div className="p-6">
-                  <h3 className="scandi-serif text-2xl font-semibold text-[#283028]">{project?.title}</h3>
-                  <p className="mt-3 line-clamp-3 text-sm leading-7 text-[#6F746B]">{project?.description}</p>
+                  <h3 className="scandi-serif text-2xl font-semibold text-[#283028]">
+                    {project?.title}
+                  </h3>
+                  <p className="mt-3 line-clamp-3 text-sm leading-7 text-[#6F746B]">
+                    {project?.description}
+                  </p>
 
                   <div className="mt-5 flex flex-wrap gap-2">
                     {(project?.techStack || []).map((tech, techIndex) => (

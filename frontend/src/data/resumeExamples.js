@@ -11,25 +11,26 @@
  */
 
 export const EXAMPLE_CATEGORIES = [
-  { id: 'tech',        label: 'Technology',                icon: '💻' },
-  { id: 'finance',     label: 'Finance & Accounting',       icon: '💰' },
-  { id: 'healthcare',  label: 'Healthcare',                 icon: '🩺' },
-  { id: 'marketing',   label: 'Marketing & Sales',          icon: '📈' },
-  { id: 'education',   label: 'Education',                  icon: '🎓' },
-  { id: 'engineering', label: 'Engineering',                icon: '⚙️' },
-  { id: 'design',      label: 'Design & Creative',          icon: '🎨' },
-  { id: 'operations',  label: 'Operations & PM',           icon: '🛠️' },
-  { id: 'legal',       label: 'Legal',                      icon: '⚖️' },
-  { id: 'entry',       label: 'Entry-Level & Student',      icon: '🌱' },
-  { id: 'executive',   label: 'Executive',                  icon: '👔' },
-  { id: 'trades',      label: 'Trades & Services',          icon: '🔧' },
-]
+  { id: 'tech', label: 'Technology', icon: '💻' },
+  { id: 'finance', label: 'Finance & Accounting', icon: '💰' },
+  { id: 'healthcare', label: 'Healthcare', icon: '🩺' },
+  { id: 'marketing', label: 'Marketing & Sales', icon: '📈' },
+  { id: 'education', label: 'Education', icon: '🎓' },
+  { id: 'engineering', label: 'Engineering', icon: '⚙️' },
+  { id: 'design', label: 'Design & Creative', icon: '🎨' },
+  { id: 'operations', label: 'Operations & PM', icon: '🛠️' },
+  { id: 'legal', label: 'Legal', icon: '⚖️' },
+  { id: 'entry', label: 'Entry-Level & Student', icon: '🌱' },
+  { id: 'executive', label: 'Executive', icon: '👔' },
+  { id: 'trades', label: 'Trades & Services', icon: '🔧' },
+];
 
 const SAMPLE_DATA = (overrides) => ({
   personal: {
     name: 'Sample Candidate',
     title: 'Senior Professional',
-    summary: 'Driven professional with a track record of delivering impact across cross-functional teams. Passionate about measurable results.',
+    summary:
+      'Driven professional with a track record of delivering impact across cross-functional teams. Passionate about measurable results.',
     email: 'sample@example.com',
     phone: '+1 555 010 0000',
     location: 'San Francisco, CA',
@@ -65,7 +66,7 @@ const SAMPLE_DATA = (overrides) => ({
   ],
   certifications: [],
   ...overrides,
-})
+});
 
 export const RESUME_EXAMPLES = [
   // ── Technology ──
@@ -398,7 +399,7 @@ export const RESUME_EXAMPLES = [
     company: 'Electrical Co',
     summary: 'Electrician resume with journeyman license and project types.',
     data: SAMPLE_DATA({
-      personal: { name: 'Mike O\'Brien', title: 'Licensed Journeyman Electrician' },
+      personal: { name: "Mike O'Brien", title: 'Licensed Journeyman Electrician' },
     }),
   },
   {
@@ -411,13 +412,13 @@ export const RESUME_EXAMPLES = [
       personal: { name: 'James Wilson', title: 'Class A CDL Driver' },
     }),
   },
-]
+];
 
 export function getExamplesByCategory(categoryId) {
-  if (!categoryId || categoryId === 'all') return RESUME_EXAMPLES
-  return RESUME_EXAMPLES.filter(e => e.category === categoryId)
+  if (!categoryId || categoryId === 'all') return RESUME_EXAMPLES;
+  return RESUME_EXAMPLES.filter((e) => e.category === categoryId);
 }
 
 export function findExampleById(id) {
-  return RESUME_EXAMPLES.find(e => e.id === id) || null
+  return RESUME_EXAMPLES.find((e) => e.id === id) || null;
 }

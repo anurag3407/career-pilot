@@ -7,12 +7,12 @@ export const TERMINAL_THEMES = {
     id: 'green',
     label: 'Matrix',
     dot: '#22c55e',
-    primary: '#22c55e',       // green-500  — main text / accents
-    primaryDim: '#16a34a',    // green-600  — dim text
+    primary: '#22c55e', // green-500  — main text / accents
+    primaryDim: '#16a34a', // green-600  — dim text
     primaryBright: '#86efac', // green-300  — highlights
     primaryGlow: 'rgba(34,197,94,0.25)',
-    primaryDeep: '#14532d',   // scrollbar track
-    border: '#166534',        // green-800
+    primaryDeep: '#14532d', // scrollbar track
+    border: '#166534', // green-800
     scanline: 'rgba(34,197,94,0.6)',
     scrollThumb: '#14532d',
     scrollThumbHover: '#16a34a',

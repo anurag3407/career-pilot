@@ -24,9 +24,13 @@ const ExperienceSection = () => {
 
             <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-4">
               <h4 className="text-2xl font-light text-zinc-900">{job.role}</h4>
-              <span className="text-[11px] tracking-[0.1em] text-zinc-400 mt-2 md:mt-0 font-mono border border-zinc-200 px-3 py-1">{job.period}</span>
+              <span className="text-[11px] tracking-[0.1em] text-zinc-400 mt-2 md:mt-0 font-mono border border-zinc-200 px-3 py-1">
+                {job.period}
+              </span>
             </div>
-            <div className="text-zinc-900 uppercase tracking-widest text-xs mb-6 font-medium">{job.company}</div>
+            <div className="text-zinc-900 uppercase tracking-widest text-xs mb-6 font-medium">
+              {job.company}
+            </div>
             <p className="text-zinc-500 font-light leading-relaxed max-w-3xl">{job.description}</p>
           </FadeIn>
         ))}

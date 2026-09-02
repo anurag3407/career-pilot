@@ -5,11 +5,36 @@ import { usePortfolio } from './PortfolioContext';
 
 /* ─── Version tag colors per category ────────────────────────── */
 const CATEGORY_META = {
-  Frontend: { color: '#58A6FF', bg: 'rgba(88,166,255,0.1)',  branch: 'frontend/',  border: 'rgba(88,166,255,0.25)' },
-  Backend:  { color: '#3FB950', bg: 'rgba(63,185,80,0.1)',   branch: 'backend/',   border: 'rgba(63,185,80,0.25)'  },
-  DevOps:   { color: '#F0883E', bg: 'rgba(240,136,62,0.1)',  branch: 'devops/',    border: 'rgba(240,136,62,0.25)' },
-  Design:   { color: '#BC8CFF', bg: 'rgba(188,140,255,0.1)', branch: 'design/',    border: 'rgba(188,140,255,0.25)'},
-  Other:    { color: '#8B949E', bg: 'rgba(139,148,158,0.1)', branch: 'other/',     border: 'rgba(139,148,158,0.25)'},
+  Frontend: {
+    color: '#58A6FF',
+    bg: 'rgba(88,166,255,0.1)',
+    branch: 'frontend/',
+    border: 'rgba(88,166,255,0.25)',
+  },
+  Backend: {
+    color: '#3FB950',
+    bg: 'rgba(63,185,80,0.1)',
+    branch: 'backend/',
+    border: 'rgba(63,185,80,0.25)',
+  },
+  DevOps: {
+    color: '#F0883E',
+    bg: 'rgba(240,136,62,0.1)',
+    branch: 'devops/',
+    border: 'rgba(240,136,62,0.25)',
+  },
+  Design: {
+    color: '#BC8CFF',
+    bg: 'rgba(188,140,255,0.1)',
+    branch: 'design/',
+    border: 'rgba(188,140,255,0.25)',
+  },
+  Other: {
+    color: '#8B949E',
+    bg: 'rgba(139,148,158,0.1)',
+    branch: 'other/',
+    border: 'rgba(139,148,158,0.25)',
+  },
 };
 
 /* ─── Single Tag Pill ─────────────────────────────────────────── */
@@ -51,16 +76,18 @@ function BranchGroup({ category, skills, meta, inView, globalIdx }) {
       className="bg-[#161B22] border border-[#30363D] rounded-lg overflow-hidden"
     >
       {/* Branch header / toggle */}
-      <button type="button"
-        onClick={() => setOpen(v => !v)}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center gap-3 px-4 py-3 border-b border-[#30363D] hover:bg-[#1C2128] transition-colors text-left"
         aria-expanded={open}
         id={`skills-branch-${category}`}
       >
-        {open
-          ? <ChevronDown size={14} style={{ color: meta.color }} />
-          : <ChevronRight size={14} style={{ color: meta.color }} />
-        }
+        {open ? (
+          <ChevronDown size={14} style={{ color: meta.color }} />
+        ) : (
+          <ChevronRight size={14} style={{ color: meta.color }} />
+        )}
         <GitBranch size={14} style={{ color: meta.color }} />
         <span className="font-mono text-sm" style={{ color: meta.color }}>
           {meta.branch}
@@ -86,12 +113,7 @@ function BranchGroup({ category, skills, meta, inView, globalIdx }) {
           >
             <div className="flex flex-wrap gap-2 p-4">
               {skills.map((skill, i) => (
-                <TagPill
-                  key={skill.name}
-                  skill={skill}
-                  index={globalIdx + i}
-                  inView={inView}
-                />
+                <TagPill key={skill.name} skill={skill} index={globalIdx + i} inView={inView} />
               ))}
             </div>
 
@@ -110,7 +132,11 @@ function BranchGroup({ category, skills, meta, inView, globalIdx }) {
                     <motion.div
                       initial={{ width: 0 }}
                       animate={inView ? { width: `${skill.level || 72}%` } : { width: 0 }}
-                      transition={{ delay: (globalIdx + i) * 0.06 + 0.3, duration: 0.8, ease: 'easeOut' }}
+                      transition={{
+                        delay: (globalIdx + i) * 0.06 + 0.3,
+                        duration: 0.8,
+                        ease: 'easeOut',
+                      }}
                       className="h-full rounded-full"
                       style={{ backgroundColor: meta.color }}
                     />
@@ -132,7 +158,7 @@ function BranchGroup({ category, skills, meta, inView, globalIdx }) {
 export default function Skills() {
   const { portfolioData } = usePortfolio();
   const { skills } = portfolioData;
-  const ref    = useRef(null);
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   // Group by category
@@ -153,7 +179,6 @@ export default function Skills() {
       aria-label="Skills"
     >
       <div className="max-w-5xl mx-auto space-y-8">
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}

@@ -43,7 +43,9 @@ export default function AIProviderSelector() {
         <span className="text-sm font-medium hidden sm:block max-w-[80px] truncate">
           {activeMeta ? activeMeta.name : 'AI Setup'}
         </span>
-        <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {/* Dropdown Menu */}
@@ -72,7 +74,7 @@ export default function AIProviderSelector() {
                 validatedProviders.map((id) => {
                   const meta = PROVIDER_META[id];
                   const isActive = id === activeProviderId;
-                  
+
                   return (
                     <button
                       key={id}
@@ -81,8 +83,8 @@ export default function AIProviderSelector() {
                         setIsOpen(false);
                       }}
                       className={`w-full flex items-center justify-between px-3 py-2 text-sm transition-colors ${
-                        isActive 
-                          ? 'bg-primary/10 text-primary font-medium' 
+                        isActive
+                          ? 'bg-primary/10 text-primary font-medium'
                           : 'text-foreground hover:bg-muted'
                       }`}
                     >

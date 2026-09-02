@@ -23,12 +23,12 @@ const itemVariants = {
   },
 };
 
-export default function ChannelList({ 
-  channels, 
-  activeChannel, 
-  onSelectChannel, 
+export default function ChannelList({
+  channels,
+  activeChannel,
+  onSelectChannel,
   onCreateChannel,
-  loading 
+  loading,
 }) {
   const [expandedCategories, setExpandedCategories] = useState({
     general: true,
@@ -37,7 +37,7 @@ export default function ChannelList({
     'resume-tips': true,
     networking: true,
     announcements: true,
-    other: true
+    other: true,
   });
 
   // Group channels by category
@@ -55,13 +55,13 @@ export default function ChannelList({
     'resume-tips': 'Resume Tips',
     networking: 'Networking',
     announcements: 'Announcements',
-    other: 'Other'
+    other: 'Other',
   };
 
   const toggleCategory = (category) => {
-    setExpandedCategories(prev => ({
+    setExpandedCategories((prev) => ({
       ...prev,
-      [category]: !prev[category]
+      [category]: !prev[category],
     }));
   };
 
@@ -124,7 +124,7 @@ export default function ChannelList({
               animate="visible"
               className="space-y-0.5 px-2"
             >
-              {categoryChannels.map(channel => {
+              {categoryChannels.map((channel) => {
                 const channelId = channel.id || channel._id;
                 const activeId = activeChannel?.id || activeChannel?._id;
                 return (

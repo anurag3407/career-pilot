@@ -23,7 +23,7 @@ import {
   Search,
   ExternalLink,
   ChevronRight,
-  Code
+  Code,
 } from 'lucide-react';
 import { usePortfolio } from '../../../../context/PortfolioContext';
 
@@ -42,7 +42,7 @@ function OSWindow({
   onFocus,
   constraintsRef,
   isActive,
-  children
+  children,
 }) {
   const dragControls = useDragControls();
 
@@ -89,7 +89,8 @@ function OSWindow({
       >
         {/* Left Windows Actions */}
         <div className="flex items-center space-x-2 shrink-0">
-          <button type="button"
+          <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               onClose();
@@ -99,7 +100,8 @@ function OSWindow({
           >
             <X className="w-2.5 h-2.5 text-rose-950 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               onMinimize();
@@ -109,7 +111,8 @@ function OSWindow({
           >
             <Minus className="w-2.5 h-2.5 text-amber-950 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               onMaximize();
@@ -150,7 +153,8 @@ export default function TransparentDesktopOverlayOS() {
   // Fallbacks
   const name = personal?.name || 'Alex Rivera';
   const roleTitle = personal?.title || 'Creative Technologist & Developer';
-  const bio = personal?.bio || 'Crafting beautiful, performant web applications with care and precision.';
+  const bio =
+    personal?.bio || 'Crafting beautiful, performant web applications with care and precision.';
   const tagline = personal?.tagline || 'Building the future, one line of code at a time.';
   const location = personal?.location || 'Remote Sector';
   const avatar = personal?.avatar || '';
@@ -165,12 +169,42 @@ export default function TransparentDesktopOverlayOS() {
 
   // App list definition
   const apps = [
-    { id: 'about', title: 'About Me', icon: User, color: 'text-indigo-400 border-indigo-400/20 bg-indigo-500/5' },
-    { id: 'projects', title: 'Projects', icon: FolderGit, color: 'text-cyan-400 border-cyan-400/20 bg-cyan-500/5' },
-    { id: 'experience', title: 'Experience', icon: Briefcase, color: 'text-emerald-400 border-emerald-400/20 bg-emerald-500/5' },
-    { id: 'skills', title: 'Skills', icon: Cpu, color: 'text-amber-400 border-amber-400/20 bg-amber-500/5' },
-    { id: 'testimonials', title: 'Testimonials', icon: MessageSquare, color: 'text-purple-400 border-purple-400/20 bg-purple-500/5' },
-    { id: 'contact', title: 'System Console', icon: Terminal, color: 'text-rose-400 border-rose-400/20 bg-rose-500/5' },
+    {
+      id: 'about',
+      title: 'About Me',
+      icon: User,
+      color: 'text-indigo-400 border-indigo-400/20 bg-indigo-500/5',
+    },
+    {
+      id: 'projects',
+      title: 'Projects',
+      icon: FolderGit,
+      color: 'text-cyan-400 border-cyan-400/20 bg-cyan-500/5',
+    },
+    {
+      id: 'experience',
+      title: 'Experience',
+      icon: Briefcase,
+      color: 'text-emerald-400 border-emerald-400/20 bg-emerald-500/5',
+    },
+    {
+      id: 'skills',
+      title: 'Skills',
+      icon: Cpu,
+      color: 'text-amber-400 border-amber-400/20 bg-amber-500/5',
+    },
+    {
+      id: 'testimonials',
+      title: 'Testimonials',
+      icon: MessageSquare,
+      color: 'text-purple-400 border-purple-400/20 bg-purple-500/5',
+    },
+    {
+      id: 'contact',
+      title: 'System Console',
+      icon: Terminal,
+      color: 'text-rose-400 border-rose-400/20 bg-rose-500/5',
+    },
   ];
 
   // Window states: isOpen, isMinimized, isMaximized, zIndex, x, y
@@ -275,7 +309,20 @@ export default function TransparentDesktopOverlayOS() {
   // Date/Time Formatter
   const formatClock = (date) => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     const dName = days[date.getDay()];
     const mName = months[date.getMonth()];
     const day = date.getDate();
@@ -310,7 +357,10 @@ export default function TransparentDesktopOverlayOS() {
     const cmd = terminalInput.trim().toLowerCase();
     if (!cmd) return;
 
-    const newHistory = [...terminalHistory, { text: `user@career-pilot-os:~$ ${terminalInput}`, type: 'input' }];
+    const newHistory = [
+      ...terminalHistory,
+      { text: `user@career-pilot-os:~$ ${terminalInput}`, type: 'input' },
+    ];
 
     switch (cmd) {
       case 'help':
@@ -335,7 +385,10 @@ export default function TransparentDesktopOverlayOS() {
       case 'projects':
         if (projects && projects.length > 0) {
           projects.forEach((proj) => {
-            newHistory.push({ text: `• ${proj.title} - ${proj.description.substring(0, 80)}... [Tech: ${proj.techStack?.join(', ')}]`, type: 'output' });
+            newHistory.push({
+              text: `• ${proj.title} - ${proj.description.substring(0, 80)}... [Tech: ${proj.techStack?.join(', ')}]`,
+              type: 'output',
+            });
           });
         } else {
           newHistory.push({ text: 'No projects found.', type: 'output' });
@@ -344,7 +397,10 @@ export default function TransparentDesktopOverlayOS() {
       case 'experience':
         if (experience && experience.length > 0) {
           experience.forEach((exp) => {
-            newHistory.push({ text: `• [${exp.period}] ${exp.role} at ${exp.company} - ${exp.description.substring(0, 70)}...`, type: 'output' });
+            newHistory.push({
+              text: `• [${exp.period}] ${exp.role} at ${exp.company} - ${exp.description.substring(0, 70)}...`,
+              type: 'output',
+            });
           });
         } else {
           newHistory.push({ text: 'No experience records found.', type: 'output' });
@@ -372,7 +428,10 @@ export default function TransparentDesktopOverlayOS() {
         setTerminalInput('');
         return;
       default:
-        newHistory.push({ text: `Command not found: "${cmd}". Type "help" for a list of commands.`, type: 'error' });
+        newHistory.push({
+          text: `Command not found: "${cmd}". Type "help" for a list of commands.`,
+          type: 'error',
+        });
     }
 
     setTerminalHistory(newHistory);
@@ -388,7 +447,7 @@ export default function TransparentDesktopOverlayOS() {
       { text: `[SYSTEM ALERT] Outgoing message package queued...`, type: 'system' },
       { text: `Sender: ${contactForm.name} <${contactForm.email}>`, type: 'output' },
       { text: `Message Payload: "${contactForm.message}"`, type: 'output' },
-      { text: `Transmission status: SUCCESSFUL. Log stored.`, type: 'system' }
+      { text: `Transmission status: SUCCESSFUL. Log stored.`, type: 'system' },
     ]);
 
     setFormSubmitted(true);
@@ -400,7 +459,11 @@ export default function TransparentDesktopOverlayOS() {
 
   // Social Links Filtered Helper
   const contactLinks = [
-    { icon: Mail, href: socials?.email?.includes('@') ? `mailto:${socials.email}` : socials?.email, label: 'Email' },
+    {
+      icon: Mail,
+      href: socials?.email?.includes('@') ? `mailto:${socials.email}` : socials?.email,
+      label: 'Email',
+    },
     { icon: Github, href: socials?.github, label: 'GitHub' },
     { icon: Linkedin, href: socials?.linkedin, label: 'LinkedIn' },
     { icon: Twitter, href: socials?.twitter, label: 'Twitter' },
@@ -412,8 +475,14 @@ export default function TransparentDesktopOverlayOS() {
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Animated Radial blobs */}
         <div className="absolute top-[-15%] left-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-600/30 blur-[130px] animate-pulse pointer-events-none" />
-        <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-600/25 blur-[130px] animate-pulse pointer-events-none" style={{ animationDelay: '2.5s', animationDuration: '7s' }} />
-        <div className="absolute top-[25%] right-[15%] w-[45%] h-[45%] rounded-full bg-fuchsia-600/15 blur-[120px] animate-pulse pointer-events-none" style={{ animationDelay: '5s', animationDuration: '9s' }} />
+        <div
+          className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-600/25 blur-[130px] animate-pulse pointer-events-none"
+          style={{ animationDelay: '2.5s', animationDuration: '7s' }}
+        />
+        <div
+          className="absolute top-[25%] right-[15%] w-[45%] h-[45%] rounded-full bg-fuchsia-600/15 blur-[120px] animate-pulse pointer-events-none"
+          style={{ animationDelay: '5s', animationDuration: '9s' }}
+        />
         {/* Subtle grid backdrop */}
         <div
           className="absolute inset-0 opacity-15 mix-blend-overlay"
@@ -431,9 +500,20 @@ export default function TransparentDesktopOverlayOS() {
             <Globe className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '15s' }} />
             <span className="font-mono tracking-wider">CP_OS</span>
           </div>
-          <button type="button" className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors">File</button>
-          <button type="button" className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors">View</button>
-          <button type="button"
+          <button
+            type="button"
+            className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors"
+          >
+            File
+          </button>
+          <button
+            type="button"
+            className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors"
+          >
+            View
+          </button>
+          <button
+            type="button"
             onClick={() => openWindow('contact')}
             className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors text-rose-400 hover:text-rose-300"
           >
@@ -467,16 +547,19 @@ export default function TransparentDesktopOverlayOS() {
                 const Icon = app.icon;
                 const isOpen = windowStates[app.id].isOpen && !windowStates[app.id].isMinimized;
                 return (
-                  <button type="button"
+                  <button
+                    type="button"
                     key={app.id}
                     onClick={() => openWindow(app.id)}
                     className="flex flex-col items-center justify-center p-2 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 group transition-all text-center select-none cursor-pointer"
                   >
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-300 ${app.color} ${
-                      isOpen
-                        ? 'shadow-[0_0_15px_rgba(99,102,241,0.2)] border-indigo-500/40 scale-95'
-                        : 'group-hover:scale-105'
-                    }`}>
+                    <div
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-300 ${app.color} ${
+                        isOpen
+                          ? 'shadow-[0_0_15px_rgba(99,102,241,0.2)] border-indigo-500/40 scale-95'
+                          : 'group-hover:scale-105'
+                      }`}
+                    >
                       <Icon className="w-6 h-6" />
                     </div>
                     <span className="mt-2 text-[11px] font-medium text-slate-300 drop-shadow group-hover:text-white transition-colors truncate w-full">
@@ -519,7 +602,9 @@ export default function TransparentDesktopOverlayOS() {
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
                     </div>
                     <h3 className="text-lg font-bold text-center text-white">{name}</h3>
-                    <p className="text-xs text-indigo-400 text-center font-medium mt-1 leading-normal">{roleTitle}</p>
+                    <p className="text-xs text-indigo-400 text-center font-medium mt-1 leading-normal">
+                      {roleTitle}
+                    </p>
                     <div className="flex items-center space-x-2 mt-2">
                       <MapPin className="w-3.5 h-3.5 text-slate-400" />
                       <span className="text-[10px] text-slate-400">{location}</span>
@@ -528,7 +613,9 @@ export default function TransparentDesktopOverlayOS() {
                     <div className="mt-6 w-full border-t border-white/5 pt-4 space-y-2">
                       <div className="flex justify-between text-xs">
                         <span className="text-slate-400">Experience</span>
-                        <span className="font-bold text-white font-mono">{yearsExperience} Years</span>
+                        <span className="font-bold text-white font-mono">
+                          {yearsExperience} Years
+                        </span>
                       </div>
                       <div className="flex justify-between text-xs">
                         <span className="text-slate-400">Projects Done</span>
@@ -536,7 +623,9 @@ export default function TransparentDesktopOverlayOS() {
                       </div>
                       <div className="flex justify-between text-xs">
                         <span className="text-slate-400">Client Base</span>
-                        <span className="font-bold text-white font-mono">{happyClients} Clients</span>
+                        <span className="font-bold text-white font-mono">
+                          {happyClients} Clients
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -554,10 +643,10 @@ export default function TransparentDesktopOverlayOS() {
                     </div>
 
                     <div className="space-y-3">
-                      <h4 className="text-xs font-bold uppercase text-slate-400 tracking-wider">Biography</h4>
-                      <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                        {bio}
-                      </p>
+                      <h4 className="text-xs font-bold uppercase text-slate-400 tracking-wider">
+                        Biography
+                      </h4>
+                      <p className="text-xs text-slate-300 leading-relaxed font-normal">{bio}</p>
                     </div>
 
                     <div className="pt-4 flex items-center space-x-3">
@@ -597,7 +686,9 @@ export default function TransparentDesktopOverlayOS() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-bold text-white mb-1">Project Index</h3>
-                    <p className="text-xs text-slate-400">Clicking external links redirects to project source/demo.</p>
+                    <p className="text-xs text-slate-400">
+                      Clicking external links redirects to project source/demo.
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -686,7 +777,9 @@ export default function TransparentDesktopOverlayOS() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-bold text-white mb-1">Trajectory Log</h3>
-                    <p className="text-xs text-slate-400">Timeline of professional stations and work records.</p>
+                    <p className="text-xs text-slate-400">
+                      Timeline of professional stations and work records.
+                    </p>
                   </div>
 
                   <div className="relative border-l border-white/10 pl-5 ml-2.5 space-y-6">
@@ -699,8 +792,12 @@ export default function TransparentDesktopOverlayOS() {
                           <span className="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded">
                             {exp.period}
                           </span>
-                          <h4 className="text-sm font-bold text-white mt-2 leading-snug">{exp.role}</h4>
-                          <h5 className="text-xs text-emerald-300 font-semibold mt-0.5">{exp.company}</h5>
+                          <h4 className="text-sm font-bold text-white mt-2 leading-snug">
+                            {exp.role}
+                          </h4>
+                          <h5 className="text-xs text-emerald-300 font-semibold mt-0.5">
+                            {exp.company}
+                          </h5>
                           <p className="text-[11px] text-slate-400 leading-relaxed mt-2.5">
                             {exp.description}
                           </p>
@@ -730,7 +827,9 @@ export default function TransparentDesktopOverlayOS() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-bold text-white mb-1">Resource Capacity</h3>
-                    <p className="text-xs text-slate-400">Detailed metric indicators of technical capabilities.</p>
+                    <p className="text-xs text-slate-400">
+                      Detailed metric indicators of technical capabilities.
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -744,7 +843,9 @@ export default function TransparentDesktopOverlayOS() {
                             <Code className="w-3.5 h-3.5 text-amber-400" />
                             <span>{skill.name}</span>
                           </span>
-                          <span className="font-mono text-amber-400 text-[10px]">{skill.level || 80}%</span>
+                          <span className="font-mono text-amber-400 text-[10px]">
+                            {skill.level || 80}%
+                          </span>
                         </div>
                         {/* Progress Bar */}
                         <div className="mt-3.5 w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-white/5">
@@ -785,7 +886,9 @@ export default function TransparentDesktopOverlayOS() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-bold text-white mb-1">Feedback Nodes</h3>
-                    <p className="text-xs text-slate-400">Encrypted signal reviews from verified professional contacts.</p>
+                    <p className="text-xs text-slate-400">
+                      Encrypted signal reviews from verified professional contacts.
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 gap-4">
@@ -799,7 +902,11 @@ export default function TransparentDesktopOverlayOS() {
                         </p>
                         <div className="mt-4 flex items-center space-x-3.5">
                           {testi.avatar && (
-                            <img src={testi.avatar} alt={testi.name} className="w-9 h-9 rounded-xl object-cover border border-white/10" />
+                            <img
+                              src={testi.avatar}
+                              alt={testi.name}
+                              className="w-9 h-9 rounded-xl object-cover border border-white/10"
+                            />
                           )}
                           <div>
                             <h4 className="text-xs font-bold text-white">{testi.name}</h4>
@@ -833,13 +940,20 @@ export default function TransparentDesktopOverlayOS() {
                   <div className="flex flex-col h-[380px] rounded-lg border border-slate-800 bg-slate-950 p-4 font-mono text-xs select-text">
                     <div className="flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-slate-800">
                       {terminalHistory.map((log, index) => (
-                        <div key={index} className={
-                          log.type === 'error' ? 'text-rose-500' :
-                          log.type === 'system' ? 'text-indigo-400' :
-                          log.type === 'info' ? 'text-slate-400' :
-                          log.type === 'input' ? 'text-white font-bold' :
-                          'text-emerald-400'
-                        }>
+                        <div
+                          key={index}
+                          className={
+                            log.type === 'error'
+                              ? 'text-rose-500'
+                              : log.type === 'system'
+                                ? 'text-indigo-400'
+                                : log.type === 'info'
+                                  ? 'text-slate-400'
+                                  : log.type === 'input'
+                                    ? 'text-white font-bold'
+                                    : 'text-emerald-400'
+                          }
+                        >
                           {log.text}
                         </div>
                       ))}
@@ -864,12 +978,16 @@ export default function TransparentDesktopOverlayOS() {
                   <div className="flex flex-col space-y-4 justify-between h-[380px]">
                     <div>
                       <h4 className="text-sm font-bold text-white mb-1">Transmission Dispatch</h4>
-                      <p className="text-xs text-slate-400">Queue a direct message package through the OS link.</p>
+                      <p className="text-xs text-slate-400">
+                        Queue a direct message package through the OS link.
+                      </p>
                     </div>
 
                     <form onSubmit={handleContactSubmit} className="space-y-3.5">
                       <div>
-                        <label className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Name</label>
+                        <label className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">
+                          Name
+                        </label>
                         <input
                           type="text"
                           required
@@ -880,23 +998,31 @@ export default function TransparentDesktopOverlayOS() {
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Email</label>
+                        <label className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">
+                          Email
+                        </label>
                         <input
                           type="email"
                           required
                           value={contactForm.email}
-                          onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                          onChange={(e) =>
+                            setContactForm({ ...contactForm, email: e.target.value })
+                          }
                           className="w-full text-xs px-3.5 py-2.5 rounded-lg border border-white/10 bg-white/5 text-white focus:outline-none focus:border-rose-500/50"
                           placeholder="your.email@domain.com"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Message</label>
+                        <label className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">
+                          Message
+                        </label>
                         <textarea
                           required
                           rows={4}
                           value={contactForm.message}
-                          onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                          onChange={(e) =>
+                            setContactForm({ ...contactForm, message: e.target.value })
+                          }
                           className="w-full text-xs px-3.5 py-2.5 rounded-lg border border-white/10 bg-white/5 text-white focus:outline-none focus:border-rose-500/50 resize-none"
                           placeholder="Type your message details here..."
                         />
@@ -938,7 +1064,8 @@ export default function TransparentDesktopOverlayOS() {
                       {app.title}
                     </div>
 
-                    <button type="button"
+                    <button
+                      type="button"
                       onClick={() => {
                         if (isOpen && !isMinimized && isFocused) {
                           minimizeWindow(app.id);
@@ -957,9 +1084,11 @@ export default function TransparentDesktopOverlayOS() {
 
                     {/* macOS Active Dot */}
                     {isOpen && (
-                      <span className={`absolute -bottom-1.5 w-1.5 h-1.5 rounded-full ${
-                        isMinimized ? 'bg-slate-500' : 'bg-indigo-400 animate-pulse'
-                      }`} />
+                      <span
+                        className={`absolute -bottom-1.5 w-1.5 h-1.5 rounded-full ${
+                          isMinimized ? 'bg-slate-500' : 'bg-indigo-400 animate-pulse'
+                        }`}
+                      />
                     )}
                   </div>
                 );
@@ -993,7 +1122,8 @@ export default function TransparentDesktopOverlayOS() {
             {/* Mobile Tab Navigation */}
             <div className="flex overflow-x-auto py-1 space-x-2 scrollbar-none shrink-0 select-none">
               {apps.map((app) => (
-                <button type="button"
+                <button
+                  type="button"
                   key={app.id}
                   onClick={() => setActiveTab(app.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer border ${
@@ -1012,26 +1142,32 @@ export default function TransparentDesktopOverlayOS() {
               {activeTab === 'about' && (
                 <div className="space-y-5">
                   <div className="p-4 rounded-lg bg-white/5 border border-white/5">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-1">Tagline</h3>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-1">
+                      Tagline
+                    </h3>
                     <p className="text-xs font-medium text-slate-200 italic leading-relaxed">
                       "{tagline}"
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">About</h3>
-                    <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                      {bio}
-                    </p>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                      About
+                    </h3>
+                    <p className="text-xs text-slate-300 leading-relaxed font-normal">{bio}</p>
                   </div>
 
                   <div className="grid grid-cols-3 gap-3 border-t border-white/5 pt-4">
                     <div className="text-center p-2 rounded bg-white/5">
-                      <div className="text-xs font-bold text-white font-mono">{yearsExperience} Yrs</div>
+                      <div className="text-xs font-bold text-white font-mono">
+                        {yearsExperience} Yrs
+                      </div>
                       <div className="text-[9px] text-slate-400 mt-1">Exp</div>
                     </div>
                     <div className="text-center p-2 rounded bg-white/5">
-                      <div className="text-xs font-bold text-white font-mono">{projectsCompleted}+</div>
+                      <div className="text-xs font-bold text-white font-mono">
+                        {projectsCompleted}+
+                      </div>
                       <div className="text-[9px] text-slate-400 mt-1">Projects</div>
                     </div>
                     <div className="text-center p-2 rounded bg-white/5">
@@ -1059,17 +1195,32 @@ export default function TransparentDesktopOverlayOS() {
 
               {activeTab === 'projects' && (
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Featured Projects</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Featured Projects
+                  </h3>
                   {activeProjects.map((project, index) => (
-                    <div key={project.title || index} className="p-3.5 rounded-lg border border-white/5 bg-white/5">
+                    <div
+                      key={project.title || index}
+                      className="p-3.5 rounded-lg border border-white/5 bg-white/5"
+                    >
                       <h4 className="text-xs font-bold text-white flex justify-between items-center">
                         <span>{project.title}</span>
                         <div className="flex space-x-1.5">
                           {project.githubUrl && (
-                            <a href={project.githubUrl} className="p-1 rounded bg-white/5 text-slate-300"><Github className="w-3.5 h-3.5" /></a>
+                            <a
+                              href={project.githubUrl}
+                              className="p-1 rounded bg-white/5 text-slate-300"
+                            >
+                              <Github className="w-3.5 h-3.5" />
+                            </a>
                           )}
                           {project.liveUrl && (
-                            <a href={project.liveUrl} className="p-1 rounded bg-white/5 text-slate-300"><ExternalLink className="w-3.5 h-3.5" /></a>
+                            <a
+                              href={project.liveUrl}
+                              className="p-1 rounded bg-white/5 text-slate-300"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
                           )}
                         </div>
                       </h4>
@@ -1078,7 +1229,10 @@ export default function TransparentDesktopOverlayOS() {
                       </p>
                       <div className="mt-3 flex flex-wrap gap-1">
                         {(project.techStack || []).map((tech) => (
-                          <span key={tech} className="text-[8px] font-mono font-semibold px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+                          <span
+                            key={tech}
+                            className="text-[8px] font-mono font-semibold px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-400"
+                          >
                             {tech}
                           </span>
                         ))}
@@ -1090,16 +1244,22 @@ export default function TransparentDesktopOverlayOS() {
 
               {activeTab === 'experience' && (
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Professional trajectory</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Professional trajectory
+                  </h3>
                   <div className="relative border-l border-white/10 pl-4 ml-1.5 space-y-4">
                     {activeExperience.map((exp, index) => (
                       <div key={index} className="relative">
                         <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-emerald-950 border border-emerald-400" />
                         <div className="p-3 rounded-lg border border-white/5 bg-white/5">
-                          <span className="text-[8px] font-mono font-bold text-emerald-400">{exp.period}</span>
+                          <span className="text-[8px] font-mono font-bold text-emerald-400">
+                            {exp.period}
+                          </span>
                           <h4 className="text-xs font-bold text-white mt-1">{exp.role}</h4>
                           <h5 className="text-[10px] text-emerald-300 mt-0.5">{exp.company}</h5>
-                          <p className="text-[10px] text-slate-400 leading-relaxed mt-2">{exp.description}</p>
+                          <p className="text-[10px] text-slate-400 leading-relaxed mt-2">
+                            {exp.description}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -1109,7 +1269,9 @@ export default function TransparentDesktopOverlayOS() {
 
               {activeTab === 'skills' && (
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Capabilities</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Capabilities
+                  </h3>
                   <div className="grid grid-cols-1 gap-2.5">
                     {activeSkills.map((skill, index) => (
                       <div key={index} className="p-3 rounded-lg border border-white/5 bg-white/5">
@@ -1118,7 +1280,10 @@ export default function TransparentDesktopOverlayOS() {
                           <span className="font-mono text-amber-400">{skill.level || 80}%</span>
                         </div>
                         <div className="mt-2 w-full h-1 bg-slate-900 rounded-full overflow-hidden border border-white/5">
-                          <div className="h-full bg-gradient-to-r from-amber-500 to-yellow-400" style={{ width: `${skill.level || 80}%` }} />
+                          <div
+                            className="h-full bg-gradient-to-r from-amber-500 to-yellow-400"
+                            style={{ width: `${skill.level || 80}%` }}
+                          />
                         </div>
                       </div>
                     ))}
@@ -1128,12 +1293,22 @@ export default function TransparentDesktopOverlayOS() {
 
               {activeTab === 'testimonials' && (
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Testimonials</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Testimonials
+                  </h3>
                   {activeTestimonials.map((testi, index) => (
                     <div key={index} className="p-3.5 rounded-lg border border-white/5 bg-white/5">
-                      <p className="text-[10px] text-slate-300 italic leading-relaxed">"{testi.text}"</p>
+                      <p className="text-[10px] text-slate-300 italic leading-relaxed">
+                        "{testi.text}"
+                      </p>
                       <div className="mt-3 flex items-center space-x-2.5">
-                        {testi.avatar && <img src={testi.avatar} className="w-7 h-7 rounded-lg object-cover" alt="" />}
+                        {testi.avatar && (
+                          <img
+                            src={testi.avatar}
+                            className="w-7 h-7 rounded-lg object-cover"
+                            alt=""
+                          />
+                        )}
                         <div>
                           <h4 className="text-[10px] font-bold text-white">{testi.name}</h4>
                           <p className="text-[8px] text-purple-400">{testi.role}</p>
@@ -1146,10 +1321,14 @@ export default function TransparentDesktopOverlayOS() {
 
               {activeTab === 'contact' && (
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Transmission</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Transmission
+                  </h3>
                   <form onSubmit={handleContactSubmit} className="space-y-3">
                     <div>
-                      <label className="block text-[9px] uppercase font-bold text-slate-400 tracking-wider mb-1">Name</label>
+                      <label className="block text-[9px] uppercase font-bold text-slate-400 tracking-wider mb-1">
+                        Name
+                      </label>
                       <input
                         type="text"
                         required
@@ -1159,7 +1338,9 @@ export default function TransparentDesktopOverlayOS() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[9px] uppercase font-bold text-slate-400 tracking-wider mb-1">Email</label>
+                      <label className="block text-[9px] uppercase font-bold text-slate-400 tracking-wider mb-1">
+                        Email
+                      </label>
                       <input
                         type="email"
                         required
@@ -1169,12 +1350,16 @@ export default function TransparentDesktopOverlayOS() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[9px] uppercase font-bold text-slate-400 tracking-wider mb-1">Message</label>
+                      <label className="block text-[9px] uppercase font-bold text-slate-400 tracking-wider mb-1">
+                        Message
+                      </label>
                       <textarea
                         required
                         rows={3}
                         value={contactForm.message}
-                        onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                        onChange={(e) =>
+                          setContactForm({ ...contactForm, message: e.target.value })
+                        }
                         className="w-full text-xs px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-white focus:outline-none resize-none"
                       />
                     </div>
@@ -1196,11 +1381,14 @@ export default function TransparentDesktopOverlayOS() {
                 const Icon = app.icon;
                 const isActive = activeTab === app.id;
                 return (
-                  <button type="button"
+                  <button
+                    type="button"
                     key={app.id}
                     onClick={() => setActiveTab(app.id)}
                     className={`p-2 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${
-                      isActive ? 'bg-indigo-600/35 text-indigo-400' : 'text-slate-400 hover:text-white'
+                      isActive
+                        ? 'bg-indigo-600/35 text-indigo-400'
+                        : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     <Icon className="w-5 h-5" />

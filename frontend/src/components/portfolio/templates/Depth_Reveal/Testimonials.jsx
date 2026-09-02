@@ -29,13 +29,19 @@ const Testimonials = ({ testimonials = [] }) => (
       initial="hidden"
       whileInView="show"
       viewport={{ once: false, amount: 0.25 }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.06 } } }}
+      variants={{
+        hidden: {},
+        show: { transition: { staggerChildren: 0.12, delayChildren: 0.06 } },
+      }}
       className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8"
     >
       {testimonials.map((t) => (
         <motion.div
           key={`${t.name}-${t.role}`}
-          variants={{ hidden: { opacity: 0, y: 44, scale: 0.88, rotateX: 14 }, show: { opacity: 1, y: 0, scale: 1, rotateX: 0 } }}
+          variants={{
+            hidden: { opacity: 0, y: 44, scale: 0.88, rotateX: 14 },
+            show: { opacity: 1, y: 0, scale: 1, rotateX: 0 },
+          }}
           whileHover={{ y: -8, scale: 1.02 }}
           className="bg-slate-900/60 p-4 md:p-8 rounded-2xl border border-slate-800 shadow-[0_12px_40px_rgba(0,0,0,0.16)]"
           style={{ transformPerspective: 900 }}
@@ -43,7 +49,11 @@ const Testimonials = ({ testimonials = [] }) => (
           <Quote size={20} className="text-cyan-300 mb-4" />
           <p className="text-slate-300 italic mb-6">"{t.text}"</p>
           <div className="flex items-center gap-4">
-            <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover border border-cyan-500/40" />
+            <img
+              src={t.avatar}
+              alt={t.name}
+              className="w-12 h-12 rounded-full object-cover border border-cyan-500/40"
+            />
             <div>
               <p className="font-bold text-sm">{t.name}</p>
               <p className="text-xs text-cyan-300">{t.role}</p>

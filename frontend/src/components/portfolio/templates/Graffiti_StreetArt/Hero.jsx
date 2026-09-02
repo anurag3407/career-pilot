@@ -4,7 +4,9 @@ import { SprayCan, Brush, ArrowRight, Star, Zap, Palette } from 'lucide-react';
 export default function Hero() {
   // For demo/preview purposes, just show an alert when clicked
   const handleExploreClick = () => {
-    alert('🚀 This is a preview! In the full template, this would scroll to your portfolio section.');
+    alert(
+      '🚀 This is a preview! In the full template, this would scroll to your portfolio section.'
+    );
   };
 
   const handleContactClick = () => {
@@ -18,7 +20,7 @@ export default function Hero() {
         <div className="absolute -top-20 -left-20 h-80 w-80 animate-pulse rounded-full bg-pink-500 opacity-20 blur-3xl" />
         <div className="absolute -bottom-32 -right-32 h-96 w-96 animate-pulse rounded-full bg-yellow-500 opacity-20 blur-3xl delay-700" />
         <div className="absolute left-1/3 top-1/2 h-64 w-64 animate-pulse rounded-full bg-green-500 opacity-10 blur-3xl delay-1000" />
-        
+
         {/* Spray dots / graffiti texture */}
         <div className="absolute left-10 top-20 hidden md:block">
           {[...Array(20)].map((_, i) => (
@@ -67,25 +69,28 @@ export default function Hero() {
 
         {/* Description */}
         <p className="mx-auto mt-8 max-w-2xl text-base text-gray-200 md:text-lg lg:text-xl">
-          Bold colors, authentic street energy, and unforgettable design — 
-          your portfolio starts here. Let your creativity run wild.
+          Bold colors, authentic street energy, and unforgettable design — your portfolio starts
+          here. Let your creativity run wild.
         </p>
 
         {/* CTA Buttons */}
         <div className="mt-12 flex flex-col gap-4 sm:flex-row">
           {/* Primary CTA */}
-          <button type="button"
+          <button
+            type="button"
             onClick={handleExploreClick}
             className="group relative inline-flex cursor-pointer items-center overflow-hidden rounded-full bg-gradient-to-r from-pink-500 to-yellow-500 px-8 py-3 font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/50"
             aria-label="Explore portfolio work"
           >
             <span className="relative z-10 flex items-center gap-2">
-              Start Creating <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              Start Creating{' '}
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </span>
           </button>
-          
+
           {/* Secondary CTA */}
-          <button type="button"
+          <button
+            type="button"
             onClick={handleContactClick}
             className="inline-flex cursor-pointer items-center gap-2 rounded-full border-2 border-white/30 bg-transparent px-8 py-3 font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-pink-400 hover:bg-white/10"
             aria-label="Contact me"

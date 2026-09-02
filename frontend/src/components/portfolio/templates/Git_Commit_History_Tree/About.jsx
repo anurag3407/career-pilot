@@ -25,18 +25,30 @@ export default function About() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   const SOCIAL_ITEMS = [
-    { key: 'github',   icon: Github,   label: 'github',   href: socials.github,           color: '#8B949E' },
-    { key: 'linkedin', icon: Linkedin, label: 'linkedin', href: socials.linkedin,          color: '#58A6FF' },
-    { key: 'twitter',  icon: Twitter,  label: 'twitter',  href: socials.twitter,           color: '#58A6FF' },
-    { key: 'email',    icon: Mail,     label: 'email',    href: `mailto:${socials.email}`, color: '#3FB950' },
-  ].filter(s => s.href);
+    { key: 'github', icon: Github, label: 'github', href: socials.github, color: '#8B949E' },
+    {
+      key: 'linkedin',
+      icon: Linkedin,
+      label: 'linkedin',
+      href: socials.linkedin,
+      color: '#58A6FF',
+    },
+    { key: 'twitter', icon: Twitter, label: 'twitter', href: socials.twitter, color: '#58A6FF' },
+    { key: 'email', icon: Mail, label: 'email', href: `mailto:${socials.email}`, color: '#3FB950' },
+  ].filter((s) => s.href);
 
   // Build code lines dynamically from data
   const profileLines = [
     { content: '# git show profile.md', color: 'text-[#8B949E]' },
     { content: '' },
-    { content: `commit ${Math.abs(personal.name?.charCodeAt(0) ?? 65).toString(16)}a3f9b2 (HEAD → main)`, color: 'text-[#F0883E]' },
-    { content: `Author: ${personal.name} <${socials.email || 'dev@example.com'}>`, color: 'text-white' },
+    {
+      content: `commit ${Math.abs(personal.name?.charCodeAt(0) ?? 65).toString(16)}a3f9b2 (HEAD → main)`,
+      color: 'text-[#F0883E]',
+    },
+    {
+      content: `Author: ${personal.name} <${socials.email || 'dev@example.com'}>`,
+      color: 'text-white',
+    },
     { content: `Date:   ${new Date().toDateString()}`, color: 'text-white' },
     { content: '' },
     { content: `    docs: add profile.md`, color: 'text-white', indent: 1 },
@@ -46,15 +58,26 @@ export default function About() {
     { content: '' },
     { content: `+ ## ${personal.name || 'Developer'}`, color: 'text-[#3FB950]' },
     { content: '' },
-    ...(personal.bio || '').split('. ').filter(Boolean).map(sentence => ({
-      content: `+ ${sentence.trim()}.`,
-      color: 'text-[#3FB950]',
-    })),
+    ...(personal.bio || '')
+      .split('. ')
+      .filter(Boolean)
+      .map((sentence) => ({
+        content: `+ ${sentence.trim()}.`,
+        color: 'text-[#3FB950]',
+      })),
     { content: '' },
-    ...(personal.location ? [{ content: `+ 📍 Location  : ${personal.location}`, color: 'text-[#3FB950]' }] : []),
-    ...(socials.email    ? [{ content: `+ ✉️  Email     : ${socials.email}`,      color: 'text-[#3FB950]' }] : []),
-    ...(socials.github   ? [{ content: `+ 🐙 GitHub    : ${socials.github}`,      color: 'text-[#3FB950]' }] : []),
-    ...(socials.linkedin ? [{ content: `+ 💼 LinkedIn  : ${socials.linkedin}`,    color: 'text-[#3FB950]' }] : []),
+    ...(personal.location
+      ? [{ content: `+ 📍 Location  : ${personal.location}`, color: 'text-[#3FB950]' }]
+      : []),
+    ...(socials.email
+      ? [{ content: `+ ✉️  Email     : ${socials.email}`, color: 'text-[#3FB950]' }]
+      : []),
+    ...(socials.github
+      ? [{ content: `+ 🐙 GitHub    : ${socials.github}`, color: 'text-[#3FB950]' }]
+      : []),
+    ...(socials.linkedin
+      ? [{ content: `+ 💼 LinkedIn  : ${socials.linkedin}`, color: 'text-[#3FB950]' }]
+      : []),
   ];
 
   return (
@@ -65,7 +88,6 @@ export default function About() {
       aria-label="About"
     >
       <div className="max-w-5xl mx-auto space-y-8">
-
         {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -93,7 +115,9 @@ export default function About() {
               <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
               <div className="w-3 h-3 rounded-full bg-[#28C840]" />
               <span className="ml-3 font-mono text-xs text-[#8B949E]">profile.md — git diff</span>
-              <span className="ml-auto font-mono text-xs text-[#3FB950]">+{profileLines.filter(l => l.color === 'text-[#3FB950]').length} additions</span>
+              <span className="ml-auto font-mono text-xs text-[#3FB950]">
+                +{profileLines.filter((l) => l.color === 'text-[#3FB950]').length} additions
+              </span>
             </div>
 
             {/* Code lines */}
@@ -107,7 +131,9 @@ export default function About() {
                 >
                   {line.content === '' ? (
                     <div className="flex gap-4 h-5">
-                      <span className="text-[#484F58] w-8 text-right shrink-0 font-mono text-sm">{i + 1}</span>
+                      <span className="text-[#484F58] w-8 text-right shrink-0 font-mono text-sm">
+                        {i + 1}
+                      </span>
                     </div>
                   ) : (
                     <CodeLine
@@ -178,8 +204,13 @@ export default function About() {
                   className="flex items-center gap-3 text-sm text-[#8B949E] hover:text-white transition-colors group"
                 >
                   <Icon size={14} style={{ color }} />
-                  <span className="font-mono text-xs flex-1 truncate" style={{ color }}>{href}</span>
-                  <ExternalLink size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="font-mono text-xs flex-1 truncate" style={{ color }}>
+                    {href}
+                  </span>
+                  <ExternalLink
+                    size={10}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  />
                 </a>
               ))}
             </div>

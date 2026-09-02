@@ -1,5 +1,13 @@
 import { useCallback, useEffect } from 'react';
-import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
+import {
+  ReactFlow,
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import dagre from 'dagre';
 import { useAnalyzerStore } from '../../stores/useAnalyzerStore';
@@ -47,12 +55,12 @@ const getLayoutedElements = (nodes, edges, direction = 'TB') => {
 export default function GraphCanvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  
-  const storeNodes = useAnalyzerStore(state => state.nodes);
-  const storeEdges = useAnalyzerStore(state => state.edges);
-  const sessionId = useAnalyzerStore(state => state.sessionId);
-  const setSelectedFile = useAnalyzerStore(state => state.setSelectedFile);
-  const setFileContent = useAnalyzerStore(state => state.setFileContent);
+
+  const storeNodes = useAnalyzerStore((state) => state.nodes);
+  const storeEdges = useAnalyzerStore((state) => state.edges);
+  const sessionId = useAnalyzerStore((state) => state.sessionId);
+  const setSelectedFile = useAnalyzerStore((state) => state.setSelectedFile);
+  const setFileContent = useAnalyzerStore((state) => state.setFileContent);
 
   useEffect(() => {
     if (storeNodes.length > 0) {
@@ -68,17 +76,14 @@ export default function GraphCanvas() {
     }
   }, [storeNodes, storeEdges, setNodes, setEdges]);
 
-  const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   const onNodeClick = async (_, node) => {
     if (!sessionId) return;
-    
+
     setSelectedFile(node.data);
     setFileContent('');
-    
+
     try {
       const content = await analyzerApi.getFileContent(sessionId, node.data.relativePath);
       setFileContent(content);
@@ -105,9 +110,9 @@ export default function GraphCanvas() {
       >
         <Background color="#1e293b" gap={16} />
         <Controls className="!bg-[#0f172a] !border-slate-700 !fill-slate-300" />
-        <MiniMap 
-          className="!bg-[#0f172a] !border-slate-700" 
-          nodeColor="#3b82f6" 
+        <MiniMap
+          className="!bg-[#0f172a] !border-slate-700"
+          nodeColor="#3b82f6"
           maskColor="rgba(5, 8, 22, 0.7)"
         />
       </ReactFlow>

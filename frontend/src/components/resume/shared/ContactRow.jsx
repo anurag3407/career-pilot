@@ -18,8 +18,8 @@ export default function ContactRow({
   fontSize = '9pt',
   short = false,
 }) {
-  if (!value) return null
-  const display = short ? value.replace(/^https?:\/\//, '').replace(/^www\./, '') : value
+  if (!value) return null;
+  const display = short ? value.replace(/^https?:\/\//, '').replace(/^www\./, '') : value;
   return (
     <div style={{ marginBottom: '2mm', fontSize, lineHeight: 1.35 }}>
       <div
@@ -36,5 +36,5 @@ export default function ContactRow({
       </div>
       <div style={{ color: valueColor, wordBreak: 'break-word' }}>{display}</div>
     </div>
-  )
+  );
 }

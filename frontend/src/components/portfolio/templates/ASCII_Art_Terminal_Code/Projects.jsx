@@ -1,11 +1,23 @@
 import React, { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Github, ExternalLink, ChevronRight, ChevronDown, Code2, Folder, FolderOpen } from 'lucide-react';
+import {
+  Github,
+  ExternalLink,
+  ChevronRight,
+  ChevronDown,
+  Code2,
+  Folder,
+  FolderOpen,
+} from 'lucide-react';
 import { usePortfolio } from './PortfolioContext';
 
 /* ─── Project Card — code-editor style ──────────────────────────── */
 function ProjectCard({ project, index, isOpen, onToggle }) {
-  const slugify = str => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const slugify = (str) =>
+    str
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
 
   return (
     <motion.div
@@ -15,7 +27,8 @@ function ProjectCard({ project, index, isOpen, onToggle }) {
       className="border border-green-900/40 bg-black/80 hover:border-green-700/60 transition-colors"
     >
       {/* File tree row */}
-      <button type="button"
+      <button
+        type="button"
         onClick={onToggle}
         className="w-full flex items-center gap-2 px-4 py-2.5 font-mono text-sm text-left hover:bg-green-900/10 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-green-500"
         aria-expanded={isOpen}
@@ -26,14 +39,15 @@ function ProjectCard({ project, index, isOpen, onToggle }) {
           size={14}
           className={`text-green-600 transition-transform ${isOpen ? 'rotate-90' : ''}`}
         />
-        {isOpen
-          ? <FolderOpen size={14} className="text-amber-400 shrink-0" />
-          : <Folder size={14} className="text-amber-700 shrink-0" />
-        }
+        {isOpen ? (
+          <FolderOpen size={14} className="text-amber-400 shrink-0" />
+        ) : (
+          <Folder size={14} className="text-amber-700 shrink-0" />
+        )}
         <span className="text-green-300">├──</span>
         <span className="text-white flex-1">{slugify(project.title)}/</span>
         <div className="flex gap-1.5 flex-wrap">
-          {project.techStack?.slice(0, 3).map(t => (
+          {project.techStack?.slice(0, 3).map((t) => (
             <span
               key={t}
               className="text-[10px] border border-green-900/60 text-green-700 px-1.5 py-0.5 rounded-sm"
@@ -80,7 +94,10 @@ function ProjectCard({ project, index, isOpen, onToggle }) {
                     {/* CRT overlay on image */}
                     <div
                       className="absolute inset-0 pointer-events-none"
-                      style={{ background: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px)' }}
+                      style={{
+                        background:
+                          'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px)',
+                      }}
                     />
                   </div>
                 )}
@@ -94,16 +111,14 @@ function ProjectCard({ project, index, isOpen, onToggle }) {
                   </div>
 
                   {/* Description */}
-                  <div className="text-green-300/70 leading-relaxed">
-                    {project.description}
-                  </div>
+                  <div className="text-green-300/70 leading-relaxed">{project.description}</div>
 
                   {/* Tech stack */}
                   {project.techStack?.length > 0 && (
                     <div>
                       <div className="text-green-700 mb-1">{'/* tech_stack */'}</div>
                       <div className="flex flex-wrap gap-1.5">
-                        {project.techStack.map(t => (
+                        {project.techStack.map((t) => (
                           <span
                             key={t}
                             className="border border-cyan-900/60 text-cyan-400 px-2 py-0.5 text-[10px]"
@@ -161,7 +176,7 @@ export default function Projects() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [openIndex, setOpenIndex] = useState(0);
 
-  const toggle = i => setOpenIndex(prev => (prev === i ? null : i));
+  const toggle = (i) => setOpenIndex((prev) => (prev === i ? null : i));
 
   return (
     <section
@@ -171,7 +186,6 @@ export default function Projects() {
       aria-label="Projects"
     >
       <div className="max-w-4xl mx-auto space-y-6">
-
         {/* Command */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -184,7 +198,9 @@ export default function Projects() {
             <span className="text-white"> ls -la projects/</span>
           </div>
           <div className="text-green-700 text-xs mt-1 mb-2">
-            {'# total '}{data.projects.length}{' projects found'}
+            {'# total '}
+            {data.projects.length}
+            {' projects found'}
           </div>
         </motion.div>
 

@@ -6,7 +6,7 @@ export default function Experience({ experience }) {
 
   return (
     <section className="max-w-4xl mx-auto">
-      <motion.h3 
+      <motion.h3
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
@@ -26,16 +26,14 @@ export default function Experience({ experience }) {
             className="relative"
           >
             <div className="absolute -left-[41px] top-1.5 w-5 h-5 bg-stone-900 border-2 border-amber-600 rounded-full" />
-            
+
             <div className="bg-stone-800/40 p-6 rounded-xl border border-stone-700 hover:border-amber-700/50 transition-colors">
               <span className="text-amber-500 text-sm font-semibold tracking-wider uppercase mb-2 block">
                 {exp.duration}
               </span>
               <h4 className="text-xl font-bold text-stone-100">{exp.role}</h4>
               <h5 className="text-lg text-orange-300/80 mb-4">{exp.company}</h5>
-              <p className="text-stone-400 leading-relaxed">
-                {exp.description}
-              </p>
+              <p className="text-stone-400 leading-relaxed">{exp.description}</p>
             </div>
           </motion.div>
         ))}

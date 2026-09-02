@@ -17,8 +17,8 @@ export default function Experience({ experience }) {
 
         <div className="space-y-8 relative z-10">
           {experience.map((exp, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className={`flex flex-col md:flex-row gap-6 items-stretch ${idx % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
             >
               {/* Left/Right Action Panel */}
@@ -31,7 +31,7 @@ export default function Experience({ experience }) {
                     </span>
                   </div>
                   <h4 className="text-xl font-bold mb-4 italic">@ {exp.company}</h4>
-                  
+
                   {Array.isArray(exp.description) ? (
                     <ul className="space-y-2 mb-4 list-none">
                       {exp.description.map((desc, i) => (

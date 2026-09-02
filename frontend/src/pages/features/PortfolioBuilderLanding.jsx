@@ -25,10 +25,8 @@ export default function PortfolioBuilderLanding() {
   const primaryCtaLink = user ? config.primaryAction.to : config.hero.primaryCta.to;
   const ctaSectionText = user ? config.primaryAction.label : config.cta.ctaText;
   const ctaSectionLink = user ? config.primaryAction.to : config.cta.ctaTo;
-  const previewName = [
-    user?.firstName,
-    user?.lastName,
-  ].filter(Boolean).join(' ') ||
+  const previewName =
+    [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
     user?.displayName ||
     user?.name ||
     user?.fullName ||
@@ -36,7 +34,6 @@ export default function PortfolioBuilderLanding() {
     user?.profile?.name ||
     user?.email?.split('@')[0] ||
     'Your Name';
-
 
   return (
     <div className="relative flex flex-col min-h-screen bg-[#0a0a0a] text-foreground">
@@ -73,10 +70,7 @@ export default function PortfolioBuilderLanding() {
         <AIEditorCard onOpen={() => setAiBuilderOpen(true)} />
 
         <div className="bg-[#0a0a0a]/60 backdrop-blur-[2px]">
-          <FeatureShowcase
-            heading={config.showcase.heading}
-            features={config.showcase.features}
-          />
+          <FeatureShowcase heading={config.showcase.heading} features={config.showcase.features} />
 
           <div id="demo">
             <FeatureVideoSection
@@ -111,10 +105,7 @@ export default function PortfolioBuilderLanding() {
       <Footer />
 
       {/* AI Builder modal */}
-      <AIBuilderModal
-        isOpen={aiBuilderOpen}
-        onClose={() => setAiBuilderOpen(false)}
-      />
+      <AIBuilderModal isOpen={aiBuilderOpen} onClose={() => setAiBuilderOpen(false)} />
     </div>
   );
 }

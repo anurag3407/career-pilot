@@ -1,14 +1,14 @@
-import React from "react";
-import { motion as Motion } from "framer-motion";
-import { Github, ExternalLink } from "lucide-react";
+import React from 'react';
+import { motion as Motion } from 'framer-motion';
+import { Github, ExternalLink } from 'lucide-react';
 
 const CARD_COLORS = [
-  { border: "#ff2bd6", glow: "#ff2bd6", badge: "rgba(255,43,214,0.15)" },
-  { border: "#00d4ff", glow: "#00d4ff", badge: "rgba(0,212,255,0.15)" },
-  { border: "#39ff14", glow: "#39ff14", badge: "rgba(57,255,20,0.15)" },
-  { border: "#ffd000", glow: "#ffd000", badge: "rgba(255,208,0,0.15)" },
-  { border: "#b026ff", glow: "#b026ff", badge: "rgba(176,38,255,0.15)" },
-  { border: "#ff8c00", glow: "#ff8c00", badge: "rgba(255,140,0,0.15)" },
+  { border: '#ff2bd6', glow: '#ff2bd6', badge: 'rgba(255,43,214,0.15)' },
+  { border: '#00d4ff', glow: '#00d4ff', badge: 'rgba(0,212,255,0.15)' },
+  { border: '#39ff14', glow: '#39ff14', badge: 'rgba(57,255,20,0.15)' },
+  { border: '#ffd000', glow: '#ffd000', badge: 'rgba(255,208,0,0.15)' },
+  { border: '#b026ff', glow: '#b026ff', badge: 'rgba(176,38,255,0.15)' },
+  { border: '#ff8c00', glow: '#ff8c00', badge: 'rgba(255,140,0,0.15)' },
 ];
 
 export default function Projects({ data }) {
@@ -32,15 +32,15 @@ export default function Projects({ data }) {
           <div
             className="inline-block px-6 py-3 rounded border-2 border-pink-500 mb-4"
             style={{
-              background: "rgba(255,43,214,0.05)",
-              boxShadow: "0 0 20px #ff2bd6, 0 0 40px #ff2bd640",
+              background: 'rgba(255,43,214,0.05)',
+              boxShadow: '0 0 20px #ff2bd6, 0 0 40px #ff2bd640',
             }}
           >
             <h2
               className="text-3xl md:text-4xl font-black uppercase tracking-widest text-pink-300"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 10px #ff2bd6, 0 0 20px #ff2bd6, 0 0 40px #ff2bd6",
+                textShadow: '0 0 10px #ff2bd6, 0 0 20px #ff2bd6, 0 0 40px #ff2bd6',
               }}
             >
               ★ PROJECTS ★
@@ -49,8 +49,8 @@ export default function Projects({ data }) {
           <div
             className="w-40 h-1 mx-auto mt-2 rounded-full"
             style={{
-              background: "linear-gradient(90deg, transparent, #ff2bd6, transparent)",
-              boxShadow: "0 0 10px #ff2bd6",
+              background: 'linear-gradient(90deg, transparent, #ff2bd6, transparent)',
+              boxShadow: '0 0 10px #ff2bd6',
             }}
           />
         </Motion.div>
@@ -70,10 +70,10 @@ export default function Projects({ data }) {
                 className="group rounded-2xl overflow-hidden relative flex flex-col"
                 style={{
                   border: `2px solid ${colorObj.border}60`,
-                  background: "rgba(255,255,255,0.02)",
-                  backdropFilter: "blur(10px)",
+                  background: 'rgba(255,255,255,0.02)',
+                  backdropFilter: 'blur(10px)',
                   boxShadow: `0 0 20px ${colorObj.glow}20`,
-                  transition: "all 0.4s ease",
+                  transition: 'all 0.4s ease',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = colorObj.border;
@@ -117,7 +117,7 @@ export default function Projects({ data }) {
                       fontFamily: "'Courier New', monospace",
                     }}
                   >
-                    {String(idx + 1).padStart(2, "0")}
+                    {String(idx + 1).padStart(2, '0')}
                   </div>
                 </div>
 
@@ -185,7 +185,7 @@ export default function Projects({ data }) {
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.borderColor = `${colorObj.border}60`;
-                          e.currentTarget.style.boxShadow = "none";
+                          e.currentTarget.style.boxShadow = 'none';
                         }}
                       >
                         <Github size={13} />

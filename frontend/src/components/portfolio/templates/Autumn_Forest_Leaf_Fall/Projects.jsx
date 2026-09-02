@@ -6,7 +6,7 @@ export default function Projects({ projects }) {
 
   return (
     <section className="max-w-6xl mx-auto">
-      <motion.h3 
+      <motion.h3
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
@@ -27,23 +27,21 @@ export default function Projects({ projects }) {
           >
             <div className="h-48 overflow-hidden relative">
               <div className="absolute inset-0 bg-amber-900/20 group-hover:bg-transparent transition-colors z-10" />
-              <img 
-                src={project.image || 'https://via.placeholder.com/600x400?text=Project+Image'} 
-                alt={project.title} 
+              <img
+                src={project.image || 'https://via.placeholder.com/600x400?text=Project+Image'}
+                alt={project.title}
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
               />
             </div>
-            
+
             <div className="p-6">
               <h4 className="text-2xl font-bold text-stone-100 mb-3">{project.title}</h4>
-              <p className="text-stone-400 mb-6 line-clamp-3">
-                {project.description}
-              </p>
-              
+              <p className="text-stone-400 mb-6 line-clamp-3">{project.description}</p>
+
               <div className="flex flex-wrap gap-2 mb-6">
                 {project.techStack?.map((tech, i) => (
-                  <span 
-                    key={i} 
+                  <span
+                    key={i}
                     className="px-3 py-1 text-xs font-medium bg-stone-900 text-orange-300 rounded-full border border-orange-900/30"
                   >
                     {tech}
@@ -53,7 +51,7 @@ export default function Projects({ projects }) {
 
               <div className="flex gap-4">
                 {project.link && (
-                  <a 
+                  <a
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -63,7 +61,7 @@ export default function Projects({ projects }) {
                   </a>
                 )}
                 {project.github && (
-                  <a 
+                  <a
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"

@@ -19,19 +19,25 @@ export default function HolographicTemplate() {
       <About />
       <Skills />
       <Experience />
-      <Projects projects={data?.projects} title="Projects" subtitle="Engineered at the intersection of imagination and reality" />
-      <ResumeCTA data={{
-        eyebrow: "Download Resume",
-        heading: ["Ready to make", "an impression?"],
-        body: "Every opportunity starts with a single document. My resume captures the full spectrum of my work — engineered to stand out in any dimension.",
-        stats: [
-          { value: data?.experience?.length || "5+", label: "Roles" },
-          { value: data?.projects?.length || "40+", label: "Projects shipped" },
-          { value: data?.skills?.length || "12", label: "Core Skills" }
-        ],
-        resumeUrl: "#",
-        previewUrl: "#"
-      }} />
+      <Projects
+        projects={data?.projects}
+        title="Projects"
+        subtitle="Engineered at the intersection of imagination and reality"
+      />
+      <ResumeCTA
+        data={{
+          eyebrow: 'Download Resume',
+          heading: ['Ready to make', 'an impression?'],
+          body: 'Every opportunity starts with a single document. My resume captures the full spectrum of my work — engineered to stand out in any dimension.',
+          stats: [
+            { value: data?.experience?.length || '5+', label: 'Roles' },
+            { value: data?.projects?.length || '40+', label: 'Projects shipped' },
+            { value: data?.skills?.length || '12', label: 'Core Skills' },
+          ],
+          resumeUrl: '#',
+          previewUrl: '#',
+        }}
+      />
       <Testimonials />
       <Contact />
     </div>

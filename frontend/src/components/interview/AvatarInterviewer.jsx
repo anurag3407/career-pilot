@@ -21,25 +21,18 @@ const PALETTE = {
   gemini: { from: '#6366f1', to: '#a855f7', glow: 'rgba(168,85,247,0.5)' },
   openai: { from: '#10a37f', to: '#0d8c6c', glow: 'rgba(16,163,127,0.5)' },
   openrouter: { from: '#8b5cf6', to: '#ec4899', glow: 'rgba(236,72,153,0.5)' },
-  groq: { from: '#f59e0b', to: '#ef4444', glow: 'rgba(245,158,11,0.5)' }
+  groq: { from: '#f59e0b', to: '#ef4444', glow: 'rgba(245,158,11,0.5)' },
 };
 
 const renderShape = (provider) => {
   switch (provider) {
     case 'openai':
-      return (
-        <rect x="40" y="40" width="120" height="120" rx="28" fill="url(#g)" />
-      );
+      return <rect x="40" y="40" width="120" height="120" rx="28" fill="url(#g)" />;
     case 'openrouter':
-      return (
-        <polygon points="100,20 175,60 175,140 100,180 25,140 25,60" fill="url(#g)" />
-      );
+      return <polygon points="100,20 175,60 175,140 100,180 25,140 25,60" fill="url(#g)" />;
     case 'groq':
       return (
-        <path
-          d="M70 30 L130 30 L150 80 L120 90 L150 170 L70 170 L100 90 L70 80 Z"
-          fill="url(#g)"
-        />
+        <path d="M70 30 L130 30 L150 80 L120 90 L150 170 L70 170 L100 90 L70 80 Z" fill="url(#g)" />
       );
     case 'gemini':
     default:
@@ -47,7 +40,11 @@ const renderShape = (provider) => {
   }
 };
 
-export default function AvatarInterviewer({ isSpeaking = false, amplitude = 0, provider: providerProp }) {
+export default function AvatarInterviewer({
+  isSpeaking = false,
+  amplitude = 0,
+  provider: providerProp,
+}) {
   const [pulse, setPulse] = useState(0);
   const activeConfig = useAIConfigStore((s) => s.activeProvider);
   const provider = providerProp || activeConfig || 'gemini';
@@ -78,7 +75,7 @@ export default function AvatarInterviewer({ isSpeaking = false, amplitude = 0, p
         style={{
           background: colors.glow,
           transform: `scale(${glowScale})`,
-          opacity: isSpeaking ? 0.8 : 0.35
+          opacity: isSpeaking ? 0.8 : 0.35,
         }}
         aria-hidden="true"
       />
@@ -100,7 +97,7 @@ export default function AvatarInterviewer({ isSpeaking = false, amplitude = 0, p
           style={{
             transformOrigin: '100px 100px',
             transform: `scale(${breathScale})`,
-            transition: 'transform 120ms ease-out'
+            transition: 'transform 120ms ease-out',
           }}
         >
           {renderShape(provider)}

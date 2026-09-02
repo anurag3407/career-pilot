@@ -1,13 +1,12 @@
-import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
-import { useTheme } from "../hooks/useTheme";
-import Navbar from "../components/Navbar";
-import DeployModal from "../components/portfolio/DeployModal";
-import ThemeSelector from "../components/portfolio/ThemeSelector";
+import React, { useState, useRef, useEffect, Suspense, useMemo } from 'react';
+import { useTheme } from '../hooks/useTheme';
+import Navbar from '../components/Navbar';
+import DeployModal from '../components/portfolio/DeployModal';
+import ThemeSelector from '../components/portfolio/ThemeSelector';
 import { templates } from '../data/templates';
-import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
-
+import { motion, AnimatePresence } from 'framer-motion';
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -48,8 +47,7 @@ function TemplatePreviewFrame({ label, badgeColor, children }) {
 // import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
 // import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
 
-
-function FilterSelect({ value, onChange, options, className = "" }) {
+function FilterSelect({ value, onChange, options, className = '' }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const selectedLabel = options.find((o) => o.value === value)?.label ?? value;
@@ -120,9 +118,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
                   `}
                 >
                   <span>{opt.label}</span>
-                  {isSelected && (
-                    <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  )}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
                 </li>
               );
             })}
@@ -132,7 +128,6 @@ function FilterSelect({ value, onChange, options, className = "" }) {
     </div>
   );
 }
-
 
 function useInView(options = {}) {
   const [inView, setInView] = useState(false);
@@ -180,8 +175,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         hover: {
           y: -10,
           scale: 1.02,
-          boxShadow:
-            '0 28px 52px rgba(0,0,0,0.50), 0 0 0 1px rgba(99,102,241,0.55)',
+          boxShadow: '0 28px 52px rgba(0,0,0,0.50), 0 0 0 1px rgba(99,102,241,0.55)',
           borderColor: 'rgba(99,102,241,0.65)',
           transition: { type: 'spring', stiffness: 280, damping: 22 },
         },
@@ -190,20 +184,23 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
       ref={ref}
     >
       <div className="overflow-hidden relative bg-background aspect-[16/10]">
-        
         {/* Layer 0: Sleek Fallback Placeholder / Loading Screen */}
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 to-black p-6 text-center z-0">
-           {!iframeLoaded ? (
-             <div className="flex flex-col items-center gap-3">
-               <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-               <span className="text-xs text-cyan-300 font-mono uppercase tracking-widest animate-pulse">Loading Hero Section</span>
-             </div>
-           ) : (
-             <>
-                <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
-                <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{template.title}</h3>
-             </>
-           )}
+          {!iframeLoaded ? (
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs text-cyan-300 font-mono uppercase tracking-widest animate-pulse">
+                Loading Hero Section
+              </span>
+            </div>
+          ) : (
+            <>
+              <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
+              <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">
+                {template.title}
+              </h3>
+            </>
+          )}
         </div>
 
         {/* Layer 1: Live iframe — loads when in view to provide an always-visible hero section */}
@@ -237,23 +234,17 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
       </div>
 
       <div className="p-5 flex-1">
-        <h2 className="text-2xl font-semibold text-foreground">
-          {template.title}
-        </h2>
-        <p className="text-muted-foreground mt-1 text-sm">
-          By {template.author}
-        </p>
+        <h2 className="text-2xl font-semibold text-foreground">{template.title}</h2>
+        <p className="text-muted-foreground mt-1 text-sm">By {template.author}</p>
         <div className="flex flex-wrap gap-2 mt-3">
-          {[template.category, template.colorScheme, template.layout].map(
-            (tag) => (
-              <span
-                key={tag}
-                className="text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-full"
-              >
-                {tag}
-              </span>
-            )
-          )}
+          {[template.category, template.colorScheme, template.layout].map((tag) => (
+            <span
+              key={tag}
+              className="text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-full"
+            >
+              {tag}
+            </span>
+          ))}
         </div>
       </div>
 
@@ -336,7 +327,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
         >
           <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card shrink-0">
             <span className="text-sm font-semibold text-foreground/70 uppercase tracking-widest">
-              Preview — {templateId?.replace(/_/g, " ")}
+              Preview — {templateId?.replace(/_/g, ' ')}
             </span>
             <button
               onClick={onClose}
@@ -345,13 +336,20 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
               <X className="w-5 h-5" />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto relative bg-background" style={{ transform: "translate(0)" }}>
-            <Suspense fallback={
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
-                <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-                <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
-              </div>
-            }>
+          <div
+            className="flex-1 overflow-y-auto relative bg-background"
+            style={{ transform: 'translate(0)' }}
+          >
+            <Suspense
+              fallback={
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
+                  <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                  <p className="animate-pulse font-medium tracking-wide text-sm uppercase">
+                    Loading interactive preview...
+                  </p>
+                </div>
+              }
+            >
               {Component && <Component portfolioData={portfolioData} />}
             </Suspense>
           </div>
@@ -364,14 +362,14 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
-  const previewTemplateId = searchParams.get("preview");
+  const previewTemplateId = searchParams.get('preview');
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  const [category, setCategory] = useState("All");
-  const [colorScheme, setColorScheme] = useState("All");
-  const [layout, setLayout] = useState("All");
-  const [sort, setSort] = useState("Popular");
-  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState('All');
+  const [colorScheme, setColorScheme] = useState('All');
+  const [layout, setLayout] = useState('All');
+  const [sort, setSort] = useState('Popular');
+  const [search, setSearch] = useState('');
 
   const [aiDraft, setAiDraft] = useState(null);
 
@@ -380,7 +378,7 @@ export default function TemplateGallery() {
     if (draft) {
       try {
         setAiDraft(JSON.parse(draft));
-      } catch(e) {}
+      } catch (e) {}
     }
   }, []);
 
@@ -388,12 +386,12 @@ export default function TemplateGallery() {
     localStorage.removeItem('ai_portfolio_draft');
     setAiDraft(null);
   };
-  const [selectedTheme, setSelectedTheme] = useState("minimal");
+  const [selectedTheme, setSelectedTheme] = useState('minimal');
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
-  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
-  const [selectedTemplateId, setSelectedTemplateId] = useState("default");
+  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState('');
+  const [selectedTemplateId, setSelectedTemplateId] = useState('default');
 
-  const handleUseTemplate = (val, isPreview, id = "default") => {
+  const handleUseTemplate = (val, isPreview, id = 'default') => {
     if (isPreview) {
       setSearchParams({ preview: val });
     } else {
@@ -429,13 +427,12 @@ export default function TemplateGallery() {
   ];
 
   const filteredTemplates = templates.filter((template) => {
-    const matchesCategory =
-      category === 'All' || template.category === category;
-    const matchesColorScheme =
-      colorScheme === 'All' || template.colorScheme === colorScheme;
+    const matchesCategory = category === 'All' || template.category === category;
+    const matchesColorScheme = colorScheme === 'All' || template.colorScheme === colorScheme;
     const matchesLayout = layout === 'All' || template.layout === layout;
     const q = search.toLowerCase().trim();
-    const matchesSearch = !q ||
+    const matchesSearch =
+      !q ||
       template.title?.toLowerCase().includes(q) ||
       template.author?.toLowerCase().includes(q) ||
       template.colorScheme?.toLowerCase().includes(q) ||
@@ -443,18 +440,16 @@ export default function TemplateGallery() {
       template.category?.toLowerCase().includes(q);
     return matchesCategory && matchesColorScheme && matchesLayout && matchesSearch;
   });
-  
+
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-  if (sort === 'Popular') return b.views - a.views;
-  if (sort === 'Highest Rated') return b.rating - a.rating;
-  if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
-  return 0;
+    if (sort === 'Popular') return b.views - a.views;
+    if (sort === 'Highest Rated') return b.rating - a.rating;
+    if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
+    return 0;
   });
 
-  logger.log("Vercel cards filtered", {
-    cards: sortedTemplates.filter(
-      (t) => t.title === "Vercel Deploy"
-    ).length
+  logger.log('Vercel cards filtered', {
+    cards: sortedTemplates.filter((t) => t.title === 'Vercel Deploy').length,
   });
 
   return (
@@ -465,7 +460,7 @@ export default function TemplateGallery() {
         templateId={previewTemplateId}
         isOpen={!!previewTemplateId}
         onClose={() => {
-          if (searchParams.has("preview")) {
+          if (searchParams.has('preview')) {
             window.history.back();
           } else {
             setSearchParams({}, { replace: true });
@@ -475,7 +470,6 @@ export default function TemplateGallery() {
       />
 
       <div className="p-8 pt-24">
-
         {aiDraft && (
           <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
             <div>
@@ -483,8 +477,8 @@ export default function TemplateGallery() {
                 <Sparkles className="w-5 h-5" /> ✨ Resume Parsed Successfully!
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Your data has been extracted. Select a template below and we'll
-                automatically inject your experience and projects!
+                Your data has been extracted. Select a template below and we'll automatically inject
+                your experience and projects!
               </p>
             </div>
             <button
@@ -512,11 +506,7 @@ export default function TemplateGallery() {
                 exit={{ y: -20, opacity: 0, rotate: -45 }}
                 transition={{ duration: 0.2 }}
               >
-                {theme === 'light' ? (
-                  <Moon className="w-5 h-5" />
-                ) : (
-                  <Sun className="w-5 h-5" />
-                )}
+                {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
               </motion.div>
             </AnimatePresence>
           </button>
@@ -525,22 +515,17 @@ export default function TemplateGallery() {
         <div className="mb-8 rounded-2xl border border-border bg-card p-5">
           <div className="mb-4 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-semibold text-foreground">
-                Portfolio theme
-              </h2>
+              <h2 className="text-xl font-semibold text-foreground">Portfolio theme</h2>
               <p className="text-sm text-muted-foreground">
-                Pick a theme before deploying. Premium themes are shown and
-                locked in the live gallery flow.
+                Pick a theme before deploying. Premium themes are shown and locked in the live
+                gallery flow.
               </p>
             </div>
             <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground">
               Selected: {selectedTheme}
             </span>
           </div>
-          <ThemeSelector
-            selectedTheme={selectedTheme}
-            onSelectTheme={setSelectedTheme}
-          />
+          <ThemeSelector selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
         </div>
 
         <div className="mb-4">
@@ -548,19 +533,26 @@ export default function TemplateGallery() {
             <input
               type="text"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search templates... e.g. Cyberpunk, Minimal, Dark"
               className="w-full px-5 py-3.5 pl-12 rounded-2xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/60 transition-all text-sm"
             />
             <svg
               className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
             {search && (
               <button
-                onClick={() => setSearch("")}
+                onClick={() => setSearch('')}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="w-4 h-4" />
@@ -570,21 +562,9 @@ export default function TemplateGallery() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3 mb-8">
-          <FilterSelect
-            value={category}
-            onChange={setCategory}
-            options={CATEGORY_OPTIONS}
-          />
-          <FilterSelect
-            value={colorScheme}
-            onChange={setColorScheme}
-            options={COLOR_OPTIONS}
-          />
-          <FilterSelect
-            value={layout}
-            onChange={setLayout}
-            options={LAYOUT_OPTIONS}
-          />
+          <FilterSelect value={category} onChange={setCategory} options={CATEGORY_OPTIONS} />
+          <FilterSelect value={colorScheme} onChange={setColorScheme} options={COLOR_OPTIONS} />
+          <FilterSelect value={layout} onChange={setLayout} options={LAYOUT_OPTIONS} />
           <FilterSelect
             value={sort}
             onChange={setSort}
@@ -598,10 +578,15 @@ export default function TemplateGallery() {
             <div className="text-4xl mb-4">🔍</div>
             <div className="text-xl font-semibold mb-2">No templates found</div>
             <div className="text-sm">
-              {search ? `No results for "${search}" — try a different keyword` : "No templates match the selected filters"}
+              {search
+                ? `No results for "${search}" — try a different keyword`
+                : 'No templates match the selected filters'}
             </div>
             {search && (
-              <button onClick={() => setSearch("")} className="mt-4 text-cyan-400 hover:text-cyan-300 text-sm underline">
+              <button
+                onClick={() => setSearch('')}
+                className="mt-4 text-cyan-400 hover:text-cyan-300 text-sm underline"
+              >
                 Clear search
               </button>
             )}
@@ -630,9 +615,6 @@ export default function TemplateGallery() {
           aiDraft={aiDraft}
           onDeploySuccess={clearDraft}
         />
-
-
-
       </div>
 
       {/* Inspired Clyde DSouza - sandboxed fixed-nav frame */}
@@ -641,10 +623,21 @@ export default function TemplateGallery() {
           <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-500 border border-emerald-500/25">
             🧑 Clyde D'Souza Inspired
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Clyde D'Souza - Vibrant Split Pane</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Inspired by Clyde D'Souza - Vibrant Split Pane
+          </h2>
         </div>
-        <div className="rounded-2xl border border-emerald-500/15"
-          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#f9fafb" }}>
+        <div
+          className="rounded-2xl border border-emerald-500/15"
+          style={{
+            height: 640,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            transform: 'translate(0)',
+            position: 'relative',
+            backgroundColor: '#f9fafb',
+          }}
+        >
           <InspiredClydeDSouza />
         </div>
       </div>
@@ -655,16 +648,24 @@ export default function TemplateGallery() {
           <span className="rounded-full bg-slate-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-slate-500 border border-slate-500/25">
             ✨ Delba Inspired
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Delba - Minimalist Typography</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Inspired by Delba - Minimalist Typography
+          </h2>
         </div>
-        <div className="rounded-2xl border border-slate-500/15"
-          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#FAFAFA" }}>
+        <div
+          className="rounded-2xl border border-slate-500/15"
+          style={{
+            height: 640,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            transform: 'translate(0)',
+            position: 'relative',
+            backgroundColor: '#FAFAFA',
+          }}
+        >
           <InspiredDelba />
         </div>
       </div>
-
     </div>
   );
 }
-      
-       

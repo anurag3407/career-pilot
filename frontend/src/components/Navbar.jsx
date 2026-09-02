@@ -1,45 +1,39 @@
-import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
-import { useTheme } from '../hooks/useTheme'
-import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Menu,
-  X,
-  Sun,
-  Moon,
-  ChevronDown,
-} from 'lucide-react'
-import { FEATURES } from '../data/featuresConfig'
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useTheme } from '../hooks/useTheme';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Sun, Moon, ChevronDown } from 'lucide-react';
+import { FEATURES } from '../data/featuresConfig';
 
 export default function Navbar() {
-  const { user } = useAuth()
-  const { theme, toggleTheme } = useTheme()
-  const location = useLocation()
+  const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [showProductsDropdown, setShowProductsDropdown] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [showProductsDropdown, setShowProductsDropdown] = useState(false);
 
-  const productLinks = FEATURES.map(feature => ({
+  const productLinks = FEATURES.map((feature) => ({
     path: `/${feature.slug}`,
     label: feature.name,
     description: feature.tagline.split('.')[0],
-    icon: feature.icon
-  }))
+    icon: feature.icon,
+  }));
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleHomeClick = (e) => {
     if (location.pathname === '/' && e.button === 0 && !e.metaKey && !e.ctrlKey) {
-      e.preventDefault()
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }
+  };
 
   return (
     <nav
@@ -51,15 +45,12 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-
           {/* Logo */}
           <Link to="/" onClick={handleHomeClick} className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 flex items-center justify-center rounded-lg overflow-hidden group-hover:scale-105 transition-transform">
               <img src="/speed.png" alt="CareerPilot" className="w-full h-full object-contain" />
             </div>
-            <span className="text-lg font-black tracking-tight text-foreground">
-              careerpilot
-            </span>
+            <span className="text-lg font-black tracking-tight text-foreground">careerpilot</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -72,7 +63,9 @@ export default function Navbar() {
             >
               <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/60 transition-all">
                 Products
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showProductsDropdown ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${showProductsDropdown ? 'rotate-180' : ''}`}
+                />
               </button>
 
               <AnimatePresence>
@@ -96,7 +89,9 @@ export default function Navbar() {
                         </div>
                         <div>
                           <p className="text-sm font-bold text-foreground">{label}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{description}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                            {description}
+                          </p>
                         </div>
                       </Link>
                     ))}
@@ -119,7 +114,11 @@ export default function Navbar() {
                   exit={{ y: -12, opacity: 0, rotate: -30 }}
                   transition={{ duration: 0.15 }}
                 >
-                  {theme === 'light' ? <Moon className="w-[18px] h-[18px]" /> : <Sun className="w-[18px] h-[18px]" />}
+                  {theme === 'light' ? (
+                    <Moon className="w-[18px] h-[18px]" />
+                  ) : (
+                    <Sun className="w-[18px] h-[18px]" />
+                  )}
                 </motion.div>
               </AnimatePresence>
             </button>
@@ -187,7 +186,9 @@ export default function Navbar() {
             <div className="px-4 py-5 space-y-4">
               {/* Products */}
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 mb-2">Products</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 mb-2">
+                  Products
+                </p>
                 <div className="space-y-0.5">
                   {productLinks.map(({ path, label, icon: Icon }) => (
                     <Link
@@ -237,5 +238,5 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </nav>
-  )
+  );
 }

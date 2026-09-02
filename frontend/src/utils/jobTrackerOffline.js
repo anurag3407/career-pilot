@@ -1,10 +1,10 @@
-const SNAPSHOT_PREFIX = "careerPilot.jobTracker.snapshot";
-const QUEUE_PREFIX = "careerPilot.jobTracker.statusQueue";
+const SNAPSHOT_PREFIX = 'careerPilot.jobTracker.snapshot';
+const QUEUE_PREFIX = 'careerPilot.jobTracker.statusQueue';
 
-const statusKeys = ["saved", "applied", "interviewing", "offered", "rejected"];
+const statusKeys = ['saved', 'applied', 'interviewing', 'offered', 'rejected'];
 
 function scopedKey(prefix, userId) {
-  return `${prefix}.${userId || "anonymous"}`;
+  return `${prefix}.${userId || 'anonymous'}`;
 }
 
 function readJson(key, fallback) {
@@ -27,7 +27,7 @@ function writeJson(key, value) {
 export function calculateJobStats(jobs = []) {
   return jobs.reduce(
     (stats, job) => {
-      const status = statusKeys.includes(job.status) ? job.status : "saved";
+      const status = statusKeys.includes(job.status) ? job.status : 'saved';
       stats[status] += 1;
       stats.total += 1;
       return stats;
@@ -39,7 +39,7 @@ export function calculateJobStats(jobs = []) {
       interviewing: 0,
       offered: 0,
       rejected: 0,
-    },
+    }
   );
 }
 
@@ -77,9 +77,7 @@ export function getQueuedStatusUpdates(userId) {
 
 export function queueStatusUpdate(userId, jobId, status) {
   const key = scopedKey(QUEUE_PREFIX, userId);
-  const existing = getQueuedStatusUpdates(userId).filter(
-    (update) => update.jobId !== jobId,
-  );
+  const existing = getQueuedStatusUpdates(userId).filter((update) => update.jobId !== jobId);
 
   const nextQueue = [
     ...existing,
@@ -98,7 +96,7 @@ export function queueStatusUpdate(userId, jobId, status) {
 export function removeQueuedStatusUpdates(userId, updateIds = []) {
   const key = scopedKey(QUEUE_PREFIX, userId);
   const nextQueue = getQueuedStatusUpdates(userId).filter(
-    (update) => !updateIds.includes(update.id),
+    (update) => !updateIds.includes(update.id)
   );
 
   writeJson(key, nextQueue);

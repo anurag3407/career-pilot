@@ -23,11 +23,11 @@ import Contact from './Contact';
 // Inner shell reads theme from context and injects CSS vars + overrides
 function TerminalShell({ children }) {
   const { theme } = usePortfolio();
-  const p  = theme.primary;
+  const p = theme.primary;
   const pd = theme.primaryDim;
   const pb = theme.primaryBright;
   const pg = theme.primaryGlow;
-  const b  = theme.border;
+  const b = theme.border;
 
   return (
     <>
@@ -116,14 +116,21 @@ function TerminalShell({ children }) {
 
       <div className="ascii-terminal-root bg-black min-h-screen overflow-x-hidden">
         {/* Ambient scanline sweep */}
-        <div aria-hidden="true" className="fixed inset-0 pointer-events-none z-50 overflow-hidden opacity-5">
-          <div style={{
-            position: 'absolute',
-            top: 0, left: 0, right: 0,
-            height: '3px',
-            background: `linear-gradient(to bottom, transparent, ${theme.scanline}, transparent)`,
-            animation: 'scanline 8s linear infinite',
-          }} />
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 pointer-events-none z-50 overflow-hidden opacity-5"
+        >
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '3px',
+              background: `linear-gradient(to bottom, transparent, ${theme.scanline}, transparent)`,
+              animation: 'scanline 8s linear infinite',
+            }}
+          />
         </div>
 
         {children}

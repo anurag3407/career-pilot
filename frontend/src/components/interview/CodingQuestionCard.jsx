@@ -32,12 +32,8 @@ export default function CodingQuestionCard({ coding, runResults }) {
 
       {coding.constraints && (
         <div className="p-3 rounded-xl bg-muted/30 border border-border">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-            Constraints
-          </p>
-          <p className="text-sm text-foreground whitespace-pre-wrap">
-            {coding.constraints}
-          </p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Constraints</p>
+          <p className="text-sm text-foreground whitespace-pre-wrap">{coding.constraints}</p>
         </div>
       )}
 
@@ -60,9 +56,7 @@ export default function CodingQuestionCard({ coding, runResults }) {
 
       {visibleTests.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
-            Sample test cases
-          </p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Sample test cases</p>
           {visibleTests.map((tc, idx) => {
             const result = runResults?.results?.[idx];
             return (

@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
-import { Star } from "lucide-react";
-import SectionLabel from "./SectionLabel";
-import data from "../../../../data/dummy_data.json";
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { Star } from 'lucide-react';
+import SectionLabel from './SectionLabel';
+import data from '../../../../data/dummy_data.json';
 
 export default function Testimonials() {
   const { testimonials } = data;
   const [active, setActive] = useState(0);
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   useEffect(() => {
-    const t = setInterval(() => setActive(a => (a + 1) % (testimonials?.length || 1)), 4500);
+    const t = setInterval(() => setActive((a) => (a + 1) % (testimonials?.length || 1)), 4500);
     return () => clearInterval(t);
   }, [testimonials?.length]);
 
@@ -35,9 +35,9 @@ export default function Testimonials() {
                 i === active ? (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, y: -16, filter: "blur(8px)" }}
+                    initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -16, filter: 'blur(8px)' }}
                     transition={{ duration: 0.55 }}
                     className="absolute inset-0 bg-white border border-[#f0f0f0] rounded-3xl p-8 shadow-sm"
                   >
@@ -57,7 +57,9 @@ export default function Testimonials() {
 
                     <div className="flex items-center gap-3">
                       <img
-                        src={t.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${t.name}`}
+                        src={
+                          t.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${t.name}`
+                        }
                         alt={t.name}
                         className="w-11 h-11 rounded-full border-2 border-[#ea4c89]/20 object-cover"
                       />
@@ -81,8 +83,8 @@ export default function Testimonials() {
                 whileHover={{ x: 3 }}
                 className={`flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all ${
                   i === active
-                    ? "bg-[#fef0f5] border-[#ea4c89]/25"
-                    : "bg-white border-[#f0f0f0] hover:border-[#ea4c89]/15"
+                    ? 'bg-[#fef0f5] border-[#ea4c89]/25'
+                    : 'bg-white border-[#f0f0f0] hover:border-[#ea4c89]/15'
                 }`}
               >
                 <img
@@ -91,13 +93,18 @@ export default function Testimonials() {
                   className="w-9 h-9 rounded-full flex-shrink-0 object-cover"
                 />
                 <div className="min-w-0">
-                  <div className={`text-xs font-semibold truncate ${i === active ? "text-[#ea4c89]" : "text-[#666]"}`}>
+                  <div
+                    className={`text-xs font-semibold truncate ${i === active ? 'text-[#ea4c89]' : 'text-[#666]'}`}
+                  >
                     {t.name}
                   </div>
                   <div className="text-[10px] text-[#bbb] truncate">{t.role}</div>
                 </div>
                 {i === active && (
-                  <motion.div layoutId="activePip" className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ea4c89] flex-shrink-0" />
+                  <motion.div
+                    layoutId="activePip"
+                    className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ea4c89] flex-shrink-0"
+                  />
                 )}
               </motion.button>
             ))}

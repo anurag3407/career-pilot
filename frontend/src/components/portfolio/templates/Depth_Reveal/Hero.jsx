@@ -52,14 +52,20 @@ const Hero = ({ data, socials }) => (
     <motion.div
       initial="hidden"
       animate="show"
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.35 } } }}
+      variants={{
+        hidden: {},
+        show: { transition: { staggerChildren: 0.12, delayChildren: 0.35 } },
+      }}
       className="relative z-10 flex flex-wrap items-center justify-center gap-3 sm:gap-6"
     >
       {socials.github && (
         <motion.a
           href={socials.github}
           aria-label="GitHub profile"
-          variants={{ hidden: { opacity: 0, y: 16, scale: 0.8 }, show: { opacity: 1, y: 0, scale: 1 } }}
+          variants={{
+            hidden: { opacity: 0, y: 16, scale: 0.8 },
+            show: { opacity: 1, y: 0, scale: 1 },
+          }}
           whileHover={{ y: -4, scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
           className="text-slate-400 hover:text-white transition"
@@ -71,7 +77,10 @@ const Hero = ({ data, socials }) => (
         <motion.a
           href={socials.linkedin}
           aria-label="LinkedIn profile"
-          variants={{ hidden: { opacity: 0, y: 16, scale: 0.8 }, show: { opacity: 1, y: 0, scale: 1 } }}
+          variants={{
+            hidden: { opacity: 0, y: 16, scale: 0.8 },
+            show: { opacity: 1, y: 0, scale: 1 },
+          }}
           whileHover={{ y: -4, scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
           className="text-slate-400 hover:text-white transition"
@@ -83,7 +92,10 @@ const Hero = ({ data, socials }) => (
         <motion.a
           href={`mailto:${socials.email}`}
           aria-label="Email"
-          variants={{ hidden: { opacity: 0, y: 16, scale: 0.8 }, show: { opacity: 1, y: 0, scale: 1 } }}
+          variants={{
+            hidden: { opacity: 0, y: 16, scale: 0.8 },
+            show: { opacity: 1, y: 0, scale: 1 },
+          }}
           whileHover={{ y: -4, scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
           className="text-slate-400 hover:text-white transition"

@@ -16,7 +16,7 @@ export default function BulletList({
   paddingLeft = '5mm',
   itemMargin = '1mm',
 }) {
-  if (!bullets || bullets.length === 0) return null
+  if (!bullets || bullets.length === 0) return null;
   return (
     <ul
       style={{
@@ -32,5 +32,5 @@ export default function BulletList({
         </li>
       ))}
     </ul>
-  )
+  );
 }

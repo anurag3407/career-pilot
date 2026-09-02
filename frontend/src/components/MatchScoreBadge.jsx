@@ -1,37 +1,37 @@
-import { useId, useMemo } from 'react'
+import { useId, useMemo } from 'react';
 
 export default function MatchScoreBadge({ score }) {
-  const tooltipId = useId()
+  const tooltipId = useId();
   const scoreData = useMemo(() => {
-    if (typeof score !== 'number' || Number.isNaN(score) || score < 0 || score > 100) return null
+    if (typeof score !== 'number' || Number.isNaN(score) || score < 0 || score > 100) return null;
 
     if (score <= 40) {
       return {
         label: 'Low Match',
         bgColor: 'bg-red-500/20',
         textColor: 'text-red-600',
-        borderColor: 'border-red-500/30'
-      }
+        borderColor: 'border-red-500/30',
+      };
     } else if (score <= 70) {
       return {
         label: 'Partial Match',
         bgColor: 'bg-yellow-500/20',
         textColor: 'text-yellow-600',
-        borderColor: 'border-yellow-500/30'
-      }
+        borderColor: 'border-yellow-500/30',
+      };
     } else {
       return {
         label: 'Strong Match',
         bgColor: 'bg-green-500/20',
         textColor: 'text-green-600',
-        borderColor: 'border-green-500/30'
-      }
+        borderColor: 'border-green-500/30',
+      };
     }
-  }, [score])
+  }, [score]);
 
-  if (scoreData === null) return null
+  if (scoreData === null) return null;
 
-  const displayScore = Math.round(score)
+  const displayScore = Math.round(score);
 
   return (
     <div
@@ -52,5 +52,5 @@ export default function MatchScoreBadge({ score }) {
         Based on your resume
       </div>
     </div>
-  )
+  );
 }

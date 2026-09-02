@@ -27,9 +27,7 @@ export default function Testimonials({ data }) {
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {(data.testimonials || []).map((testimonial, index) => (
             <motion.article
-              key={`${testimonial?.name || 'testimonial'}-${
-                testimonial?.role || 'role'
-              }-${index}`}
+              key={`${testimonial?.name || 'testimonial'}-${testimonial?.role || 'role'}-${index}`}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
@@ -37,7 +35,9 @@ export default function Testimonials({ data }) {
               whileHover={{ y: -6 }}
               className="rounded-[1.5rem] border border-[#E7DED1] bg-[#F7F3EA] p-5 shadow-[0_18px_55px_rgba(70,56,39,0.07)]"
             >
-              <p className="scandi-serif text-xl leading-8 text-[#283028]">&quot;{testimonial?.text}&quot;</p>
+              <p className="scandi-serif text-xl leading-8 text-[#283028]">
+                &quot;{testimonial?.text}&quot;
+              </p>
               <div className="mt-6 flex items-center gap-3">
                 {testimonial?.avatar ? (
                   <img

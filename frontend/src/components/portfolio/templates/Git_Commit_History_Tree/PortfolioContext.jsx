@@ -1,5 +1,8 @@
 import React, { createContext, useContext } from 'react';
-import { PortfolioProvider as GlobalProvider, usePortfolio as useGlobalPortfolio } from '../../../../context/PortfolioContext';
+import {
+  PortfolioProvider as GlobalProvider,
+  usePortfolio as useGlobalPortfolio,
+} from '../../../../context/PortfolioContext';
 
 // Re-export the global context/hook for this template's components
 export { usePortfolio } from '../../../../context/PortfolioContext';

@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { Sparkles, Loader2, Check, X } from 'lucide-react'
-import toast from 'react-hot-toast'
-import { enhanceApi } from '../../services/api'
+import { useState } from 'react';
+import { Sparkles, Loader2, Check, X } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { enhanceApi } from '../../services/api';
 
 /**
  * AchievementEnhancer — inline AI assistant for resume bullet points.
@@ -16,49 +16,43 @@ import { enhanceApi } from '../../services/api'
  *   onApply   — called with the AI-improved text when the user accepts
  */
 export default function AchievementEnhancer({ value, jobRole, onApply }) {
-  const [loading, setLoading] = useState(false)
-  const [suggestion, setSuggestion] = useState(null)
+  const [loading, setLoading] = useState(false);
+  const [suggestion, setSuggestion] = useState(null);
 
   const handleEnhance = async () => {
     if (!value || !value.trim()) {
-      toast.error('Add some bullet points first')
-      return
+      toast.error('Add some bullet points first');
+      return;
     }
 
-    setLoading(true)
-    setSuggestion(null)
-    const toastId = toast.loading('Rewriting bullets with AI…')
+    setLoading(true);
+    setSuggestion(null);
+    const toastId = toast.loading('Rewriting bullets with AI…');
     try {
-      const res = await enhanceApi.analyzeBullets(value, jobRole)
+      const res = await enhanceApi.analyzeBullets(value, jobRole);
       // The backend returns either { improvedBullets: [...] } or { bullets: [...] }
-      const improved =
-        res?.improvedBullets ||
-        res?.bullets ||
-        res?.analysis?.improvedBullets ||
-        []
+      const improved = res?.improvedBullets || res?.bullets || res?.analysis?.improvedBullets || [];
       if (!improved.length) {
-        toast.error('No suggestions returned', { id: toastId })
-        return
+        toast.error('No suggestions returned', { id: toastId });
+        return;
       }
-      const joined = improved
-        .map(b => (b.startsWith('-') ? b : `- ${b}`))
-        .join('\n')
-      setSuggestion(joined)
-      toast.success('Suggestion ready — review and apply', { id: toastId })
+      const joined = improved.map((b) => (b.startsWith('-') ? b : `- ${b}`)).join('\n');
+      setSuggestion(joined);
+      toast.success('Suggestion ready — review and apply', { id: toastId });
     } catch (err) {
-      toast.error(err.message || 'Failed to enhance', { id: toastId })
+      toast.error(err.message || 'Failed to enhance', { id: toastId });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleAccept = () => {
-    if (suggestion && onApply) onApply(suggestion)
-    setSuggestion(null)
-    toast.success('Bullets updated')
-  }
+    if (suggestion && onApply) onApply(suggestion);
+    setSuggestion(null);
+    toast.success('Bullets updated');
+  };
 
-  const handleReject = () => setSuggestion(null)
+  const handleReject = () => setSuggestion(null);
 
   return (
     <div className="mt-3 space-y-2">
@@ -108,11 +102,9 @@ export default function AchievementEnhancer({ value, jobRole, onApply }) {
               </button>
             </div>
           </div>
-          <pre className="whitespace-pre-wrap font-sans text-sm text-foreground">
-            {suggestion}
-          </pre>
+          <pre className="whitespace-pre-wrap font-sans text-sm text-foreground">{suggestion}</pre>
         </div>
       )}
     </div>
-  )
+  );
 }

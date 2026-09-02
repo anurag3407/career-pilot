@@ -32,9 +32,7 @@ export default function StarRating({ label, value = 0, hint, className }) {
               <Star
                 className={cn(
                   'h-5 w-5 transition-colors',
-                  filled
-                    ? 'fill-amber-400 text-amber-400'
-                    : 'text-muted-foreground/30'
+                  filled ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/30'
                 )}
                 aria-label={`${filled ? 'Filled' : 'Empty'} star ${i}`}
               />
@@ -42,9 +40,7 @@ export default function StarRating({ label, value = 0, hint, className }) {
           );
         })}
       </div>
-      {hint && (
-        <p className="text-xs text-muted-foreground/80 italic">{hint}</p>
-      )}
+      {hint && <p className="text-xs text-muted-foreground/80 italic">{hint}</p>}
     </div>
   );
 }

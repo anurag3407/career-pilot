@@ -31,8 +31,22 @@ export default function Hero({ personal, socials }) {
       <header className="w-full flex justify-between items-center z-50">
         <span className="font-mono text-xs tracking-widest text-orange-400">HELLO WORLD</span>
         <div className="flex gap-6">
-          <a href={socials.github} target="_blank" rel="noreferrer" className="hover:text-orange-400 hover:drop-shadow-[0_0_12px_rgba(249,115,22,0.8)] transition-all"><Github size={18} /></a>
-          <a href={socials.linkedin} target="_blank" rel="noreferrer" className="hover:text-orange-400 hover:drop-shadow-[0_0_12px_rgba(249,115,22,0.8)] transition-all"><Linkedin size={18} /></a>
+          <a
+            href={socials.github}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-orange-400 hover:drop-shadow-[0_0_12px_rgba(249,115,22,0.8)] transition-all"
+          >
+            <Github size={18} />
+          </a>
+          <a
+            href={socials.linkedin}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-orange-400 hover:drop-shadow-[0_0_12px_rgba(249,115,22,0.8)] transition-all"
+          >
+            <Linkedin size={18} />
+          </a>
         </div>
       </header>
 
@@ -50,7 +64,7 @@ export default function Hero({ personal, socials }) {
             <AshEmitter />
           </motion.div>
         </div>
-        
+
         <div className="text-left md:text-right md:pl-12 flex flex-col md:items-end justify-center group">
           <motion.div
             initial="hidden"

@@ -5,7 +5,10 @@ export default function Testimonials({ testimonials }) {
   if (!testimonials || testimonials.length === 0) return null;
 
   return (
-    <section id="testimonials" className="relative isolate overflow-hidden bg-[#030406] px-4 py-20 text-stone-100 sm:px-6 lg:px-8">
+    <section
+      id="testimonials"
+      className="relative isolate overflow-hidden bg-[#030406] px-4 py-20 text-stone-100 sm:px-6 lg:px-8"
+    >
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_80%_20%,rgba(19,83,75,0.15),transparent_40%),linear-gradient(180deg,#030406_0%,#0b0a0d_100%)]" />
       <div className="absolute inset-0 -z-10 opacity-[0.06] [background-image:linear-gradient(rgba(245,230,190,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(245,230,190,0.6)_1px,transparent_1px)] [background-size:42px_42px]" />
 
@@ -22,8 +25,8 @@ export default function Testimonials({ testimonials }) {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((testimonial, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="relative border border-stone-500/20 bg-black/40 p-8 shadow-2xl shadow-black/60 backdrop-blur-md transition duration-300 hover:border-amber-200/20 hover:bg-stone-950/60"
             >
               <div className="absolute -top-3 -right-3">

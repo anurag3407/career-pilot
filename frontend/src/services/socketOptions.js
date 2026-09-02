@@ -2,10 +2,7 @@
  * Start with HTTP long-polling so the application remains usable when
  * corporate proxies or firewalls reject WebSocket upgrades.
  */
-export const SOCKET_TRANSPORTS = Object.freeze([
-  'polling',
-  'websocket'
-]);
+export const SOCKET_TRANSPORTS = Object.freeze(['polling', 'websocket']);
 
 export const createSocketOptions = (getToken) => ({
   /**
@@ -22,9 +19,7 @@ export const createSocketOptions = (getToken) => ({
       .catch((error) => {
         console.error(
           'Unable to refresh Socket.IO authentication:',
-          error instanceof Error
-            ? error.message
-            : String(error)
+          error instanceof Error ? error.message : String(error)
         );
 
         callback({ token: null });
@@ -40,5 +35,5 @@ export const createSocketOptions = (getToken) => ({
   reconnectionDelay: 1_000,
   reconnectionDelayMax: 10_000,
   randomizationFactor: 0.5,
-  timeout: 20_000
+  timeout: 20_000,
 });

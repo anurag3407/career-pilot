@@ -1,122 +1,109 @@
-import React, { useState, useContext } from "react";
-import { motion } from "framer-motion";
-import {
-  MapPin,
-  Mail,
-  Github,
-  Linkedin,
-  Twitter,
-  ArrowUpRight,
-  Sparkles,
-} from "lucide-react";
+import React, { useState, useContext } from 'react';
+import { motion } from 'framer-motion';
+import { MapPin, Mail, Github, Linkedin, Twitter, ArrowUpRight, Sparkles } from 'lucide-react';
 
 const PortfolioContext = React.createContext(null);
 
 const dummyData = {
-  name: "Adrian Voss",
-  title: "Brand & Product Designer",
-  tagline: "Crafting quiet, confident interfaces for ambitious studios.",
-  location: "Lisbon, Portugal",
-  bio:
-    "I'm a multidisciplinary designer with a decade of practice across branding, editorial systems, and digital product design. My work leans toward restraint — fewer elements, stronger hierarchy, and typography that does the heavy lifting. I partner closely with founders and creative teams to build identities that age well.",
+  name: 'Adrian Voss',
+  title: 'Brand & Product Designer',
+  tagline: 'Crafting quiet, confident interfaces for ambitious studios.',
+  location: 'Lisbon, Portugal',
+  bio: "I'm a multidisciplinary designer with a decade of practice across branding, editorial systems, and digital product design. My work leans toward restraint — fewer elements, stronger hierarchy, and typography that does the heavy lifting. I partner closely with founders and creative teams to build identities that age well.",
   stats: [
-    { label: "Years of Experience", value: "10+" },
-    { label: "Projects Completed", value: "86" },
-    { label: "Happy Clients", value: "47" },
+    { label: 'Years of Experience', value: '10+' },
+    { label: 'Projects Completed', value: '86' },
+    { label: 'Happy Clients', value: '47' },
   ],
   skills: [
     {
-      category: "Design",
-      accent: "#B08968",
+      category: 'Design',
+      accent: '#B08968',
       items: [
-        { name: "Brand Identity", level: 95 },
-        { name: "UI / UX", level: 92 },
-        { name: "Editorial Layout", level: 88 },
-        { name: "Typography", level: 90 },
+        { name: 'Brand Identity', level: 95 },
+        { name: 'UI / UX', level: 92 },
+        { name: 'Editorial Layout', level: 88 },
+        { name: 'Typography', level: 90 },
       ],
     },
     {
-      category: "Development",
-      accent: "#7C8B7A",
+      category: 'Development',
+      accent: '#7C8B7A',
       items: [
-        { name: "React", level: 85 },
-        { name: "Tailwind CSS", level: 88 },
-        { name: "Framer Motion", level: 80 },
-        { name: "Webflow", level: 75 },
+        { name: 'React', level: 85 },
+        { name: 'Tailwind CSS', level: 88 },
+        { name: 'Framer Motion', level: 80 },
+        { name: 'Webflow', level: 75 },
       ],
     },
     {
-      category: "Tools",
-      accent: "#9C7A6B",
+      category: 'Tools',
+      accent: '#9C7A6B',
       items: [
-        { name: "Figma", level: 96 },
-        { name: "After Effects", level: 70 },
-        { name: "Notion", level: 85 },
+        { name: 'Figma', level: 96 },
+        { name: 'After Effects', level: 70 },
+        { name: 'Notion', level: 85 },
       ],
     },
   ],
   projects: [
     {
-      title: "Marrow Studio",
-      description:
-        "A full rebrand and editorial site for an architecture collective in Porto.",
+      title: 'Marrow Studio',
+      description: 'A full rebrand and editorial site for an architecture collective in Porto.',
       image:
-        "https://images.unsplash.com/photo-1545235617-9465d2a55698?q=80&w=800&auto=format&fit=crop",
-      tags: ["Branding", "Webflow", "Print"],
+        'https://images.unsplash.com/photo-1545235617-9465d2a55698?q=80&w=800&auto=format&fit=crop',
+      tags: ['Branding', 'Webflow', 'Print'],
     },
     {
-      title: "Linen & Co.",
-      description:
-        "E-commerce experience and packaging system for a slow-fashion textile brand.",
+      title: 'Linen & Co.',
+      description: 'E-commerce experience and packaging system for a slow-fashion textile brand.',
       image:
-        "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800&auto=format&fit=crop",
-      tags: ["Shopify", "Packaging", "UI/UX"],
+        'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800&auto=format&fit=crop',
+      tags: ['Shopify', 'Packaging', 'UI/UX'],
     },
     {
-      title: "Field Atlas",
+      title: 'Field Atlas',
       description:
-        "A travel-journal app concept with a custom type system and offline-first design.",
+        'A travel-journal app concept with a custom type system and offline-first design.',
       image:
-        "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=800&auto=format&fit=crop",
-      tags: ["Mobile App", "React Native", "Design System"],
+        'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=800&auto=format&fit=crop',
+      tags: ['Mobile App', 'React Native', 'Design System'],
     },
   ],
   experience: [
     {
-      role: "Principal Designer",
-      company: "Studio Loma",
-      period: "2022 — Present",
+      role: 'Principal Designer',
+      company: 'Studio Loma',
+      period: '2022 — Present',
       summary:
-        "Leading brand and product design for hospitality and lifestyle clients across Europe.",
+        'Leading brand and product design for hospitality and lifestyle clients across Europe.',
     },
     {
-      role: "Senior Product Designer",
-      company: "Northbound",
-      period: "2019 — 2022",
-      summary:
-        "Owned design systems and shipped 12+ web platforms for early-stage startups.",
+      role: 'Senior Product Designer',
+      company: 'Northbound',
+      period: '2019 — 2022',
+      summary: 'Owned design systems and shipped 12+ web platforms for early-stage startups.',
     },
     {
-      role: "Designer",
-      company: "Folio Collective",
-      period: "2016 — 2019",
-      summary:
-        "Designed identity systems and printed collateral for independent publishers.",
+      role: 'Designer',
+      company: 'Folio Collective',
+      period: '2016 — 2019',
+      summary: 'Designed identity systems and printed collateral for independent publishers.',
     },
   ],
   contact: {
-    email: "hello@adrianvoss.studio",
-    github: "github.com/adrianvoss",
-    linkedin: "linkedin.com/in/adrianvoss",
-    twitter: "@adrianvoss",
-    availability: "Available for select projects — Autumn 2026",
+    email: 'hello@adrianvoss.studio',
+    github: 'github.com/adrianvoss',
+    linkedin: 'linkedin.com/in/adrianvoss',
+    twitter: '@adrianvoss',
+    availability: 'Available for select projects — Autumn 2026',
   },
   avatar:
-    "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=600&auto=format&fit=crop",
+    'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=600&auto=format&fit=crop',
 };
 
-const PANEL_BASE = "10%";
-const PANEL_HOVER = "26%";
+const PANEL_BASE = '10%';
+const PANEL_HOVER = '26%';
 
 const easeBrochure = [0.22, 1, 0.36, 1];
 
@@ -131,15 +118,7 @@ function FoldDivider() {
   );
 }
 
-function PanelShell({
-  id,
-  index,
-  total,
-  hovered,
-  setHovered,
-  children,
-  className = "",
-}) {
+function PanelShell({ id, index, total, hovered, setHovered, children, className = '' }) {
   const isHovered = hovered === id;
   const isDimmed = hovered !== null && hovered !== id;
 
@@ -157,31 +136,28 @@ function PanelShell({
       }}
       transition={{ duration: 0.6, ease: easeBrochure }}
       className={
-        "relative flex-shrink-0 min-w-[78vw] md:min-w-0 h-full overflow-hidden " +
-        "border-r border-[#cdc2af] last:border-r-0 shadow-[inset_-1px_0_0_rgba(255,255,255,0.5)] " +
+        'relative flex-shrink-0 min-w-[78vw] md:min-w-0 h-full overflow-hidden ' +
+        'border-r border-[#cdc2af] last:border-r-0 shadow-[inset_-1px_0_0_rgba(255,255,255,0.5)] ' +
         className
       }
       style={{
-        background:
-          "linear-gradient(180deg, #FBF8F2 0%, #F4EEE4 55%, #EFE7D9 100%)",
+        background: 'linear-gradient(180deg, #FBF8F2 0%, #F4EEE4 55%, #EFE7D9 100%)',
       }}
     >
-      
       <div
         className="pointer-events-none absolute inset-y-0 left-0 w-10 z-10"
         style={{
           background:
-            "linear-gradient(90deg, rgba(50,40,30,0.16), rgba(50,40,30,0.03) 60%, transparent)",
+            'linear-gradient(90deg, rgba(50,40,30,0.16), rgba(50,40,30,0.03) 60%, transparent)',
         }}
       />
-      
+
       <div className="pointer-events-none absolute inset-y-0 left-0 w-px bg-white/60 z-10" />
       <div
         className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-500"
         style={{
           opacity: isDimmed ? 0.55 : 1,
-          background:
-            "radial-gradient(120% 60% at 50% -10%, rgba(255,255,255,0.6), transparent)",
+          background: 'radial-gradient(120% 60% at 50% -10%, rgba(255,255,255,0.6), transparent)',
         }}
       />
       {index < total - 1 && <FoldDivider />}
@@ -210,9 +186,9 @@ function normalize(raw) {
   const p = raw.personal || {};
 
   const skillGroups = {};
-  const accents = ["#B08968", "#7C8B7A", "#9C7A6B", "#8B95A6", "#A68B7C"];
+  const accents = ['#B08968', '#7C8B7A', '#9C7A6B', '#8B95A6', '#A68B7C'];
   (raw.skills || []).forEach((s) => {
-    const cat = s.category || "Core Skills";
+    const cat = s.category || 'Core Skills';
     if (!skillGroups[cat]) skillGroups[cat] = [];
     skillGroups[cat].push({ name: s.name, level: s.level ?? 80 });
   });
@@ -233,23 +209,22 @@ function normalize(raw) {
     skills: skills.length ? skills : dummyData.skills,
     projects: (raw.projects || []).map((proj) => ({
       title: proj.title,
-      description: proj.description || "",
+      description: proj.description || '',
       image: proj.image || dummyData.projects[0].image,
       tags: proj.tags || proj.technologies || [],
     })),
     experience: (raw.experience || []).map((exp) => ({
       role: exp.role || exp.title,
       company: exp.company,
-      period: exp.period || exp.duration || "",
-      summary: exp.summary || exp.description || "",
+      period: exp.period || exp.duration || '',
+      summary: exp.summary || exp.description || '',
     })),
     contact: {
       email: raw.socials?.email || dummyData.contact.email,
       github: raw.socials?.github || dummyData.contact.github,
       linkedin: raw.socials?.linkedin || dummyData.contact.linkedin,
       twitter: raw.socials?.twitter || dummyData.contact.twitter,
-      availability:
-        raw.socials?.availability || dummyData.contact.availability,
+      availability: raw.socials?.availability || dummyData.contact.availability,
     },
   };
 }
@@ -274,9 +249,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
             "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E\")",
         }}
       >
-       
         <div className="flex flex-row w-full h-full overflow-x-auto md:overflow-hidden snap-x snap-mandatory md:snap-none scroll-smooth">
-          
           <PanelShell
             id="cover"
             index={0}
@@ -286,19 +259,18 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
             className="snap-start"
           >
             <div className="relative flex flex-col h-full items-center text-center justify-between">
-              
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 flex items-center justify-center z-0 select-none"
               >
                 <span
                   className="font-serif font-black leading-none text-[#2E2A26] opacity-[0.05]"
-                  style={{ fontSize: "13rem", letterSpacing: "-0.05em" }}
+                  style={{ fontSize: '13rem', letterSpacing: '-0.05em' }}
                 >
                   {data.name
-                    .split(" ")
+                    .split(' ')
                     .map((w) => w[0])
-                    .join("")
+                    .join('')
                     .slice(0, 2)
                     .toUpperCase()}
                 </span>
@@ -343,7 +315,6 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
             </div>
           </PanelShell>
 
-          
           <PanelShell
             id="about"
             index={1}
@@ -353,12 +324,8 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
             className="snap-start"
           >
             <Eyebrow>About</Eyebrow>
-            <h2 className="font-serif text-2xl text-[#2E2A26] mb-5">
-              A little about me
-            </h2>
-            <p className="text-[13.5px] leading-[1.85] text-[#5A5248] mb-8">
-              {data.bio}
-            </p>
+            <h2 className="font-serif text-2xl text-[#2E2A26] mb-5">A little about me</h2>
+            <p className="text-[13.5px] leading-[1.85] text-[#5A5248] mb-8">{data.bio}</p>
 
             <div className="mt-auto grid grid-cols-1 gap-3">
               {data.stats.map((s) => (
@@ -369,15 +336,12 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                   <span className="text-[11px] uppercase tracking-[0.14em] text-[#8A7E6E]">
                     {s.label}
                   </span>
-                  <span className="font-serif text-xl text-[#2E2A26]">
-                    {s.value}
-                  </span>
+                  <span className="font-serif text-xl text-[#2E2A26]">{s.value}</span>
                 </div>
               ))}
             </div>
           </PanelShell>
 
-          
           <PanelShell
             id="skills"
             index={2}
@@ -387,9 +351,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
             className="snap-start"
           >
             <Eyebrow>Skills</Eyebrow>
-            <h2 className="font-serif text-2xl text-[#2E2A26] mb-6">
-              What I bring
-            </h2>
+            <h2 className="font-serif text-2xl text-[#2E2A26] mb-6">What I bring</h2>
 
             <div className="flex flex-col gap-6 overflow-y-auto pr-1 -mr-1">
               {data.skills.map((group) => (
@@ -408,7 +370,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                       <span
                         key={skill.name}
                         className="text-[12px] px-3 py-1 rounded-full border bg-white/60 text-[#5A5248]"
-                        style={{ borderColor: group.accent + "55" }}
+                        style={{ borderColor: group.accent + '55' }}
                       >
                         {skill.name}
                       </span>
@@ -416,7 +378,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                   </div>
                   <div className="flex flex-col gap-2">
                     {group.items.map((skill) => (
-                      <div key={skill.name + "-bar"}>
+                      <div key={skill.name + '-bar'}>
                         <div className="h-1 w-full rounded-full bg-[#e6ddcd] overflow-hidden">
                           <div
                             className="h-full rounded-full"
@@ -434,7 +396,6 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
             </div>
           </PanelShell>
 
-          
           <PanelShell
             id="projects"
             index={3}
@@ -444,9 +405,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
             className="snap-start"
           >
             <Eyebrow>Selected Work</Eyebrow>
-            <h2 className="font-serif text-2xl text-[#2E2A26] mb-5">
-              Featured Projects
-            </h2>
+            <h2 className="font-serif text-2xl text-[#2E2A26] mb-5">Featured Projects</h2>
 
             <div className="flex flex-col gap-4 overflow-y-auto pr-1 -mr-1">
               {data.projects.map((p, i) => {
@@ -455,18 +414,13 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                   <div
                     key={p.title}
                     className={
-                      "group relative rounded-lg overflow-hidden border bg-white/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 " +
+                      'group relative rounded-lg overflow-hidden border bg-white/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 ' +
                       (isFeatured
-                        ? "border-[#A6886F]/50 shadow-md ring-1 ring-[#A6886F]/20 hover:shadow-xl"
-                        : "border-[#e3dbcd] shadow-sm hover:shadow-md")
+                        ? 'border-[#A6886F]/50 shadow-md ring-1 ring-[#A6886F]/20 hover:shadow-xl'
+                        : 'border-[#e3dbcd] shadow-sm hover:shadow-md')
                     }
                   >
-                    <div
-                      className={
-                        "relative overflow-hidden " +
-                        (isFeatured ? "h-36" : "h-28")
-                      }
-                    >
+                    <div className={'relative overflow-hidden ' + (isFeatured ? 'h-36' : 'h-28')}>
                       <img
                         src={p.image}
                         alt={p.title}
@@ -474,7 +428,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/0" />
                       <span className="absolute top-2 left-2 font-serif text-2xl text-white/90 tracking-tight drop-shadow">
-                        {String(i + 1).padStart(2, "0")}
+                        {String(i + 1).padStart(2, '0')}
                       </span>
                       {isFeatured && (
                         <span className="absolute top-2 right-2 text-[9px] uppercase tracking-[0.18em] font-semibold px-2 py-1 rounded-full bg-[#A6886F] text-white shadow">
@@ -484,9 +438,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                     </div>
                     <div className="p-3">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-serif text-base text-[#2E2A26]">
-                          {p.title}
-                        </h3>
+                        <h3 className="font-serif text-base text-[#2E2A26]">{p.title}</h3>
                         <ArrowUpRight
                           size={14}
                           className="text-[#A6886F] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -512,7 +464,6 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
             </div>
           </PanelShell>
 
-          
           <PanelShell
             id="experience"
             index={4}
@@ -522,9 +473,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
             className="snap-start"
           >
             <Eyebrow>Career</Eyebrow>
-            <h2 className="font-serif text-2xl text-[#2E2A26] mb-6">
-              Experience
-            </h2>
+            <h2 className="font-serif text-2xl text-[#2E2A26] mb-6">Experience</h2>
 
             <div className="relative pl-5 overflow-y-auto pr-1 -mr-1">
               <div className="absolute left-1.5 top-1 bottom-1 w-px bg-[#d8cfc1]" />
@@ -535,22 +484,15 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                     <p className="text-[10px] uppercase tracking-[0.18em] text-[#A6886F] font-semibold mb-1">
                       {job.period}
                     </p>
-                    <h3 className="font-serif text-base text-[#2E2A26]">
-                      {job.role}
-                    </h3>
-                    <p className="text-[12px] text-[#8A7E6E] mb-1.5">
-                      {job.company}
-                    </p>
-                    <p className="text-[12.5px] text-[#5A5248] leading-relaxed">
-                      {job.summary}
-                    </p>
+                    <h3 className="font-serif text-base text-[#2E2A26]">{job.role}</h3>
+                    <p className="text-[12px] text-[#8A7E6E] mb-1.5">{job.company}</p>
+                    <p className="text-[12.5px] text-[#5A5248] leading-relaxed">{job.summary}</p>
                   </div>
                 ))}
               </div>
             </div>
           </PanelShell>
 
-          
           <PanelShell
             id="contact"
             index={5}
@@ -607,24 +549,18 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7C8B7A] opacity-60" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#7C8B7A]" />
                   </span>
-                  <p className="text-[12px] text-[#5A5248]">
-                    {data.contact.availability}
-                  </p>
+                  <p className="text-[12px] text-[#5A5248]">{data.contact.availability}</p>
                 </div>
 
-                
                 <div className="w-20 h-20 rounded-md bg-white/70 border border-[#e3dbcd] p-2 grid grid-cols-5 grid-rows-5 gap-[2px]">
                   {Array.from({ length: 25 }).map((_, i) => (
                     <div
                       key={i}
                       className="rounded-[1px]"
                       style={{
-                        backgroundColor:
-                          [0, 4, 20, 24, 12, 6, 8, 16, 18, 2, 22, 11, 13].includes(
-                            i
-                          )
-                            ? "#2E2A26"
-                            : "transparent",
+                        backgroundColor: [0, 4, 20, 24, 12, 6, 8, 16, 18, 2, 22, 11, 13].includes(i)
+                          ? '#2E2A26'
+                          : 'transparent',
                       }}
                     />
                   ))}

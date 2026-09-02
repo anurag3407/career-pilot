@@ -20,9 +20,7 @@ export default function Experience({ experience }) {
                   [{exp.startDate} - {exp.endDate}]
                 </span>
               </div>
-              <p className="text-sm opacity-80 leading-relaxed mt-4">
-                {exp.description}
-              </p>
+              <p className="text-sm opacity-80 leading-relaxed mt-4">{exp.description}</p>
             </div>
           ))}
         </div>

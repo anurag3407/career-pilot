@@ -1,17 +1,15 @@
-import React from "react";
-import data from "../../../../../data/dummy_data.json";
-import { Briefcase } from "lucide-react";
-import { motion } from "framer-motion";
+import React from 'react';
+import data from '../../../../../data/dummy_data.json';
+import { Briefcase } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Experience() {
   return (
     <section className="relative py-28 px-6 md:px-20">
-      
       {/* soft background glow */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent opacity-40" />
 
       <div className="max-w-5xl mx-auto relative">
-
         {/* SECTION HEADER */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -25,21 +23,19 @@ export default function Experience() {
           </div>
 
           <h2 className="text-5xl md:text-6xl font-black">
-            My{" "}
+            My{' '}
             <span className="bg-linear-to-r from-pink-400 via-purple-400 to-cyan-300 text-transparent bg-clip-text">
               journey
             </span>
           </h2>
 
           <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
-            A timeline of roles, responsibilities, and impact across projects
-            and collaborations.
+            A timeline of roles, responsibilities, and impact across projects and collaborations.
           </p>
         </motion.div>
 
         {/* TIMELINE */}
         <div className="relative border-l border-white/10 pl-8 space-y-10">
-
           {data.experience.map((exp, index) => (
             <motion.div
               key={index}
@@ -49,7 +45,6 @@ export default function Experience() {
               transition={{ delay: index * 0.1 }}
               className="relative"
             >
-
               {/* timeline dot */}
               <div className="absolute -left-[41px] top-2 w-4 h-4 rounded-full bg-gradient-to-r from-pink-500 to-cyan-400 shadow-lg shadow-pink-500/30" />
 
@@ -68,15 +63,10 @@ export default function Experience() {
               >
                 {/* top row */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
-
                   <div>
-                    <h3 className="text-xl md:text-2xl font-bold text-white">
-                      {exp.role}
-                    </h3>
+                    <h3 className="text-xl md:text-2xl font-bold text-white">{exp.role}</h3>
 
-                    <p className="text-purple-300 font-medium">
-                      {exp.company}
-                    </p>
+                    <p className="text-purple-300 font-medium">{exp.company}</p>
                   </div>
 
                   <span className="text-sm text-gray-400 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
@@ -85,14 +75,11 @@ export default function Experience() {
                 </div>
 
                 {/* description */}
-                <p className="text-gray-300 leading-relaxed">
-                  {exp.description}
-                </p>
+                <p className="text-gray-300 leading-relaxed">{exp.description}</p>
               </div>
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );

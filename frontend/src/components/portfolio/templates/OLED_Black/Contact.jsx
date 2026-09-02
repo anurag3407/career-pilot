@@ -5,12 +5,22 @@ import { fadeUp } from './shared';
 
 const Contact = ({ socials }) => (
   <section className="relative mt-20 overflow-hidden border-t border-gray-900 py-32">
-    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="relative z-10 text-center">
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="relative z-10 text-center"
+    >
       <h2 className="mb-6 text-5xl font-black tracking-tighter text-white md:text-7xl">
-        INITIATE <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">HANDSHAKE</span>
+        INITIATE{' '}
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">
+          HANDSHAKE
+        </span>
       </h2>
       <p className="mx-auto mb-12 max-w-xl text-lg font-light text-gray-400 md:text-xl">
-        Currently open for new opportunities. Whether you have a question or just want to say hi, my inbox is always open.
+        Currently open for new opportunities. Whether you have a question or just want to say hi, my
+        inbox is always open.
       </p>
 
       <motion.a

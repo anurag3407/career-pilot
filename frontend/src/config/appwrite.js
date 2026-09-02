@@ -7,9 +7,7 @@ const projectId = import.meta.env.VITE_APPWRITE_PROJECT_ID;
 const cleanProjectId = projectId?.replace(/^"|"$/g, '');
 const cleanEndpoint = endpoint?.replace(/^"|"$/g, '');
 
-const client = new Client()
-    .setEndpoint(cleanEndpoint)
-    .setProject(cleanProjectId);
+const client = new Client().setEndpoint(cleanEndpoint).setProject(cleanProjectId);
 
 const account = new Account(client);
 const databases = new Databases(client);

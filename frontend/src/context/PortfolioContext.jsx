@@ -18,27 +18,39 @@ export function normalizePortfolioData(portfolioData = {}) {
     ...(source.about?.bio && { bio: source.about.bio }),
   };
 
-  const skills = Array.isArray(source.skills) && source.skills.length
-    ? source.skills.map((skill, index) => (
-        typeof skill === 'string'
-          ? {
-              name: skill,
-              level: 72 + ((index * 7) % 24),
-              category: 'Core',
-            }
-          : skill
-      ))
-    : dummyData.skills;
+  const skills =
+    Array.isArray(source.skills) && source.skills.length
+      ? source.skills.map((skill, index) =>
+          typeof skill === 'string'
+            ? {
+                name: skill,
+                level: 72 + ((index * 7) % 24),
+                category: 'Core',
+              }
+            : skill
+        )
+      : dummyData.skills;
 
-  const projects = Array.isArray(source.projects) && source.projects.length
-    ? source.projects.map((project, index) => ({
-        ...project,
-        title: project.title || project.name || dummyData.projects[index % dummyData.projects.length].title,
-        description: project.description || project.summary || dummyData.projects[index % dummyData.projects.length].description,
-        techStack: project.techStack || project.technologies || project.tech || dummyData.projects[index % dummyData.projects.length].techStack,
-        image: project.image || dummyData.projects[index % dummyData.projects.length].image,
-      }))
-    : dummyData.projects;
+  const projects =
+    Array.isArray(source.projects) && source.projects.length
+      ? source.projects.map((project, index) => ({
+          ...project,
+          title:
+            project.title ||
+            project.name ||
+            dummyData.projects[index % dummyData.projects.length].title,
+          description:
+            project.description ||
+            project.summary ||
+            dummyData.projects[index % dummyData.projects.length].description,
+          techStack:
+            project.techStack ||
+            project.technologies ||
+            project.tech ||
+            dummyData.projects[index % dummyData.projects.length].techStack,
+          image: project.image || dummyData.projects[index % dummyData.projects.length].image,
+        }))
+      : dummyData.projects;
 
   return {
     ...dummyData,
@@ -55,8 +67,14 @@ export function normalizePortfolioData(portfolioData = {}) {
     },
     skills,
     projects,
-    experience: Array.isArray(source.experience) && source.experience.length ? source.experience : dummyData.experience,
-    testimonials: Array.isArray(source.testimonials) && source.testimonials.length ? source.testimonials : dummyData.testimonials,
+    experience:
+      Array.isArray(source.experience) && source.experience.length
+        ? source.experience
+        : dummyData.experience,
+    testimonials:
+      Array.isArray(source.testimonials) && source.testimonials.length
+        ? source.testimonials
+        : dummyData.testimonials,
   };
 }
 
@@ -69,11 +87,7 @@ export function PortfolioProvider({ children, portfolioData }) {
     };
   }, [portfolioData]);
 
-  return (
-    <PortfolioContext.Provider value={value}>
-      {children}
-    </PortfolioContext.Provider>
-  );
+  return <PortfolioContext.Provider value={value}>{children}</PortfolioContext.Provider>;
 }
 
 export function usePortfolio() {

@@ -113,9 +113,7 @@ export default function Skills() {
                 <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-white group-hover:text-purple-400 transition-colors">
                   <IconComponent className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-white tracking-wide">
-                  {category}
-                </h3>
+                <h3 className="text-xl font-bold text-white tracking-wide">{category}</h3>
               </div>
 
               <div className="space-y-6">

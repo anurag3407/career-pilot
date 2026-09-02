@@ -1,6 +1,6 @@
-import React from "react";
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import { Github, Linkedin, Mail, Twitter, ChevronRight } from "lucide-react";
+import React from 'react';
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import { Github, Linkedin, Mail, Twitter, ChevronRight } from 'lucide-react';
 
 export default function Contact() {
   const { portfolioData: data } = usePortfolio();
@@ -18,21 +18,22 @@ export default function Contact() {
         <span className="inline-flex items-center rounded-full border border-teal-300/20 bg-teal-300/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.3em] text-teal-100 shadow-[0_0_20px_rgba(45,212,191,0.15)] mb-8">
           ✦ Office Hours ✦
         </span>
-        
+
         <h2
           className="text-[#F8FFFC] font-bold mb-6"
           style={{
             fontFamily: "'Caveat', cursive",
-            fontSize: "clamp(3.5rem, 6vw, 6rem)",
+            fontSize: 'clamp(3.5rem, 6vw, 6rem)',
             lineHeight: 0.9,
-            textShadow: "0 0 1px rgba(248,255,252,0.5), 0 14px 30px rgba(34, 211, 238, 0.15)",
+            textShadow: '0 0 1px rgba(248,255,252,0.5), 0 14px 30px rgba(34, 211, 238, 0.15)',
           }}
         >
           Let's Build Together
         </h2>
-        
+
         <p className="mx-auto max-w-2xl text-slate-300 text-lg leading-relaxed mb-12">
-          Whether you want to discuss educational design, collaborate on a new AI integration, or just talk about the future of learning, my inbox is always open.
+          Whether you want to discuss educational design, collaborate on a new AI integration, or
+          just talk about the future of learning, my inbox is always open.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
@@ -88,7 +89,9 @@ export default function Contact() {
         </div>
 
         <div className="mt-16 text-center text-sm text-slate-500">
-          <p>© {new Date().getFullYear()} {personal.name}. Designed for the AI-powered classroom.</p>
+          <p>
+            © {new Date().getFullYear()} {personal.name}. Designed for the AI-powered classroom.
+          </p>
         </div>
       </div>
     </section>

@@ -7,7 +7,7 @@ import Skills from './Skills';
 import Testimonials from './Testimonials';
 import Contact from './Contact';
 
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 
 export default function Retro8BitTemplate() {
   const { portfolioData: data } = usePortfolio();

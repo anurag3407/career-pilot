@@ -47,13 +47,13 @@ export default function Experience({ experience }) {
                   </div>
                   <div className="flex items-center gap-2 text-slate-400 bg-black/40 px-3 py-1.5 rounded-lg border border-white/10 w-fit">
                     <Calendar className="w-4 h-4 text-emerald-400" />
-                    <span className="text-sm font-mono tracking-wider">{exp.startDate} - {exp.endDate || 'Present'}</span>
+                    <span className="text-sm font-mono tracking-wider">
+                      {exp.startDate} - {exp.endDate || 'Present'}
+                    </span>
                   </div>
                 </div>
 
-                <p className="text-slate-300 leading-relaxed mb-4">
-                  {exp.description}
-                </p>
+                <p className="text-slate-300 leading-relaxed mb-4">{exp.description}</p>
                 {exp.highlights && exp.highlights.length > 0 && (
                   <ul className="space-y-2 mt-4 pt-4 border-t border-white/10">
                     {exp.highlights.map((highlight, idx) => (

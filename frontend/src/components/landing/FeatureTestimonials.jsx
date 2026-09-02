@@ -4,34 +4,37 @@ import { Star } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export default function FeatureTestimonials({
-  heading = "Loved by professionals",
-  subheading = "See how our tools have helped others land their dream roles.",
+  heading = 'Loved by professionals',
+  subheading = 'See how our tools have helped others land their dream roles.',
   testimonials = [
     {
-      name: "Sarah Jenkins",
-      role: "Product Manager at TechCorp",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-      quote: "The AI optimization completely transformed my resume. I went from getting ghosted to landing 5 interviews in one week.",
-      metric: "3x Interview Rate",
-      rating: 5
+      name: 'Sarah Jenkins',
+      role: 'Product Manager at TechCorp',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
+      quote:
+        'The AI optimization completely transformed my resume. I went from getting ghosted to landing 5 interviews in one week.',
+      metric: '3x Interview Rate',
+      rating: 5,
     },
     {
-      name: "David Chen",
-      role: "Frontend Developer",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-      quote: "Building my portfolio took minutes instead of days. The recruiter specifically mentioned how professional it looked.",
-      metric: "Hired in 2 Weeks",
-      rating: 5
+      name: 'David Chen',
+      role: 'Frontend Developer',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
+      quote:
+        'Building my portfolio took minutes instead of days. The recruiter specifically mentioned how professional it looked.',
+      metric: 'Hired in 2 Weeks',
+      rating: 5,
     },
     {
-      name: "Emily Rodriguez",
-      role: "UX Designer",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-      quote: "The mock interviews were incredibly realistic. The feedback on my body language helped me fix habits I didn't even know I had.",
-      metric: "95% Confidence Score",
-      rating: 5
-    }
-  ]
+      name: 'Emily Rodriguez',
+      role: 'UX Designer',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily',
+      quote:
+        "The mock interviews were incredibly realistic. The feedback on my body language helped me fix habits I didn't even know I had.",
+      metric: '95% Confidence Score',
+      rating: 5,
+    },
+  ],
 }) {
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -45,11 +48,11 @@ export default function FeatureTestimonials({
 
   const itemVariants = {
     hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      y: 0, 
-      transition: { duration: 0.5, ease: "easeOut" } 
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: 'easeOut' },
     },
   };
 
@@ -57,7 +60,7 @@ export default function FeatureTestimonials({
     <section className="bg-background py-24 sm:py-32 relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="text-center mb-16">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -65,7 +68,7 @@ export default function FeatureTestimonials({
           >
             {heading}
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -76,11 +79,11 @@ export default function FeatureTestimonials({
           </motion.p>
         </div>
 
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: '-50px' }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
         >
           {testimonials.map((testimonial, idx) => (
@@ -113,9 +116,9 @@ export default function FeatureTestimonials({
 
               {/* Author */}
               <div className="flex items-center gap-4 mt-auto">
-                <img 
-                  src={testimonial.avatar} 
-                  alt={testimonial.name} 
+                <img
+                  src={testimonial.avatar}
+                  alt={testimonial.name}
                   className="w-12 h-12 rounded-full bg-muted border-2 border-border"
                 />
                 <div>

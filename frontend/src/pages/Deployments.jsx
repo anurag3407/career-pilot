@@ -1,16 +1,16 @@
 export default function Deployments() {
   const deployments = [
     {
-      name: "Portfolio v1",
-      status: "Live",
-      url: "https://portfolio-demo.vercel.app",
+      name: 'Portfolio v1',
+      status: 'Live',
+      url: 'https://portfolio-demo.vercel.app',
     },
     {
-      name: "Personal Portfolio",
-      status: "Building",
-      url: "https://personal-portfolio.vercel.app",
+      name: 'Personal Portfolio',
+      status: 'Building',
+      url: 'https://personal-portfolio.vercel.app',
     },
-  ]
+  ];
 
   return (
     <div className="p-6">
@@ -18,17 +18,10 @@ export default function Deployments() {
 
       <div className="space-y-4">
         {deployments.map((deployment, index) => (
-          <div
-            key={index}
-            className="border rounded-xl p-4"
-          >
-            <h2 className="text-lg font-semibold">
-              {deployment.name}
-            </h2>
+          <div key={index} className="border rounded-xl p-4">
+            <h2 className="text-lg font-semibold">{deployment.name}</h2>
 
-            <p className="text-sm">
-              Status: {deployment.status}
-            </p>
+            <p className="text-sm">Status: {deployment.status}</p>
 
             <a
               href={deployment.url}
@@ -42,5 +35,5 @@ export default function Deployments() {
         ))}
       </div>
     </div>
-  )
+  );
 }

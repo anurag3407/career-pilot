@@ -1,10 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
 class DebugBoundary extends React.Component {
-  constructor(props) { super(props); this.state = { error: null }; }
-  static getDerivedStateFromError(error) { return { error }; }
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
   render() {
     if (this.state.error) {
       return (
@@ -18,13 +23,13 @@ class DebugBoundary extends React.Component {
   }
 }
 
-import { ClerkProvider } from '@clerk/clerk-react'
+import { ClerkProvider } from '@clerk/clerk-react';
 
 // Import your publishable key
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key")
+  throw new Error('Missing Publishable Key');
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -35,18 +40,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </ClerkProvider>
     </DebugBoundary>
   </React.StrictMode>
-)
+);
 
-import { registerSW } from 'virtual:pwa-register'
+import { registerSW } from 'virtual:pwa-register';
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   registerSW({
     immediate: true,
     onOfflineReady() {
-      console.log('App is ready to work offline')
+      console.log('App is ready to work offline');
     },
     onRegisterError(error) {
-      console.error('SW registration error', error)
+      console.error('SW registration error', error);
     },
-  })
+  });
 }

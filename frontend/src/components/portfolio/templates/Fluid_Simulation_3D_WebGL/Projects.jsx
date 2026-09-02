@@ -7,20 +7,24 @@ export default function Projects({ data }) {
 
   // Trigger fluid burst on hovering a card
   const handleCardHover = (e) => {
-    window.dispatchEvent(new CustomEvent('fluid-burst', {
-      detail: {
-        x: e.clientX,
-        y: e.clientY,
-        count: 10,
-        color: '#6366f1' // purple/indigo stream
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-burst', {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          count: 10,
+          color: '#6366f1', // purple/indigo stream
+        },
+      })
+    );
   };
 
   return (
-    <section id="projects-section" className="relative py-28 px-6 md:px-12 bg-slate-950/10 overflow-hidden text-white">
+    <section
+      id="projects-section"
+      className="relative py-28 px-6 md:px-12 bg-slate-950/10 overflow-hidden text-white"
+    >
       <div className="max-w-6xl mx-auto relative z-10 space-y-16">
-        
         {/* Header */}
         <div className="text-center space-y-4 max-w-xl mx-auto">
           <motion.h2
@@ -37,7 +41,8 @@ export default function Projects({ data }) {
             viewport={{ once: true }}
             className="text-slate-400 text-sm md:text-base leading-relaxed"
           >
-            A curated vortex of completed software projects. Hovering over a card creates a gravitational pull on floating background particles.
+            A curated vortex of completed software projects. Hovering over a card creates a
+            gravitational pull on floating background particles.
           </motion.p>
         </div>
 
@@ -49,7 +54,9 @@ export default function Projects({ data }) {
             const techStack = project.techStack || project.technologies || [];
             const liveUrl = project.liveUrl || '#';
             const githubUrl = project.githubUrl || '#';
-            const image = project.image || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop';
+            const image =
+              project.image ||
+              'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop';
 
             return (
               <motion.div
@@ -81,7 +88,7 @@ export default function Projects({ data }) {
                     <h3 className="text-lg md:text-xl font-bold text-slate-100 group-hover:text-white transition duration-200">
                       {title}
                     </h3>
-                    
+
                     <p className="text-slate-400 text-xs md:text-sm leading-relaxed line-clamp-3">
                       {description}
                     </p>
@@ -114,7 +121,7 @@ export default function Projects({ data }) {
                           <span>Codebase</span>
                         </a>
                       )}
-                      
+
                       {liveUrl && liveUrl !== '#' && (
                         <a
                           href={liveUrl}

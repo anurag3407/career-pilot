@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { motion as Motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
+import React, { useState } from 'react';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Star, Quote } from 'lucide-react';
 
 export default function Testimonials({ data }) {
   const { testimonials } = data;
@@ -28,15 +28,15 @@ export default function Testimonials({ data }) {
           <div
             className="inline-block px-6 py-3 rounded border-2 border-purple-400 mb-4"
             style={{
-              background: "rgba(176,38,255,0.05)",
-              boxShadow: "0 0 20px #b026ff, 0 0 40px #b026ff40",
+              background: 'rgba(176,38,255,0.05)',
+              boxShadow: '0 0 20px #b026ff, 0 0 40px #b026ff40',
             }}
           >
             <h2
               className="text-3xl md:text-4xl font-black uppercase tracking-widest text-purple-300"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 10px #b026ff, 0 0 20px #b026ff, 0 0 40px #b026ff",
+                textShadow: '0 0 10px #b026ff, 0 0 20px #b026ff, 0 0 40px #b026ff',
               }}
             >
               ❝ REVIEWS ❞
@@ -45,8 +45,8 @@ export default function Testimonials({ data }) {
           <div
             className="w-40 h-1 mx-auto mt-2 rounded-full"
             style={{
-              background: "linear-gradient(90deg, transparent, #b026ff, transparent)",
-              boxShadow: "0 0 10px #b026ff",
+              background: 'linear-gradient(90deg, transparent, #b026ff, transparent)',
+              boxShadow: '0 0 10px #b026ff',
             }}
           />
         </Motion.div>
@@ -60,26 +60,38 @@ export default function Testimonials({ data }) {
                 initial={{ opacity: 0, x: 60 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -60 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
+                transition={{ duration: 0.4, ease: 'easeInOut' }}
                 className="rounded-3xl border-2 border-purple-500 p-8 md:p-10 relative overflow-hidden"
                 style={{
-                  background: "rgba(176,38,255,0.05)",
-                  backdropFilter: "blur(20px)",
-                  boxShadow: "0 0 40px #b026ff30, inset 0 0 40px #b026ff08",
+                  background: 'rgba(176,38,255,0.05)',
+                  backdropFilter: 'blur(20px)',
+                  boxShadow: '0 0 40px #b026ff30, inset 0 0 40px #b026ff08',
                 }}
               >
                 {/* Corner decorations */}
-                <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-cyan-400" style={{ boxShadow: "0 0 8px #00d4ff" }} />
-                <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-cyan-400" style={{ boxShadow: "0 0 8px #00d4ff" }} />
-                <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-cyan-400" style={{ boxShadow: "0 0 8px #00d4ff" }} />
-                <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-cyan-400" style={{ boxShadow: "0 0 8px #00d4ff" }} />
+                <div
+                  className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-cyan-400"
+                  style={{ boxShadow: '0 0 8px #00d4ff' }}
+                />
+                <div
+                  className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-cyan-400"
+                  style={{ boxShadow: '0 0 8px #00d4ff' }}
+                />
+                <div
+                  className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-cyan-400"
+                  style={{ boxShadow: '0 0 8px #00d4ff' }}
+                />
+                <div
+                  className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-cyan-400"
+                  style={{ boxShadow: '0 0 8px #00d4ff' }}
+                />
 
                 {/* Neon quote mark */}
                 <div className="flex justify-start mb-6">
                   <Quote
                     size={48}
                     className="text-purple-400"
-                    style={{ filter: "drop-shadow(0 0 12px #b026ff)" }}
+                    style={{ filter: 'drop-shadow(0 0 12px #b026ff)' }}
                   />
                 </div>
 
@@ -98,7 +110,7 @@ export default function Testimonials({ data }) {
                       key={star}
                       size={18}
                       className="fill-yellow-400 text-yellow-400"
-                      style={{ filter: "drop-shadow(0 0 6px #ffd000)" }}
+                      style={{ filter: 'drop-shadow(0 0 6px #ffd000)' }}
                     />
                   ))}
                 </div>
@@ -107,7 +119,7 @@ export default function Testimonials({ data }) {
                 <div className="flex items-center gap-4">
                   <div
                     className="w-14 h-14 rounded-full overflow-hidden border-2 border-pink-400 shrink-0"
-                    style={{ boxShadow: "0 0 12px #ff2bd660" }}
+                    style={{ boxShadow: '0 0 12px #ff2bd660' }}
                   >
                     <img
                       src={testimonial.avatar}
@@ -120,7 +132,7 @@ export default function Testimonials({ data }) {
                       className="text-pink-300 font-black text-sm uppercase tracking-widest"
                       style={{
                         fontFamily: "'Courier New', monospace",
-                        textShadow: "0 0 8px #ff2bd6",
+                        textShadow: '0 0 8px #ff2bd6',
                       }}
                     >
                       {testimonial.name}
@@ -139,7 +151,8 @@ export default function Testimonials({ data }) {
                       className="text-purple-500 font-black text-xs"
                       style={{ fontFamily: "'Courier New', monospace" }}
                     >
-                      {String(current + 1).padStart(2, "0")} / {String(testimonials.length).padStart(2, "0")}
+                      {String(current + 1).padStart(2, '0')} /{' '}
+                      {String(testimonials.length).padStart(2, '0')}
                     </span>
                   </div>
                 </div>
@@ -155,14 +168,14 @@ export default function Testimonials({ data }) {
               whileTap={{ scale: 0.9 }}
               className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-purple-500 text-purple-300 transition-all cursor-pointer"
               style={{
-                background: "rgba(176,38,255,0.08)",
-                boxShadow: "0 0 10px #b026ff30",
+                background: 'rgba(176,38,255,0.08)',
+                boxShadow: '0 0 10px #b026ff30',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 25px #b026ff";
+                e.currentTarget.style.boxShadow = '0 0 25px #b026ff';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 10px #b026ff30";
+                e.currentTarget.style.boxShadow = '0 0 10px #b026ff30';
               }}
             >
               <ChevronLeft size={20} />
@@ -171,15 +184,16 @@ export default function Testimonials({ data }) {
             {/* Dot indicators */}
             <div className="flex gap-2">
               {testimonials.map((_, i) => (
-                <button type="button"
+                <button
+                  type="button"
                   key={i}
                   onClick={() => setCurrent(i)}
                   className="transition-all duration-300 rounded-full cursor-pointer"
                   style={{
-                    width: i === current ? "24px" : "8px",
-                    height: "8px",
-                    background: i === current ? "#b026ff" : "#b026ff30",
-                    boxShadow: i === current ? "0 0 10px #b026ff" : "none",
+                    width: i === current ? '24px' : '8px',
+                    height: '8px',
+                    background: i === current ? '#b026ff' : '#b026ff30',
+                    boxShadow: i === current ? '0 0 10px #b026ff' : 'none',
                   }}
                 />
               ))}
@@ -191,14 +205,14 @@ export default function Testimonials({ data }) {
               whileTap={{ scale: 0.9 }}
               className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-purple-500 text-purple-300 transition-all cursor-pointer"
               style={{
-                background: "rgba(176,38,255,0.08)",
-                boxShadow: "0 0 10px #b026ff30",
+                background: 'rgba(176,38,255,0.08)',
+                boxShadow: '0 0 10px #b026ff30',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 25px #b026ff";
+                e.currentTarget.style.boxShadow = '0 0 25px #b026ff';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 10px #b026ff30";
+                e.currentTarget.style.boxShadow = '0 0 10px #b026ff30';
               }}
             >
               <ChevronRight size={20} />

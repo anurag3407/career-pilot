@@ -1,25 +1,25 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React, { useState, useRef, useEffect } from "react";
-import { Send, Sparkles } from "lucide-react";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, Sparkles } from 'lucide-react';
 
 export default function ChatbotPortfolio() {
   const { portfolioData: data } = usePortfolio();
 
   const [messages, setMessages] = useState([
     {
-      type: "bot",
+      type: 'bot',
       content: {
-        type: "intro",
+        type: 'intro',
         text: `Hey 👋 I'm the portfolio assistant for ${data.personal.name}. Ask me about About, Skills, Projects, Experience, Testimonials, or Contact.`,
       },
     },
   ]);
 
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const pushMessage = (msg) => {
@@ -30,11 +30,11 @@ export default function ChatbotPortfolio() {
     const msg = text.toLowerCase();
 
     // ABOUT
-    if (msg.includes("about")) {
+    if (msg.includes('about')) {
       return {
-        type: "bot",
+        type: 'bot',
         content: {
-          type: "about",
+          type: 'about',
           name: data.personal.name,
           title: data.personal.title,
           bio: data.personal.bio,
@@ -45,65 +45,65 @@ export default function ChatbotPortfolio() {
     }
 
     // SKILLS
-    if (msg.includes("skill")) {
+    if (msg.includes('skill')) {
       return {
-        type: "bot",
+        type: 'bot',
         content: {
-          type: "skills",
+          type: 'skills',
           skills: data.skills,
         },
       };
     }
 
     // PROJECTS
-    if (msg.includes("project")) {
+    if (msg.includes('project')) {
       return {
-        type: "bot",
+        type: 'bot',
         content: {
-          type: "projects",
+          type: 'projects',
           projects: data.projects,
         },
       };
     }
 
     // EXPERIENCE
-    if (msg.includes("experience")) {
+    if (msg.includes('experience')) {
       return {
-        type: "bot",
+        type: 'bot',
         content: {
-          type: "experience",
+          type: 'experience',
           experience: data.experience,
         },
       };
     }
 
     // TESTIMONIALS
-    if (msg.includes("testimonial")) {
+    if (msg.includes('testimonial')) {
       return {
-        type: "bot",
+        type: 'bot',
         content: {
-          type: "testimonials",
+          type: 'testimonials',
           testimonials: data.testimonials,
         },
       };
     }
 
     // CONTACT
-    if (msg.includes("contact")) {
+    if (msg.includes('contact')) {
       return {
-        type: "bot",
+        type: 'bot',
         content: {
-          type: "contact",
+          type: 'contact',
           socials: data.socials,
         },
       };
     }
 
     return {
-      type: "bot",
+      type: 'bot',
       content: {
-        type: "help",
-        text: "Try asking: about, skills, projects, experience, testimonials, contact 👀",
+        type: 'help',
+        text: 'Try asking: about, skills, projects, experience, testimonials, contact 👀',
       },
     };
   };
@@ -112,21 +112,21 @@ export default function ChatbotPortfolio() {
     if (!input.trim()) return;
 
     const userMsg = {
-      type: "user",
-      content: { type: "text", text: input },
+      type: 'user',
+      content: { type: 'text', text: input },
     };
 
     const botMsg = generateResponse(input);
 
     setMessages((prev) => [...prev, userMsg, botMsg]);
-    setInput("");
+    setInput('');
   };
 
   // ---------------- UI RENDERERS ----------------
 
   const renderBotMessage = (content) => {
     switch (content.type) {
-      case "about":
+      case 'about':
         return (
           <div className="space-y-2">
             <p className="font-semibold text-cyan-400">{content.name}</p>
@@ -136,7 +136,7 @@ export default function ChatbotPortfolio() {
           </div>
         );
 
-      case "skills":
+      case 'skills':
         return (
           <div className="space-y-2">
             <p className="font-semibold text-cyan-400 mb-2">Skills</p>
@@ -147,17 +147,14 @@ export default function ChatbotPortfolio() {
                   <span>{s.level}%</span>
                 </div>
                 <div className="w-full h-2 bg-gray-800 rounded">
-                  <div
-                    className="h-2 bg-cyan-500 rounded"
-                    style={{ width: `${s.level}%` }}
-                  />
+                  <div className="h-2 bg-cyan-500 rounded" style={{ width: `${s.level}%` }} />
                 </div>
               </div>
             ))}
           </div>
         );
 
-      case "projects":
+      case 'projects':
         return (
           <div className="space-y-3">
             <p className="font-semibold text-cyan-400">Projects</p>
@@ -165,15 +162,13 @@ export default function ChatbotPortfolio() {
               <div key={i} className="p-3 bg-gray-900 rounded-xl border border-gray-800">
                 <p className="font-semibold">{p.title}</p>
                 <p className="text-xs text-gray-400">{p.description}</p>
-                <p className="text-[10px] text-gray-500 mt-1">
-                  {p.techStack?.join(", ")}
-                </p>
+                <p className="text-[10px] text-gray-500 mt-1">{p.techStack?.join(', ')}</p>
               </div>
             ))}
           </div>
         );
 
-      case "experience":
+      case 'experience':
         return (
           <div className="space-y-3">
             <p className="font-semibold text-cyan-400">Experience</p>
@@ -189,7 +184,7 @@ export default function ChatbotPortfolio() {
           </div>
         );
 
-      case "testimonials":
+      case 'testimonials':
         return (
           <div className="space-y-3">
             <p className="font-semibold text-cyan-400">Testimonials</p>
@@ -204,7 +199,7 @@ export default function ChatbotPortfolio() {
           </div>
         );
 
-      case "contact":
+      case 'contact':
         return (
           <div className="space-y-2">
             <p className="font-semibold text-cyan-400">Contact</p>
@@ -220,7 +215,7 @@ export default function ChatbotPortfolio() {
     }
   };
 
-  const suggestions = ["About", "Skills", "Projects", "Experience", "Testimonials", "Contact"];
+  const suggestions = ['About', 'Skills', 'Projects', 'Experience', 'Testimonials', 'Contact'];
 
   return (
     <div className="h-screen flex flex-col bg-gray-950 text-white">
@@ -235,19 +230,13 @@ export default function ChatbotPortfolio() {
       {/* CHAT */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}
-          >
+          <div key={i} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
-              className={`max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-line ${msg.type === "user"
-                  ? "bg-cyan-600"
-                  : "bg-gray-800 border border-gray-700"
-                }`}
+              className={`max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-line ${
+                msg.type === 'user' ? 'bg-cyan-600' : 'bg-gray-800 border border-gray-700'
+              }`}
             >
-              {msg.type === "user"
-                ? msg.content.text
-                : renderBotMessage(msg.content)}
+              {msg.type === 'user' ? msg.content.text : renderBotMessage(msg.content)}
             </div>
           </div>
         ))}
@@ -257,7 +246,8 @@ export default function ChatbotPortfolio() {
       {/* FIX: SUGGESTIONS (added spacing + visual separation) */}
       <div className="px-4 py-3 border-t border-gray-800 bg-gray-950/60 backdrop-blur flex flex-wrap gap-2">
         {suggestions.map((s, i) => (
-          <button type="button"
+          <button
+            type="button"
             key={i}
             onClick={() => setInput(s)}
             className="text-xs px-3 py-1 bg-gray-800 rounded-full hover:bg-gray-700 transition"
@@ -272,11 +262,12 @@ export default function ChatbotPortfolio() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           placeholder="Ask about me..."
           className="flex-1 px-4 py-2 rounded-xl bg-gray-900 border border-gray-700"
         />
-        <button type="button"
+        <button
+          type="button"
           onClick={handleSend}
           className="bg-cyan-600 px-4 py-2 rounded-xl hover:bg-cyan-700"
         >

@@ -1,41 +1,28 @@
-import React from "react";
-import {
-  FolderKanban,
-  ExternalLink,
-  Github,
-} from "lucide-react";
-import CanvasCard from "./CanvasCard";
+import React from 'react';
+import { FolderKanban, ExternalLink, Github } from 'lucide-react';
+import CanvasCard from './CanvasCard';
 
 const PROJECT_POSITIONS = [
-  { left: "5%", top: "0px", rotate: -3 },
-  { left: "55%", top: "180px", rotate: 2 },
-  { left: "15%", top: "520px", rotate: -2 },
-  { left: "60%", top: "780px", rotate: 3 },
-  { left: "8%", top: "1180px", rotate: -1 },
-  { left: "55%", top: "1450px", rotate: 2 },
+  { left: '5%', top: '0px', rotate: -3 },
+  { left: '55%', top: '180px', rotate: 2 },
+  { left: '15%', top: '520px', rotate: -2 },
+  { left: '60%', top: '780px', rotate: 3 },
+  { left: '8%', top: '1180px', rotate: -1 },
+  { left: '55%', top: '1450px', rotate: 2 },
 ];
 
 export default function Projects({ data }) {
-  const projects = Array.isArray(data?.projects)
-    ? data.projects
-    : [];
+  const projects = Array.isArray(data?.projects) ? data.projects : [];
 
   if (projects.length === 0) {
     return (
       <CanvasCard>
         <div className="text-center py-12">
-          <FolderKanban
-            size={48}
-            className="mx-auto mb-4 text-cyan-400"
-          />
+          <FolderKanban size={48} className="mx-auto mb-4 text-cyan-400" />
 
-          <h2 className="text-3xl font-bold mb-3">
-            Projects Canvas
-          </h2>
+          <h2 className="text-3xl font-bold mb-3">Projects Canvas</h2>
 
-          <p className="text-gray-400">
-            No projects available.
-          </p>
+          <p className="text-gray-400">No projects available.</p>
         </div>
       </CanvasCard>
     );
@@ -45,19 +32,13 @@ export default function Projects({ data }) {
     <div>
       <div className="text-center mb-16">
         <div className="flex justify-center items-center gap-3 mb-4">
-          <FolderKanban
-            size={28}
-            className="text-cyan-400"
-          />
+          <FolderKanban size={28} className="text-cyan-400" />
 
-          <h2 className="text-4xl md:text-5xl font-black">
-            Infinite Canvas
-          </h2>
+          <h2 className="text-4xl md:text-5xl font-black">Infinite Canvas</h2>
         </div>
 
         <p className="max-w-2xl mx-auto text-gray-400">
-          Explore projects placed across a connected
-          whiteboard-inspired workspace.
+          Explore projects placed across a connected whiteboard-inspired workspace.
         </p>
       </div>
 
@@ -120,63 +101,41 @@ export default function Projects({ data }) {
         </svg>
 
         {projects.map((project, index) => {
-          const basePosition =
-            PROJECT_POSITIONS[
-              index % PROJECT_POSITIONS.length
-            ];
+          const basePosition = PROJECT_POSITIONS[index % PROJECT_POSITIONS.length];
 
-          const cycle = Math.floor(
-            index / PROJECT_POSITIONS.length
-          );
+          const cycle = Math.floor(index / PROJECT_POSITIONS.length);
 
           const position = {
             ...basePosition,
-            top: `${
-              parseInt(basePosition.top, 10) +
-              cycle * 1800
-            }px`,
+            top: `${parseInt(basePosition.top, 10) + cycle * 1800}px`,
           };
 
-          const image =
-            project?.image ||
-            "https://placehold.co/800x450?text=Project";
+          const image = project?.image || 'https://placehold.co/800x450?text=Project';
 
-          const techStack = Array.isArray(
-            project?.techStack
-          )
-            ? project.techStack
-            : [];
+          const techStack = Array.isArray(project?.techStack) ? project.techStack : [];
 
-          const repoLink =
-            project?.githubUrl ||
-            project?.repoUrl;
+          const repoLink = project?.githubUrl || project?.repoUrl;
 
           return (
             <div
-              key={`${project?.title || "project"}-${index}`}
+              key={`${project?.title || 'project'}-${index}`}
               className="absolute w-[420px]"
               style={{
                 left: position.left,
                 top: position.top,
               }}
             >
-              <CanvasCard
-                rotate={position.rotate}
-                delay={index * 0.08}
-              >
+              <CanvasCard rotate={position.rotate} delay={index * 0.08}>
                 <img
                   src={image}
-                  alt={project?.title || "Project"}
+                  alt={project?.title || 'Project'}
                   className="w-full h-52 object-cover rounded-2xl mb-5"
                 />
 
-                <h3 className="text-2xl font-bold mb-3">
-                  {project?.title || "Untitled Project"}
-                </h3>
+                <h3 className="text-2xl font-bold mb-3">{project?.title || 'Untitled Project'}</h3>
 
                 <p className="text-gray-400 leading-7 mb-5">
-                  {project?.description ||
-                    "No description available."}
+                  {project?.description || 'No description available.'}
                 </p>
 
                 {techStack.length > 0 && (
@@ -226,38 +185,24 @@ export default function Projects({ data }) {
       {/* Mobile + Tablet */}
       <div className="lg:hidden space-y-6">
         {projects.map((project, index) => {
-          const image =
-            project?.image ||
-            "https://placehold.co/800x450?text=Project";
+          const image = project?.image || 'https://placehold.co/800x450?text=Project';
 
-          const techStack = Array.isArray(
-            project?.techStack
-          )
-            ? project.techStack
-            : [];
+          const techStack = Array.isArray(project?.techStack) ? project.techStack : [];
 
-          const repoLink =
-            project?.githubUrl ||
-            project?.repoUrl;
+          const repoLink = project?.githubUrl || project?.repoUrl;
 
           return (
-            <CanvasCard
-              key={`${project?.title || "project"}-${index}`}
-              delay={index * 0.05}
-            >
+            <CanvasCard key={`${project?.title || 'project'}-${index}`} delay={index * 0.05}>
               <img
                 src={image}
-                alt={project?.title || "Project"}
+                alt={project?.title || 'Project'}
                 className="w-full h-52 object-cover rounded-2xl mb-5"
               />
 
-              <h3 className="text-2xl font-bold mb-3">
-                {project?.title || "Untitled Project"}
-              </h3>
+              <h3 className="text-2xl font-bold mb-3">{project?.title || 'Untitled Project'}</h3>
 
               <p className="text-gray-400 mb-5">
-                {project?.description ||
-                  "No description available."}
+                {project?.description || 'No description available.'}
               </p>
 
               {techStack.length > 0 && (

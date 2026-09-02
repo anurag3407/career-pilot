@@ -1,5 +1,5 @@
-import React from "react";
-import { Cpu } from "lucide-react";
+import React from 'react';
+import { Cpu } from 'lucide-react';
 
 export default function Skills({ skills }) {
   if (!skills || skills.length === 0) return null;
@@ -8,20 +8,18 @@ export default function Skills({ skills }) {
     <section className="relative overflow-hidden bg-[#070b14] py-20 px-6 md:px-12 border-t border-cyan-500/20">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
-      
+
       <div className="relative z-10 mx-auto max-w-6xl">
         <div className="mb-14 text-center">
           <div className="inline-flex items-center justify-center gap-2 mb-3">
             <Cpu className="text-pink-500" size={20} />
-            <p className="tracking-[0.3em] text-pink-400 uppercase text-sm">
-              Neural Upgrades
-            </p>
+            <p className="tracking-[0.3em] text-pink-400 uppercase text-sm">Neural Upgrades</p>
           </div>
 
           <h2 className="text-4xl md:text-6xl font-extrabold text-white">
             System
             <span className="bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent">
-              {" "}
+              {' '}
               Capabilities
             </span>
           </h2>
@@ -35,16 +33,14 @@ export default function Skills({ skills }) {
             >
               {/* Scanline Effect */}
               <div className="absolute inset-0 w-full h-[2px] bg-cyan-400/20 opacity-0 group-hover:opacity-100 group-hover:animate-scanline pointer-events-none"></div>
-              
+
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-gray-200 group-hover:text-cyan-300 transition-colors">
                   {skill.name}
                 </h3>
-                <span className="text-sm font-mono text-pink-400">
-                  {skill.level}%
-                </span>
+                <span className="text-sm font-mono text-pink-400">{skill.level}%</span>
               </div>
-              
+
               <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-full relative"
@@ -60,8 +56,12 @@ export default function Skills({ skills }) {
 
       <style jsx>{`
         @keyframes scanline {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(1000%); }
+          0% {
+            transform: translateY(-100%);
+          }
+          100% {
+            transform: translateY(1000%);
+          }
         }
         .animate-scanline {
           animation: scanline 2s linear infinite;

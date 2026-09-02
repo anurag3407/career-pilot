@@ -23,7 +23,7 @@ const CodeViewer = ({ code, language, fileName, onExplain }) => {
             {language}
           </span>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {onExplain && (
             <button
@@ -56,13 +56,13 @@ const CodeViewer = ({ code, language, fileName, onExplain }) => {
             padding: '1rem',
             background: 'transparent',
             fontSize: '13px',
-            lineHeight: '1.5'
+            lineHeight: '1.5',
           }}
           lineNumberStyle={{
             minWidth: '3em',
             paddingRight: '1em',
             color: '#858585',
-            textAlign: 'right'
+            textAlign: 'right',
           }}
         >
           {code}

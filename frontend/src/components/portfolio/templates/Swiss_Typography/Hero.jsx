@@ -15,7 +15,10 @@ const fadeUp = {
 
 function Label({ children }) {
   return (
-    <span className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase" style={{ color: ACCENT }}>
+    <span
+      className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase"
+      style={{ color: ACCENT }}
+    >
       {children}
     </span>
   );
@@ -99,7 +102,10 @@ export default function Hero({ data }) {
                 variants={fadeUp}
                 className="px-5 md:px-8 py-5 md:py-8"
               >
-                <div className="text-2xl md:text-4xl font-black leading-none" style={{ color: ACCENT }}>
+                <div
+                  className="text-2xl md:text-4xl font-black leading-none"
+                  style={{ color: ACCENT }}
+                >
                   {value}
                 </div>
                 <div className="text-[10px] text-gray-400 uppercase tracking-widest mt-1 font-bold">
@@ -111,24 +117,25 @@ export default function Hero({ data }) {
 
           {/* social row */}
           <div className="border-t border-black px-5 md:px-8 py-5 flex gap-3 mt-auto">
-            {socialLinks.map(({ href, Icon, label }, i) => (
-              href && (
-                <motion.a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
-                  initial="hidden"
-                  animate="visible"
-                  custom={i + 5}
-                  variants={fadeUp}
-                  className="w-8 h-8 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors duration-200"
-                >
-                  <Icon size={13} />
-                </motion.a>
-              )
-            ))}
+            {socialLinks.map(
+              ({ href, Icon, label }, i) =>
+                href && (
+                  <motion.a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={label}
+                    initial="hidden"
+                    animate="visible"
+                    custom={i + 5}
+                    variants={fadeUp}
+                    className="w-8 h-8 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors duration-200"
+                  >
+                    <Icon size={13} />
+                  </motion.a>
+                )
+            )}
           </div>
         </div>
       </div>

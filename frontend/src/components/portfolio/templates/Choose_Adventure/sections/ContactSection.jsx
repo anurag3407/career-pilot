@@ -90,7 +90,8 @@ export default function ContactSection({ data, onReset }) {
                 <h2 className="text-xl font-bold text-white">Start a Conversation</h2>
               </div>
               <p className="text-sm text-slate-400 mb-7">
-                Every great collaboration begins with a single message. Let's write the next chapter together.
+                Every great collaboration begins with a single message. Let's write the next chapter
+                together.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -100,7 +101,12 @@ export default function ContactSection({ data, onReset }) {
                   </div>
                 )}
                 <div>
-                  <label htmlFor="ca-name" className="block text-xs text-violet-400 mb-1.5 uppercase tracking-wider">Your Name</label>
+                  <label
+                    htmlFor="ca-name"
+                    className="block text-xs text-violet-400 mb-1.5 uppercase tracking-wider"
+                  >
+                    Your Name
+                  </label>
                   <input
                     id="ca-name"
                     type="text"
@@ -113,7 +119,12 @@ export default function ContactSection({ data, onReset }) {
                 </div>
 
                 <div>
-                  <label htmlFor="ca-email" className="block text-xs text-violet-400 mb-1.5 uppercase tracking-wider">Email Address</label>
+                  <label
+                    htmlFor="ca-email"
+                    className="block text-xs text-violet-400 mb-1.5 uppercase tracking-wider"
+                  >
+                    Email Address
+                  </label>
                   <input
                     id="ca-email"
                     type="email"
@@ -126,7 +137,12 @@ export default function ContactSection({ data, onReset }) {
                 </div>
 
                 <div>
-                  <label htmlFor="ca-message" className="block text-xs text-violet-400 mb-1.5 uppercase tracking-wider">Message</label>
+                  <label
+                    htmlFor="ca-message"
+                    className="block text-xs text-violet-400 mb-1.5 uppercase tracking-wider"
+                  >
+                    Message
+                  </label>
                   <textarea
                     id="ca-message"
                     rows={4}
@@ -146,7 +162,11 @@ export default function ContactSection({ data, onReset }) {
                   aria-busy={isSubmitting}
                   className="w-full flex items-center justify-center gap-2 py-3.5 bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-violet-900/30 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {isSubmitting ? <RotateCcw size={14} className="animate-spin" /> : <Send size={14} />}
+                  {isSubmitting ? (
+                    <RotateCcw size={14} className="animate-spin" />
+                  ) : (
+                    <Send size={14} />
+                  )}
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </motion.button>
               </form>
@@ -163,8 +183,12 @@ export default function ContactSection({ data, onReset }) {
               <p className="text-slate-400 text-sm mb-6">
                 Thanks, {form.name}. The adventure continues — I'll be in touch soon.
               </p>
-              <button type="button"
-                onClick={() => { setSubmitted(false); setForm({ name: '', email: '', message: '' }); }}
+              <button
+                type="button"
+                onClick={() => {
+                  setSubmitted(false);
+                  setForm({ name: '', email: '', message: '' });
+                }}
                 className="text-xs text-violet-400 hover:text-violet-200 transition-colors flex items-center gap-1 mx-auto"
               >
                 <RotateCcw size={11} />
@@ -182,27 +206,30 @@ export default function ContactSection({ data, onReset }) {
         >
           <p className="text-xs text-violet-400 uppercase tracking-wider mb-4">Find me online</p>
           <div className="flex flex-wrap gap-3">
-            {Object.entries(socials).filter(([, url]) => url).map(([platform, url]) => {
-              const Icon = SOCIAL_ICONS[platform];
-              if (!Icon) return null;
-              const isSafeUrl = platform === 'email'
-                ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(url)
-                : /^https?:\/\//i.test(url);
-              if (!isSafeUrl) return null;
-              const href = platform === 'email' ? `mailto:${url}` : url;
-              return (
-                <a
-                  key={platform}
-                  href={href}
-                  target={platform !== 'email' ? '_blank' : undefined}
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-violet-800/40 hover:border-violet-500/60 bg-violet-950/30 hover:bg-violet-900/40 text-violet-300 hover:text-white transition-all text-xs"
-                >
-                  <Icon size={13} />
-                  <span className="capitalize">{platform}</span>
-                </a>
-              );
-            })}
+            {Object.entries(socials)
+              .filter(([, url]) => url)
+              .map(([platform, url]) => {
+                const Icon = SOCIAL_ICONS[platform];
+                if (!Icon) return null;
+                const isSafeUrl =
+                  platform === 'email'
+                    ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(url)
+                    : /^https?:\/\//i.test(url);
+                if (!isSafeUrl) return null;
+                const href = platform === 'email' ? `mailto:${url}` : url;
+                return (
+                  <a
+                    key={platform}
+                    href={href}
+                    target={platform !== 'email' ? '_blank' : undefined}
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-violet-800/40 hover:border-violet-500/60 bg-violet-950/30 hover:bg-violet-900/40 text-violet-300 hover:text-white transition-all text-xs"
+                  >
+                    <Icon size={13} />
+                    <span className="capitalize">{platform}</span>
+                  </a>
+                );
+              })}
           </div>
         </motion.div>
 

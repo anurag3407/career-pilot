@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useMemo, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   Flag,
   ExternalLink,
@@ -11,49 +11,48 @@ import {
   Cpu,
   Award,
   Clock,
-} from "lucide-react";
-
+} from 'lucide-react';
 
 /** Simple Icons slugs — https://simpleicons.org */
 const TECH_ICON_SLUGS = {
-  React: "react",
-  Tailwind: "tailwindcss",
-  Vite: "vite",
-  MERN: "nodedotjs",
-  Stripe: "stripe",
-  Redis: "redis",
-  "Socket.io": "socketdotio",
-  "Node.js": "nodedotjs",
-  MongoDB: "mongodb",
-  Python: "python",
-  TensorFlow: "tensorflow",
-  Plotly: "plotly",
-  Java: "openjdk",
-  "Spring Boot": "springboot",
-  PostgreSQL: "postgresql",
-  JavaScript: "javascript",
-  Canvas: "html5",
-  Algorithms: "leetcode",
+  React: 'react',
+  Tailwind: 'tailwindcss',
+  Vite: 'vite',
+  MERN: 'nodedotjs',
+  Stripe: 'stripe',
+  Redis: 'redis',
+  'Socket.io': 'socketdotio',
+  'Node.js': 'nodedotjs',
+  MongoDB: 'mongodb',
+  Python: 'python',
+  TensorFlow: 'tensorflow',
+  Plotly: 'plotly',
+  Java: 'openjdk',
+  'Spring Boot': 'springboot',
+  PostgreSQL: 'postgresql',
+  JavaScript: 'javascript',
+  Canvas: 'html5',
+  Algorithms: 'leetcode',
 };
 
 const TECH_ICON_COLORS = {
-  react: "61DAFB",
-  tailwindcss: "06B6D4",
-  vite: "646CFF",
-  nodedotjs: "5FA04E",
-  stripe: "635BFF",
-  redis: "FF4438",
-  socketdotio: "010101",
-  mongodb: "47A248",
-  python: "3776AB",
-  tensorflow: "FF6F00",
-  plotly: "3F4F75",
-  openjdk: "ED8B00",
-  springboot: "6DB33F",
-  postgresql: "4169E1",
-  javascript: "F7DF1E",
-  html5: "E34F26",
-  leetcode: "FFA116",
+  react: '61DAFB',
+  tailwindcss: '06B6D4',
+  vite: '646CFF',
+  nodedotjs: '5FA04E',
+  stripe: '635BFF',
+  redis: 'FF4438',
+  socketdotio: '010101',
+  mongodb: '47A248',
+  python: '3776AB',
+  tensorflow: 'FF6F00',
+  plotly: '3F4F75',
+  openjdk: 'ED8B00',
+  springboot: '6DB33F',
+  postgresql: '4169E1',
+  javascript: 'F7DF1E',
+  html5: 'E34F26',
+  leetcode: 'FFA116',
 };
 
 function normalizeTechKey(name) {
@@ -64,9 +63,7 @@ function getTechIconSlug(name) {
   const key = normalizeTechKey(name);
   if (TECH_ICON_SLUGS[key]) return TECH_ICON_SLUGS[key];
   const lower = key.toLowerCase();
-  const found = Object.entries(TECH_ICON_SLUGS).find(
-    ([k]) => k.toLowerCase() === lower
-  );
+  const found = Object.entries(TECH_ICON_SLUGS).find(([k]) => k.toLowerCase() === lower);
   return found ? found[1] : null;
 }
 
@@ -78,8 +75,7 @@ function TechStackIcon({ name }) {
     return <Code2 className="h-4 w-4 shrink-0 text-zinc-400" aria-hidden="true" />;
   }
 
-  const color =
-    slug === "socketdotio" ? "FFFFFF" : TECH_ICON_COLORS[slug] || "d4d4d8";
+  const color = slug === 'socketdotio' ? 'FFFFFF' : TECH_ICON_COLORS[slug] || 'd4d4d8';
 
   return (
     <img
@@ -94,24 +90,21 @@ function TechStackIcon({ name }) {
   );
 }
 
-import ferrariCar from "./assets/2026ferraricarright.avif";
-import mercedesCar from "./assets/2026mercedescarright.avif";
-import mclarenCar from "./assets/2026mclarencarright.avif";
-import redbullCar from "./assets/2026redbullracingcarright.avif";
-import racingBullsCar from "./assets/2026racingbullscarright.avif";
-import astonCar from "./assets/2026astonmartincarright.avif";
+import ferrariCar from './assets/2026ferraricarright.avif';
+import mercedesCar from './assets/2026mercedescarright.avif';
+import mclarenCar from './assets/2026mclarencarright.avif';
+import redbullCar from './assets/2026redbullracingcarright.avif';
+import racingBullsCar from './assets/2026racingbullscarright.avif';
+import astonCar from './assets/2026astonmartincarright.avif';
 
 /** High-Tech Motorsport Font Stack */
 /** Ultimate Motorsport Font Stack */
 const F1_FONT_URL =
-  "https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700;800&display=swap";
-const f1Display =
-  "font-['Exo_2',ui-sans-serif,sans-serif] uppercase tracking-wide";
-const f1DisplayItalic =
-  "font-['Exo_2',ui-sans-serif,sans-serif] uppercase italic tracking-wider";
+  'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700;800&display=swap';
+const f1Display = "font-['Exo_2',ui-sans-serif,sans-serif] uppercase tracking-wide";
+const f1DisplayItalic = "font-['Exo_2',ui-sans-serif,sans-serif] uppercase italic tracking-wider";
 const f1Text = "font-['Inter',ui-sans-serif,sans-serif]";
-const f1Telemetry =
-  "font-['JetBrains_Mono',monospace] tracking-[0.15em] uppercase";
+const f1Telemetry = "font-['JetBrains_Mono',monospace] tracking-[0.15em] uppercase";
 
 /** Card-only typography — tighter tracking & higher contrast for readability */
 const f1CardLabel =
@@ -125,17 +118,17 @@ const f1CardStatValue =
 const f1CardMetricLabel =
   "font-['JetBrains_Mono',monospace] text-[9px] font-semibold tracking-[0.08em] uppercase text-zinc-400 sm:text-[10px]";
 
-const CARD_MOTION_VIEWPORT = { once: true, amount: 0.25, margin: "0px 0px -32px 0px" };
+const CARD_MOTION_VIEWPORT = { once: true, amount: 0.25, margin: '0px 0px -32px 0px' };
 const CARD_MOTION_EASE = [0.22, 1, 0.36, 1];
 
 function useF1Fonts() {
   useEffect(() => {
-    const id = "f1-racing-google-fonts";
+    const id = 'f1-racing-google-fonts';
     if (document.getElementById(id)) return;
 
-    const link = document.createElement("link");
+    const link = document.createElement('link');
     link.id = id;
-    link.rel = "stylesheet";
+    link.rel = 'stylesheet';
     link.href = F1_FONT_URL;
     document.head.appendChild(link);
   }, []);
@@ -143,52 +136,52 @@ function useF1Fonts() {
 
 const TEAMS = {
   ferrari: {
-    label: "Ferrari",
+    label: 'Ferrari',
     car: ferrariCar,
-    color: "#FF1801",
-    accentSoft: "rgba(255, 24, 1, 0.14)",
-    glow: "rgba(255, 24, 1, 0.42)",
-    bgVariant: "streaks",
+    color: '#FF1801',
+    accentSoft: 'rgba(255, 24, 1, 0.14)',
+    glow: 'rgba(255, 24, 1, 0.42)',
+    bgVariant: 'streaks',
   },
   mercedes: {
-    label: "Mercedes",
+    label: 'Mercedes',
     car: mercedesCar,
-    color: "#00D2BE",
-    accentSoft: "rgba(0, 210, 190, 0.12)",
-    glow: "rgba(0, 210, 190, 0.38)",
-    bgVariant: "waves",
+    color: '#00D2BE',
+    accentSoft: 'rgba(0, 210, 190, 0.12)',
+    glow: 'rgba(0, 210, 190, 0.38)',
+    bgVariant: 'waves',
   },
   mclaren: {
-    label: "McLaren",
+    label: 'McLaren',
     car: mclarenCar,
-    color: "#FF8700",
-    accentSoft: "rgba(255, 135, 0, 0.12)",
-    glow: "rgba(255, 135, 0, 0.38)",
-    bgVariant: "sectors",
+    color: '#FF8700',
+    accentSoft: 'rgba(255, 135, 0, 0.12)',
+    glow: 'rgba(255, 135, 0, 0.38)',
+    bgVariant: 'sectors',
   },
   redbull: {
-    label: "Red Bull",
+    label: 'Red Bull',
     car: redbullCar,
-    color: "#3671C6",
-    accentSoft: "rgba(54, 113, 198, 0.14)",
-    glow: "rgba(54, 113, 198, 0.4)",
-    bgVariant: "speedlines",
+    color: '#3671C6',
+    accentSoft: 'rgba(54, 113, 198, 0.14)',
+    glow: 'rgba(54, 113, 198, 0.4)',
+    bgVariant: 'speedlines',
   },
   racingbulls: {
-    label: "Racing Bulls",
+    label: 'Racing Bulls',
     car: racingBullsCar,
-    color: "#6692FF",
-    accentSoft: "rgba(102, 146, 255, 0.14)",
-    glow: "rgba(102, 146, 255, 0.38)",
-    bgVariant: "dataflow",
+    color: '#6692FF',
+    accentSoft: 'rgba(102, 146, 255, 0.14)',
+    glow: 'rgba(102, 146, 255, 0.38)',
+    bgVariant: 'dataflow',
   },
   aston: {
-    label: "Aston Martin",
+    label: 'Aston Martin',
     car: astonCar,
-    color: "#006F62",
-    accentSoft: "rgba(0, 111, 98, 0.14)",
-    glow: "rgba(0, 111, 98, 0.38)",
-    bgVariant: "mesh",
+    color: '#006F62',
+    accentSoft: 'rgba(0, 111, 98, 0.14)',
+    glow: 'rgba(0, 111, 98, 0.38)',
+    bgVariant: 'mesh',
   },
 };
 
@@ -205,33 +198,33 @@ function getTeamTheme(teamKey) {
 
 /** Category-driven pit-wall themes (accent, glow, buttons) */
 const CATEGORY_THEMES = {
-  "Web Development": {
-    accent: "#E10600",
-    accentSoft: "rgba(225, 6, 0, 0.15)",
-    glow: "rgba(225, 6, 0, 0.35)",
-    label: "Ferrari Red",
+  'Web Development': {
+    accent: '#E10600',
+    accentSoft: 'rgba(225, 6, 0, 0.15)',
+    glow: 'rgba(225, 6, 0, 0.35)',
+    label: 'Ferrari Red',
   },
   Python: {
-    accent: "#00A2ED",
-    accentSoft: "rgba(0, 162, 237, 0.14)",
-    glow: "rgba(0, 162, 237, 0.4)",
-    label: "Mercedes Blue",
+    accent: '#00A2ED',
+    accentSoft: 'rgba(0, 162, 237, 0.14)',
+    glow: 'rgba(0, 162, 237, 0.4)',
+    label: 'Mercedes Blue',
   },
   Java: {
-    accent: "#229971",
-    accentSoft: "rgba(34, 153, 113, 0.15)",
-    glow: "rgba(52, 211, 153, 0.38)",
-    label: "Aston Green",
+    accent: '#229971',
+    accentSoft: 'rgba(34, 153, 113, 0.15)',
+    glow: 'rgba(52, 211, 153, 0.38)',
+    label: 'Aston Green',
   },
   DSA: {
-    accent: "#6366F1",
-    accentSoft: "rgba(99, 102, 241, 0.15)",
-    glow: "rgba(129, 140, 248, 0.38)",
-    label: "AlphaTauri Purple",
+    accent: '#6366F1',
+    accentSoft: 'rgba(99, 102, 241, 0.15)',
+    glow: 'rgba(129, 140, 248, 0.38)',
+    label: 'AlphaTauri Purple',
   },
 };
 
-const DEFAULT_THEME = CATEGORY_THEMES["Web Development"];
+const DEFAULT_THEME = CATEGORY_THEMES['Web Development'];
 
 function getCategoryTheme(category) {
   return CATEGORY_THEMES[category] || DEFAULT_THEME;
@@ -242,36 +235,36 @@ function projectIndex(id) {
 }
 
 function splitTitle(title) {
-  if (!title) return { line1: "PROJECT", line2: null };
+  if (!title) return { line1: 'PROJECT', line2: null };
   const upper = String(title).toUpperCase();
   const words = upper.split(/\s+/);
   if (words.length <= 2) return { line1: upper, line2: null };
   const mid = Math.ceil(words.length / 2);
   return {
-    line1: words.slice(0, mid).join(" "),
-    line2: words.slice(mid).join(" "),
+    line1: words.slice(0, mid).join(' '),
+    line2: words.slice(mid).join(' '),
   };
 }
 
 function buildStatusText(status) {
-  if (!status) return "BUILD STATUS: COMPLETE";
+  if (!status) return 'BUILD STATUS: COMPLETE';
   const map = {
-    Finished: "FINISHED",
-    "In Progress": "IN PROGRESS",
-    Delayed: "IN REVIEW",
+    Finished: 'FINISHED',
+    'In Progress': 'IN PROGRESS',
+    Delayed: 'IN REVIEW',
   };
   return `BUILD STATUS: ${map[status] || String(status).toUpperCase()}`;
 }
 
 const CATEGORY_LABELS = {
-  "Web Development": "FULL STACK",
-  Python: "MACHINE LEARNING",
-  Java: "DEVOPS",
-  DSA: "DATA ENGINEERING",
+  'Web Development': 'FULL STACK',
+  Python: 'MACHINE LEARNING',
+  Java: 'DEVOPS',
+  DSA: 'DATA ENGINEERING',
 };
 
 function getArchetype(id) {
-  const types = ["performance", "analytics", "devops", "data"];
+  const types = ['performance', 'analytics', 'devops', 'data'];
   return types[(parseInt(id, 10) - 1) % 4];
 }
 
@@ -280,12 +273,12 @@ function getCategoryLabel(category) {
 }
 
 function statusDotColor(status) {
-  if (status === "Finished") return "#22c55e";
-  if (status === "In Progress") return "#E10600";
-  return "#a855f7";
+  if (status === 'Finished') return '#22c55e';
+  if (status === 'In Progress') return '#E10600';
+  return '#a855f7';
 }
 
-function F1CarSvg({ className = "" }) {
+function F1CarSvg({ className = '' }) {
   return (
     <svg
       viewBox="0 0 420 120"
@@ -323,7 +316,7 @@ function AssetImage({ src, alt, style, className, fallback = null }) {
       src={src}
       alt={alt}
       className={className}
-      style= {style}
+      style={style}
       onError={() => setFailed(true)}
       loading="lazy"
     />
@@ -352,10 +345,9 @@ function DotGrid() {
     <div
       className="pointer-events-none absolute inset-0 opacity-20"
       style={{
-        backgroundImage:
-          "radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 1px)",
-        backgroundSize: "10px 10px",
-        maskImage: "linear-gradient(to right, transparent, black 40%, black 70%, transparent)",
+        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 1px)',
+        backgroundSize: '10px 10px',
+        maskImage: 'linear-gradient(to right, transparent, black 40%, black 70%, transparent)',
       }}
     />
   );
@@ -363,10 +355,10 @@ function DotGrid() {
 
 function FloodLights() {
   const lights = [
-    { left: "4%", angle: 18, width: 280, opacity: 0.22 },
-    { left: "18%", angle: 8, width: 320, opacity: 0.18 },
-    { left: "72%", angle: -12, width: 360, opacity: 0.28 },
-    { left: "88%", angle: -22, width: 260, opacity: 0.2 },
+    { left: '4%', angle: 18, width: 280, opacity: 0.22 },
+    { left: '18%', angle: 8, width: 320, opacity: 0.18 },
+    { left: '72%', angle: -12, width: 360, opacity: 0.28 },
+    { left: '88%', angle: -22, width: 260, opacity: 0.2 },
   ];
 
   return (
@@ -384,12 +376,12 @@ function FloodLights() {
           <div
             className="absolute top-2 origin-top animate-pulse"
             style={{
-              left: "50%",
+              left: '50%',
               width: light.width,
               height: 420,
               marginLeft: -(light.width / 2),
               background: `linear-gradient(to bottom, rgba(255,248,220,${light.opacity}) 0%, rgba(255,240,200,${light.opacity * 0.5}) 25%, transparent 75%)`,
-              clipPath: "polygon(48% 0%, 0% 100%, 100% 100%)",
+              clipPath: 'polygon(48% 0%, 0% 100%, 100% 100%)',
               transform: `rotate(${light.angle}deg)`,
               animationDuration: `${3 + i * 0.7}s`,
             }}
@@ -400,15 +392,14 @@ function FloodLights() {
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-32"
         style={{
-          background:
-            "linear-gradient(to bottom, rgba(255,250,230,0.06) 0%, transparent 100%)",
+          background: 'linear-gradient(to bottom, rgba(255,250,230,0.06) 0%, transparent 100%)',
         }}
       />
     </>
   );
 }
 
-const F1_RED = "#E10600";
+const F1_RED = '#E10600';
 
 function CarbonBackground() {
   return (
@@ -471,7 +462,7 @@ function LightTrailsVisual() {
         filter="url(#trailGlow)"
         initial={{ pathLength: 0, opacity: 0.4 }}
         animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 2.2, ease: "easeInOut" }}
+        transition={{ duration: 2.2, ease: 'easeInOut' }}
       />
       <motion.path
         d="M100 300 C260 240, 380 250, 500 210 S700 150, 760 130"
@@ -480,7 +471,7 @@ function LightTrailsVisual() {
         strokeWidth="1.5"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
-        transition={{ duration: 2.5, ease: "easeInOut", delay: 0.2 }}
+        transition={{ duration: 2.5, ease: 'easeInOut', delay: 0.2 }}
       />
     </svg>
   );
@@ -488,9 +479,9 @@ function LightTrailsVisual() {
 
 function GarageStatusStrip() {
   const items = [
-    { label: "Garage Status", value: "Operational", live: true },
-    { label: "Primary Stack", value: "MERN" },
-    { label: "Current Track", value: "CyberSecurity" },
+    { label: 'Garage Status', value: 'Operational', live: true },
+    { label: 'Primary Stack', value: 'MERN' },
+    { label: 'Current Track', value: 'CyberSecurity' },
   ];
 
   return (
@@ -498,7 +489,7 @@ function GarageStatusStrip() {
       {items.map((item, i) => (
         <div
           key={item.label}
-          className={`flex flex-1 items-center gap-2 px-4 py-3 ${i > 0 ? "border-t border-zinc-800/60 sm:border-l sm:border-t-0" : ""}`}
+          className={`flex flex-1 items-center gap-2 px-4 py-3 ${i > 0 ? 'border-t border-zinc-800/60 sm:border-l sm:border-t-0' : ''}`}
         >
           {item.live && (
             <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-green-500" />
@@ -506,7 +497,7 @@ function GarageStatusStrip() {
           <div className="min-w-0">
             <p className={`${f1Telemetry} text-[8px] text-zinc-600`}>{item.label}</p>
             <p
-              className={`${f1Telemetry} text-[10px] ${item.live ? "text-green-400" : "text-zinc-300"}`}
+              className={`${f1Telemetry} text-[10px] ${item.live ? 'text-green-400' : 'text-zinc-300'}`}
             >
               {item.value}
             </p>
@@ -545,22 +536,19 @@ function EngineeringVisualization() {
           03
         </text>
       </svg>
-
-      
     </div>
   );
 }
 
-
 const PIT_WALL_COLORS = {
-  bg: "#050505",
-  card: "rgba(255,255,255,0.02)",
-  border: "rgba(255,0,0,0.2)",
-  red: "#FF1801",
-  green: "#00FF84",
-  yellow: "#FFD500",
-  blue: "#00A3FF",
-  secondary: "rgba(255,255,255,0.55)",
+  bg: '#050505',
+  card: 'rgba(255,255,255,0.02)',
+  border: 'rgba(255,0,0,0.2)',
+  red: '#FF1801',
+  green: '#00FF84',
+  yellow: '#FFD500',
+  blue: '#00A3FF',
+  secondary: 'rgba(255,255,255,0.55)',
 };
 
 function PitWallModuleCarbon() {
@@ -604,7 +592,7 @@ function PitWallTelemetryModule({ module, index }) {
             linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)
           `,
-          backgroundSize: "20px 20px",
+          backgroundSize: '20px 20px',
         }}
       />
 
@@ -649,7 +637,7 @@ function PitWallTelemetryModule({ module, index }) {
             key={module.value}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
             className={`text-3xl font-black leading-none text-white sm:text-4xl ${f1Display}`}
           >
             {module.value}
@@ -669,9 +657,9 @@ function PitWallTelemetryModule({ module, index }) {
 function PitWallFeed({ buildsCount }) {
   const syncTime = useMemo(
     () =>
-      new Date().toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
+      new Date().toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
         hour12: true,
       }),
     []
@@ -679,36 +667,36 @@ function PitWallFeed({ buildsCount }) {
 
   const modules = [
     {
-      label: "Projects Completed",
-      value: String(buildsCount).padStart(2, "0"),
-      sub: "Season Total",
+      label: 'Projects Completed',
+      value: String(buildsCount).padStart(2, '0'),
+      sub: 'Season Total',
       icon: Flag,
       accent: PIT_WALL_COLORS.red,
-      micro: ["CPU 87%", "SYNCED", "ACTIVE"],
+      micro: ['CPU 87%', 'SYNCED', 'ACTIVE'],
     },
     {
-      label: "Technologies Used",
-      value: "18+",
-      sub: "Stacks Active",
+      label: 'Technologies Used',
+      value: '18+',
+      sub: 'Stacks Active',
       icon: Cpu,
       accent: PIT_WALL_COLORS.yellow,
-      micro: ["SECTOR 1", "SECTOR 2", "SECTOR 3"],
+      micro: ['SECTOR 1', 'SECTOR 2', 'SECTOR 3'],
     },
     {
-      label: "Certifications",
-      value: "05",
-      sub: "Licensed",
+      label: 'Certifications',
+      value: '05',
+      sub: 'Licensed',
       icon: Award,
       accent: PIT_WALL_COLORS.green,
-      micro: ["VERIFIED", "ACTIVE", "CURRENT"],
+      micro: ['VERIFIED', 'ACTIVE', 'CURRENT'],
     },
     {
-      label: "Open Source",
-      value: "12",
-      sub: "Commits Deployed",
+      label: 'Open Source',
+      value: '12',
+      sub: 'Commits Deployed',
       icon: GitBranch,
       accent: PIT_WALL_COLORS.blue,
-      micro: ["REPO SYNC", "MAIN", "LIVE"],
+      micro: ['REPO SYNC', 'MAIN', 'LIVE'],
     },
   ];
 
@@ -721,7 +709,7 @@ function PitWallFeed({ buildsCount }) {
       style={{
         backgroundColor: PIT_WALL_COLORS.bg,
         borderColor: PIT_WALL_COLORS.border,
-        boxShadow: "0 0 48px rgba(255,24,1,0.08), inset 0 1px 0 rgba(255,255,255,0.04)",
+        boxShadow: '0 0 48px rgba(255,24,1,0.08), inset 0 1px 0 rgba(255,255,255,0.04)',
       }}
     >
       <div
@@ -731,14 +719,14 @@ function PitWallFeed({ buildsCount }) {
             linear-gradient(rgba(255,24,1,0.15) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255,24,1,0.15) 1px, transparent 1px)
           `,
-          backgroundSize: "24px 24px",
+          backgroundSize: '24px 24px',
         }}
       />
 
       <div
         className="pitwall-scan-line pointer-events-none absolute inset-x-0 top-0 z-10 h-24 opacity-[0.07]"
         style={{
-          background: "linear-gradient(180deg, transparent, rgba(255,24,1,0.35), transparent)",
+          background: 'linear-gradient(180deg, transparent, rgba(255,24,1,0.35), transparent)',
         }}
       />
 
@@ -746,16 +734,22 @@ function PitWallFeed({ buildsCount }) {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(160deg, rgba(255,24,1,0.05) 0%, transparent 45%, rgba(255,24,1,0.02) 100%)",
+            'linear-gradient(160deg, rgba(255,24,1,0.05) 0%, transparent 45%, rgba(255,24,1,0.02) 100%)',
         }}
       />
 
-      <div className="relative z-20 flex shrink-0 items-center justify-between border-b px-5 py-4" style={{ borderColor: PIT_WALL_COLORS.border }}>
+      <div
+        className="relative z-20 flex shrink-0 items-center justify-between border-b px-5 py-4"
+        style={{ borderColor: PIT_WALL_COLORS.border }}
+      >
         <span className={`${f1Telemetry} text-[11px] text-white`}>Pit Wall Feed</span>
         <span className="flex items-center gap-2">
           <span
             className="h-2 w-2 animate-pulse rounded-full"
-            style={{ backgroundColor: PIT_WALL_COLORS.green, boxShadow: `0 0 8px ${PIT_WALL_COLORS.green}` }}
+            style={{
+              backgroundColor: PIT_WALL_COLORS.green,
+              boxShadow: `0 0 8px ${PIT_WALL_COLORS.green}`,
+            }}
           />
           <span className={`${f1Telemetry} text-[10px]`} style={{ color: PIT_WALL_COLORS.green }}>
             Live
@@ -774,13 +768,19 @@ function PitWallFeed({ buildsCount }) {
         style={{ borderColor: PIT_WALL_COLORS.border }}
       >
         <div className="flex items-start justify-between gap-3">
-          <span className="flex items-center gap-2 text-[9px]" style={{ color: PIT_WALL_COLORS.secondary }}>
+          <span
+            className="flex items-center gap-2 text-[9px]"
+            style={{ color: PIT_WALL_COLORS.secondary }}
+          >
             <Clock className="h-3.5 w-3.5 shrink-0" style={{ color: PIT_WALL_COLORS.red }} />
             Last Sync
           </span>
           <div className="text-right">
             <p className="text-[10px] text-white">2m ago</p>
-            <p className="mt-0.5 text-[9px]" style={{ color: PIT_WALL_COLORS.secondary, opacity: 0.55 }}>
+            <p
+              className="mt-0.5 text-[9px]"
+              style={{ color: PIT_WALL_COLORS.secondary, opacity: 0.55 }}
+            >
               {syncTime}
             </p>
           </div>
@@ -828,11 +828,11 @@ function TelemetryControlBar({ categories, activeCategory, onCategoryChange }) {
               aria-pressed={isActive}
               onClick={() => onCategoryChange(category)}
               className={`relative min-h-[48px] min-w-0 flex-1 px-3 py-3.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E10600] focus-visible:ring-inset sm:min-h-[52px] sm:px-5 ${f1Telemetry} text-[9px] sm:text-[10px] ${
-                index > 0 ? "border-l border-zinc-800/60" : ""
+                index > 0 ? 'border-l border-zinc-800/60' : ''
               } ${
                 isActive
-                  ? "text-white"
-                  : "bg-transparent text-zinc-500 hover:bg-zinc-900/80 hover:text-zinc-300"
+                  ? 'text-white'
+                  : 'bg-transparent text-zinc-500 hover:bg-zinc-900/80 hover:text-zinc-300'
               }`}
               style={isActive ? { backgroundColor: F1_RED } : undefined}
             >
@@ -845,14 +845,9 @@ function TelemetryControlBar({ categories, activeCategory, onCategoryChange }) {
   );
 }
 
-function HeroSection({
-  filteredCount,
-  categories,
-  activeCategory,
-  onCategoryChange,
-}) {
+function HeroSection({ filteredCount, categories, activeCategory, onCategoryChange }) {
   const scrollToProjects = () => {
-    document.getElementById("projects-grid")?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById('projects-grid')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -861,7 +856,7 @@ function HeroSection({
         <div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(165deg, #030303 0%, #0a0a0a 45%, #050505 100%)",
+            background: 'linear-gradient(165deg, #030303 0%, #0a0a0a 45%, #050505 100%)',
           }}
         />
         <CarbonBackground />
@@ -871,21 +866,20 @@ function HeroSection({
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 70% 50% at 65% 55%, rgba(225,6,0,0.06) 0%, transparent 55%)",
+              'radial-gradient(ellipse 70% 50% at 65% 55%, rgba(225,6,0,0.06) 0%, transparent 55%)',
           }}
         />
         <div
           className="absolute left-0 top-0 h-24 w-24 opacity-30"
           style={{
-            background:
-              "radial-gradient(circle at 0% 0%, rgba(225,6,0,0.25) 0%, transparent 70%)",
+            background: 'radial-gradient(circle at 0% 0%, rgba(225,6,0,0.25) 0%, transparent 70%)',
           }}
         />
         <div
           className="absolute bottom-0 right-0 h-32 w-32 opacity-25"
           style={{
             background:
-              "radial-gradient(circle at 100% 100%, rgba(225,6,0,0.2) 0%, transparent 70%)",
+              'radial-gradient(circle at 100% 100%, rgba(225,6,0,0.2) 0%, transparent 70%)',
           }}
         />
       </div>
@@ -899,7 +893,7 @@ function HeroSection({
             className="flex flex-col lg:col-span-5"
           >
             <p className={`mb-2 text-[10px] font-semibold text-[#E10600] ${f1Telemetry}`}>
-            FULL STACK • AI • CYBERSECURITY
+              FULL STACK • AI • CYBERSECURITY
             </p>
 
             <div className="mb-4 flex items-center gap-3">
@@ -918,7 +912,7 @@ function HeroSection({
 
             <h2
               className={`text-4xl font-black text-white sm:text-5xl xl:text-[3.25rem] ${f1DisplayItalic}`}
-              style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7)" }}
+              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.7)' }}
             >
               Development Garage
             </h2>
@@ -930,8 +924,11 @@ function HeroSection({
               }}
             />
 
-            <p className={`mt-5 max-w-[480px] text-sm leading-relaxed text-zinc-400 sm:text-base ${f1Text}`}>
-            Building full-stack applications, AI-powered solutions, cybersecurity projects, and performance-focused software engineered with precision, scalability, and reliability.
+            <p
+              className={`mt-5 max-w-[480px] text-sm leading-relaxed text-zinc-400 sm:text-base ${f1Text}`}
+            >
+              Building full-stack applications, AI-powered solutions, cybersecurity projects, and
+              performance-focused software engineered with precision, scalability, and reliability.
             </p>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -986,102 +983,99 @@ function HeroSection({
 }
 
 const fallbackProjects = [
-{
-id: "01",
-    title: "Personal Portfolio",
+  {
+    id: '01',
+    title: 'Personal Portfolio',
     description:
-      "High-performance portfolio with lighthouse-optimized assets, smooth animations, and a modular theme system.",
-    category: "Web Development",
-status: "Finished",
+      'High-performance portfolio with lighthouse-optimized assets, smooth animations, and a modular theme system.',
+    category: 'Web Development',
+    status: 'Finished',
     progress: 100,
-    lapTime: "1:24.531",
-    tech: ["React", "Tailwind", "Vite"],
-    team: "ferrari",
+    lapTime: '1:24.531',
+    tech: ['React', 'Tailwind', 'Vite'],
+    team: 'ferrari',
     featured: true,
-    demoUrl: "#",
-    repoUrl: "#",
-},
-{
-id: "02",
-title: "E-Commerce Platform",
+    demoUrl: '#',
+    repoUrl: '#',
+  },
+  {
+    id: '02',
+    title: 'E-Commerce Platform',
     description:
-      "Full-stack storefront with cart, checkout, admin dashboard, and real-time inventory management.",
-    category: "Web Development",
-status: "Finished",
+      'Full-stack storefront with cart, checkout, admin dashboard, and real-time inventory management.',
+    category: 'Web Development',
+    status: 'Finished',
     progress: 100,
-    lapTime: "1:31.204",
-    tech: ["MERN", "Stripe", "Redis"],
-    team: "mercedes",
+    lapTime: '1:31.204',
+    tech: ['MERN', 'Stripe', 'Redis'],
+    team: 'mercedes',
     featured: false,
-    demoUrl: "#",
-    repoUrl: "#",
-},
-{
-id: "03",
-title: "Chat Application",
+    demoUrl: '#',
+    repoUrl: '#',
+  },
+  {
+    id: '03',
+    title: 'Chat Application',
     description:
-      "Real-time messaging app with rooms, typing indicators, read receipts, and end-to-end encryption.",
-    category: "Web Development",
-    status: "In Progress",
+      'Real-time messaging app with rooms, typing indicators, read receipts, and end-to-end encryption.',
+    category: 'Web Development',
+    status: 'In Progress',
     progress: 85,
-    lapTime: "1:27.890",
-    tech: ["Socket.io", "Node.js", "MongoDB"],
-    team: "mclaren",
+    lapTime: '1:27.890',
+    tech: ['Socket.io', 'Node.js', 'MongoDB'],
+    team: 'mclaren',
     featured: true,
-    demoUrl: "#",
-    repoUrl: "#",
-},
-{
-id: "04",
-title: "ML Dashboard",
+    demoUrl: '#',
+    repoUrl: '#',
+  },
+  {
+    id: '04',
+    title: 'ML Dashboard',
     description:
-      "Interactive machine learning dashboard with model training pipelines, metrics visualization, and export tools.",
-    category: "Python",
-status: "Finished",
+      'Interactive machine learning dashboard with model training pipelines, metrics visualization, and export tools.',
+    category: 'Python',
+    status: 'Finished',
     progress: 100,
-    lapTime: "1:29.112",
-    tech: ["Python", "TensorFlow", "Plotly"],
-    team: "redbull",
+    lapTime: '1:29.112',
+    tech: ['Python', 'TensorFlow', 'Plotly'],
+    team: 'redbull',
     featured: false,
-    demoUrl: "#",
-    repoUrl: "#",
-},
-{
-id: "05",
-title: "Task Manager",
+    demoUrl: '#',
+    repoUrl: '#',
+  },
+  {
+    id: '05',
+    title: 'Task Manager',
     description:
-      "Productivity suite with kanban boards, sprint planning, deadline tracking, and team collaboration features.",
-    category: "Java",
-    status: "In Progress",
+      'Productivity suite with kanban boards, sprint planning, deadline tracking, and team collaboration features.',
+    category: 'Java',
+    status: 'In Progress',
     progress: 72,
-    lapTime: "1:33.445",
-    tech: ["Java", "Spring Boot", "PostgreSQL"],
-    team: "racingbulls",
+    lapTime: '1:33.445',
+    tech: ['Java', 'Spring Boot', 'PostgreSQL'],
+    team: 'racingbulls',
     featured: false,
-    demoUrl: "#",
-    repoUrl: "#",
-},
-{
-id: "06",
-title: "Data Visualizer",
+    demoUrl: '#',
+    repoUrl: '#',
+  },
+  {
+    id: '06',
+    title: 'Data Visualizer',
     description:
-      "Algorithm visualization tool for sorting, searching, and graph traversals with step-by-step playback.",
-    category: "DSA",
-    status: "Delayed",
+      'Algorithm visualization tool for sorting, searching, and graph traversals with step-by-step playback.',
+    category: 'DSA',
+    status: 'Delayed',
     progress: 45,
-    lapTime: "1:38.901",
-    tech: ["JavaScript", "Canvas", "Algorithms"],
-    team: "aston",
+    lapTime: '1:38.901',
+    tech: ['JavaScript', 'Canvas', 'Algorithms'],
+    team: 'aston',
     featured: false,
-    demoUrl: "#",
-    repoUrl: "#",
+    demoUrl: '#',
+    repoUrl: '#',
   },
 ];
 
-const categories = [
-  "All",
-  ...Array.from(new Set(fallbackProjects.map((p) => p.category))),
-];
+const categories = ['All', ...Array.from(new Set(fallbackProjects.map((p) => p.category)))];
 
 /* ─── Dashboard card system (reference-accurate) ─── */
 
@@ -1097,9 +1091,8 @@ function CardLayerCarbon() {
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.14]"
         style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.28) 1px, transparent 1px)",
-          backgroundSize: "14px 14px",
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.28) 1px, transparent 1px)',
+          backgroundSize: '14px 14px',
         }}
       />
     </>
@@ -1115,16 +1108,21 @@ function CardLayerTelemetryGrid({ accent }) {
           linear-gradient(${accent}22 1px, transparent 1px),
           linear-gradient(90deg, ${accent}22 1px, transparent 1px)
         `,
-        backgroundSize: "32px 32px",
+        backgroundSize: '32px 32px',
       }}
     />
   );
 }
 
-function CardLayerLightTrails({ accent, variant, uid = "0" }) {
-  if (variant === "performance") {
+function CardLayerLightTrails({ accent, variant, uid = '0' }) {
+  if (variant === 'performance') {
     return (
-      <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 600 400" preserveAspectRatio="none" aria-hidden="true">
+      <svg
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        viewBox="0 0 600 400"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
         <defs>
           <linearGradient id={`perfTrail-${uid}`} x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor={accent} stopOpacity="0" />
@@ -1132,16 +1130,41 @@ function CardLayerLightTrails({ accent, variant, uid = "0" }) {
             <stop offset="100%" stopColor="#fff" stopOpacity="0.08" />
           </linearGradient>
         </defs>
-        <path d="M40 300 Q200 220 380 260 T580 220" fill="none" stroke={`url(#perfTrail-${uid})`} strokeWidth="3" opacity="0.7" />
-        <path d="M20 330 Q180 280 360 310 T560 280" fill="none" stroke={accent} strokeWidth="1" opacity="0.25" />
+        <path
+          d="M40 300 Q200 220 380 260 T580 220"
+          fill="none"
+          stroke={`url(#perfTrail-${uid})`}
+          strokeWidth="3"
+          opacity="0.7"
+        />
+        <path
+          d="M20 330 Q180 280 360 310 T560 280"
+          fill="none"
+          stroke={accent}
+          strokeWidth="1"
+          opacity="0.25"
+        />
       </svg>
     );
   }
-  if (variant === "analytics") {
+  if (variant === 'analytics') {
     return (
-      <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-30" viewBox="0 0 600 400" aria-hidden="true">
+      <svg
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-30"
+        viewBox="0 0 600 400"
+        aria-hidden="true"
+      >
         {[80, 160, 240, 320, 400, 480].map((x) => (
-          <line key={x} x1={x} y1="60" x2={x} y2="340" stroke={accent} strokeWidth="0.5" opacity="0.15" />
+          <line
+            key={x}
+            x1={x}
+            y1="60"
+            x2={x}
+            y2="340"
+            stroke={accent}
+            strokeWidth="0.5"
+            opacity="0.15"
+          />
         ))}
         <motion.path
           d="M60 280 L120 250 L180 260 L240 220 L300 230 L360 190 L420 200 L480 170 L540 180"
@@ -1157,23 +1180,56 @@ function CardLayerLightTrails({ accent, variant, uid = "0" }) {
       </svg>
     );
   }
-  if (variant === "devops") {
+  if (variant === 'devops') {
     return (
-      <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 600 400" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 340 Q150 300 300 320 T600 290" fill="none" stroke={accent} strokeWidth="2" opacity="0.35" />
-        <path d="M0 360 Q200 310 400 330 T600 310" fill="none" stroke={accent} strokeWidth="1" opacity="0.2" />
+      <svg
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        viewBox="0 0 600 400"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M0 340 Q150 300 300 320 T600 290"
+          fill="none"
+          stroke={accent}
+          strokeWidth="2"
+          opacity="0.35"
+        />
+        <path
+          d="M0 360 Q200 310 400 330 T600 310"
+          fill="none"
+          stroke={accent}
+          strokeWidth="1"
+          opacity="0.2"
+        />
       </svg>
     );
   }
   return (
-    <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-40" viewBox="0 0 600 400" aria-hidden="true">
+    <svg
+      className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
+      viewBox="0 0 600 400"
+      aria-hidden="true"
+    >
       {[
-        [120, 150], [280, 120], [400, 170], [180, 230], [350, 210],
+        [120, 150],
+        [280, 120],
+        [400, 170],
+        [180, 230],
+        [350, 210],
       ].map(([cx, cy], i) => (
         <g key={i}>
           <circle cx={cx} cy={cy} r="4" fill={accent} opacity="0.5" />
           {i > 0 && (
-            <line x1={cx - 80} y1={cy + 30} x2={cx} y2={cy} stroke={accent} strokeWidth="1" opacity="0.25" />
+            <line
+              x1={cx - 80}
+              y1={cy + 30}
+              x2={cx}
+              y2={cy}
+              stroke={accent}
+              strokeWidth="1"
+              opacity="0.25"
+            />
           )}
         </g>
       ))}
@@ -1185,15 +1241,26 @@ function SmallMetricRing({ value, subLabel, accent, displayValue }) {
   const size = 38;
   const r = 15;
   const circ = 2 * Math.PI * r;
-  const numVal = typeof value === "number" ? value : parseFloat(String(value).replace(/[^\d.]/g, ""));
+  const numVal =
+    typeof value === 'number' ? value : parseFloat(String(value).replace(/[^\d.]/g, ''));
   const offset = circ - (Math.min(100, numVal) / 100) * circ;
   const centerText = displayValue ?? `${value}%`;
 
   return (
     <div className="flex flex-col items-end">
-      <div className="relative transition-all duration-300 group-hover:drop-shadow-[0_0_5px_var(--ring-glow)]" style={{ "--ring-glow": accent, width: size, height: size }}>
+      <div
+        className="relative transition-all duration-300 group-hover:drop-shadow-[0_0_5px_var(--ring-glow)]"
+        style={{ '--ring-glow': accent, width: size, height: size }}
+      >
         <svg width={size} height={size} className="-rotate-90">
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            fill="none"
+            stroke="rgba(255,255,255,0.08)"
+            strokeWidth="1.5"
+          />
           <motion.circle
             cx={size / 2}
             cy={size / 2}
@@ -1211,43 +1278,49 @@ function SmallMetricRing({ value, subLabel, accent, displayValue }) {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className={`text-[9px] font-black leading-none text-white antialiased ${f1Display}`}>{centerText}</span>
+          <span
+            className={`text-[9px] font-black leading-none text-white antialiased ${f1Display}`}
+          >
+            {centerText}
+          </span>
         </div>
       </div>
-      {subLabel && <span className={`mt-0 text-right ${f1CardMetricLabel} text-[7px]`}>{subLabel}</span>}
+      {subLabel && (
+        <span className={`mt-0 text-right ${f1CardMetricLabel} text-[7px]`}>{subLabel}</span>
+      )}
     </div>
   );
 }
 
 function getGarageStats(project) {
   const arch = getArchetype(project.id);
-  
-  if (arch === "analytics") {
+
+  if (arch === 'analytics') {
     return [
-      { label: "MODEL ACCURACY", value: "98.5%", sub: "PRECISION" },
-      { label: "TRAIN EPOCHS", value: "250", sub: "TEST LAPS" },
-      { label: "INFERENCE", value: "12ms", sub: "RESPONSE" },
+      { label: 'MODEL ACCURACY', value: '98.5%', sub: 'PRECISION' },
+      { label: 'TRAIN EPOCHS', value: '250', sub: 'TEST LAPS' },
+      { label: 'INFERENCE', value: '12ms', sub: 'RESPONSE' },
     ];
   }
-  if (arch === "devops") {
+  if (arch === 'devops') {
     return [
-      { label: "SYS UPTIME", value: "99.9%", sub: "ENGINE HEALTH" },
-      { label: "BUILD TIME", value: "1:42", sub: "ASSEMBLY" },
-      { label: "PAYLOAD", value: "124MB", sub: "FOOTPRINT" },
+      { label: 'SYS UPTIME', value: '99.9%', sub: 'ENGINE HEALTH' },
+      { label: 'BUILD TIME', value: '1:42', sub: 'ASSEMBLY' },
+      { label: 'PAYLOAD', value: '124MB', sub: 'FOOTPRINT' },
     ];
   }
-  if (arch === "data") {
+  if (arch === 'data') {
     return [
-      { label: "THROUGHPUT", value: "1.2K", sub: "FLOW RATE" },
-      { label: "QUERY TIME", value: "45ms", sub: "LATENCY" },
-      { label: "DATA VOL", value: "3.2TB", sub: "FUEL LOAD" },
+      { label: 'THROUGHPUT', value: '1.2K', sub: 'FLOW RATE' },
+      { label: 'QUERY TIME', value: '45ms', sub: 'LATENCY' },
+      { label: 'DATA VOL', value: '3.2TB', sub: 'FUEL LOAD' },
     ];
   }
   // Default (Performance/Web Development)
   return [
-    { label: "LIGHTHOUSE", value: "100", sub: "AERO EFFICIENCY" },
-    { label: "BUNDLE SIZE", value: "84KB", sub: "CHASSIS WEIGHT" },
-    { label: "LOAD TIME", value: "0.8s", sub: "PIT STOP" },
+    { label: 'LIGHTHOUSE', value: '100', sub: 'AERO EFFICIENCY' },
+    { label: 'BUNDLE SIZE', value: '84KB', sub: 'CHASSIS WEIGHT' },
+    { label: 'LOAD TIME', value: '0.8s', sub: 'PIT STOP' },
   ];
 }
 
@@ -1255,34 +1328,24 @@ function GarageTopMetric({ project, theme }) {
   const arch = getArchetype(project.id);
 
   let displayValue = project.progress;
-  let subLabel = "COMPLETE";
+  let subLabel = 'COMPLETE';
 
-  if (arch === "analytics") {
-    displayValue =
-      project.status === "Finished"
-        ? 98.7
-        : Math.min(99, 88 + project.progress * 0.1);
+  if (arch === 'analytics') {
+    displayValue = project.status === 'Finished' ? 98.7 : Math.min(99, 88 + project.progress * 0.1);
 
-    subLabel = "ACCURACY";
-  } else if (arch === "devops") {
-    displayValue =
-      project.status === "Finished"
-        ? 96
-        : Math.max(72, project.progress);
+    subLabel = 'ACCURACY';
+  } else if (arch === 'devops') {
+    displayValue = project.status === 'Finished' ? 96 : Math.max(72, project.progress);
 
-    subLabel = "SUCCESS";
-  } else if (arch === "data") {
+    subLabel = 'SUCCESS';
+  } else if (arch === 'data') {
     const tb = (2 + projectIndex(project.id) * 0.35).toFixed(1);
 
     return (
       <div className="relative flex items-center justify-center">
         <div className="relative h-23 w-23">
           {/* Background Telemetry Rings */}
-          <svg
-            className="absolute inset-0 h-full w-full"
-            viewBox="0 0 100 100"
-            aria-hidden="true"
-          >
+          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" aria-hidden="true">
             {/* Outer dashed data ring - animating slowly */}
             <motion.circle
               cx="50"
@@ -1293,10 +1356,10 @@ function GarageTopMetric({ project, theme }) {
               strokeWidth="1.5"
               strokeDasharray="4 6"
               animate={{ rotate: 360 }}
-              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-              style={{ originX: "50px", originY: "50px" }}
+              transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+              style={{ originX: '50px', originY: '50px' }}
             />
-            
+
             {/* Inner solid track */}
             <circle
               cx="50"
@@ -1339,23 +1402,21 @@ function GarageTopMetric({ project, theme }) {
             className="absolute inset-[12px] flex flex-col items-center justify-center rounded-full border backdrop-blur-md"
             style={{
               borderColor: `${theme.accent}33`,
-              background: "rgba(5,5,5,0.94)",
+              background: 'rgba(5,5,5,0.94)',
               boxShadow: `
                 inset 0 0 12px rgba(255,255,255,0.04),
                 0 0 16px ${theme.accent}22
               `,
             }}
           >
-            <span className={`${f1Telemetry} text-[7px] text-zinc-500 mb-0.5`}>
-              DATA
-            </span>
-            
+            <span className={`${f1Telemetry} text-[7px] text-zinc-500 mb-0.5`}>DATA</span>
+
             <div className="flex items-baseline gap-0.5">
               <span
                 className={`text-[22px] font-black leading-none text-white ${f1Display}`}
                 style={{
-                  transform: "skewX(-8deg)",
-                  letterSpacing: "-0.04em",
+                  transform: 'skewX(-8deg)',
+                  letterSpacing: '-0.04em',
                 }}
               >
                 {tb}
@@ -1398,14 +1459,7 @@ function GarageTopMetric({ project, theme }) {
           ))}
 
           {/* background ring */}
-          <circle
-            cx="50"
-            cy="50"
-            r="42"
-            fill="none"
-            stroke={`${theme.accent}22`}
-            strokeWidth="3"
-          />
+          <circle cx="50" cy="50" r="42" fill="none" stroke={`${theme.accent}22`} strokeWidth="3" />
 
           {/* progress ring */}
           <motion.circle
@@ -1419,8 +1473,7 @@ function GarageTopMetric({ project, theme }) {
             strokeDasharray={circumference}
             initial={{ strokeDashoffset: circumference }}
             whileInView={{
-              strokeDashoffset:
-                circumference * (1 - displayValue / 100),
+              strokeDashoffset: circumference * (1 - displayValue / 100),
             }}
             viewport={CARD_MOTION_VIEWPORT}
             transition={{
@@ -1438,7 +1491,7 @@ function GarageTopMetric({ project, theme }) {
           className="absolute inset-[10px] flex flex-col items-center justify-center rounded-full border backdrop-blur-md"
           style={{
             borderColor: `${theme.accent}33`,
-            background: "rgba(5,5,5,0.94)",
+            background: 'rgba(5,5,5,0.94)',
             boxShadow: `
               inset 0 0 12px rgba(255,255,255,0.04),
               0 0 16px ${theme.accent}22
@@ -1446,21 +1499,21 @@ function GarageTopMetric({ project, theme }) {
           }}
         >
           <span
-  className={`text-[20px] font-black leading-none text-white ${f1Display}`}
-  style={{
-    transform: "skewX(-8deg)",
-    letterSpacing: "-0.04em",
-  }}
->
+            className={`text-[20px] font-black leading-none text-white ${f1Display}`}
+            style={{
+              transform: 'skewX(-8deg)',
+              letterSpacing: '-0.04em',
+            }}
+          >
             {Math.round(displayValue)}%
           </span>
 
           <span
-  className={`${f1Telemetry} mt-1 text-[7px] font-semibold tracking-[0.15em]`}
-  style={{
-    color: theme.accent,
-  }}
->
+            className={`${f1Telemetry} mt-1 text-[7px] font-semibold tracking-[0.15em]`}
+            style={{
+              color: theme.accent,
+            }}
+          >
             {subLabel}
           </span>
         </div>
@@ -1470,9 +1523,9 @@ function GarageTopMetric({ project, theme }) {
 }
 function GarageTelemetry({ project, theme }) {
   const arch = getArchetype(project.id);
-  if (arch === "analytics") return <PipelineHealthBar theme={theme} />;
-  if (arch === "devops") return <SystemHealthBar theme={theme} />;
-  if (arch === "data") return <DataFlowGraph theme={theme} />;
+  if (arch === 'analytics') return <PipelineHealthBar theme={theme} />;
+  if (arch === 'devops') return <SystemHealthBar theme={theme} />;
+  if (arch === 'data') return <DataFlowGraph theme={theme} />;
   return <TimelineProgressBar project={project} theme={theme} />;
 }
 
@@ -1483,7 +1536,11 @@ function CardMetaBadges({ project, theme }) {
       {project.featured && (
         <motion.span
           className="rounded-lg border px-2 py-0.5 text-[9px] font-bold tracking-wide"
-          style={{ borderColor: theme.accent, color: theme.accent, backgroundColor: `${theme.accent}18` }}
+          style={{
+            borderColor: theme.accent,
+            color: theme.accent,
+            backgroundColor: `${theme.accent}18`,
+          }}
           initial={{ opacity: 0, x: -8 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={CARD_MOTION_VIEWPORT}
@@ -1504,30 +1561,30 @@ function CardMetaBadges({ project, theme }) {
 
 function CardTitleBlock({ project, theme }) {
   const titleLines = splitTitle(project.title);
-  
+
   return (
     <div className="mb-5 flex flex-col uppercase font-['Orbitron',sans-serif]">
       {/* Line 1: Increased size, subtle metallic grey */}
-      <span 
+      <span
         className="text-[20px] font-black italic text-zinc-400 sm:text-[24px]"
         style={{
-          transform: "scaleX(1.25)",
-          transformOrigin: "left center",
-          letterSpacing: "0.15em",
-          textShadow: "0 2px 8px rgba(0,0,0,0.6)" // Small shadow to lift it off the grid
+          transform: 'scaleX(1.25)',
+          transformOrigin: 'left center',
+          letterSpacing: '0.15em',
+          textShadow: '0 2px 8px rgba(0,0,0,0.6)', // Small shadow to lift it off the grid
         }}
       >
         {titleLines.line1}
       </span>
-      
+
       {/* Line 2: Massive scale, 3D extruded drop shadow + Team Glow */}
       {titleLines.line2 && (
         <span
           className="mt-[-4px] text-[42px] font-black italic leading-[0.85] text-white antialiased transition-transform duration-500 group-hover:translate-x-1 sm:text-[50px] lg:text-[58px]"
           style={{
-            transform: "scaleX(1.25)",
-            transformOrigin: "left center",
-            letterSpacing: "0.02em",
+            transform: 'scaleX(1.25)',
+            transformOrigin: 'left center',
+            letterSpacing: '0.02em',
             // The F1 Effect: A hard bevel, a dark drop shadow, and a massive team-colored glow
             textShadow: `
               -1px -1px 0px rgba(255,255,255,0.15),
@@ -1546,7 +1603,7 @@ function CardTitleBlock({ project, theme }) {
 
 function CardTechPills({ project, theme }) {
   return (
-    <motion.div 
+    <motion.div
       className="mt-3 flex max-w-full flex-wrap gap-2 sm:gap-2.5"
       initial={{ opacity: 0, y: 4 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -1561,12 +1618,12 @@ function CardTechPills({ project, theme }) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={CARD_MOTION_VIEWPORT}
           transition={{ duration: 0.25 }}
-          whileHover={{ 
+          whileHover={{
             y: -2,
-            color: "#ffffff",
+            color: '#ffffff',
             borderColor: `${theme?.accent || '#ffffff'}88`,
             backgroundColor: `${theme?.accent || '#ffffff'}15`,
-            boxShadow: `0 4px 12px ${theme?.glow || 'rgba(255,255,255,0.1)'}`
+            boxShadow: `0 4px 12px ${theme?.glow || 'rgba(255,255,255,0.1)'}`,
           }}
         >
           <TechStackIcon name={tag} />
@@ -1583,11 +1640,11 @@ function CardStatsRow({ stats = [], theme }) {
   return (
     <div className="relative z-20 grid grid-cols-3 gap-2.5 sm:gap-3">
       {stats.map((s, i) => (
-        <motion.div 
-          key={s.label} 
+        <motion.div
+          key={s.label}
           className="group relative flex flex-col justify-between overflow-hidden rounded border border-zinc-800/80 bg-[#020202] px-2 py-2 sm:px-2.5"
           style={{
-            boxShadow: "inset 0 4px 16px rgba(0,0,0,1), 0 1px 0 rgba(255,255,255,0.05)"
+            boxShadow: 'inset 0 4px 16px rgba(0,0,0,1), 0 1px 0 rgba(255,255,255,0.05)',
           }}
           initial={{ opacity: 0, y: 4 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1595,22 +1652,31 @@ function CardStatsRow({ stats = [], theme }) {
           transition={{ duration: 0.3, delay: i * 0.1 }}
         >
           {/* Active Accent Top Line */}
-          <div 
-            className="absolute inset-x-0 top-0 h-[2px] w-full opacity-40 transition-opacity duration-300 group-hover:opacity-100" 
-            style={{ background: `linear-gradient(90deg, transparent, ${theme?.accent || '#fff'}, transparent)` }} 
+          <div
+            className="absolute inset-x-0 top-0 h-[2px] w-full opacity-40 transition-opacity duration-300 group-hover:opacity-100"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${theme?.accent || '#fff'}, transparent)`,
+            }}
           />
-          
+
           {/* Label & Active Dot */}
           <div className="flex items-center justify-between">
-            <p className={`${f1Telemetry} text-[6px] tracking-[0.15em] text-zinc-500 sm:text-[7px]`}>{s.label}</p>
-            <div 
-              className="h-1 w-1 rounded-full opacity-30 transition-opacity duration-300 group-hover:animate-pulse group-hover:opacity-100" 
-              style={{ backgroundColor: theme?.accent || '#fff', boxShadow: `0 0 6px ${theme?.accent || '#fff'}` }} 
+            <p
+              className={`${f1Telemetry} text-[6px] tracking-[0.15em] text-zinc-500 sm:text-[7px]`}
+            >
+              {s.label}
+            </p>
+            <div
+              className="h-1 w-1 rounded-full opacity-30 transition-opacity duration-300 group-hover:animate-pulse group-hover:opacity-100"
+              style={{
+                backgroundColor: theme?.accent || '#fff',
+                boxShadow: `0 0 6px ${theme?.accent || '#fff'}`,
+              }}
             />
           </div>
-          
+
           {/* Main Value */}
-          <p 
+          <p
             className={`mt-1 text-xl font-black leading-none tracking-tight text-white antialiased sm:text-2xl ${f1Display}`}
             style={{ textShadow: `0 0 16px ${theme?.accent || '#fff'}22` }}
           >
@@ -1619,9 +1685,22 @@ function CardStatsRow({ stats = [], theme }) {
 
           {/* Sub-label & Sparkline */}
           <div className="mt-1.5 flex items-center justify-between opacity-70">
-            <span className={`${f1Telemetry} text-[5px] tracking-widest text-zinc-400 sm:text-[6px]`}>{s.sub}</span>
-            <svg className="h-1.5 w-6 opacity-40 transition-opacity group-hover:opacity-80" viewBox="0 0 24 6" preserveAspectRatio="none">
-              <path d="M0 3 L4 3 L6 1 L8 5 L10 3 L24 3" fill="none" stroke={theme?.accent || '#fff'} strokeWidth="0.75" />
+            <span
+              className={`${f1Telemetry} text-[5px] tracking-widest text-zinc-400 sm:text-[6px]`}
+            >
+              {s.sub}
+            </span>
+            <svg
+              className="h-1.5 w-6 opacity-40 transition-opacity group-hover:opacity-80"
+              viewBox="0 0 24 6"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0 3 L4 3 L6 1 L8 5 L10 3 L24 3"
+                fill="none"
+                stroke={theme?.accent || '#fff'}
+                strokeWidth="0.75"
+              />
             </svg>
           </div>
         </motion.div>
@@ -1632,10 +1711,13 @@ function CardStatsRow({ stats = [], theme }) {
 
 function GarageBuildStatus({ project }) {
   const dot = statusDotColor(project.status);
-  const label = buildStatusText(project.status).replace("BUILD STATUS: ", "");
+  const label = buildStatusText(project.status).replace('BUILD STATUS: ', '');
   return (
     <div className="flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-black/40 px-2 py-1 backdrop-blur-sm">
-      <span className="h-1.5 w-1.5 shrink-0 rounded-full animate-pulse" style={{ backgroundColor: dot, boxShadow: `0 0 6px ${dot}` }} />
+      <span
+        className="h-1.5 w-1.5 shrink-0 rounded-full animate-pulse"
+        style={{ backgroundColor: dot, boxShadow: `0 0 6px ${dot}` }}
+      />
       <span className={`${f1Telemetry} text-[8px] text-zinc-300`}>{label}</span>
     </div>
   );
@@ -1643,24 +1725,27 @@ function GarageBuildStatus({ project }) {
 
 function GarageCarVisual({ teamData, theme }) {
   return (
-   <div className="pointer-events-none absolute bottom-[60px] left-[2%] z-[15] w-[96%] max-w-none sm:bottom-[70px]">
+    <div className="pointer-events-none absolute bottom-[60px] left-[2%] z-[15] w-[96%] max-w-none sm:bottom-[70px]">
       {/* 1. Drive-in Entrance Animation */}
       <motion.div
         initial={{ x: 150, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
         viewport={CARD_MOTION_VIEWPORT}
-        transition={{ type: "spring", stiffness: 40, damping: 12, delay: 0.15 }}
+        transition={{ type: 'spring', stiffness: 40, damping: 12, delay: 0.15 }}
         className="relative"
-        style={{ transform: "rotate(-1.5deg)" }}
+        style={{ transform: 'rotate(-1.5deg)' }}
       >
         {/* 2. Engine Idle / Hover Lift Container */}
         <motion.div
           animate={{ y: [0, -2, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           className="relative transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-[1.03]"
         >
           {/* 3. Continuous Moving Speed Lines */}
-          <div className="absolute inset-0 z-[1] overflow-hidden opacity-40 transition-opacity duration-300 group-hover:opacity-100" style={{ transform: "rotate(3deg)" }}>
+          <div
+            className="absolute inset-0 z-[1] overflow-hidden opacity-40 transition-opacity duration-300 group-hover:opacity-100"
+            style={{ transform: 'rotate(3deg)' }}
+          >
             {[0, 1, 2, 3].map((i) => (
               <motion.div
                 key={i}
@@ -1671,11 +1756,11 @@ function GarageCarVisual({ teamData, theme }) {
                   background: `linear-gradient(90deg, transparent, ${theme.accent}, transparent)`,
                   filter: `blur(${1 + i * 0.5}px)`,
                 }}
-                animate={{ left: ["120%", "-80%"] }}
+                animate={{ left: ['120%', '-80%'] }}
                 transition={{
                   duration: 0.8 + i * 0.3,
                   repeat: Infinity,
-                  ease: "linear",
+                  ease: 'linear',
                   delay: i * 0.2,
                 }}
               />
@@ -1702,13 +1787,13 @@ function GarageCarVisual({ teamData, theme }) {
               boxShadow: `0 0 15px ${theme.glow}, 0 0 30px ${theme.accentSoft}`,
             }}
             animate={{ opacity: [0.5, 0.9, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           />
 
           {/* Deep Core Drop Shadow */}
           <div
             className="absolute bottom-[-6%] left-[2%] right-[2%] h-20 rounded-[100%] blur-[20px] opacity-70 transition-opacity duration-300 group-hover:opacity-90"
-            style={{ backgroundColor: "rgba(0,0,0,0.95)" }}
+            style={{ backgroundColor: 'rgba(0,0,0,0.95)' }}
           />
 
           {/* Main Car Asset */}
@@ -1717,8 +1802,8 @@ function GarageCarVisual({ teamData, theme }) {
             alt={`${teamData.label} F1 car`}
             className="relative z-20 h-auto w-full object-contain object-bottom drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
             style={{
-              transform: "scaleX(-1)", /* Flips the car to face left */
-              filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.9))",
+              transform: 'scaleX(-1)' /* Flips the car to face left */,
+              filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.9))',
             }}
             fallback={
               <F1CarSvg className="relative z-20 h-auto w-full object-contain object-bottom opacity-95" />
@@ -1733,21 +1818,30 @@ function GarageCarVisual({ teamData, theme }) {
 function InlineTelemetryRow({ project, theme }) {
   const idx = projectIndex(project.id);
   const version = `V${(1 + idx * 0.4).toFixed(1)}`;
-  const teamNum = String(project.tech.length).padStart(2, "0");
-  const statusText = project.status === "Finished" ? "DEPLOYED" : project.status === "In Progress" ? "BUILDING" : "QUEUED";
+  const teamNum = String(project.tech.length).padStart(2, '0');
+  const statusText =
+    project.status === 'Finished'
+      ? 'DEPLOYED'
+      : project.status === 'In Progress'
+        ? 'BUILDING'
+        : 'QUEUED';
 
   const items = [
-    { label: "TEAM", value: teamNum },
-    { label: "VERSION", value: version },
-    { label: "STATUS", value: statusText },
+    { label: 'TEAM', value: teamNum },
+    { label: 'VERSION', value: version },
+    { label: 'STATUS', value: statusText },
   ];
 
   return (
     <div className="relative z-30 flex items-center gap-4 sm:gap-6 opacity-75">
       {items.map((item) => (
         <div key={item.label} className="flex flex-col">
-          <span className={`${f1Telemetry} text-[7px] text-zinc-500 sm:text-[8px]`}>{item.label}</span>
-          <span className={`${f1Telemetry} text-[10px] text-zinc-300 sm:text-[11px]`}>{item.value}</span>
+          <span className={`${f1Telemetry} text-[7px] text-zinc-500 sm:text-[8px]`}>
+            {item.label}
+          </span>
+          <span className={`${f1Telemetry} text-[10px] text-zinc-300 sm:text-[11px]`}>
+            {item.value}
+          </span>
         </div>
       ))}
     </div>
@@ -1790,7 +1884,7 @@ function TimelineProgressBar({ project, theme }) {
   const segments = 12;
   const filled = Math.round((project.progress / 100) * segments);
   return (
-    <motion.div 
+    <motion.div
       className="mt-2"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
@@ -1799,7 +1893,9 @@ function TimelineProgressBar({ project, theme }) {
     >
       <div className="mb-1.5 flex items-center justify-between gap-2">
         <p className={`${f1Telemetry} text-[6px] text-zinc-500`}>TIMELINE PROGRESS</p>
-        <span className={`text-xs font-bold text-white antialiased ${f1Display}`}>{project.progress}%</span>
+        <span className={`text-xs font-bold text-white antialiased ${f1Display}`}>
+          {project.progress}%
+        </span>
       </div>
       <div className="flex gap-0.75">
         {Array.from({ length: segments }).map((_, i) => (
@@ -1807,8 +1903,8 @@ function TimelineProgressBar({ project, theme }) {
             key={i}
             className="h-1.5 flex-1 origin-bottom rounded-[1px]"
             style={{
-              backgroundColor: i < filled ? theme.accent : "rgba(255,255,255,0.08)",
-              boxShadow: i < filled ? `0 0 6px ${theme.glow}` : "none",
+              backgroundColor: i < filled ? theme.accent : 'rgba(255,255,255,0.08)',
+              boxShadow: i < filled ? `0 0 6px ${theme.glow}` : 'none',
             }}
             initial={{ opacity: 0, scaleY: 0.3 }}
             whileInView={{ opacity: 1, scaleY: 1 }}
@@ -1826,9 +1922,18 @@ function PipelineHealthBar({ theme }) {
     <div className="mt-2">
       <div className="mb-1 flex items-center justify-between gap-2">
         <p className={`${f1Telemetry} text-[7px] text-zinc-500`}>PIPELINE HEALTH</p>
-        <span className={`text-lg font-black leading-none text-white antialiased sm:text-xl ${f1Display}`}>100%</span>
-    </div>
-      <svg className="h-6 w-full sm:h-8" viewBox="0 0 300 52" preserveAspectRatio="none" aria-hidden="true">
+        <span
+          className={`text-lg font-black leading-none text-white antialiased sm:text-xl ${f1Display}`}
+        >
+          100%
+        </span>
+      </div>
+      <svg
+        className="h-6 w-full sm:h-8"
+        viewBox="0 0 300 52"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
         <motion.path
           d="M0 26 L28 26 L38 10 L48 42 L58 26 L85 26 L98 14 L108 38 L118 26 L145 26 L158 6 L168 46 L178 26 L205 26 L218 16 L228 36 L238 26 L300 26"
           fill="none"
@@ -1840,16 +1945,16 @@ function PipelineHealthBar({ theme }) {
           transition={{ duration: 0.85, ease: CARD_MOTION_EASE }}
         />
       </svg>
-  </div>
+    </div>
   );
 }
 
 function SystemHealthBar({ theme }) {
   const segments = [
     { w: 38, c: theme.accent },
-    { w: 28, c: "#34d399" },
-    { w: 18, c: "#fbbf24" },
-    { w: 16, c: "rgba(255,255,255,0.1)" },
+    { w: 28, c: '#34d399' },
+    { w: 18, c: '#fbbf24' },
+    { w: 16, c: 'rgba(255,255,255,0.1)' },
   ];
   return (
     <div className="mt-2">
@@ -1866,9 +1971,9 @@ function SystemHealthBar({ theme }) {
             transition={{ delay: i * 0.06, duration: 0.4, ease: CARD_MOTION_EASE }}
           />
         ))}
-  </div>
-</div>
-);
+      </div>
+    </div>
+  );
 }
 
 function DataFlowGraph({ theme }) {
@@ -1935,16 +2040,16 @@ function TeamGarageCard({ project }) {
 
   return (
     <motion.article
-  className="group relative h-full w-full overflow-hidden rounded-2xl bg-[#050505]"
-  style={{
-    minHeight: "620px",
-    border: `1px solid ${theme.accent}33`,
-    boxShadow: `0 0 0 1px rgba(255,255,255,0.04), 0 12px 36px rgba(0,0,0,0.65), 0 0 48px ${theme.accentSoft}`,
-  }}
-  initial={false}
-  whileHover={{ y: -3, scale: 1.002 }}
-  transition={{ duration: 0.3, ease: "easeOut" }}
->
+      className="group relative h-full w-full overflow-hidden rounded-2xl bg-[#050505]"
+      style={{
+        minHeight: '620px',
+        border: `1px solid ${theme.accent}33`,
+        boxShadow: `0 0 0 1px rgba(255,255,255,0.04), 0 12px 36px rgba(0,0,0,0.65), 0 0 48px ${theme.accentSoft}`,
+      }}
+      initial={false}
+      whileHover={{ y: -3, scale: 1.002 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+    >
       {/* Layer 1 — Base atmosphere */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#060606] to-black" />
 
@@ -1967,7 +2072,7 @@ function TeamGarageCard({ project }) {
         className="pointer-events-none absolute right-[15%] top-0 h-[60%] w-[40%] opacity-[0.04] transition-opacity duration-500 group-hover:opacity-[0.08]"
         style={{
           background: `linear-gradient(180deg, ${theme.accent}44, transparent)`,
-          clipPath: "polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%)",
+          clipPath: 'polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%)',
         }}
       />
 
@@ -1975,7 +2080,7 @@ function TeamGarageCard({ project }) {
       <CardLayerCarbon />
       <CardLayerTelemetryGrid accent={theme.accent} />
       <CardLayerLightTrails accent={theme.accent} variant={archetype} uid={project.id} />
-      {archetype === "analytics" && (
+      {archetype === 'analytics' && (
         <div className="pointer-events-none absolute inset-0 z-[1] opacity-30">
           <AnalyticsLineChart theme={theme} />
         </div>
@@ -2022,26 +2127,23 @@ function TeamGarageCard({ project }) {
         <div className="relative flex flex-1 flex-col pb-[220px]">
           <div className="relative z-20 max-w-[52%]">
             <CardTitleBlock project={project} theme={theme} />
-<CardTechPills project={project} theme={theme} />
-<p className={`mt-3 line-clamp-2 ${f1CardBody}`}>{project.description}</p>
+            <CardTechPills project={project} theme={theme} />
+            <p className={`mt-3 line-clamp-2 ${f1CardBody}`}>{project.description}</p>
           </div>
 
           {/* Telemetry data — directly on card surface, no bordered container */}
           <div
-  className="relative z-50 mt-auto pt-4"
-  style={{
-    borderTop: `1px solid ${theme.accent}22`,
-  }}
->
-  <CardStatsRow stats={stats} theme={theme} />
+            className="relative z-50 mt-auto pt-4"
+            style={{
+              borderTop: `1px solid ${theme.accent}22`,
+            }}
+          >
+            <CardStatsRow stats={stats} theme={theme} />
 
-  <div className="mt-4">
-    <GarageTelemetry
-      project={project}
-      theme={theme}
-    />
-  </div>
-</div>
+            <div className="mt-4">
+              <GarageTelemetry project={project} theme={theme} />
+            </div>
+          </div>
 
           {/* Car — the HERO, dominant visual centerpiece */}
           <GarageCarVisual teamData={teamData} theme={theme} />
@@ -2080,55 +2182,56 @@ export default function Projects({ data }) {
   const projects = useMemo(() => {
     if (data?.projects && Array.isArray(data.projects) && data.projects.length > 0) {
       return data.projects.map((p, i) => {
-        const teams = ["ferrari", "mercedes", "redbull", "mclaren", "aston", "racingbulls"];
-          const rawTech = p.technologies || p.techStack || p.keywords || p.tech || ["React"];
-          let parsedTech = [];
-          if (typeof rawTech === 'string') parsedTech = rawTech.split(',').map(t => t.trim());
-          else if (Array.isArray(rawTech)) parsedTech = rawTech.map(t => typeof t === 'string' ? t : t.name || t.keyword || "Tech");
-          else parsedTech = ["React"];
+        const teams = ['ferrari', 'mercedes', 'redbull', 'mclaren', 'aston', 'racingbulls'];
+        const rawTech = p.technologies || p.techStack || p.keywords || p.tech || ['React'];
+        let parsedTech = [];
+        if (typeof rawTech === 'string') parsedTech = rawTech.split(',').map((t) => t.trim());
+        else if (Array.isArray(rawTech))
+          parsedTech = rawTech.map((t) =>
+            typeof t === 'string' ? t : t.name || t.keyword || 'Tech'
+          );
+        else parsedTech = ['React'];
 
-          let prog = p.progress;
-          if (typeof prog === 'string') {
-             prog = parseInt(prog.replace(/[^0-9]/g, ''), 10);
-          }
-          if (typeof prog !== 'number' || isNaN(prog)) {
-             prog = Math.floor(Math.random() * 15) + 85;
-          }
+        let prog = p.progress;
+        if (typeof prog === 'string') {
+          prog = parseInt(prog.replace(/[^0-9]/g, ''), 10);
+        }
+        if (typeof prog !== 'number' || isNaN(prog)) {
+          prog = Math.floor(Math.random() * 15) + 85;
+        }
 
-          return {
-            id: i + 1,
-            title: p.title || p.name || `Project ${i + 1}`,
-            category: p.category || "Fullstack",
-            description: p.description || "A high performance project.",
-            tech: parsedTech,
-            team: teams[i % teams.length],
-            progress: prog,
-            status: p.status || "Complete",
-            metrics: [
-               { label: "Optimization", value: "Max" },
-               { label: "Status", value: "Deployed" }
-            ],
-          demoUrl: p.liveUrl || p.demoUrl || p.link || "#",
-          repoUrl: p.githubUrl || p.repoUrl || p.sourceUrl || "#",
+        return {
+          id: i + 1,
+          title: p.title || p.name || `Project ${i + 1}`,
+          category: p.category || 'Fullstack',
+          description: p.description || 'A high performance project.',
+          tech: parsedTech,
+          team: teams[i % teams.length],
+          progress: prog,
+          status: p.status || 'Complete',
+          metrics: [
+            { label: 'Optimization', value: 'Max' },
+            { label: 'Status', value: 'Deployed' },
+          ],
+          demoUrl: p.liveUrl || p.demoUrl || p.link || '#',
+          repoUrl: p.githubUrl || p.repoUrl || p.sourceUrl || '#',
         };
       });
     }
     return fallbackProjects;
   }, [data]);
 
-const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState('All');
 
   const filteredProjects = useMemo(
     () =>
-      activeCategory === "All"
-        ? projects
-        : projects.filter((p) => p.category === activeCategory),
+      activeCategory === 'All' ? projects : projects.filter((p) => p.category === activeCategory),
     [activeCategory, projects]
   );
 
   return (
     <section
-   id="projects"
+      id="projects"
       className={`relative overflow-hidden bg-black py-16 text-white sm:py-20 md:py-24 ${f1Text}`}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black" />
@@ -2140,7 +2243,7 @@ const [activeCategory, setActiveCategory] = useState("All");
             linear-gradient(rgba(239,68,68,0.15) 1px, transparent 1px),
             linear-gradient(90deg, rgba(239,68,68,0.15) 1px, transparent 1px)
           `,
-          backgroundSize: "80px 80px",
+          backgroundSize: '80px 80px',
         }}
       />
 
@@ -2152,18 +2255,19 @@ const [activeCategory, setActiveCategory] = useState("All");
           onCategoryChange={setActiveCategory}
         />
 
-        <div id="projects-grid" className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-10 md:gap-y-12">
+        <div
+          id="projects-grid"
+          className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-10 md:gap-y-12"
+        >
           {filteredProjects.map((project) => (
             <ProjectCard key={project.id} project={project} />
-      ))}
-    </div>
+          ))}
+        </div>
 
         {filteredProjects.length === 0 && (
-          <p className="py-16 text-center text-zinc-500">
-            No projects in this category yet.
-          </p>
+          <p className="py-16 text-center text-zinc-500">No projects in this category yet.</p>
         )}
-  </div>
-</section>
-);
+      </div>
+    </section>
+  );
 }

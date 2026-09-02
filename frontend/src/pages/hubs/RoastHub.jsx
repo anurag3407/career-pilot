@@ -59,11 +59,7 @@ export default function RoastHub() {
                     <span className="text-xs text-muted-foreground">/100</span>
                   </div>
                   <p className="text-sm font-medium line-clamp-2">{r.tagline}</p>
-                  {r.jobRole && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {r.jobRole}
-                    </p>
-                  )}
+                  {r.jobRole && <p className="text-xs text-muted-foreground mt-1">{r.jobRole}</p>}
                   <p className="text-xs text-muted-foreground mt-2">
                     {new Date(r.createdAt).toLocaleDateString()}
                   </p>

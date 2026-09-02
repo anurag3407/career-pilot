@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function BonsaiGarden() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Bonsai Garden Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Japanese zen garden theme with bonsai tree illustrations, raked sand patterns (CSS), stone elements. Muted earth tones with moss green accents.
+            Japanese zen garden theme with bonsai tree illustrations, raked sand patterns (CSS),
+            stone elements. Muted earth tones with moss green accents.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

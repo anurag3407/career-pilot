@@ -1,4 +1,4 @@
-import { Mail, Github, Linkedin, MousePointerClick } from "lucide-react";
+import { Mail, Github, Linkedin, MousePointerClick } from 'lucide-react';
 
 export default function PortfolioContactInteractionAnalytics() {
   const analytics = {
@@ -6,17 +6,15 @@ export default function PortfolioContactInteractionAnalytics() {
     emailClicks: 68,
     githubClicks: 42,
     linkedinClicks: 57,
-    topMethod: "Email",
-    growth: "+18%",
+    topMethod: 'Email',
+    growth: '+18%',
   };
 
   return (
     <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-6">
         <MousePointerClick className="w-6 h-6 text-primary" />
-        <h2 className="text-xl font-black">
-          Portfolio Contact Interaction Analytics
-        </h2>
+        <h2 className="text-xl font-black">Portfolio Contact Interaction Analytics</h2>
       </div>
 
       <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -50,9 +48,7 @@ export default function PortfolioContactInteractionAnalytics() {
 
         <div className="p-4 rounded-xl border border-border">
           <p className="text-xs text-muted-foreground">Growth</p>
-          <p className="text-2xl font-black text-emerald-500">
-            {analytics.growth}
-          </p>
+          <p className="text-2xl font-black text-emerald-500">{analytics.growth}</p>
         </div>
       </div>
     </div>

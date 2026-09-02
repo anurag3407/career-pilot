@@ -41,19 +41,27 @@ const About = ({ data, stats }) => (
             <span>{data.location}</span>
           </div>
         )}
-        <p className="text-sm md:text-lg text-slate-300 leading-relaxed mb-4 md:mb-8 text-center md:text-left">{data.bio}</p>
+        <p className="text-sm md:text-lg text-slate-300 leading-relaxed mb-4 md:mb-8 text-center md:text-left">
+          {data.bio}
+        </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           <div className="rounded-2xl bg-slate-900/70 border border-slate-800 p-3 md:p-4">
-            <p className="text-cyan-300 text-2xl md:text-3xl font-black">{stats?.yearsExperience ?? 0}+</p>
+            <p className="text-cyan-300 text-2xl md:text-3xl font-black">
+              {stats?.yearsExperience ?? 0}+
+            </p>
             <p className="text-slate-400 text-xs md:text-sm mt-1">Years Experience</p>
           </div>
           <div className="rounded-2xl bg-slate-900/70 border border-slate-800 p-3 md:p-4">
-            <p className="text-indigo-300 text-2xl md:text-3xl font-black">{stats?.projectsCompleted ?? 0}</p>
+            <p className="text-indigo-300 text-2xl md:text-3xl font-black">
+              {stats?.projectsCompleted ?? 0}
+            </p>
             <p className="text-slate-400 text-xs md:text-sm mt-1">Projects Completed</p>
           </div>
           <div className="rounded-2xl bg-slate-900/70 border border-slate-800 p-3 md:p-4">
-            <p className="text-cyan-300 text-2xl md:text-3xl font-black">{stats?.happyClients ?? 0}</p>
+            <p className="text-cyan-300 text-2xl md:text-3xl font-black">
+              {stats?.happyClients ?? 0}
+            </p>
             <p className="text-slate-400 text-xs md:text-sm mt-1">Happy Clients</p>
           </div>
         </div>

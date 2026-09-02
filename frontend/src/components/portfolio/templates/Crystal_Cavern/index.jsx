@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 import Hero from './Hero';
 import About from './About';
@@ -21,9 +21,7 @@ export default function CrystalCavernPortfolio() {
         {skills && skills.length > 0 && <Skills skills={skills} />}
         {projects && projects.length > 0 && <Projects projects={projects} />}
         {experience && experience.length > 0 && <Experience experience={experience} />}
-        {testimonials && testimonials.length > 0 && (
-          <Testimonials testimonials={testimonials} />
-        )}
+        {testimonials && testimonials.length > 0 && <Testimonials testimonials={testimonials} />}
         <Contact socials={socials} />
       </div>
     </div>

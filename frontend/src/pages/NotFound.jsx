@@ -13,11 +13,11 @@ const NotFound = () => {
   const [terminalText, setTerminalText] = useState('');
   const fullText = [
     '> git checkout page',
-    'error: pathspec \'page\' did not match any file(s) known to git.',
+    "error: pathspec 'page' did not match any file(s) known to git.",
     '> npm run locate-dashboard',
     'sh: locate-dashboard: command not found',
     '404: Brain Not Found',
-    '> _'
+    '> _',
   ];
 
   useEffect(() => {
@@ -26,10 +26,10 @@ const NotFound = () => {
     const typingInterval = setInterval(() => {
       if (currentLine < fullText.length) {
         if (currentChar < fullText[currentLine].length) {
-          setTerminalText(prev => prev + fullText[currentLine][currentChar]);
+          setTerminalText((prev) => prev + fullText[currentLine][currentChar]);
           currentChar++;
         } else {
-          setTerminalText(prev => prev + '\n');
+          setTerminalText((prev) => prev + '\n');
           currentLine++;
           currentChar = 0;
         }
@@ -79,9 +79,7 @@ const NotFound = () => {
           <span className="ml-2 text-xs text-neutral-500">terminal — career-pilot</span>
         </div>
         <div className="p-6 h-48 overflow-y-auto font-mono text-sm leading-relaxed">
-          <pre className="text-[#00ffaa] whitespace-pre-wrap">
-            {terminalText}
-          </pre>
+          <pre className="text-[#00ffaa] whitespace-pre-wrap">{terminalText}</pre>
         </div>
       </div>
 

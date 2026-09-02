@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import toast from 'react-hot-toast'
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import {
   Shield,
   ShieldCheck,
@@ -10,13 +10,13 @@ import {
   KeyRound,
   CheckCircle2,
   ChevronDown,
-  ChevronUp
-} from 'lucide-react'
-import { twoFactorApi } from '../services/api'
-import Button from '../components/Button'
-import Input from '../components/Input'
-import Card from '../components/Card'
-import { SkeletonSettings } from '../components/ui/Skeleton'
+  ChevronUp,
+} from 'lucide-react';
+import { twoFactorApi } from '../services/api';
+import Button from '../components/Button';
+import Input from '../components/Input';
+import Card from '../components/Card';
+import { SkeletonSettings } from '../components/ui/Skeleton';
 
 // ── sub-components ─────────────────────────────────────────────────────────────
 
@@ -31,7 +31,7 @@ function SectionHeader({ icon: Icon, title, description }) {
         <p className="text-sm text-muted-foreground mt-0.5">{description}</p>
       </div>
     </div>
-  )
+  );
 }
 
 function StatusBadge({ enabled }) {
@@ -39,19 +39,24 @@ function StatusBadge({ enabled }) {
     <span
       className={`
         inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
-        ${enabled
-          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-          : 'bg-muted text-muted-foreground border border-neutral-700'
+        ${
+          enabled
+            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+            : 'bg-muted text-muted-foreground border border-neutral-700'
         }
       `}
     >
       {enabled ? (
-        <><CheckCircle2 className="w-3 h-3" /> Active</>
+        <>
+          <CheckCircle2 className="w-3 h-3" /> Active
+        </>
       ) : (
-        <><ShieldOff className="w-3 h-3" /> Not enabled</>
+        <>
+          <ShieldOff className="w-3 h-3" /> Not enabled
+        </>
       )}
     </span>
-  )
+  );
 }
 
 function BackupCodeGrid({ codes, onCopy, onDownload }) {
@@ -59,8 +64,8 @@ function BackupCodeGrid({ codes, onCopy, onDownload }) {
     <div className="mt-4">
       <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 mb-4">
         <p className="text-xs text-amber-400 font-medium">
-          Save these codes somewhere safe. Each code can only be used once.
-          You won't be able to view them again.
+          Save these codes somewhere safe. Each code can only be used once. You won't be able to
+          view them again.
         </p>
       </div>
       <div className="grid grid-cols-2 gap-2 mb-4">
@@ -84,175 +89,177 @@ function BackupCodeGrid({ codes, onCopy, onDownload }) {
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 // ── main page ──────────────────────────────────────────────────────────────────
 
 export default function SecuritySettings() {
   // 'disabled' | 'setup' | 'enabled'
-  const [view, setView] = useState('disabled')
-  const [loading, setLoading] = useState(true)
+  const [view, setView] = useState('disabled');
+  const [loading, setLoading] = useState(true);
 
   // Setup flow
-  const [qrDataUrl, setQrDataUrl] = useState('')
-  const [rawSecret, setRawSecret] = useState('')
-  const [setupToken, setSetupToken] = useState('')
-  const [setupLoading, setSetupLoading] = useState(false)
+  const [qrDataUrl, setQrDataUrl] = useState('');
+  const [rawSecret, setRawSecret] = useState('');
+  const [setupToken, setSetupToken] = useState('');
+  const [setupLoading, setSetupLoading] = useState(false);
 
   // Enabled view
-  const [backupCodesRemaining, setBackupCodesRemaining] = useState(0)
-  const [newCodes, setNewCodes] = useState([])
-  const [showCodesFor, setShowCodesFor] = useState(null) // 'enable' | 'regenerate'
+  const [backupCodesRemaining, setBackupCodesRemaining] = useState(0);
+  const [newCodes, setNewCodes] = useState([]);
+  const [showCodesFor, setShowCodesFor] = useState(null); // 'enable' | 'regenerate'
 
   // Disable confirmation
-  const [disableOpen, setDisableOpen] = useState(false)
-  const [disableToken, setDisableToken] = useState('')
-  const [disableLoading, setDisableLoading] = useState(false)
-  const [useBackupToDisable, setUseBackupToDisable] = useState(false)
-  const [disableBackupCode, setDisableBackupCode] = useState('')
-  const [disableBackupLoading, setDisableBackupLoading] = useState(false)
+  const [disableOpen, setDisableOpen] = useState(false);
+  const [disableToken, setDisableToken] = useState('');
+  const [disableLoading, setDisableLoading] = useState(false);
+  const [useBackupToDisable, setUseBackupToDisable] = useState(false);
+  const [disableBackupCode, setDisableBackupCode] = useState('');
+  const [disableBackupLoading, setDisableBackupLoading] = useState(false);
 
   // Regenerate confirmation
-  const [regenOpen, setRegenOpen] = useState(false)
-  const [regenToken, setRegenToken] = useState('')
-  const [regenLoading, setRegenLoading] = useState(false)
+  const [regenOpen, setRegenOpen] = useState(false);
+  const [regenToken, setRegenToken] = useState('');
+  const [regenLoading, setRegenLoading] = useState(false);
 
   useEffect(() => {
-    fetchStatus()
-  }, [])
+    fetchStatus();
+  }, []);
 
   const fetchStatus = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const data = await twoFactorApi.getStatus()
-      setView(data.enabled ? 'enabled' : 'disabled')
-      setBackupCodesRemaining(data.backupCodesRemaining)
+      const data = await twoFactorApi.getStatus();
+      setView(data.enabled ? 'enabled' : 'disabled');
+      setBackupCodesRemaining(data.backupCodesRemaining);
     } catch (error) {
-      toast.error('Failed to load security settings')
+      toast.error('Failed to load security settings');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // ── handlers ──
 
   const handleStartSetup = async () => {
-    setSetupLoading(true)
+    setSetupLoading(true);
     try {
-      const data = await twoFactorApi.setup()
-      setQrDataUrl(data.qrDataUrl)
-      setRawSecret(data.secret)
-      setSetupToken('')
-      setView('setup')
+      const data = await twoFactorApi.setup();
+      setQrDataUrl(data.qrDataUrl);
+      setRawSecret(data.secret);
+      setSetupToken('');
+      setView('setup');
     } catch (error) {
-      toast.error(error.message || 'Failed to start setup')
+      toast.error(error.message || 'Failed to start setup');
     } finally {
-      setSetupLoading(false)
+      setSetupLoading(false);
     }
-  }
+  };
 
   const handleConfirmSetup = async (e) => {
-    e.preventDefault()
-    if (!setupToken.trim()) return
+    e.preventDefault();
+    if (!setupToken.trim()) return;
 
-    setSetupLoading(true)
+    setSetupLoading(true);
     try {
-      const data = await twoFactorApi.enable(rawSecret, setupToken.trim())
-      setNewCodes(data.backupCodes)
-      setShowCodesFor('enable')
-      setView('enabled')
-      setBackupCodesRemaining(data.backupCodes.length)
-      toast.success('Two-factor authentication enabled')
+      const data = await twoFactorApi.enable(rawSecret, setupToken.trim());
+      setNewCodes(data.backupCodes);
+      setShowCodesFor('enable');
+      setView('enabled');
+      setBackupCodesRemaining(data.backupCodes.length);
+      toast.success('Two-factor authentication enabled');
     } catch (error) {
-      toast.error(error.message || 'Invalid code — please try again')
+      toast.error(error.message || 'Invalid code — please try again');
     } finally {
-      setSetupLoading(false)
+      setSetupLoading(false);
     }
-  }
+  };
 
   const handleDisable = async (e) => {
-    e.preventDefault()
-    if (!disableToken.trim()) return
+    e.preventDefault();
+    if (!disableToken.trim()) return;
 
-    setDisableLoading(true)
+    setDisableLoading(true);
     try {
-      await twoFactorApi.disable(disableToken.trim())
-      setView('disabled')
-      setDisableOpen(false)
-      setDisableToken('')
-      setNewCodes([])
-      setShowCodesFor(null)
-      toast.success('Two-factor authentication disabled')
+      await twoFactorApi.disable(disableToken.trim());
+      setView('disabled');
+      setDisableOpen(false);
+      setDisableToken('');
+      setNewCodes([]);
+      setShowCodesFor(null);
+      toast.success('Two-factor authentication disabled');
     } catch (error) {
-      toast.error(error.message || 'Invalid code — please try again')
+      toast.error(error.message || 'Invalid code — please try again');
     } finally {
-      setDisableLoading(false)
+      setDisableLoading(false);
     }
-  }
+  };
 
   const handleDisableWithBackup = async (e) => {
-    e.preventDefault()
-    if (!disableBackupCode.trim()) return
+    e.preventDefault();
+    if (!disableBackupCode.trim()) return;
 
-    setDisableBackupLoading(true)
+    setDisableBackupLoading(true);
     try {
-      await twoFactorApi.disableWithBackup(disableBackupCode.trim().toUpperCase())
-      setView('disabled')
-      setDisableOpen(false)
-      setDisableBackupCode('')
-      setNewCodes([])
-      setShowCodesFor(null)
-      toast.success('Two-factor authentication disabled')
+      await twoFactorApi.disableWithBackup(disableBackupCode.trim().toUpperCase());
+      setView('disabled');
+      setDisableOpen(false);
+      setDisableBackupCode('');
+      setNewCodes([]);
+      setShowCodesFor(null);
+      toast.success('Two-factor authentication disabled');
     } catch (error) {
-      toast.error(error.message || 'Invalid backup code')
+      toast.error(error.message || 'Invalid backup code');
     } finally {
-      setDisableBackupLoading(false)
+      setDisableBackupLoading(false);
     }
-  }
+  };
 
   const handleRegenerate = async (e) => {
-    e.preventDefault()
-    if (!regenToken.trim()) return
+    e.preventDefault();
+    if (!regenToken.trim()) return;
 
-    setRegenLoading(true)
+    setRegenLoading(true);
     try {
-      const data = await twoFactorApi.regenerateBackupCodes(regenToken.trim())
-      setNewCodes(data.backupCodes)
-      setShowCodesFor('regenerate')
-      setBackupCodesRemaining(data.backupCodes.length)
-      setRegenOpen(false)
-      setRegenToken('')
-      toast.success('Backup codes regenerated')
+      const data = await twoFactorApi.regenerateBackupCodes(regenToken.trim());
+      setNewCodes(data.backupCodes);
+      setShowCodesFor('regenerate');
+      setBackupCodesRemaining(data.backupCodes.length);
+      setRegenOpen(false);
+      setRegenToken('');
+      toast.success('Backup codes regenerated');
     } catch (error) {
-      toast.error(error.message || 'Invalid code — please try again')
+      toast.error(error.message || 'Invalid code — please try again');
     } finally {
-      setRegenLoading(false)
+      setRegenLoading(false);
     }
-  }
+  };
 
   const handleCopyCodes = (codes) => {
-    navigator.clipboard.writeText(codes.join('\n'))
-    toast.success('Codes copied to clipboard')
-  }
+    navigator.clipboard.writeText(codes.join('\n'));
+    toast.success('Codes copied to clipboard');
+  };
 
   const handleDownloadCodes = (codes) => {
     const blob = new Blob(
-      [`careerpilot 2FA Backup Codes\n${'─'.repeat(30)}\n${codes.join('\n')}\n\nEach code can only be used once.`],
+      [
+        `careerpilot 2FA Backup Codes\n${'─'.repeat(30)}\n${codes.join('\n')}\n\nEach code can only be used once.`,
+      ],
       { type: 'text/plain' }
-    )
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'careerpilot-backup-codes.txt'
-    a.click()
-    URL.revokeObjectURL(url)
-  }
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'careerpilot-backup-codes.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   // ── render ──
 
   if (loading) {
-    return <SkeletonSettings />
+    return <SkeletonSettings />;
   }
 
   return (
@@ -265,8 +272,8 @@ export default function SecuritySettings() {
       </div>
 
       {/* ── Two-Factor Authentication card ───────────────────────────────────── */}
-     <Card className="relative overflow-hidden bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300">
-       <div className="absolute inset-0 bg-gradient-to-br from-sky-300/5 via-cyan-200/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      <Card className="relative overflow-hidden bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+        <div className="absolute inset-0 bg-gradient-to-br from-sky-300/5 via-cyan-200/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         <div className="flex items-center justify-between mb-6">
           <SectionHeader
             icon={Shield}
@@ -283,7 +290,7 @@ export default function SecuritySettings() {
               {[
                 { icon: ShieldCheck, label: 'Stronger account security' },
                 { icon: KeyRound, label: 'Protect against credential theft' },
-                { icon: RefreshCw, label: 'Backup codes for recovery' }
+                { icon: RefreshCw, label: 'Backup codes for recovery' },
               ].map(({ icon: Icon, label }) => (
                 <div
                   key={label}
@@ -295,11 +302,7 @@ export default function SecuritySettings() {
               ))}
             </div>
 
-            <Button
-              variant="gradient"
-              loading={setupLoading}
-              onClick={handleStartSetup}
-            >
+            <Button variant="gradient" loading={setupLoading} onClick={handleStartSetup}>
               <Shield className="w-4 h-4" />
               Enable Two-Factor Authentication
             </Button>
@@ -329,9 +332,7 @@ export default function SecuritySettings() {
                   2
                 </span>
                 <div className="w-full">
-                  <p className="text-sm font-medium text-foreground mb-3">
-                    Scan this QR code
-                  </p>
+                  <p className="text-sm font-medium text-foreground mb-3">Scan this QR code</p>
                   {qrDataUrl && (
                     <div className="flex flex-col items-center gap-3">
                       <div className="p-3 bg-white rounded-xl inline-block">
@@ -384,8 +385,8 @@ export default function SecuritySettings() {
                   type="button"
                   variant="secondary"
                   onClick={() => {
-                    setView('disabled')
-                    setSetupToken('')
+                    setView('disabled');
+                    setSetupToken('');
                   }}
                 >
                   Cancel
@@ -410,7 +411,10 @@ export default function SecuritySettings() {
                   onDownload={() => handleDownloadCodes(newCodes)}
                 />
                 <button
-                  onClick={() => { setNewCodes([]); setShowCodesFor(null) }}
+                  onClick={() => {
+                    setNewCodes([]);
+                    setShowCodesFor(null);
+                  }}
                   className="mt-3 text-xs text-muted-foreground hover:text-muted-foreground/80 transition-colors"
                 >
                   I've saved these codes — dismiss
@@ -442,17 +446,21 @@ export default function SecuritySettings() {
             <div className="rounded-xl border border-border overflow-hidden">
               <button
                 type="button"
-                onClick={() => { setRegenOpen(v => !v); setDisableOpen(false) }}
+                onClick={() => {
+                  setRegenOpen((v) => !v);
+                  setDisableOpen(false);
+                }}
                 className="w-full flex items-center justify-between px-4 py-3.5 bg-card/60 backdrop-blur-sm hover:bg-card/80 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <RefreshCw className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm text-foreground">Regenerate backup codes</span>
                 </div>
-                {regenOpen
-                  ? <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                  : <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                }
+                {regenOpen ? (
+                  <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                )}
               </button>
               {regenOpen && (
                 <form
@@ -460,7 +468,8 @@ export default function SecuritySettings() {
                   className="px-4 pb-4 pt-3 border-t border-border bg-card/60 backdrop-blur-sm space-y-3"
                 >
                   <p className="text-xs text-muted-foreground">
-                    This will invalidate your existing codes. Enter your current authenticator code to proceed.
+                    This will invalidate your existing codes. Enter your current authenticator code
+                    to proceed.
                   </p>
                   <Input
                     type="text"
@@ -489,24 +498,32 @@ export default function SecuritySettings() {
             <div className="rounded-xl border border-red-500/20 overflow-hidden">
               <button
                 type="button"
-                onClick={() => { setDisableOpen(v => !v); setRegenOpen(false) }}
+                onClick={() => {
+                  setDisableOpen((v) => !v);
+                  setRegenOpen(false);
+                }}
                 className="w-full flex items-center justify-between px-4 py-3.5 bg-red-500/5 hover:bg-red-500/10 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <ShieldOff className="w-4 h-4 text-red-400" />
                   <span className="text-sm text-red-400">Disable two-factor authentication</span>
                 </div>
-                {disableOpen
-                  ? <ChevronUp className="w-4 h-4 text-red-500/60" />
-                  : <ChevronDown className="w-4 h-4 text-red-500/60" />
-                }
+                {disableOpen ? (
+                  <ChevronUp className="w-4 h-4 text-red-500/60" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-red-500/60" />
+                )}
               </button>
               {disableOpen && (
                 <div className="px-4 pb-4 pt-3 border-t border-red-500/20 bg-red-500/5 space-y-3">
                   <div className="flex gap-2 mb-3">
                     <button
                       type="button"
-                      onClick={() => { setUseBackupToDisable(false); setDisableToken(''); setDisableBackupCode('') }}
+                      onClick={() => {
+                        setUseBackupToDisable(false);
+                        setDisableToken('');
+                        setDisableBackupCode('');
+                      }}
                       className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
                         !useBackupToDisable
                           ? 'bg-red-500/20 text-red-400 border border-red-500/30'
@@ -517,7 +534,11 @@ export default function SecuritySettings() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => { setUseBackupToDisable(true); setDisableToken(''); setDisableBackupCode('') }}
+                      onClick={() => {
+                        setUseBackupToDisable(true);
+                        setDisableToken('');
+                        setDisableBackupCode('');
+                      }}
                       className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
                         useBackupToDisable
                           ? 'bg-red-500/20 text-red-400 border border-red-500/30'
@@ -531,13 +552,16 @@ export default function SecuritySettings() {
                   {!useBackupToDisable ? (
                     <form onSubmit={handleDisable} className="space-y-3">
                       <p className="text-xs text-red-400/80">
-                        This will remove 2FA protection from your account. Enter your current authenticator code to confirm.
+                        This will remove 2FA protection from your account. Enter your current
+                        authenticator code to confirm.
                       </p>
                       <Input
                         type="text"
                         name="disableToken"
                         value={disableToken}
-                        onChange={(e) => setDisableToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                        onChange={(e) =>
+                          setDisableToken(e.target.value.replace(/\D/g, '').slice(0, 6))
+                        }
                         placeholder="6-digit code"
                         className="font-mono tracking-widest text-center"
                         maxLength={6}
@@ -556,13 +580,21 @@ export default function SecuritySettings() {
                   ) : (
                     <form onSubmit={handleDisableWithBackup} className="space-y-3">
                       <p className="text-xs text-red-400/80">
-                        Lost access to your authenticator? Use a backup code to disable 2FA. This will consume one backup code.
+                        Lost access to your authenticator? Use a backup code to disable 2FA. This
+                        will consume one backup code.
                       </p>
                       <Input
                         type="text"
                         name="disableBackupCode"
                         value={disableBackupCode}
-                        onChange={(e) => setDisableBackupCode(e.target.value.toUpperCase().replace(/[^A-F0-9]/g, '').slice(0, 9))}
+                        onChange={(e) =>
+                          setDisableBackupCode(
+                            e.target.value
+                              .toUpperCase()
+                              .replace(/[^A-F0-9]/g, '')
+                              .slice(0, 9)
+                          )
+                        }
                         placeholder="XXXX-XXXX"
                         className="font-mono tracking-widest text-center"
                         maxLength={9}
@@ -586,5 +618,5 @@ export default function SecuritySettings() {
         )}
       </Card>
     </div>
-  )
+  );
 }

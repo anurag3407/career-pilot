@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import { motion as Motion, useInView } from "framer-motion";
+import React, { useEffect, useRef, useState } from 'react';
+import { motion as Motion, useInView } from 'framer-motion';
 
 const NEON_COLORS = [
-  { bar: "#ff2bd6", glow: "#ff2bd6", label: "text-pink-300", border: "border-pink-500" },
-  { bar: "#00d4ff", glow: "#00d4ff", label: "text-cyan-300", border: "border-cyan-500" },
-  { bar: "#39ff14", glow: "#39ff14", label: "text-green-300", border: "border-green-500" },
-  { bar: "#ffd000", glow: "#ffd000", label: "text-yellow-300", border: "border-yellow-500" },
-  { bar: "#b026ff", glow: "#b026ff", label: "text-purple-300", border: "border-purple-500" },
-  { bar: "#ff8c00", glow: "#ff8c00", label: "text-orange-300", border: "border-orange-500" },
-  { bar: "#00ffff", glow: "#00ffff", label: "text-teal-300", border: "border-teal-400" },
+  { bar: '#ff2bd6', glow: '#ff2bd6', label: 'text-pink-300', border: 'border-pink-500' },
+  { bar: '#00d4ff', glow: '#00d4ff', label: 'text-cyan-300', border: 'border-cyan-500' },
+  { bar: '#39ff14', glow: '#39ff14', label: 'text-green-300', border: 'border-green-500' },
+  { bar: '#ffd000', glow: '#ffd000', label: 'text-yellow-300', border: 'border-yellow-500' },
+  { bar: '#b026ff', glow: '#b026ff', label: 'text-purple-300', border: 'border-purple-500' },
+  { bar: '#ff8c00', glow: '#ff8c00', label: 'text-orange-300', border: 'border-orange-500' },
+  { bar: '#00ffff', glow: '#00ffff', label: 'text-teal-300', border: 'border-teal-400' },
 ];
 
 function NeonProgressBar({ name, level, colorObj, delay }) {
@@ -58,7 +58,7 @@ function NeonProgressBar({ name, level, colorObj, delay }) {
       <div
         className="w-full h-3 rounded-full relative overflow-hidden"
         style={{
-          background: "rgba(255,255,255,0.04)",
+          background: 'rgba(255,255,255,0.04)',
           border: `1px solid ${colorObj.bar}40`,
           boxShadow: `inset 0 0 8px rgba(0,0,0,0.5)`,
         }}
@@ -68,7 +68,7 @@ function NeonProgressBar({ name, level, colorObj, delay }) {
           className="h-full rounded-full transition-all ease-out relative overflow-hidden"
           style={{
             width: `${width}%`,
-            transitionDuration: "1.5s",
+            transitionDuration: '1.5s',
             background: `linear-gradient(90deg, ${colorObj.bar}80, ${colorObj.bar})`,
             boxShadow: `0 0 10px ${colorObj.glow}, 0 0 20px ${colorObj.glow}60`,
           }}
@@ -78,8 +78,8 @@ function NeonProgressBar({ name, level, colorObj, delay }) {
             className="absolute inset-0 rounded-full"
             style={{
               background:
-                "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
-              animation: "shimmerMove 2s linear infinite",
+                'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)',
+              animation: 'shimmerMove 2s linear infinite',
             }}
           />
           {/* Tube end cap glow */}
@@ -123,15 +123,15 @@ export default function Skills({ data }) {
           <div
             className="inline-block px-6 py-3 rounded border-2 border-green-400 mb-4"
             style={{
-              background: "rgba(57,255,20,0.05)",
-              boxShadow: "0 0 20px #39ff14, 0 0 40px #39ff1440",
+              background: 'rgba(57,255,20,0.05)',
+              boxShadow: '0 0 20px #39ff14, 0 0 40px #39ff1440',
             }}
           >
             <h2
               className="text-3xl md:text-4xl font-black uppercase tracking-widest text-green-300"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 10px #39ff14, 0 0 20px #39ff14, 0 0 40px #39ff14",
+                textShadow: '0 0 10px #39ff14, 0 0 20px #39ff14, 0 0 40px #39ff14',
               }}
             >
               ⚡ SKILLS ⚡
@@ -140,8 +140,8 @@ export default function Skills({ data }) {
           <div
             className="w-40 h-1 mx-auto mt-2 rounded-full"
             style={{
-              background: "linear-gradient(90deg, transparent, #39ff14, transparent)",
-              boxShadow: "0 0 10px #39ff14",
+              background: 'linear-gradient(90deg, transparent, #39ff14, transparent)',
+              boxShadow: '0 0 10px #39ff14',
             }}
           />
         </Motion.div>
@@ -159,8 +159,8 @@ export default function Skills({ data }) {
                 transition={{ duration: 0.6, delay: catIdx * 0.1 }}
                 className="rounded-2xl border border-white/10 p-6 relative overflow-hidden group hover:border-white/20 transition-all duration-500"
                 style={{
-                  background: "rgba(255,255,255,0.02)",
-                  backdropFilter: "blur(10px)",
+                  background: 'rgba(255,255,255,0.02)',
+                  backdropFilter: 'blur(10px)',
                 }}
               >
                 {/* Category label */}

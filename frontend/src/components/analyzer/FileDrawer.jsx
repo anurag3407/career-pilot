@@ -14,7 +14,7 @@ export default function FileDrawer() {
           <Terminal className="w-4 h-4" />
           {selectedFile.relativePath}
         </div>
-        <button 
+        <button
           onClick={() => setSelectedFile(null)}
           className="p-1 hover:bg-white/10 rounded-md transition-colors"
         >
@@ -33,7 +33,9 @@ export default function FileDrawer() {
             <code>
               {fileContent.split('\n').map((line, i) => (
                 <div key={i} className="flex gap-4">
-                  <span className="select-none text-slate-600 w-8 text-right shrink-0">{i + 1}</span>
+                  <span className="select-none text-slate-600 w-8 text-right shrink-0">
+                    {i + 1}
+                  </span>
                   <span className="break-all">{line}</span>
                 </div>
               ))}

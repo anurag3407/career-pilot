@@ -39,26 +39,32 @@ export default function Experience({ experience }) {
 
           <div className="space-y-16">
             {experience.map((exp, i) => (
-              <div key={i} className={`relative flex flex-col md:flex-row items-start ${i % 2 === 0 ? 'md:flex-row-reverse' : ''} gap-8 md:gap-16 group`}>
-                
+              <div
+                key={i}
+                className={`relative flex flex-col md:flex-row items-start ${i % 2 === 0 ? 'md:flex-row-reverse' : ''} gap-8 md:gap-16 group`}
+              >
                 {/* Timeline Dot */}
                 <div className="absolute left-[20px] md:left-1/2 top-6 w-3 h-3 rounded-full bg-[#c5a880] md:-translate-x-1/2 shadow-[0_0_10px_rgba(197,168,128,0.5)] z-10 transition-transform duration-500 group-hover:scale-150" />
-                
+
                 {/* Content */}
-                <div className={`pl-12 md:pl-0 w-full md:w-1/2 ${i % 2 === 0 ? 'md:text-left' : 'md:text-right md:pr-16 md:pl-0'}`}>
+                <div
+                  className={`pl-12 md:pl-0 w-full md:w-1/2 ${i % 2 === 0 ? 'md:text-left' : 'md:text-right md:pr-16 md:pl-0'}`}
+                >
                   <div className="inline-block px-4 py-1.5 border border-[#c5a880]/30 bg-[#c5a880]/5 text-[#c5a880] text-[10px] tracking-[0.2em] uppercase mb-4 rounded-full">
                     {exp.startDate} — {exp.endDate || 'Present'}
                   </div>
-                  
+
                   <h3 className="font-serif text-2xl md:text-3xl font-light text-white mb-2 group-hover:text-[#c5a880] transition-colors duration-300">
                     {exp.title}
                   </h3>
-                  
-                  <div className={`flex items-center gap-2 mb-4 text-gray-400 text-sm ${i % 2 === 0 ? 'justify-start' : 'md:justify-end justify-start'}`}>
+
+                  <div
+                    className={`flex items-center gap-2 mb-4 text-gray-400 text-sm ${i % 2 === 0 ? 'justify-start' : 'md:justify-end justify-start'}`}
+                  >
                     <MapPin className="w-4 h-4 text-[#c5a880]/70" />
                     <span>{exp.company}</span>
                   </div>
-                  
+
                   <p className="text-gray-400 font-light leading-relaxed text-[15px]">
                     {exp.description}
                   </p>

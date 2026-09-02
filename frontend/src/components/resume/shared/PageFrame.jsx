@@ -20,9 +20,9 @@ export default function PageFrame({
   style = {},
   children,
 }) {
-  const lineHeight = layout.lineHeight || 1.5
-  const fontSizePx = layout.fontSizePx || '14px'
-  const isLetter = layout.pageSize === 'Letter'
+  const lineHeight = layout.lineHeight || 1.5;
+  const fontSizePx = layout.fontSizePx || '14px';
+  const isLetter = layout.pageSize === 'Letter';
   return (
     <div
       className="resume-export-root"
@@ -40,5 +40,5 @@ export default function PageFrame({
     >
       {children}
     </div>
-  )
+  );
 }

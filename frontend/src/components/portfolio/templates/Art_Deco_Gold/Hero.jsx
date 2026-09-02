@@ -7,10 +7,7 @@ export default function Hero({ data }) {
   const stats = data?.stats || {};
   const socials = data?.socials || {};
 
-  const email =
-    typeof socials.email === 'string'
-      ? socials.email.trim()
-      : '';
+  const email = typeof socials.email === 'string' ? socials.email.trim() : '';
 
   const hasEmail = email.length > 0;
 
@@ -105,9 +102,7 @@ export default function Hero({ data }) {
               transition={{ duration: 0.6 }}
               className="rounded-[2rem] border border-amber-200/20 bg-slate-900/70 px-6 py-8 text-center shadow-[0_20px_80px_rgba(15,23,42,0.35)]"
             >
-              <div className="text-4xl font-black text-amber-100">
-                {item.value}
-              </div>
+              <div className="text-4xl font-black text-amber-100">{item.value}</div>
 
               <div className="mt-3 text-xs uppercase tracking-[0.35em] text-amber-200/70">
                 {item.label}

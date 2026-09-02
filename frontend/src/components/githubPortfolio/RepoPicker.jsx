@@ -16,11 +16,7 @@ export default function RepoPicker({ repos, selected, onToggle, max = 6, loading
     return (
       <div className="space-y-2">
         {[...Array(4)].map((_, i) => (
-          <div
-            key={i}
-            className="h-16 rounded-xl bg-muted/30 animate-pulse"
-            aria-hidden
-          />
+          <div key={i} className="h-16 rounded-xl bg-muted/30 animate-pulse" aria-hidden />
         ))}
       </div>
     );
@@ -42,9 +38,7 @@ export default function RepoPicker({ repos, selected, onToggle, max = 6, loading
         <p className="text-xs text-muted-foreground">
           Showing top {Math.min(repos.length, max)} repos (sorted by stars). Toggle to customize.
         </p>
-        <span className="text-xs font-semibold">
-          {selected.size} selected
-        </span>
+        <span className="text-xs font-semibold">{selected.size} selected</span>
       </div>
       {repos.slice(0, max).map((repo, i) => {
         const isSelected = selected.has(repo.fullName);
@@ -83,12 +77,8 @@ export default function RepoPicker({ repos, selected, onToggle, max = 6, loading
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-sm font-semibold truncate">
-                  {repo.name}
-                </span>
-                {repo.private && (
-                  <Lock className="h-3 w-3 text-amber-500" aria-label="private" />
-                )}
+                <span className="font-mono text-sm font-semibold truncate">{repo.name}</span>
+                {repo.private && <Lock className="h-3 w-3 text-amber-500" aria-label="private" />}
               </div>
               {repo.description && (
                 <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">

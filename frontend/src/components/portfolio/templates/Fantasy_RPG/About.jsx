@@ -33,7 +33,6 @@ export default function About() {
       <div className="absolute inset-0 bg-[radial-gradient(#201910_1px,transparent_1px)] [background-size:32px_32px] pointer-events-none opacity-45" />
 
       <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
-        
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-12 relative">
           <div className="flex items-center gap-4 mb-3">
@@ -60,15 +59,17 @@ export default function About() {
           {/* Scroll torn edges effect using border images or simple styling */}
           <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-b from-[#e3cda4] to-transparent opacity-50" />
           <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-[#e3cda4] to-transparent opacity-50" />
-          
+
           <Scroll className="absolute -top-6 -right-6 w-16 h-16 text-amber-800/20 rotate-12" />
 
           <p className="font-fantasy-body text-base md:text-lg leading-relaxed mb-6 first-letter:float-left first-letter:font-fantasy-title first-letter:text-6xl first-letter:pr-2 first-letter:text-amber-900 first-line:tracking-widest first-line:uppercase">
-            {data.about || "It began in an era where screens first flickered to life. A young squire discovered the magic of combining logic with art, bending runes and symbols to conjure experiences out of thin air."}
+            {data.about ||
+              'It began in an era where screens first flickered to life. A young squire discovered the magic of combining logic with art, bending runes and symbols to conjure experiences out of thin air.'}
           </p>
 
           <p className="font-fantasy-body text-base md:text-lg leading-relaxed text-[#5c4a39]">
-            {data.philosophy || "Through countless trials and debugging quests, I've honed my skills to master full-stack alchemy. I seek to join a party of seasoned adventurers, to build fortresses that withstand the test of time and traffic."}
+            {data.philosophy ||
+              "Through countless trials and debugging quests, I've honed my skills to master full-stack alchemy. I seek to join a party of seasoned adventurers, to build fortresses that withstand the test of time and traffic."}
           </p>
 
           <div className="mt-8 pt-6 border-t border-[#d4c4a1] flex justify-between items-center">
@@ -76,11 +77,10 @@ export default function About() {
               Signed,
             </span>
             <span className="font-fantasy-game text-xl text-amber-900 font-bold signature-font">
-              {data.name || "The Adventurer"}
+              {data.name || 'The Adventurer'}
             </span>
           </div>
         </div>
-
       </div>
     </section>
   );

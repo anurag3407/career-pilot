@@ -66,7 +66,9 @@ function SectionLabel({ children }) {
 
 function DashboardCard({ className = '', children }) {
   return (
-    <div className={`min-w-0 rounded-3xl border border-white/10 bg-slate-950/45 p-6 ${className}`}>{children}</div>
+    <div className={`min-w-0 rounded-3xl border border-white/10 bg-slate-950/45 p-6 ${className}`}>
+      {children}
+    </div>
   );
 }
 
@@ -108,8 +110,9 @@ export default function Hero() {
                 <span className="mt-2 block text-sky-200/95">AI-powered classroom.</span>
               </h1>
               <p className="mt-5 max-w-2xl whitespace-normal break-normal text-sm leading-7 text-slate-300 sm:text-base sm:leading-8">
-                I design premium educational products that blend AI tutoring, visual storytelling, and measurable learner
-                outcomes into polished digital experiences for modern classrooms and standout student portfolios.
+                I design premium educational products that blend AI tutoring, visual storytelling,
+                and measurable learner outcomes into polished digital experiences for modern
+                classrooms and standout student portfolios.
               </p>
             </div>
 
@@ -163,9 +166,12 @@ export default function Hero() {
                       </div>
                       <div className="min-w-0">
                         <SectionLabel>Profile Card</SectionLabel>
-                        <h2 className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">Tarun Sharma</h2>
+                        <h2 className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">
+                          Tarun Sharma
+                        </h2>
                         <p className="mt-1 whitespace-normal break-normal text-sm leading-6 text-slate-300">
-                          EdTech creator building AI-powered student portfolios and accessible learning interfaces.
+                          EdTech creator building AI-powered student portfolios and accessible
+                          learning interfaces.
                         </p>
                       </div>
                     </div>
@@ -175,7 +181,9 @@ export default function Hero() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <SectionLabel>Sprint Progress</SectionLabel>
-                        <p className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">Week 08 delivery cycle</p>
+                        <p className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">
+                          Week 08 delivery cycle
+                        </p>
                       </div>
                       <span className="shrink-0 rounded-full border border-cyan-300/15 bg-cyan-300/8 px-3 py-1 text-xs text-cyan-100">
                         82%
@@ -185,7 +193,8 @@ export default function Hero() {
                       <div className="h-2.5 w-[82%] rounded-full bg-gradient-to-r from-teal-300 via-cyan-300 to-sky-400 shadow-[0_0_18px_rgba(34,211,238,0.24)]" />
                     </div>
                     <p className="mt-4 whitespace-normal break-normal text-sm leading-6 text-slate-300">
-                      Shipping classroom analytics, portfolio storytelling, and mentorship-ready UI systems.
+                      Shipping classroom analytics, portfolio storytelling, and mentorship-ready UI
+                      systems.
                     </p>
                   </DashboardCard>
                 </div>
@@ -195,7 +204,9 @@ export default function Hero() {
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                       <div>
                         <SectionLabel>Analytics Card</SectionLabel>
-                        <p className="mt-1 whitespace-normal break-normal text-xl font-semibold text-white">Performance signal map</p>
+                        <p className="mt-1 whitespace-normal break-normal text-xl font-semibold text-white">
+                          Performance signal map
+                        </p>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-medium text-emerald-200">
@@ -210,12 +221,17 @@ export default function Hero() {
                     <div className="mt-5 rounded-3xl border border-white/8 bg-[linear-gradient(180deg,rgba(15,23,42,0.2)_0%,rgba(15,23,42,0.72)_100%)] p-5">
                       <div className="flex h-36 items-end gap-3">
                         {chartHeights.map((height, index) => (
-                          <div key={`${height}-${index}`} className="flex min-w-0 flex-1 flex-col items-center gap-2.5">
+                          <div
+                            key={`${height}-${index}`}
+                            className="flex min-w-0 flex-1 flex-col items-center gap-2.5"
+                          >
                             <div
                               className="w-full rounded-t-[18px] bg-gradient-to-t from-cyan-500 via-sky-400 to-teal-200 shadow-[0_0_22px_rgba(34,211,238,0.22)]"
                               style={{ height: `${height}%` }}
                             />
-                            <span className="text-[10px] uppercase tracking-[0.22em] text-slate-500">{`0${index + 1}`.slice(-2)}</span>
+                            <span className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                              {`0${index + 1}`.slice(-2)}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -242,24 +258,30 @@ export default function Hero() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <SectionLabel>Guidance Card</SectionLabel>
-                        <p className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">AI tutor recommendations</p>
+                        <p className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">
+                          AI tutor recommendations
+                        </p>
                       </div>
                       <div className="mt-1 h-3 w-3 shrink-0 rounded-full bg-cyan-300 shadow-[0_0_18px_rgba(125,211,252,0.9)]" />
                     </div>
 
                     <div className="mt-4 space-y-3">
                       <div className="rounded-3xl border border-cyan-200/12 bg-cyan-300/8 p-4 text-sm leading-6 text-cyan-50">
-                        Next best action: publish the inclusive classroom case study with prototype walkthroughs.
+                        Next best action: publish the inclusive classroom case study with prototype
+                        walkthroughs.
                       </div>
                       <div className="rounded-3xl border border-white/8 bg-white/5 p-4 text-sm leading-6 text-slate-300">
-                        Skill confidence rose after shipping analytics widgets, reflective journals, and accessible UI audits.
+                        Skill confidence rose after shipping analytics widgets, reflective journals,
+                        and accessible UI audits.
                       </div>
                     </div>
                   </DashboardCard>
 
                   <DashboardCard>
                     <SectionLabel>Progress Metrics Card</SectionLabel>
-                    <p className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">Project momentum</p>
+                    <p className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">
+                      Project momentum
+                    </p>
 
                     <div className="mt-5 space-y-4">
                       {progressCards.map((item) => (
@@ -296,7 +318,9 @@ export default function Hero() {
                       <span className="absolute bottom-8 left-1/2 -translate-x-1/2 rounded-full border border-white/10 bg-white/8 px-3 py-1 text-[11px] text-sky-100">
                         EdTech Research
                       </span>
-                      <span className="text-sm font-semibold uppercase tracking-[0.28em] text-white">Focus Grid</span>
+                      <span className="text-sm font-semibold uppercase tracking-[0.28em] text-white">
+                        Focus Grid
+                      </span>
                     </div>
                   </DashboardCard>
 
@@ -304,10 +328,13 @@ export default function Hero() {
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0">
                         <SectionLabel>Featured Build Card</SectionLabel>
-                        <p className="mt-1 whitespace-normal break-normal text-xl font-semibold text-white">Smart classroom portfolio kit</p>
+                        <p className="mt-1 whitespace-normal break-normal text-xl font-semibold text-white">
+                          Smart classroom portfolio kit
+                        </p>
                         <p className="mt-3 whitespace-normal break-normal text-sm leading-6 text-slate-200">
-                          A premium student showcase system combining assessment dashboards, project archives, and AI coaching
-                          prompts with calm, high-contrast design patterns built for modern learning journeys.
+                          A premium student showcase system combining assessment dashboards, project
+                          archives, and AI coaching prompts with calm, high-contrast design patterns
+                          built for modern learning journeys.
                         </p>
                       </div>
                       <span className="shrink-0 rounded-full border border-white/12 bg-white/8 px-3 py-1 text-xs text-cyan-100">
@@ -317,7 +344,10 @@ export default function Hero() {
 
                     <div className="mt-5 grid gap-3 sm:grid-cols-3">
                       {buildStats.map((item) => (
-                        <div key={item.label} className="rounded-3xl border border-white/10 bg-slate-950/40 p-4">
+                        <div
+                          key={item.label}
+                          className="rounded-3xl border border-white/10 bg-slate-950/40 p-4"
+                        >
                           <p className="whitespace-normal break-normal text-[10px] uppercase tracking-[0.22em] text-slate-400">
                             {item.label}
                           </p>
@@ -331,7 +361,9 @@ export default function Hero() {
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <SectionLabel>Weekly Momentum Card</SectionLabel>
-                        <p className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">Classroom pulse</p>
+                        <p className="mt-1 whitespace-normal break-normal text-lg font-semibold text-white">
+                          Classroom pulse
+                        </p>
                       </div>
                       <span className="rounded-full border border-cyan-300/15 bg-cyan-300/8 px-3 py-1 text-xs text-cyan-100">
                         Stable
@@ -340,11 +372,16 @@ export default function Hero() {
 
                     <div className="mt-5 space-y-3">
                       {momentumStats.map((item) => (
-                        <div key={item.label} className="rounded-3xl border border-white/8 bg-white/5 p-4">
+                        <div
+                          key={item.label}
+                          className="rounded-3xl border border-white/8 bg-white/5 p-4"
+                        >
                           <p className="whitespace-normal break-normal text-[11px] uppercase tracking-[0.2em] text-slate-400">
                             {item.label}
                           </p>
-                          <p className="mt-2 whitespace-normal break-normal text-lg font-semibold text-white">{item.value}</p>
+                          <p className="mt-2 whitespace-normal break-normal text-lg font-semibold text-white">
+                            {item.value}
+                          </p>
                         </div>
                       ))}
                     </div>

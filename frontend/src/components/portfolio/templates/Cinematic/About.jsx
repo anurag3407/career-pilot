@@ -11,15 +11,20 @@ export default function About({ data }) {
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         <div className="flex flex-col md:flex-row items-center gap-16 md:gap-24 max-w-6xl mx-auto">
-          
           {/* Profile Image / Abstract Representation */}
           <div className="w-full md:w-5/12 relative group">
             <div className="aspect-[3/4] bg-[#0a0a0a] border border-neutral-800 relative overflow-hidden flex items-center justify-center rounded-sm">
-              <div className="absolute inset-0 opacity-20 mix-blend-overlay z-10 pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
-              
+              <div
+                className="absolute inset-0 opacity-20 mix-blend-overlay z-10 pointer-events-none"
+                style={{
+                  backgroundImage:
+                    'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")',
+                }}
+              ></div>
+
               <div className="relative z-20 flex flex-col items-center gap-4 text-neutral-600 group-hover:text-neutral-400 transition-colors duration-700">
-                 <User size={48} strokeWidth={1} />
-                 <span className="text-[10px] tracking-[0.3em] uppercase">Portrait</span>
+                <User size={48} strokeWidth={1} />
+                <span className="text-[10px] tracking-[0.3em] uppercase">Portrait</span>
               </div>
 
               {/* Cinematic Corner Accents */}
@@ -40,13 +45,16 @@ export default function About({ data }) {
                 The Origin Story
               </h2>
             </div>
-            
+
             <div className="space-y-6 text-neutral-300 font-serif italic text-base sm:text-lg leading-relaxed opacity-90">
               <p>
-                {data.personal.bio || "An artisan of the digital realm, weaving code and creativity into unforgettable experiences. Every project is a new scene, meticulously lit and perfectly framed."}
+                {data.personal.bio ||
+                  'An artisan of the digital realm, weaving code and creativity into unforgettable experiences. Every project is a new scene, meticulously lit and perfectly framed.'}
               </p>
               <p>
-                {"With a profound appreciation for aesthetics and performance, the journey has been one of continuous refinement, mastering the tools of the trade to bring imaginative visions to life."}
+                {
+                  'With a profound appreciation for aesthetics and performance, the journey has been one of continuous refinement, mastering the tools of the trade to bring imaginative visions to life.'
+                }
               </p>
             </div>
 
@@ -55,17 +63,20 @@ export default function About({ data }) {
                 <span className="block text-3xl font-black tracking-tighter text-white mb-2">
                   {data.experience?.length || 5}+
                 </span>
-                <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-500">Years Experience</span>
+                <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-500">
+                  Years Experience
+                </span>
               </div>
               <div>
                 <span className="block text-3xl font-black tracking-tighter text-white mb-2">
                   {data.projects?.length || 10}+
                 </span>
-                <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-500">Projects Completed</span>
+                <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-500">
+                  Projects Completed
+                </span>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

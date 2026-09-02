@@ -1,32 +1,27 @@
-import { ScanLine } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { ScanLine } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const RepoCard = ({ owner, repo, name, description, language, stars, forks, isPrivate }) => {
-  const navigate = useNavigate()
-  const [isScanning, setIsScanning] = useState(false)
+  const navigate = useNavigate();
+  const [isScanning, setIsScanning] = useState(false);
 
   if (!owner || !repo) {
-    console.error('RepoCard: owner and repo props are required')
-    return null
+    console.error('RepoCard: owner and repo props are required');
+    return null;
   }
 
   const handleAnalyze = () => {
-    setIsScanning(true)
-    navigate(`/github/${owner}/${repo}`)
-  }
+    setIsScanning(true);
+    navigate(`/github/${owner}/${repo}`);
+  };
 
   return (
     <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-3 transition-colors duration-300">
-
       {/* Repo Name */}
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-foreground truncate w-3/4">
-          {name}
-        </h3>
-        <span className="text-xs text-muted-foreground">
-          {isPrivate ? 'Private' : 'Public'}
-        </span>
+        <h3 className="font-semibold text-foreground truncate w-3/4">{name}</h3>
+        <span className="text-xs text-muted-foreground">{isPrivate ? 'Private' : 'Public'}</span>
       </div>
 
       {/* Description */}
@@ -37,9 +32,7 @@ const RepoCard = ({ owner, repo, name, description, language, stars, forks, isPr
       {/* Stats Row */}
       <div className="flex gap-3 mt-auto text-xs text-muted-foreground">
         {language && (
-          <span className="rounded-full bg-muted text-foreground px-2 py-1">
-            {language}
-          </span>
+          <span className="rounded-full bg-muted text-foreground px-2 py-1">{language}</span>
         )}
         {stars !== undefined && <span>⭐ {stars}</span>}
         {forks !== undefined && <span>🍴 {forks}</span>}
@@ -57,8 +50,10 @@ const RepoCard = ({ owner, repo, name, description, language, stars, forks, isPr
       >
         {isScanning ? (
           <>
-            <span className="animate-spin h-4 w-4 border-2 
-            border-gray-500 border-t-transparent rounded-full" />
+            <span
+              className="animate-spin h-4 w-4 border-2 
+            border-gray-500 border-t-transparent rounded-full"
+            />
             Scanning...
           </>
         ) : (
@@ -68,9 +63,8 @@ const RepoCard = ({ owner, repo, name, description, language, stars, forks, isPr
           </>
         )}
       </button>
-
     </div>
-  )
-}
+  );
+};
 
-export default RepoCard
+export default RepoCard;

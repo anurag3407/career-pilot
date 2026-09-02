@@ -1,12 +1,7 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
+import { motion } from 'framer-motion';
 
-export default function CanvasCard({
-  children,
-  className = "",
-  delay = 0,
-  rotate = 0,
-}) {
+export default function CanvasCard({ children, className = '', delay = 0, rotate = 0 }) {
   return (
     <motion.article
       role="article"
@@ -27,7 +22,7 @@ export default function CanvasCard({
       transition={{
         duration: 0.6,
         delay,
-        ease: "easeOut",
+        ease: 'easeOut',
       }}
       whileHover={{
         y: -4,
@@ -64,9 +59,7 @@ export default function CanvasCard({
         className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent"
       />
 
-      <div className="relative z-10 p-6 md:p-7">
-        {children}
-      </div>
+      <div className="relative z-10 p-6 md:p-7">{children}</div>
     </motion.article>
   );
 }

@@ -1,7 +1,7 @@
-import { Users, MessageSquare, FileText, Mail, ArrowRight } from 'lucide-react'
-import HubLayout from '../../components/HubLayout'
-import ToolCard from '../../components/ToolCard'
-import { Link } from 'react-router-dom'
+import { Users, MessageSquare, FileText, Mail, ArrowRight } from 'lucide-react';
+import HubLayout from '../../components/HubLayout';
+import ToolCard from '../../components/ToolCard';
+import { Link } from 'react-router-dom';
 
 export default function CommunityHub() {
   return (
@@ -42,7 +42,8 @@ export default function CommunityHub() {
             Engage with the Community
           </h3>
           <p className="text-sm text-muted-foreground max-w-xl">
-            Building a strong network is one of the most effective ways to accelerate your career. Join conversations, ask for resume feedback, and stay connected with fellow job seekers.
+            Building a strong network is one of the most effective ways to accelerate your career.
+            Join conversations, ask for resume feedback, and stay connected with fellow job seekers.
           </p>
         </div>
         <Link
@@ -54,5 +55,5 @@ export default function CommunityHub() {
         </Link>
       </div>
     </HubLayout>
-  )
+  );
 }

@@ -1,44 +1,60 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Linkedin, Sparkles, Target, Copy, Check,
-  ChevronDown, ChevronUp, TrendingUp, Zap,
-  AlertCircle, CheckCircle2, Star
-} from 'lucide-react'
-import { enhanceApi } from '../services/api'
-import { toast } from 'react-hot-toast'
+  Linkedin,
+  Sparkles,
+  Target,
+  Copy,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  TrendingUp,
+  Zap,
+  AlertCircle,
+  CheckCircle2,
+  Star,
+} from 'lucide-react';
+import { enhanceApi } from '../services/api';
+import { toast } from 'react-hot-toast';
 
 const IMPACT_CONFIG = {
-  High:   { color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/30'    },
+  High: { color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30' },
   Medium: { color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/30' },
-  Low:    { color: 'text-green-400',  bg: 'bg-green-500/10',  border: 'border-green-500/30'  },
-}
+  Low: { color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/30' },
+};
 
 function ScoreRing({ score, label, size = 'md' }) {
-  const safeScore = isNaN(Number(score)) ? 0 : Math.max(0, Math.min(100, Math.round(Number(score))))
-  const r = size === 'lg' ? 44 : 28
-  const stroke = size === 'lg' ? 7 : 5
-  const dim = (r + stroke) * 2
-  const circ = 2 * Math.PI * r
+  const safeScore = isNaN(Number(score))
+    ? 0
+    : Math.max(0, Math.min(100, Math.round(Number(score))));
+  const r = size === 'lg' ? 44 : 28;
+  const stroke = size === 'lg' ? 7 : 5;
+  const dim = (r + stroke) * 2;
+  const circ = 2 * Math.PI * r;
   const color =
-    safeScore >= 75 ? 'stroke-green-400' :
-    safeScore >= 50 ? 'stroke-yellow-400' : 'stroke-red-400'
+    safeScore >= 75 ? 'stroke-green-400' : safeScore >= 50 ? 'stroke-yellow-400' : 'stroke-red-400';
   const textColor =
-    safeScore >= 75 ? 'text-green-400' :
-    safeScore >= 50 ? 'text-yellow-400' : 'text-red-400'
+    safeScore >= 75 ? 'text-green-400' : safeScore >= 50 ? 'text-yellow-400' : 'text-red-400';
 
   return (
     <div className="flex flex-col items-center gap-1">
       <div className="relative flex items-center justify-center">
         <svg width={dim} height={dim} className="-rotate-90" viewBox={`0 0 ${dim} ${dim}`}>
           <circle
-            cx={r + stroke} cy={r + stroke} r={r}
-            fill="none" strokeWidth={stroke}
-            stroke="currentColor" className="text-muted/30"
+            cx={r + stroke}
+            cy={r + stroke}
+            r={r}
+            fill="none"
+            strokeWidth={stroke}
+            stroke="currentColor"
+            className="text-muted/30"
           />
           <circle
-            cx={r + stroke} cy={r + stroke} r={r}
-            fill="none" strokeWidth={stroke}
+            cx={r + stroke}
+            cy={r + stroke}
+            r={r}
+            fill="none"
+            strokeWidth={stroke}
             strokeDasharray={circ}
             strokeDashoffset={circ * (1 - safeScore / 100)}
             strokeLinecap="round"
@@ -49,7 +65,7 @@ function ScoreRing({ score, label, size = 'md' }) {
       </div>
       <p className="text-xs text-muted-foreground text-center">{label}</p>
     </div>
-  )
+  );
 }
 
 function HeadlineCard({ headline, index, copied, onCopy }) {
@@ -69,135 +85,141 @@ function HeadlineCard({ headline, index, copied, onCopy }) {
         className="ml-2 text-muted-foreground hover:text-primary transition shrink-0"
         title="Copy"
       >
-        {copied === `hl-${index}` ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+        {copied === `hl-${index}` ? (
+          <Check className="w-4 h-4 text-green-400" />
+        ) : (
+          <Copy className="w-4 h-4" />
+        )}
       </button>
     </motion.div>
-  )
+  );
 }
 
 export default function LinkedInOptimizer() {
-  const [profileText, setProfileText] = useState('')
-  const [targetRole, setTargetRole] = useState('')
-  const [results, setResults] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [copiedIndex, setCopiedIndex] = useState(null)
-  const [copiedSkill, setCopiedSkill] = useState(null)
-  const [aboutExpanded, setAboutExpanded] = useState(false)
-  const [aboutCopied, setAboutCopied] = useState(false)
+  const [profileText, setProfileText] = useState('');
+  const [targetRole, setTargetRole] = useState('');
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [copiedIndex, setCopiedIndex] = useState(null);
+  const [copiedSkill, setCopiedSkill] = useState(null);
+  const [aboutExpanded, setAboutExpanded] = useState(false);
+  const [aboutCopied, setAboutCopied] = useState(false);
 
   const handleOptimize = async (e) => {
-    e.preventDefault()
-    
-    // Safety check: minimum length validation
-    const trimmedProfile = profileText.trim()
-    const trimmedRole = targetRole.trim()
-    
-    if (trimmedProfile.length < 50) {
-      setError('Please paste a substantial portion of your LinkedIn profile (at least 50 characters) for optimization.')
-      return
-    }
-    
-    // targetRole is optional, default to General career growth if empty
-    const finalRole = trimmedRole || 'General career growth'
+    e.preventDefault();
 
-    setLoading(true)
-    setError(null)
-    setResults(null)
-    try {
-      const response = await enhanceApi.optimizeLinkedIn({ 
-        profileText: trimmedProfile, 
-        targetRole: finalRole 
-      })
-      setResults(response)
-    } catch (err) {
-      console.error('LinkedIn optimization error:', err)
-      setError(err.message || 'Failed to optimize your profile. Please try again.')
-    } finally {
-      setLoading(false)
+    // Safety check: minimum length validation
+    const trimmedProfile = profileText.trim();
+    const trimmedRole = targetRole.trim();
+
+    if (trimmedProfile.length < 50) {
+      setError(
+        'Please paste a substantial portion of your LinkedIn profile (at least 50 characters) for optimization.'
+      );
+      return;
     }
-  }
+
+    // targetRole is optional, default to General career growth if empty
+    const finalRole = trimmedRole || 'General career growth';
+
+    setLoading(true);
+    setError(null);
+    setResults(null);
+    try {
+      const response = await enhanceApi.optimizeLinkedIn({
+        profileText: trimmedProfile,
+        targetRole: finalRole,
+      });
+      setResults(response);
+    } catch (err) {
+      console.error('LinkedIn optimization error:', err);
+      setError(err.message || 'Failed to optimize your profile. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const copyToClipboard = async (text, key) => {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(text)
-        setCopiedIndex(key)
-        setTimeout(() => setCopiedIndex(null), 2000)
+        await navigator.clipboard.writeText(text);
+        setCopiedIndex(key);
+        setTimeout(() => setCopiedIndex(null), 2000);
       } else {
-        throw new Error('Clipboard API not supported')
+        throw new Error('Clipboard API not supported');
       }
     } catch (err) {
-      console.warn('Clipboard write failed:', err)
+      console.warn('Clipboard write failed:', err);
       // Fallback selection copy
       try {
-        const textarea = document.createElement('textarea')
-        textarea.value = text
-        document.body.appendChild(textarea)
-        textarea.select()
-        document.execCommand('copy')
-        document.body.removeChild(textarea)
-        setCopiedIndex(key)
-        setTimeout(() => setCopiedIndex(null), 2000)
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        setCopiedIndex(key);
+        setTimeout(() => setCopiedIndex(null), 2000);
       } catch (fallbackErr) {
-        toast.error('Could not copy to clipboard. Please copy manually.')
+        toast.error('Could not copy to clipboard. Please copy manually.');
       }
     }
-  }
+  };
 
   const copyKeywordToClipboard = async (keyword) => {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(keyword)
-        setCopiedSkill(keyword)
-        setTimeout(() => setCopiedSkill((current) => (current === keyword ? null : current)), 2000)
+        await navigator.clipboard.writeText(keyword);
+        setCopiedSkill(keyword);
+        setTimeout(() => setCopiedSkill((current) => (current === keyword ? null : current)), 2000);
       } else {
-        throw new Error('Clipboard API not supported')
+        throw new Error('Clipboard API not supported');
       }
     } catch (err) {
-      console.warn('Clipboard write failed:', err)
+      console.warn('Clipboard write failed:', err);
       try {
-        const textarea = document.createElement('textarea')
-        textarea.value = keyword
-        document.body.appendChild(textarea)
-        textarea.select()
-        document.execCommand('copy')
-        document.body.removeChild(textarea)
-        setCopiedSkill(keyword)
-        setTimeout(() => setCopiedSkill((current) => (current === keyword ? null : current)), 2000)
+        const textarea = document.createElement('textarea');
+        textarea.value = keyword;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        setCopiedSkill(keyword);
+        setTimeout(() => setCopiedSkill((current) => (current === keyword ? null : current)), 2000);
       } catch (fallbackErr) {
-        toast.error('Could not copy keyword to clipboard. Please copy manually.')
+        toast.error('Could not copy keyword to clipboard. Please copy manually.');
       }
     }
-  }
+  };
 
   const copyAbout = async () => {
-    if (!results?.aboutRewrite) return
+    if (!results?.aboutRewrite) return;
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(results.aboutRewrite)
-        setAboutCopied(true)
-        setTimeout(() => setAboutCopied(false), 2000)
+        await navigator.clipboard.writeText(results.aboutRewrite);
+        setAboutCopied(true);
+        setTimeout(() => setAboutCopied(false), 2000);
       } else {
-        throw new Error('Clipboard API not supported')
+        throw new Error('Clipboard API not supported');
       }
     } catch (err) {
-      console.warn('Clipboard write failed:', err)
+      console.warn('Clipboard write failed:', err);
       // Fallback selection copy
       try {
-        const textarea = document.createElement('textarea')
-        textarea.value = results.aboutRewrite
-        document.body.appendChild(textarea)
-        textarea.select()
-        document.execCommand('copy')
-        document.body.removeChild(textarea)
-        setAboutCopied(true)
-        setTimeout(() => setAboutCopied(false), 2000)
+        const textarea = document.createElement('textarea');
+        textarea.value = results.aboutRewrite;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        setAboutCopied(true);
+        setTimeout(() => setAboutCopied(false), 2000);
       } catch (fallbackErr) {
-        toast.error('Could not copy to clipboard. Please copy manually.')
+        toast.error('Could not copy to clipboard. Please copy manually.');
       }
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -208,7 +230,6 @@ export default function LinkedInOptimizer() {
       </div>
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -223,7 +244,8 @@ export default function LinkedInOptimizer() {
             Stand Out on LinkedIn
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Paste your LinkedIn profile text and get AI-powered headline rewrites, an About section overhaul, and skills gap insights vs industry peers.
+            Paste your LinkedIn profile text and get AI-powered headline rewrites, an About section
+            overhaul, and skills gap insights vs industry peers.
           </p>
         </motion.div>
 
@@ -253,12 +275,15 @@ export default function LinkedInOptimizer() {
                   value={profileText}
                   onChange={(e) => setProfileText(e.target.value)}
                 />
-                <p className="text-xs text-muted-foreground mt-1 text-right">{profileText.length}/5000</p>
+                <p className="text-xs text-muted-foreground mt-1 text-right">
+                  {profileText.length}/5000
+                </p>
               </div>
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
                   <Target className="w-4 h-4 text-blue-400" />
-                  Target Role / Industry <span className="text-muted-foreground font-normal">(optional)</span>
+                  Target Role / Industry{' '}
+                  <span className="text-muted-foreground font-normal">(optional)</span>
                 </label>
                 <textarea
                   className="w-full p-4 border border-border bg-muted/50 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition h-52 resize-none text-foreground placeholder:text-muted-foreground text-sm"
@@ -300,9 +325,15 @@ export default function LinkedInOptimizer() {
         {/* Results */}
         {loading && (
           <div className="mt-8 space-y-6">
-            <div className="flex items-center gap-3 px-5 py-4 bg-blue-500/5 border border-blue-500/20 rounded-xl animate-pulse" role="status" aria-live="polite">
+            <div
+              className="flex items-center gap-3 px-5 py-4 bg-blue-500/5 border border-blue-500/20 rounded-xl animate-pulse"
+              role="status"
+              aria-live="polite"
+            >
               <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin shrink-0" />
-              <p className="text-sm text-blue-400 font-medium">Optimizing your LinkedIn profile... Please wait...</p>
+              <p className="text-sm text-blue-400 font-medium">
+                Optimizing your LinkedIn profile... Please wait...
+              </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
               <div className="bg-card/50 border border-border rounded-2xl p-6 h-48 space-y-4">
@@ -353,14 +384,19 @@ export default function LinkedInOptimizer() {
                   <h3 className="font-bold text-foreground mb-3 flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-blue-400" /> AI Summary
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">{results.summary}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    {results.summary}
+                  </p>
                   <div>
                     <p className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> Current Strengths
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {results.strengthsFound?.map((s, i) => (
-                        <span key={i} className="px-3 py-1 text-xs rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-medium">
+                        <span
+                          key={i}
+                          className="px-3 py-1 text-xs rounded-full bg-green-500/10 text-green-400 border border-green-500/30 font-medium"
+                        >
                           {s}
                         </span>
                       ))}
@@ -377,7 +413,13 @@ export default function LinkedInOptimizer() {
                   </h2>
                   <div className="space-y-3">
                     {results.headlineSuggestions.map((h, i) => (
-                      <HeadlineCard key={i} headline={h} index={i} copied={copiedIndex} onCopy={copyToClipboard} />
+                      <HeadlineCard
+                        key={i}
+                        headline={h}
+                        index={i}
+                        copied={copiedIndex}
+                        onCopy={copyToClipboard}
+                      />
                     ))}
                   </div>
                 </div>
@@ -395,21 +437,38 @@ export default function LinkedInOptimizer() {
                         onClick={copyAbout}
                         className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 transition font-medium"
                       >
-                        {aboutCopied ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy All</>}
+                        {aboutCopied ? (
+                          <>
+                            <Check className="w-3.5 h-3.5" /> Copied
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" /> Copy All
+                          </>
+                        )}
                       </button>
                       <button
                         onClick={() => setAboutExpanded(!aboutExpanded)}
                         className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition"
                       >
-                        {aboutExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        {aboutExpanded ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        )}
                       </button>
                     </div>
                   </div>
-                  <div className={`text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap bg-muted/30 rounded-xl p-4 border border-border ${!aboutExpanded ? 'line-clamp-5' : ''}`}>
+                  <div
+                    className={`text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap bg-muted/30 rounded-xl p-4 border border-border ${!aboutExpanded ? 'line-clamp-5' : ''}`}
+                  >
                     {results.aboutRewrite}
                   </div>
                   {!aboutExpanded && (
-                    <button onClick={() => setAboutExpanded(true)} className="text-xs text-primary hover:text-primary/80 mt-2 font-medium">
+                    <button
+                      onClick={() => setAboutExpanded(true)}
+                      className="text-xs text-primary hover:text-primary/80 mt-2 font-medium"
+                    >
                       Show full rewrite →
                     </button>
                   )}
@@ -426,7 +485,7 @@ export default function LinkedInOptimizer() {
                     </h2>
                     <div className="space-y-3">
                       {results.quickWins.map((win, i) => {
-                        const cfg = IMPACT_CONFIG[win.impact] || IMPACT_CONFIG.Low
+                        const cfg = IMPACT_CONFIG[win.impact] || IMPACT_CONFIG.Low;
                         return (
                           <motion.div
                             key={i}
@@ -435,12 +494,14 @@ export default function LinkedInOptimizer() {
                             transition={{ delay: i * 0.07 }}
                             className={`flex items-start gap-3 p-3 rounded-xl border ${cfg.border} ${cfg.bg}`}
                           >
-                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${cfg.border} ${cfg.color} ${cfg.bg} shrink-0 mt-0.5`}>
+                            <span
+                              className={`text-xs font-bold px-2 py-0.5 rounded-full border ${cfg.border} ${cfg.color} ${cfg.bg} shrink-0 mt-0.5`}
+                            >
                               {win.impact}
                             </span>
                             <p className="text-sm text-foreground">{win.action}</p>
                           </motion.div>
-                        )
+                        );
                       })}
                     </div>
                   </div>
@@ -483,5 +544,5 @@ export default function LinkedInOptimizer() {
         </AnimatePresence>
       </div>
     </div>
-  )
+  );
 }

@@ -176,6 +176,9 @@ cd frontend
 # Run lint checks
 npm run lint
 
+# Check formatting
+npm run format:check
+
 # Create a production build
 npm run build
 ```

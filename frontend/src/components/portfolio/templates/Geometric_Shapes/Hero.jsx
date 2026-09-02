@@ -33,16 +33,51 @@ export default function Hero() {
   };
 
   const floatingObjects = [
-    { className: 'left-6 top-8 h-28 w-28 border-cyan-400/70', shape: 'diamond', speed: 18, delay: 0 },
-    { className: 'right-8 top-24 h-24 w-24 border-fuchsia-400/70', shape: 'cube', speed: 22, delay: 1.2 },
-    { className: 'right-20 bottom-20 h-20 w-20 border-amber-300/70', shape: 'ring', speed: 16, delay: 0.5 },
-    { className: 'left-10 bottom-16 h-32 w-32 border-violet-400/60', shape: 'triangle', speed: 20, delay: 0.8 },
+    {
+      className: 'left-6 top-8 h-28 w-28 border-cyan-400/70',
+      shape: 'diamond',
+      speed: 18,
+      delay: 0,
+    },
+    {
+      className: 'right-8 top-24 h-24 w-24 border-fuchsia-400/70',
+      shape: 'cube',
+      speed: 22,
+      delay: 1.2,
+    },
+    {
+      className: 'right-20 bottom-20 h-20 w-20 border-amber-300/70',
+      shape: 'ring',
+      speed: 16,
+      delay: 0.5,
+    },
+    {
+      className: 'left-10 bottom-16 h-32 w-32 border-violet-400/60',
+      shape: 'triangle',
+      speed: 20,
+      delay: 0.8,
+    },
   ];
 
   const leftShapes = [
-    { className: 'left-8 top-16 h-20 w-20 border-cyan-400/30', shape: 'square', speed: 18, delay: 0.2 },
-    { className: 'left-6 top-40 h-24 w-24 border-purple-400/28', shape: 'diamond', speed: 22, delay: 0.6 },
-    { className: 'left-12 bottom-28 h-16 w-16 border-amber-300/26', shape: 'ring', speed: 20, delay: 1.0 },
+    {
+      className: 'left-8 top-16 h-20 w-20 border-cyan-400/30',
+      shape: 'square',
+      speed: 18,
+      delay: 0.2,
+    },
+    {
+      className: 'left-6 top-40 h-24 w-24 border-purple-400/28',
+      shape: 'diamond',
+      speed: 22,
+      delay: 0.6,
+    },
+    {
+      className: 'left-12 bottom-28 h-16 w-16 border-amber-300/26',
+      shape: 'ring',
+      speed: 20,
+      delay: 1.0,
+    },
   ];
 
   return (
@@ -55,7 +90,11 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:84px_84px] opacity-30" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0,_rgba(5,8,22,0.1)_55%,rgba(5,8,22,0.92)_100%)]" />
 
-      <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: spotlight }} />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{ background: spotlight }}
+      />
 
       {/* Left-side subtle geometric reflections */}
       <div className="pointer-events-none absolute inset-y-0 left-0 w-1/2" style={{ zIndex: 8 }}>
@@ -72,9 +111,15 @@ export default function Hero() {
             }}
             transition={{ duration: s.speed, delay: s.delay, repeat: Infinity, ease: 'easeInOut' }}
           >
-            {s.shape === 'diamond' && <div className="absolute inset-3 rotate-45 rounded-[12px] border border-purple-300/40 bg-purple-400/8" />}
-            {s.shape === 'square' && <div className="absolute inset-2 rounded-md border border-cyan-300/40" />}
-            {s.shape === 'ring' && <div className="absolute inset-3 rounded-full border border-amber-200/40" />}
+            {s.shape === 'diamond' && (
+              <div className="absolute inset-3 rotate-45 rounded-[12px] border border-purple-300/40 bg-purple-400/8" />
+            )}
+            {s.shape === 'square' && (
+              <div className="absolute inset-2 rounded-md border border-cyan-300/40" />
+            )}
+            {s.shape === 'ring' && (
+              <div className="absolute inset-3 rounded-full border border-amber-200/40" />
+            )}
           </motion.div>
         ))}
       </div>
@@ -99,7 +144,9 @@ export default function Hero() {
               className="max-w-xl text-5xl font-black leading-[0.92] tracking-tight sm:text-6xl lg:text-7xl"
             >
               <span className="block text-white">Hi, I'm</span>
-              <span className="block bg-gradient-to-r from-cyan-300 via-sky-400 to-fuchsia-300 bg-clip-text text-transparent">Ava Thompson</span>
+              <span className="block bg-gradient-to-r from-cyan-300 via-sky-400 to-fuchsia-300 bg-clip-text text-transparent">
+                Ava Thompson
+              </span>
               <span className="block text-white">Backend Developer</span>
             </motion.h1>
 
@@ -109,7 +156,9 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.18 }}
               className="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg"
             >
-              I build modern, responsive web applications with a focus on performance, accessibility, and polished user experiences — primarily using React, TypeScript and component-driven design.
+              I build modern, responsive web applications with a focus on performance,
+              accessibility, and polished user experiences — primarily using React, TypeScript and
+              component-driven design.
             </motion.p>
 
             <motion.div
@@ -123,7 +172,10 @@ export default function Hero() {
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-slate-950 shadow-[0_16px_40px_rgba(255,255,255,0.12)] transition-transform duration-200 hover:-translate-y-0.5"
               >
                 Explore Projects
-                <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+                <ArrowRight
+                  size={16}
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                />
               </a>
               <a
                 href="#contact"
@@ -155,9 +207,14 @@ export default function Hero() {
                 { value: '35+', label: 'Projects Completed' },
                 { value: '12+', label: 'Technologies Used' },
               ].map((item) => (
-                <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md"
+                >
                   <div className="text-2xl font-black text-white">{item.value}</div>
-                  <div className="mt-2 text-xs uppercase tracking-[0.24em] text-slate-400">{item.label}</div>
+                  <div className="mt-2 text-xs uppercase tracking-[0.24em] text-slate-400">
+                    {item.label}
+                  </div>
                 </div>
               ))}
             </motion.div>
@@ -248,13 +305,28 @@ export default function Hero() {
                   <span className="h-2 w-2 rounded-full bg-cyan-300" />
                   Profile Summary
                 </div>
-                <h2 className="mt-5 text-2xl font-extrabold tracking-tight text-white">Ava Thompson — Backend Developer</h2>
+                <h2 className="mt-5 text-2xl font-extrabold tracking-tight text-white">
+                  Ava Thompson — Backend Developer
+                </h2>
                 <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-slate-300">
-                  Dedicated to crafting scalable frontend applications with strong attention to design systems, performance, and user experience. Comfortable shipping components, building design systems, and improving UX across products.
+                  Dedicated to crafting scalable frontend applications with strong attention to
+                  design systems, performance, and user experience. Comfortable shipping components,
+                  building design systems, and improving UX across products.
                 </p>
                 <div className="mt-6 flex items-center justify-center gap-3">
-                  <a href="#contact" className="inline-flex items-center gap-2 rounded-full bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-200 hover:bg-cyan-400/16">Contact Me</a>
-                  <a href="#download" className="inline-flex items-center gap-2 rounded-full border border-white/8 px-4 py-2 text-sm font-semibold text-white/90 hover:bg-white/4"><Download size={14} />Download CV</a>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center gap-2 rounded-full bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-200 hover:bg-cyan-400/16"
+                  >
+                    Contact Me
+                  </a>
+                  <a
+                    href="#download"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/8 px-4 py-2 text-sm font-semibold text-white/90 hover:bg-white/4"
+                  >
+                    <Download size={14} />
+                    Download CV
+                  </a>
                 </div>
               </motion.div>
             </motion.div>
@@ -287,9 +359,15 @@ export default function Hero() {
                       <div className="absolute inset-0 translate-x-2 translate-y-2 rounded-[inherit] border border-white/10" />
                     </>
                   )}
-                  {item.shape === 'ring' && <div className="absolute inset-4 rounded-full border border-amber-100/40" />}
+                  {item.shape === 'ring' && (
+                    <div className="absolute inset-4 rounded-full border border-amber-100/40" />
+                  )}
                   {item.shape === 'triangle' && (
-                    <svg className="absolute inset-4 h-auto w-auto text-violet-300/80" viewBox="0 0 100 100" fill="none">
+                    <svg
+                      className="absolute inset-4 h-auto w-auto text-violet-300/80"
+                      viewBox="0 0 100 100"
+                      fill="none"
+                    >
                       <polygon points="50,8 92,86 8,86" stroke="currentColor" strokeWidth="3" />
                     </svg>
                   )}

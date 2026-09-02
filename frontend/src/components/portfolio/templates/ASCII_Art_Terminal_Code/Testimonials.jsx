@@ -24,18 +24,16 @@ function LogEntry({ text, level = 'INFO' }) {
 
 /* ─── Single Testimonial Card ─────────────────────────────────────── */
 function TestimonialCard({ testimonial, index }) {
-  const lines = [
-    testimonial.text,
-    `— ${testimonial.name}`,
-    `   ${testimonial.role}`,
-  ];
+  const lines = [testimonial.text, `— ${testimonial.name}`, `   ${testimonial.role}`];
 
   return (
     <div className="border border-green-900/40 bg-black/80">
       {/* Log file header */}
       <div className="flex items-center gap-2 px-4 py-1.5 bg-gray-950/80 border-b border-green-900/20 font-mono text-xs text-green-800">
         <span className="text-green-600">$</span>
-        <span>cat testimonials.log | grep -A3 &quot;entry_{String(index + 1).padStart(3, '0')}&quot;</span>
+        <span>
+          cat testimonials.log | grep -A3 &quot;entry_{String(index + 1).padStart(3, '0')}&quot;
+        </span>
       </div>
 
       <div className="p-4 space-y-2">
@@ -61,7 +59,10 @@ function TestimonialCard({ testimonial, index }) {
               {/* CRT filter overlay */}
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{ background: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.2) 2px,rgba(0,0,0,0.2) 4px)' }}
+                style={{
+                  background:
+                    'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.2) 2px,rgba(0,0,0,0.2) 4px)',
+                }}
               />
             </div>
           )}
@@ -69,9 +70,7 @@ function TestimonialCard({ testimonial, index }) {
             <div className="text-white">{testimonial.name}</div>
             <div className="text-green-600">{testimonial.role}</div>
           </div>
-          <div className="ml-auto font-mono text-[10px] text-green-900">
-            [verified ✓]
-          </div>
+          <div className="ml-auto font-mono text-[10px] text-green-900">[verified ✓]</div>
         </div>
       </div>
     </div>
@@ -97,7 +96,6 @@ export default function Testimonials() {
       aria-label="Testimonials"
     >
       <div className="max-w-4xl mx-auto space-y-6">
-
         {/* Command header */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -145,8 +143,9 @@ export default function Testimonials() {
             transition={{ delay: 0.4, duration: 0.3 }}
             className="flex items-center gap-4 justify-center font-mono text-xs"
           >
-            <button type="button"
-              onClick={() => setPage(p => Math.max(0, p - 1))}
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={page === 0}
               id="testimonials-prev"
               aria-label="Previous testimonials"
@@ -160,8 +159,9 @@ export default function Testimonials() {
               page {page + 1}/{totalPages}
             </span>
 
-            <button type="button"
-              onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page === totalPages - 1}
               id="testimonials-next"
               aria-label="Next testimonials"
@@ -180,7 +180,9 @@ export default function Testimonials() {
           transition={{ delay: 0.5, duration: 0.4 }}
           className="font-mono text-xs space-y-0.5"
         >
-          <div className="text-green-900">{'# ── EOF: testimonials.log ──────────────────────────────────'}</div>
+          <div className="text-green-900">
+            {'# ── EOF: testimonials.log ──────────────────────────────────'}
+          </div>
           <div className="flex items-center gap-1 text-green-500 mt-1">
             <span>user@portfolio:~$</span>
             <span

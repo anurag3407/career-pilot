@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Sparkles, ArrowRight, CheckCircle } from "lucide-react";
+import React, { useState } from 'react';
+import { Sparkles, ArrowRight, CheckCircle } from 'lucide-react';
 
 export default function ResumeBulletEnhancer() {
-  const [bullet, setBullet] = useState("");
-  const [enhanced, setEnhanced] = useState("");
+  const [bullet, setBullet] = useState('');
+  const [enhanced, setEnhanced] = useState('');
 
   const enhanceBullet = () => {
     if (!bullet.trim()) return;
@@ -19,14 +19,12 @@ export default function ResumeBulletEnhancer() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
         <Sparkles className="w-6 h-6 text-primary" />
-        <h2 className="text-xl font-black text-foreground">
-          AI Resume Bullet Point Enhancer
-        </h2>
+        <h2 className="text-xl font-black text-foreground">AI Resume Bullet Point Enhancer</h2>
       </div>
 
       <p className="text-sm text-muted-foreground mb-4">
-        Improve your resume points with stronger action words,
-        achievements, and professional wording.
+        Improve your resume points with stronger action words, achievements, and professional
+        wording.
       </p>
 
       {/* Input */}
@@ -51,14 +49,10 @@ export default function ResumeBulletEnhancer() {
         <div className="mt-5 p-4 rounded-xl border border-green-500/30 bg-green-500/10">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle className="w-5 h-5 text-green-500" />
-            <h3 className="font-bold">
-              Improved Resume Bullet
-            </h3>
+            <h3 className="font-bold">Improved Resume Bullet</h3>
           </div>
 
-          <p className="text-sm text-foreground">
-            {enhanced}
-          </p>
+          <p className="text-sm text-foreground">{enhanced}</p>
         </div>
       )}
 

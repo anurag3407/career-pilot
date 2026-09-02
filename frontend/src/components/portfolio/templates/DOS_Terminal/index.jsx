@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function DOSTerminal() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">DOS Terminal Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            MS-DOS terminal with green monospace text on pure black, command-line-style navigation. Type dir to list projects, cat about.txt to read bio.
+            MS-DOS terminal with green monospace text on pure black, command-line-style navigation.
+            Type dir to list projects, cat about.txt to read bio.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

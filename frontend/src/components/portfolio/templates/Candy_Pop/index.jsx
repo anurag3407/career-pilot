@@ -1,7 +1,22 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, Mail, ExternalLink, Calendar, Award, Users, Star, Heart, Sparkles, ArrowRight, MapPin, Phone } from 'lucide-react';
+import {
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  ExternalLink,
+  Calendar,
+  Award,
+  Users,
+  Star,
+  Heart,
+  Sparkles,
+  ArrowRight,
+  MapPin,
+  Phone,
+} from 'lucide-react';
 
 /**
  * Candy Pop Portfolio Template
@@ -16,15 +31,15 @@ export default function CandyPop() {
   const fadeInUp = {
     initial: { opacity: 0, y: 40 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
   };
 
   const staggerContainer = {
     animate: {
       transition: {
-        staggerChildren: 0.15
-      }
-    }
+        staggerChildren: 0.15,
+      },
+    },
   };
 
   const floatAnimation = {
@@ -33,9 +48,9 @@ export default function CandyPop() {
       transition: {
         duration: 3,
         repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
+        ease: 'easeInOut',
+      },
+    },
   };
 
   const pulseGlow = {
@@ -45,9 +60,9 @@ export default function CandyPop() {
       transition: {
         duration: 2,
         repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
+        ease: 'easeInOut',
+      },
+    },
   };
 
   return (
@@ -85,7 +100,7 @@ export default function CandyPop() {
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: "spring", duration: 1.2, bounce: 0.4 }}
+            transition={{ type: 'spring', duration: 1.2, bounce: 0.4 }}
             className="relative inline-block mb-8"
           >
             <div className="w-48 h-48 md:w-56 md:h-56 rounded-full bg-gradient-to-br from-pink-400 via-purple-400 to-blue-400 p-1 shadow-2xl relative">
@@ -103,26 +118,22 @@ export default function CandyPop() {
             {/* Decorative circles around avatar */}
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
               className="absolute -top-4 -right-4 w-12 h-12 bg-pink-300 rounded-full shadow-lg"
             />
             <motion.div
               animate={{ rotate: -360 }}
-              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
               className="absolute -bottom-4 -left-4 w-10 h-10 bg-purple-300 rounded-full shadow-lg"
             />
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
               className="absolute top-1/2 -right-8 w-8 h-8 bg-blue-300 rounded-full shadow-lg"
             />
           </motion.div>
 
-          <motion.div
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
-          >
+          <motion.div initial="initial" animate="animate" variants={staggerContainer}>
             <motion.h1
               variants={fadeInUp}
               className="text-5xl md:text-7xl lg:text-8xl font-extrabold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-6 leading-tight"
@@ -152,10 +163,7 @@ export default function CandyPop() {
               {personal.bio}
             </motion.p>
 
-            <motion.div
-              variants={fadeInUp}
-              className="flex flex-wrap justify-center gap-4"
-            >
+            <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-4">
               {socials.github && (
                 <motion.a
                   href={socials.github}
@@ -216,14 +224,32 @@ export default function CandyPop() {
         <motion.div
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           variants={staggerContainer}
           className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8"
         >
           {[
-            { icon: Calendar, value: stats.yearsExperience, label: "Years Experience", color: "from-pink-300 to-pink-400", textColor: "text-pink-600" },
-            { icon: Award, value: stats.projectsCompleted, label: "Projects Completed", color: "from-purple-300 to-purple-400", textColor: "text-purple-600" },
-            { icon: Users, value: stats.happyClients, label: "Happy Clients", color: "from-blue-300 to-blue-400", textColor: "text-blue-600" }
+            {
+              icon: Calendar,
+              value: stats.yearsExperience,
+              label: 'Years Experience',
+              color: 'from-pink-300 to-pink-400',
+              textColor: 'text-pink-600',
+            },
+            {
+              icon: Award,
+              value: stats.projectsCompleted,
+              label: 'Projects Completed',
+              color: 'from-purple-300 to-purple-400',
+              textColor: 'text-purple-600',
+            },
+            {
+              icon: Users,
+              value: stats.happyClients,
+              label: 'Happy Clients',
+              color: 'from-blue-300 to-blue-400',
+              textColor: 'text-blue-600',
+            },
           ].map((stat, index) => (
             <motion.div
               key={index}
@@ -241,7 +267,7 @@ export default function CandyPop() {
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ type: "spring", duration: 0.8, delay: index * 0.1 }}
+                transition={{ type: 'spring', duration: 0.8, delay: index * 0.1 }}
                 className="text-5xl font-extrabold text-white mb-2 relative z-10"
               >
                 {stat.value}+
@@ -257,7 +283,7 @@ export default function CandyPop() {
         <motion.div
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           variants={fadeInUp}
           className="max-w-6xl mx-auto"
         >
@@ -281,19 +307,21 @@ export default function CandyPop() {
               >
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-bold text-xl text-gray-800">{skill.name}</span>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">{skill.level}%</span>
+                  <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                    {skill.level}%
+                  </span>
                 </div>
                 <div className="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner">
                   <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: `${skill.level}%` }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1.5, delay: index * 0.1, ease: "easeOut" }}
+                    transition={{ duration: 1.5, delay: index * 0.1, ease: 'easeOut' }}
                     className="h-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 rounded-full relative"
                   >
                     <motion.div
                       animate={{ x: [0, 10, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
                     />
                   </motion.div>
@@ -318,7 +346,7 @@ export default function CandyPop() {
         <motion.div
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           variants={fadeInUp}
           className="max-w-7xl mx-auto"
         >
@@ -407,7 +435,7 @@ export default function CandyPop() {
         <motion.div
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           variants={fadeInUp}
           className="max-w-5xl mx-auto"
         >
@@ -459,7 +487,7 @@ export default function CandyPop() {
         <motion.div
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           variants={fadeInUp}
           className="max-w-7xl mx-auto"
         >
@@ -503,7 +531,9 @@ export default function CandyPop() {
                     <div className="text-purple-500 font-semibold">{testimonial.role}</div>
                   </div>
                 </div>
-                <p className="text-gray-600 italic text-lg leading-relaxed mb-6 relative z-10">"{testimonial.text}"</p>
+                <p className="text-gray-600 italic text-lg leading-relaxed mb-6 relative z-10">
+                  "{testimonial.text}"
+                </p>
                 <div className="flex gap-1 relative z-10">
                   {[...Array(5)].map((_, i) => (
                     <motion.div
@@ -528,7 +558,7 @@ export default function CandyPop() {
         <motion.div
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           variants={fadeInUp}
           className="max-w-5xl mx-auto text-center"
         >
@@ -538,11 +568,9 @@ export default function CandyPop() {
           >
             Let's Connect! 🚀
           </motion.h2>
-          <motion.p
-            variants={fadeInUp}
-            className="text-gray-600 mb-12 text-xl leading-relaxed"
-          >
-            I'm always excited to work on new projects and collaborate with creative people. Let's build something amazing together!
+          <motion.p variants={fadeInUp} className="text-gray-600 mb-12 text-xl leading-relaxed">
+            I'm always excited to work on new projects and collaborate with creative people. Let's
+            build something amazing together!
           </motion.p>
 
           <motion.div
@@ -575,10 +603,7 @@ export default function CandyPop() {
             )}
           </motion.div>
 
-          <motion.div
-            variants={fadeInUp}
-            className="flex justify-center gap-8"
-          >
+          <motion.div variants={fadeInUp} className="flex justify-center gap-8">
             {socials.github && (
               <motion.a
                 href={socials.github}
@@ -640,7 +665,9 @@ export default function CandyPop() {
             className="flex items-center justify-center gap-3 mb-4"
           >
             <Heart size={24} className="fill-pink-500 text-pink-500 animate-pulse" />
-            <span className="text-gray-700 text-xl font-semibold">Made with love by {personal.name}</span>
+            <span className="text-gray-700 text-xl font-semibold">
+              Made with love by {personal.name}
+            </span>
             <Sparkles size={24} className="text-purple-500 animate-spin" />
           </motion.div>
           <p className="text-gray-600 text-lg">© {new Date().getFullYear()} All rights reserved</p>

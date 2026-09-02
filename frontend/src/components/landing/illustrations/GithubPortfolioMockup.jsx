@@ -13,7 +13,7 @@ export default function GithubPortfolioMockup() {
 
       <div className="flex-1 p-6 bg-background/30 flex flex-col gap-6 relative overflow-hidden">
         {/* Profile Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center gap-4 border-b border-border pb-4"
@@ -28,7 +28,7 @@ export default function GithubPortfolioMockup() {
 
         {/* Selected Repos Grid */}
         <div className="grid grid-cols-2 gap-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
@@ -48,7 +48,7 @@ export default function GithubPortfolioMockup() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
@@ -70,7 +70,7 @@ export default function GithubPortfolioMockup() {
         </div>
 
         {/* Activity Graph */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
@@ -83,9 +83,9 @@ export default function GithubPortfolioMockup() {
                 {Array.from({ length: 5 }).map((_, j) => {
                   const isActive = Math.random() > 0.6;
                   return (
-                    <div 
-                      key={j} 
-                      className={`h-2.5 w-2.5 rounded-[2px] ${isActive ? 'bg-primary/60' : 'bg-muted'}`} 
+                    <div
+                      key={j}
+                      className={`h-2.5 w-2.5 rounded-[2px] ${isActive ? 'bg-primary/60' : 'bg-muted'}`}
                     />
                   );
                 })}

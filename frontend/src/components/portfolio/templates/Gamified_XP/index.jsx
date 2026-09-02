@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useMemo } from 'react';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import {
@@ -140,7 +140,9 @@ export default function GamifiedXP() {
 
               <div className="space-y-5">
                 <div>
-                  <h1 className="text-3xl font-extrabold tracking-wide md:text-5xl">{data.personal.name}</h1>
+                  <h1 className="text-3xl font-extrabold tracking-wide md:text-5xl">
+                    {data.personal.name}
+                  </h1>
                   <p className="mt-2 inline-flex items-center rounded-md border border-[#5a3a82] bg-[#1a1427] px-3 py-1 font-mono text-sm text-[#d4af37]">
                     Class: {data.personal.title}
                   </p>
@@ -170,7 +172,12 @@ export default function GamifiedXP() {
           </PixelPanel>
         </motion.section>
 
-        <motion.section initial="hidden" whileInView="show" viewport={{ once: true }} variants={itemVariants}>
+        <motion.section
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={itemVariants}
+        >
           <PixelPanel className="p-5 md:p-8">
             <div className="grid gap-6 md:grid-cols-[240px_1fr] md:items-center">
               <div className="mx-auto">
@@ -203,7 +210,10 @@ export default function GamifiedXP() {
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {Object.entries(data.stats || {}).map(([key, value]) => (
-                    <span key={key} className="rounded border border-[#5a3a82] bg-[#161222] px-2.5 py-1 font-mono text-xs">
+                    <span
+                      key={key}
+                      className="rounded border border-[#5a3a82] bg-[#161222] px-2.5 py-1 font-mono text-xs"
+                    >
                       {key}: {value}
                     </span>
                   ))}
@@ -232,13 +242,21 @@ export default function GamifiedXP() {
                       <Icon size={16} className="text-[#d4af37]" />
                       {category}
                     </div>
-                    <svg className="pointer-events-none h-12 w-full" viewBox="0 0 400 48" preserveAspectRatio="none">
+                    <svg
+                      className="pointer-events-none h-12 w-full"
+                      viewBox="0 0 400 48"
+                      preserveAspectRatio="none"
+                    >
                       <line x1="200" y1="0" x2="200" y2="16" stroke="#5a3a82" strokeWidth="2" />
                       <line x1="40" y1="16" x2="360" y2="16" stroke="#5a3a82" strokeWidth="2" />
                     </svg>
                     <div className="grid grid-cols-2 gap-3">
                       {skills.map((skill) => (
-                        <motion.div key={skill.name} variants={itemVariants} className="rounded border border-[#4a3169] bg-[#13101d] p-2.5">
+                        <motion.div
+                          key={skill.name}
+                          variants={itemVariants}
+                          className="rounded border border-[#4a3169] bg-[#13101d] p-2.5"
+                        >
                           <p className="text-sm font-semibold">{skill.name}</p>
                           <div className="mt-2 h-1.5 rounded bg-[#2a203b]">
                             <motion.div
@@ -261,13 +279,21 @@ export default function GamifiedXP() {
           <div className="space-y-3 md:hidden">
             {Object.entries(skillsByCategory).map(([category, skills]) => (
               <details key={category} className="rounded border border-[#5a3a82] bg-[#11111a] p-3">
-                <summary className="cursor-pointer font-mono text-sm text-[#d4af37]">{category}</summary>
+                <summary className="cursor-pointer font-mono text-sm text-[#d4af37]">
+                  {category}
+                </summary>
                 <div className="mt-3 space-y-2">
                   {skills.map((skill) => (
-                    <div key={skill.name} className="rounded border border-[#433058] bg-[#161222] p-2">
+                    <div
+                      key={skill.name}
+                      className="rounded border border-[#433058] bg-[#161222] p-2"
+                    >
                       <p className="text-sm">{skill.name}</p>
                       <div className="mt-1.5 h-1.5 rounded bg-[#2a203b]">
-                        <div className="h-full rounded bg-gradient-to-r from-[#8f6bff] to-[#d4af37]" style={{ width: `${skill.level}%` }} />
+                        <div
+                          className="h-full rounded bg-gradient-to-r from-[#8f6bff] to-[#d4af37]"
+                          style={{ width: `${skill.level}%` }}
+                        />
                       </div>
                     </div>
                   ))}
@@ -299,7 +325,10 @@ export default function GamifiedXP() {
                   {(project.techStack || []).map((tech) => {
                     const TechIcon = techIconMap[tech.toLowerCase()] || Sparkles;
                     return (
-                      <span key={tech} className="inline-flex items-center gap-1 rounded border border-[#5a3a82] bg-[#1b1530] px-2 py-1 text-xs">
+                      <span
+                        key={tech}
+                        className="inline-flex items-center gap-1 rounded border border-[#5a3a82] bg-[#1b1530] px-2 py-1 text-xs"
+                      >
                         <TechIcon size={12} className="text-[#8cf8aa]" />
                         {tech}
                       </span>
@@ -397,7 +426,9 @@ export default function GamifiedXP() {
           transition={{ duration: 0.45 }}
         >
           <PixelPanel className="mx-auto max-w-3xl p-6 text-center">
-            <h2 className="text-2xl font-extrabold text-[#f7d777] md:text-3xl">Begin a new adventure?</h2>
+            <h2 className="text-2xl font-extrabold text-[#f7d777] md:text-3xl">
+              Begin a new adventure?
+            </h2>
             <p className="mt-2 text-sm text-[#d6cee9]">{data.personal.tagline}</p>
 
             <div className="mt-5 flex justify-center gap-3">

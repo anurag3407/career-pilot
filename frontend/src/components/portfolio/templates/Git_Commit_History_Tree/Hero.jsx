@@ -1,12 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GitBranch, GitCommit, Star, GitFork, Eye, Copy, Check, Github, Linkedin, Mail, Twitter, ExternalLink } from 'lucide-react';
+import {
+  GitBranch,
+  GitCommit,
+  Star,
+  GitFork,
+  Eye,
+  Copy,
+  Check,
+  Github,
+  Linkedin,
+  Mail,
+  Twitter,
+  ExternalLink,
+} from 'lucide-react';
 import { usePortfolio } from './PortfolioContext';
 
 /* ─── Contribution Graph ───────────────────────────────────────── */
 function ContributionGraph() {
   const weeks = 26;
-  const days  = 7;
+  const days = 7;
   const LEVELS = ['bg-[#161B22]', 'bg-[#0E4429]', 'bg-[#006D32]', 'bg-[#26A641]', 'bg-[#3FB950]'];
 
   // Deterministic pseudo-random for SSR safety
@@ -51,7 +64,10 @@ function useTyping(text, speed = 50, delay = 0) {
       const iv = setInterval(() => {
         i++;
         setDisplayed(text.slice(0, i));
-        if (i >= text.length) { clearInterval(iv); setDone(true); }
+        if (i >= text.length) {
+          clearInterval(iv);
+          setDone(true);
+        }
       }, speed);
       return () => clearInterval(iv);
     }, delay);
@@ -73,7 +89,8 @@ function CloneCommand({ username }) {
     <div className="flex items-center gap-2 bg-[#161B22] border border-[#30363D] rounded-md px-3 py-2 font-mono text-xs text-[#8B949E] group">
       <span className="text-[#3FB950]">$</span>
       <span className="flex-1 truncate text-white">{cmd}</span>
-      <button type="button"
+      <button
+        type="button"
         onClick={copy}
         aria-label="Copy clone command"
         id="clone-copy-btn"
@@ -87,10 +104,10 @@ function CloneCommand({ username }) {
 
 /* ─── Branch tree lines ────────────────────────────────────────── */
 const BRANCHES = [
-  { label: 'Developer',            color: 'text-[#3FB950]', branch: 'main' },
-  { label: 'Problem Solver',        color: 'text-[#58A6FF]', branch: 'feat/problem-solving' },
+  { label: 'Developer', color: 'text-[#3FB950]', branch: 'main' },
+  { label: 'Problem Solver', color: 'text-[#58A6FF]', branch: 'feat/problem-solving' },
   { label: 'Open Source Contributor', color: 'text-[#BC8CFF]', branch: 'feat/open-source' },
-  { label: 'Full Stack Engineer',   color: 'text-[#F0883E]', branch: 'feat/fullstack' },
+  { label: 'Full Stack Engineer', color: 'text-[#F0883E]', branch: 'feat/fullstack' },
 ];
 
 /* ─── Hero Section ──────────────────────────────────────────────── */
@@ -98,26 +115,47 @@ export default function Hero() {
   const { portfolioData } = usePortfolio();
   const { personal, stats, socials } = portfolioData;
 
-  const username = personal.name
-    ?.toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '') || 'developer';
+  const username =
+    personal.name
+      ?.toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '') || 'developer';
 
   const titleTyping = useTyping(personal.title || '', 40, 400);
-  const bioTyping   = useTyping(personal.bio   || '', 14, 1200);
+  const bioTyping = useTyping(personal.bio || '', 14, 1200);
 
   const SOCIAL_LINKS = [
-    { icon: Github,   href: socials.github,            label: 'github',   color: '#8B949E' },
-    { icon: Linkedin, href: socials.linkedin,           label: 'linkedin', color: '#58A6FF' },
-    { icon: Twitter,  href: socials.twitter,            label: 'twitter',  color: '#58A6FF' },
-    { icon: Mail,     href: `mailto:${socials.email}`,  label: 'email',    color: '#3FB950' },
+    { icon: Github, href: socials.github, label: 'github', color: '#8B949E' },
+    { icon: Linkedin, href: socials.linkedin, label: 'linkedin', color: '#58A6FF' },
+    { icon: Twitter, href: socials.twitter, label: 'twitter', color: '#58A6FF' },
+    { icon: Mail, href: `mailto:${socials.email}`, label: 'email', color: '#3FB950' },
   ];
 
   const STAT_CARDS = [
-    { label: 'Commits',       value: `${(stats?.yearsExperience || 5) * 30}+`,    icon: GitCommit, color: '#3FB950' },
-    { label: 'Projects',      value: `${stats?.projectsCompleted || 48}+`,         icon: Star,      color: '#F0883E' },
-    { label: 'Contributions', value: `${(stats?.happyClients || 32) * 15}+`,       icon: GitFork,   color: '#BC8CFF' },
-    { label: 'Experience',    value: `${stats?.yearsExperience || 5}+ Yrs`,        icon: Eye,       color: '#58A6FF' },
+    {
+      label: 'Commits',
+      value: `${(stats?.yearsExperience || 5) * 30}+`,
+      icon: GitCommit,
+      color: '#3FB950',
+    },
+    {
+      label: 'Projects',
+      value: `${stats?.projectsCompleted || 48}+`,
+      icon: Star,
+      color: '#F0883E',
+    },
+    {
+      label: 'Contributions',
+      value: `${(stats?.happyClients || 32) * 15}+`,
+      icon: GitFork,
+      color: '#BC8CFF',
+    },
+    {
+      label: 'Experience',
+      value: `${stats?.yearsExperience || 5}+ Yrs`,
+      icon: Eye,
+      color: '#58A6FF',
+    },
   ];
 
   return (
@@ -126,18 +164,21 @@ export default function Hero() {
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: 'linear-gradient(#58A6FF 1px,transparent 1px),linear-gradient(90deg,#58A6FF 1px,transparent 1px)',
+          backgroundImage:
+            'linear-gradient(#58A6FF 1px,transparent 1px),linear-gradient(90deg,#58A6FF 1px,transparent 1px)',
           backgroundSize: '40px 40px',
         }}
         aria-hidden="true"
       />
 
       {/* Ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-[#3FB950]/5 blur-3xl pointer-events-none" aria-hidden="true" />
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-[#3FB950]/5 blur-3xl pointer-events-none"
+        aria-hidden="true"
+      />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-36 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-
           {/* ── Left Column ── */}
           <div className="space-y-6">
             {/* Repo path */}
@@ -151,7 +192,9 @@ export default function Hero() {
               <span className="text-[#58A6FF] hover:underline cursor-pointer">{username}</span>
               <span>/</span>
               <span className="text-white font-semibold">portfolio</span>
-              <span className="ml-2 text-xs border border-[#3FB950]/40 text-[#3FB950] px-2 py-0.5 rounded-full">Public</span>
+              <span className="ml-2 text-xs border border-[#3FB950]/40 text-[#3FB950] px-2 py-0.5 rounded-full">
+                Public
+              </span>
             </motion.div>
 
             {/* Avatar + Name */}
@@ -169,7 +212,10 @@ export default function Hero() {
                     className="w-16 h-16 rounded-full border-2 border-[#3FB950]/50 object-cover"
                     loading="eager"
                   />
-                  <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#3FB950] rounded-full border-2 border-[#0D1117]" title="Active" />
+                  <span
+                    className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#3FB950] rounded-full border-2 border-[#0D1117]"
+                    title="Active"
+                  />
                 </div>
               )}
               <div>
@@ -187,7 +233,10 @@ export default function Hero() {
             >
               {titleTyping.displayed}
               {!titleTyping.done && (
-                <span className="inline-block w-2 h-5 bg-[#3FB950] ml-0.5 align-middle animate-pulse" aria-hidden="true" />
+                <span
+                  className="inline-block w-2 h-5 bg-[#3FB950] ml-0.5 align-middle animate-pulse"
+                  aria-hidden="true"
+                />
               )}
             </motion.div>
 
@@ -235,7 +284,10 @@ export default function Hero() {
               >
                 <span>📍 {personal.location}</span>
                 {socials.email && (
-                  <a href={`mailto:${socials.email}`} className="hover:text-[#58A6FF] transition-colors">
+                  <a
+                    href={`mailto:${socials.email}`}
+                    className="hover:text-[#58A6FF] transition-colors"
+                  >
                     ✉️ {socials.email}
                   </a>
                 )}
@@ -249,7 +301,7 @@ export default function Hero() {
               transition={{ delay: 1.0, duration: 0.5 }}
               className="flex gap-3 flex-wrap"
             >
-              {SOCIAL_LINKS.filter(s => s.href).map(({ icon: Icon, href, label, color }) => (
+              {SOCIAL_LINKS.filter((s) => s.href).map(({ icon: Icon, href, label, color }) => (
                 <a
                   key={label}
                   href={href}
@@ -272,9 +324,12 @@ export default function Hero() {
               transition={{ delay: 1.15, duration: 0.5 }}
               className="flex flex-wrap gap-3"
             >
-              <button type="button"
+              <button
+                type="button"
                 id="hero-clone-btn"
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() =>
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+                }
                 className="flex items-center gap-2 bg-[#238636] hover:bg-[#2EA043] border border-[#3FB950]/50 text-white rounded-md px-4 py-2 text-sm font-medium transition-all"
               >
                 <GitCommit size={14} />
@@ -323,7 +378,9 @@ export default function Hero() {
                     <Icon size={14} style={{ color }} />
                     <span className="text-[#8B949E] text-xs font-mono">{label}</span>
                   </div>
-                  <div className="text-2xl font-bold text-white font-mono" style={{ color }}>{value}</div>
+                  <div className="text-2xl font-bold text-white font-mono" style={{ color }}>
+                    {value}
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
@@ -346,7 +403,13 @@ export default function Hero() {
               </div>
               <div className="flex items-center justify-end gap-2 mt-3 text-xs text-[#8B949E]">
                 <span>Less</span>
-                {['bg-[#161B22]', 'bg-[#0E4429]', 'bg-[#006D32]', 'bg-[#26A641]', 'bg-[#3FB950]'].map((c, i) => (
+                {[
+                  'bg-[#161B22]',
+                  'bg-[#0E4429]',
+                  'bg-[#006D32]',
+                  'bg-[#26A641]',
+                  'bg-[#3FB950]',
+                ].map((c, i) => (
                   <div key={i} className={`w-[10px] h-[10px] rounded-sm ${c}`} />
                 ))}
                 <span>More</span>
@@ -371,8 +434,11 @@ export default function Hero() {
                   {personal.tagline || personal.bio?.slice(0, 120) + '...'}
                 </div>
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {['React', 'Node.js', 'TypeScript', 'Open Source'].map(tag => (
-                    <span key={tag} className="text-[10px] bg-[#1F6FEB]/20 text-[#58A6FF] border border-[#1F6FEB]/30 px-2 py-0.5 rounded-full">
+                  {['React', 'Node.js', 'TypeScript', 'Open Source'].map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[10px] bg-[#1F6FEB]/20 text-[#58A6FF] border border-[#1F6FEB]/30 px-2 py-0.5 rounded-full"
+                    >
                       {tag}
                     </span>
                   ))}

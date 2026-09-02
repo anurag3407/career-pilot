@@ -1,32 +1,23 @@
-
-import React from "react";
-import {
-  ArrowRight,
-  Sparkles,
-  Code2,
-  Layers3,
-  Triangle,
-  Square,
-  Circle,
-} from "lucide-react";
+import React from 'react';
+import { ArrowRight, Sparkles, Code2, Layers3, Triangle, Square, Circle } from 'lucide-react';
 
 // Resume-template friendly content (generic placeholders)
 const skills = [
-  "Frontend Development",
-  "Responsive Design",
-  "JavaScript",
-  "React.js",
-  "Tailwind CSS",
-  "Problem Solving",
-  "UI Engineering",
-  "Clean Code",
+  'Frontend Development',
+  'Responsive Design',
+  'JavaScript',
+  'React.js',
+  'Tailwind CSS',
+  'Problem Solving',
+  'UI Engineering',
+  'Clean Code',
 ];
 
 const stats = [
-  { value: "3+", label: "Years Experience" },
-  { value: "20+", label: "Projects Completed" },
-  { value: "10+", label: "Technologies Used" },
-  { value: "100%", label: "Commitment to Quality" },
+  { value: '3+', label: 'Years Experience' },
+  { value: '20+', label: 'Projects Completed' },
+  { value: '10+', label: 'Technologies Used' },
+  { value: '100%', label: 'Commitment to Quality' },
 ];
 
 const About = () => {
@@ -44,7 +35,7 @@ const About = () => {
       {/* Triangle Shape */}
       <div
         className="absolute top-1/2 left-10 w-24 h-24 bg-yellow-400/20"
-        style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
+        style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
       />
 
       <div className="relative max-w-7xl mx-auto space-y-32">
@@ -66,18 +57,24 @@ const About = () => {
             </h1>
 
             <p className="text-gray-400 text-lg max-w-2xl leading-relaxed">
-              A passionate developer focused on building modern, responsive, and
-              user-friendly web applications. I specialize in turning ideas into
-              clean and functional digital experiences.
+              A passionate developer focused on building modern, responsive, and user-friendly web
+              applications. I specialize in turning ideas into clean and functional digital
+              experiences.
             </p>
 
             <div className="flex gap-4 flex-wrap">
-              <button type="button" className="px-8 py-4 bg-white text-black rounded-xl flex items-center gap-2 hover:scale-105 transition">
+              <button
+                type="button"
+                className="px-8 py-4 bg-white text-black rounded-xl flex items-center gap-2 hover:scale-105 transition"
+              >
                 Download Resume
                 <ArrowRight size={18} />
               </button>
 
-              <button type="button" className="px-8 py-4 border border-white/20 rounded-xl hover:bg-white hover:text-black transition">
+              <button
+                type="button"
+                className="px-8 py-4 border border-white/20 rounded-xl hover:bg-white hover:text-black transition"
+              >
                 Contact Me
               </button>
             </div>
@@ -108,7 +105,7 @@ const About = () => {
 
             <div
               className="absolute top-20 right-0 w-32 h-32 bg-cyan-400/20"
-              style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
+              style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
             />
 
             <div className="relative z-10 bg-[#0F0F14]/90 border border-white/10 backdrop-blur-xl p-10 rounded-3xl max-w-sm text-center">
@@ -121,8 +118,8 @@ const About = () => {
               <h2 className="text-3xl font-black mb-3">Profile Summary</h2>
 
               <p className="text-gray-400">
-                Dedicated to crafting scalable frontend applications with strong
-                attention to design systems, performance, and user experience.
+                Dedicated to crafting scalable frontend applications with strong attention to design
+                systems, performance, and user experience.
               </p>
             </div>
           </div>
@@ -139,8 +136,8 @@ const About = () => {
             </h2>
 
             <p className="text-gray-400 text-lg mb-10 leading-relaxed">
-              Below are the core technologies and skills I use to build modern
-              web applications and interactive user interfaces.
+              Below are the core technologies and skills I use to build modern web applications and
+              interactive user interfaces.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -160,24 +157,24 @@ const About = () => {
             <div className="p-8 bg-white/5 border border-white/10 rounded-3xl">
               <h3 className="text-2xl font-bold mb-2">Education</h3>
               <p className="text-gray-400">
-                Bachelor of Technology in Computer Science (or your degree).
-                Focused on software engineering fundamentals and web development.
+                Bachelor of Technology in Computer Science (or your degree). Focused on software
+                engineering fundamentals and web development.
               </p>
             </div>
 
             <div className="p-8 bg-white/5 border border-white/10 rounded-3xl">
               <h3 className="text-2xl font-bold mb-2">Experience</h3>
               <p className="text-gray-400">
-                Built multiple frontend projects including dashboards, portfolio
-                templates, and responsive web applications using React.
+                Built multiple frontend projects including dashboards, portfolio templates, and
+                responsive web applications using React.
               </p>
             </div>
 
             <div className="p-8 bg-white/5 border border-white/10 rounded-3xl">
               <h3 className="text-2xl font-bold mb-2">Goal</h3>
               <p className="text-gray-400">
-                To grow as a full-stack developer and contribute to impactful
-                real-world applications.
+                To grow as a full-stack developer and contribute to impactful real-world
+                applications.
               </p>
             </div>
           </div>
@@ -188,4 +185,3 @@ const About = () => {
 };
 
 export default About;
-

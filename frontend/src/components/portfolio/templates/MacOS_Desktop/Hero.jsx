@@ -8,9 +8,9 @@ export default function Hero({ data }) {
     <div className="flex flex-col md:flex-row items-center gap-8 p-6">
       {avatar && (
         <div className="w-32 h-32 md:w-48 md:h-48 flex-shrink-0">
-          <img 
-            src={avatar} 
-            alt={name} 
+          <img
+            src={avatar}
+            alt={name}
             className="w-full h-full object-cover rounded-full border-4 border-white shadow-xl"
           />
         </div>
@@ -22,9 +22,7 @@ export default function Hero({ data }) {
         <h2 className="text-xl md:text-2xl text-blue-600 dark:text-blue-400 font-medium mb-4">
           {role}
         </h2>
-        <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl">
-          {bio}
-        </p>
+        <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl">{bio}</p>
       </div>
     </div>
   );

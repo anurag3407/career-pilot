@@ -18,11 +18,17 @@ const SkillsSection = () => {
         {data.skills.map((skill, index) => (
           <FadeIn key={index} delay={index * 0.05}>
             <div className="relative border border-zinc-200 px-6 py-3 hover:border-zinc-500 transition-colors duration-300 flex items-center gap-4 group cursor-crosshair">
-              <div className="absolute -top-[5px] -left-[5px] text-zinc-300 opacity-0 group-hover:opacity-100">+</div>
-              <div className="absolute -bottom-[5px] -right-[5px] text-zinc-300 opacity-0 group-hover:opacity-100">+</div>
+              <div className="absolute -top-[5px] -left-[5px] text-zinc-300 opacity-0 group-hover:opacity-100">
+                +
+              </div>
+              <div className="absolute -bottom-[5px] -right-[5px] text-zinc-300 opacity-0 group-hover:opacity-100">
+                +
+              </div>
               <span className="text-sm font-light text-zinc-700">{skill.name}</span>
               <div className="w-px h-3 bg-zinc-200"></div>
-              <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">{skill.category}</span>
+              <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">
+                {skill.category}
+              </span>
             </div>
           </FadeIn>
         ))}

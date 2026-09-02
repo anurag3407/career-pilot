@@ -27,7 +27,8 @@ export default function Testimonials({ testimonials }) {
               className="relative p-6 rounded-2xl bg-gray-900/60 border border-gray-800 backdrop-blur-sm hover:border-orange-500/20 transition-colors"
             >
               {/* Subtle glow */}
-              <div className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-10 pointer-events-none"
+              <div
+                className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-10 pointer-events-none"
                 style={{
                   background: 'radial-gradient(circle, #ff6a00, transparent 70%)',
                 }}

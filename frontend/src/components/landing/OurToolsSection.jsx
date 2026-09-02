@@ -10,9 +10,11 @@ export default function OurToolsSection() {
   return (
     <section className="relative overflow-hidden bg-background py-32">
       {/* Subtle diagonal texture */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.03]"
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: 'repeating-linear-gradient(-45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)',
+          backgroundImage:
+            'repeating-linear-gradient(-45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)',
           backgroundSize: '12px 12px',
         }}
       />
@@ -61,11 +63,13 @@ export default function OurToolsSection() {
                 >
                   {/* Node dot on the line */}
                   <div className="relative z-10 flex flex-col items-center">
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-400 md:h-[60px] md:w-[60px] ${
-                      hovered === index
-                        ? 'border-primary bg-primary text-primary-foreground scale-110'
-                        : 'border-border bg-background text-muted-foreground'
-                    }`}>
+                    <div
+                      className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-400 md:h-[60px] md:w-[60px] ${
+                        hovered === index
+                          ? 'border-primary bg-primary text-primary-foreground scale-110'
+                          : 'border-border bg-background text-muted-foreground'
+                      }`}
+                    >
                       <feature.icon className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.5} />
                     </div>
                   </div>
@@ -77,9 +81,11 @@ export default function OurToolsSection() {
                         <span className="text-[10px] font-black tabular-nums text-muted-foreground/40">
                           {String(index + 1).padStart(2, '0')}
                         </span>
-                        <h3 className={`text-xl font-black tracking-tight transition-colors duration-300 md:text-3xl ${
-                          hovered === index ? 'text-primary' : 'text-foreground'
-                        }`}>
+                        <h3
+                          className={`text-xl font-black tracking-tight transition-colors duration-300 md:text-3xl ${
+                            hovered === index ? 'text-primary' : 'text-foreground'
+                          }`}
+                        >
                           {feature.name}
                         </h3>
                         {feature.badge && (
@@ -106,11 +112,13 @@ export default function OurToolsSection() {
                     </div>
 
                     {/* Arrow */}
-                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
-                      hovered === index
-                        ? 'bg-foreground text-background rotate-0 scale-100'
-                        : 'bg-transparent text-muted-foreground/30 -rotate-45 scale-75'
-                    }`}>
+                    <div
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
+                        hovered === index
+                          ? 'bg-foreground text-background rotate-0 scale-100'
+                          : 'bg-transparent text-muted-foreground/30 -rotate-45 scale-75'
+                      }`}
+                    >
                       <ArrowUpRight className="h-5 w-5" />
                     </div>
                   </div>

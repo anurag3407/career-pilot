@@ -1,18 +1,18 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, ExternalLink, ChevronDown } from "lucide-react";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { Github, Linkedin, Twitter, Mail, ExternalLink, ChevronDown } from 'lucide-react';
 
 const C = {
-  bg:     "#060810",
-  mid:    "#0D1220",
-  deep:   "#101828",
-  accent: "#7EB8DA",
-  blue:   "#5B9BD5",
-  ghost:  "rgba(200,220,240,.45)",
-  muted:  "rgba(200,220,240,.35)",
-  text:   "#C8DCF0",
-  border: "rgba(126,184,218,.12)",
+  bg: '#060810',
+  mid: '#0D1220',
+  deep: '#101828',
+  accent: '#7EB8DA',
+  blue: '#5B9BD5',
+  ghost: 'rgba(200,220,240,.45)',
+  muted: 'rgba(200,220,240,.35)',
+  text: '#C8DCF0',
+  border: 'rgba(126,184,218,.12)',
 };
 
 function GlobalStyles() {
@@ -208,16 +208,20 @@ function GlobalStyles() {
   );
 }
 
-function FogReveal({ children, delay = 0, className = "", style = {} }) {
+function FogReveal({ children, delay = 0, className = '', style = {} }) {
   const { portfolioData: data } = usePortfolio();
 
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: '-80px' });
   return (
-    <motion.div ref={ref} className={className} style={style}
-      initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-      animate={inView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-      transition={{ duration: 0.9, delay, ease: "easeOut" }}>
+    <motion.div
+      ref={ref}
+      className={className}
+      style={style}
+      initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
+      animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.9, delay, ease: 'easeOut' }}
+    >
       {children}
     </motion.div>
   );
@@ -229,15 +233,17 @@ function SkillBar({ name, level, category }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
-    <div ref={ref} className="sm-card" style={{ padding: "16px 20px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+    <div ref={ref} className="sm-card" style={{ padding: '16px 20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
         <span style={{ fontSize: 14, fontWeight: 500 }}>{name}</span>
         <span style={{ fontSize: 12, fontWeight: 600, color: C.accent }}>{level}%</span>
       </div>
       <div className="sm-skill-track">
-        <div className="sm-skill-fill" style={{ width: inView ? `${level}%` : "0%" }} />
+        <div className="sm-skill-fill" style={{ width: inView ? `${level}%` : '0%' }} />
       </div>
-      <div style={{ marginTop: 8 }}><span className="sm-tag">{category}</span></div>
+      <div style={{ marginTop: 8 }}>
+        <span className="sm-tag">{category}</span>
+      </div>
     </div>
   );
 }
@@ -246,22 +252,22 @@ export default function SmokeMist() {
   const { portfolioData: data } = usePortfolio();
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [contactState, setContactState] = useState("idle");
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [contactState, setContactState] = useState('idle');
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
 
-  const email = data.socials?.email || data.personal?.email || "";
-  const resumeUrl = data.personal?.resumeUrl || "#contact";
-  const sections = ["About", "Skills", "Projects", "Experience", "Testimonials", "Contact"];
+  const email = data.socials?.email || data.personal?.email || '';
+  const resumeUrl = data.personal?.resumeUrl || '#contact';
+  const sections = ['About', 'Skills', 'Projects', 'Experience', 'Testimonials', 'Contact'];
 
   const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setContactState("sending");
-    setTimeout(() => setContactState("done"), 1500);
+    setContactState('sending');
+    setTimeout(() => setContactState('done'), 1500);
   };
 
   return (
@@ -279,29 +285,73 @@ export default function SmokeMist() {
 
       {/* ── Navbar ── */}
       <nav className="sm-nav">
-        <button type="button" className="sm-nav-link sm-serif" onClick={() => scrollTo("hero")} style={{ color: C.accent, fontSize: 13, letterSpacing: 4 }}>
-          {data.personal.name.split(" ")[0].toUpperCase()}
+        <button
+          type="button"
+          className="sm-nav-link sm-serif"
+          onClick={() => scrollTo('hero')}
+          style={{ color: C.accent, fontSize: 13, letterSpacing: 4 }}
+        >
+          {data.personal.name.split(' ')[0].toUpperCase()}
         </button>
         <div className="sm-nav-desktop">
           {sections.map((s) => (
-            <button type="button" key={s} className="sm-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
+            <button
+              type="button"
+              key={s}
+              className="sm-nav-link"
+              onClick={() => scrollTo(s.toLowerCase())}
+            >
+              {s}
+            </button>
           ))}
         </div>
-        <button type="button" className="sm-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
-          {[0,1,2].map(i => (
-            <div key={i} style={{ width: 22, height: 1.5, background: i === 1 ? C.accent : C.ghost, margin: "5px 0", transition: "all .3s",
-              transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(4px,5px)" : i === 2 ? "rotate(-45deg) translate(4px,-5px)" : "none") : "none",
-              opacity: menuOpen && i === 1 ? 0 : 1 }} />
+        <button
+          type="button"
+          className="sm-hamburger"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Menu"
+        >
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              style={{
+                width: 22,
+                height: 1.5,
+                background: i === 1 ? C.accent : C.ghost,
+                margin: '5px 0',
+                transition: 'all .3s',
+                transform: menuOpen
+                  ? i === 0
+                    ? 'rotate(45deg) translate(4px,5px)'
+                    : i === 2
+                      ? 'rotate(-45deg) translate(4px,-5px)'
+                      : 'none'
+                  : 'none',
+                opacity: menuOpen && i === 1 ? 0 : 1,
+              }}
+            />
           ))}
         </button>
       </nav>
 
       <AnimatePresence>
         {menuOpen && (
-          <motion.div className="sm-mobile-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+          <motion.div
+            className="sm-mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+          >
             {sections.map((s) => (
-              <button type="button" key={s} className="sm-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
-                <span style={{ color: C.accent, marginRight: 8 }}>~</span>{s}
+              <button
+                type="button"
+                key={s}
+                className="sm-nav-link"
+                onClick={() => scrollTo(s.toLowerCase())}
+                style={{ textAlign: 'left', padding: '10px 0' }}
+              >
+                <span style={{ color: C.accent, marginRight: 8 }}>~</span>
+                {s}
               </button>
             ))}
           </motion.div>
@@ -309,51 +359,145 @@ export default function SmokeMist() {
       </AnimatePresence>
 
       {/* ── HERO ── */}
-      <section id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: 64, position: "relative", zIndex: 1 }}>
-        <div className="sm-max" style={{ padding: "0 48px", width: "100%" }}>
-          <motion.div initial={{ opacity: 0, filter: "blur(16px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ duration: 1.2 }}>
+      <section
+        id="hero"
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          paddingTop: 64,
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
+        <div className="sm-max" style={{ padding: '0 48px', width: '100%' }}>
+          <motion.div
+            initial={{ opacity: 0, filter: 'blur(16px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            transition={{ duration: 1.2 }}
+          >
             <div className="sm-label">Emerging from the mist</div>
           </motion.div>
-          <motion.h1 className="sm-serif" initial={{ opacity: 0, y: 50, filter: "blur(12px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 1, delay: 0.2 }}
-            style={{ fontSize: "clamp(2.5rem,9vw,6rem)", fontWeight: 600, lineHeight: 1, marginBottom: 16, letterSpacing: 2,
-              textShadow: `0 0 40px ${C.accent}40` }}>
+          <motion.h1
+            className="sm-serif"
+            initial={{ opacity: 0, y: 50, filter: 'blur(12px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 1, delay: 0.2 }}
+            style={{
+              fontSize: 'clamp(2.5rem,9vw,6rem)',
+              fontWeight: 600,
+              lineHeight: 1,
+              marginBottom: 16,
+              letterSpacing: 2,
+              textShadow: `0 0 40px ${C.accent}40`,
+            }}
+          >
             {data.personal.name}
           </motion.h1>
-          <motion.p initial={{ opacity: 0, filter: "blur(8px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ duration: 0.8, delay: 0.4 }}
-            style={{ fontSize: "clamp(.9rem,2.5vw,1.2rem)", color: C.accent, fontWeight: 400, letterSpacing: 4, textTransform: "uppercase", marginBottom: 20 }}>
+          <motion.p
+            initial={{ opacity: 0, filter: 'blur(8px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            style={{
+              fontSize: 'clamp(.9rem,2.5vw,1.2rem)',
+              color: C.accent,
+              fontWeight: 400,
+              letterSpacing: 4,
+              textTransform: 'uppercase',
+              marginBottom: 20,
+            }}
+          >
             {data.personal.title}
           </motion.p>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.6 }}
-            style={{ fontSize: 15, lineHeight: 1.85, color: C.ghost, maxWidth: 520, marginBottom: 40 }}>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            style={{
+              fontSize: 15,
+              lineHeight: 1.85,
+              color: C.ghost,
+              maxWidth: 520,
+              marginBottom: 40,
+            }}
+          >
             {data.personal.bio}
           </motion.p>
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.8 }}
-            style={{ display: "flex", flexWrap: "wrap", gap: 16, marginBottom: 48 }}>
-            <button type="button" className="sm-btn sm-btn-ghost" onClick={() => scrollTo("projects")}>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 48 }}
+          >
+            <button
+              type="button"
+              className="sm-btn sm-btn-ghost"
+              onClick={() => scrollTo('projects')}
+            >
               <span>Through the Mist</span>
             </button>
-            <button type="button" className="sm-btn sm-btn-solid" onClick={() => scrollTo("contact")}>
+            <button
+              type="button"
+              className="sm-btn sm-btn-solid"
+              onClick={() => scrollTo('contact')}
+            >
               <span>Connect</span>
             </button>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
             <div className="sm-stats">
               {[
-                { val: `${data.stats.yearsExperience}+`, label: "Years" },
-                { val: `${data.stats.projectsCompleted}+`, label: "Projects" },
-                { val: `${data.stats.happyClients}+`, label: "Clients" },
+                { val: `${data.stats.yearsExperience}+`, label: 'Years' },
+                { val: `${data.stats.projectsCompleted}+`, label: 'Projects' },
+                { val: `${data.stats.happyClients}+`, label: 'Clients' },
               ].map(({ val, label }, i) => (
-                <div key={i} style={{ textAlign: "center", padding: "20px 8px", borderRight: i < 2 ? `1px solid ${C.border}` : "none" }}>
-                  <div className="sm-serif" style={{ fontSize: "clamp(1.4rem,4vw,2.2rem)", fontWeight: 600, color: C.accent }}>{val}</div>
-                  <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: 2, marginTop: 4 }}>{label}</div>
+                <div
+                  key={i}
+                  style={{
+                    textAlign: 'center',
+                    padding: '20px 8px',
+                    borderRight: i < 2 ? `1px solid ${C.border}` : 'none',
+                  }}
+                >
+                  <div
+                    className="sm-serif"
+                    style={{
+                      fontSize: 'clamp(1.4rem,4vw,2.2rem)',
+                      fontWeight: 600,
+                      color: C.accent,
+                    }}
+                  >
+                    {val}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: C.muted,
+                      textTransform: 'uppercase',
+                      letterSpacing: 2,
+                      marginTop: 4,
+                    }}
+                  >
+                    {label}
+                  </div>
                 </div>
               ))}
             </div>
           </motion.div>
         </div>
-        <motion.div animate={{ y: [0,8,0] }} transition={{ duration: 2, repeat: Infinity }}
-          style={{ position: "absolute", bottom: 28, left: "50%", transform: "translateX(-50%)", cursor: "pointer", zIndex: 2 }}
-          onClick={() => scrollTo("about")}>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          style={{
+            position: 'absolute',
+            bottom: 28,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            cursor: 'pointer',
+            zIndex: 2,
+          }}
+          onClick={() => scrollTo('about')}
+        >
           <ChevronDown size={20} style={{ color: C.accent, opacity: 0.5 }} />
         </motion.div>
       </section>
@@ -365,28 +509,82 @@ export default function SmokeMist() {
         <div className="sm-max">
           <FogReveal>
             <div className="sm-label">About</div>
-            <h2 className="sm-h2">Through The <span style={{ color: C.accent }}>Haze</span></h2>
+            <h2 className="sm-h2">
+              Through The <span style={{ color: C.accent }}>Haze</span>
+            </h2>
           </FogReveal>
           <div className="sm-about-grid">
             <FogReveal>
-              <div className="sm-avatar" style={{ animation: "sm-glow-pulse 4s ease-in-out infinite" }}>
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <div
+                className="sm-avatar"
+                style={{ animation: 'sm-glow-pulse 4s ease-in-out infinite' }}
+              >
+                <img
+                  src={data.personal.avatar}
+                  alt={data.personal.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
               </div>
-              <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
-                {data.socials.github   && <a href={data.socials.github}   className="sm-social" target="_blank" rel="noreferrer"><Github   size={18} /></a>}
-                {data.socials.linkedin && <a href={data.socials.linkedin} className="sm-social" target="_blank" rel="noreferrer"><Linkedin size={18} /></a>}
-                {data.socials.twitter  && <a href={data.socials.twitter}  className="sm-social" target="_blank" rel="noreferrer"><Twitter  size={18} /></a>}
-                {email                 && <a href={`mailto:${email}`}     className="sm-social"><Mail     size={18} /></a>}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 20 }}>
+                {data.socials.github && (
+                  <a
+                    href={data.socials.github}
+                    className="sm-social"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Github size={18} />
+                  </a>
+                )}
+                {data.socials.linkedin && (
+                  <a
+                    href={data.socials.linkedin}
+                    className="sm-social"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Linkedin size={18} />
+                  </a>
+                )}
+                {data.socials.twitter && (
+                  <a
+                    href={data.socials.twitter}
+                    className="sm-social"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Twitter size={18} />
+                  </a>
+                )}
+                {email && (
+                  <a href={`mailto:${email}`} className="sm-social">
+                    <Mail size={18} />
+                  </a>
+                )}
               </div>
             </FogReveal>
             <FogReveal delay={0.2}>
-              <p style={{ fontSize: 16, lineHeight: 1.9, color: C.ghost, marginBottom: 28 }}>{data.personal.bio}</p>
+              <p style={{ fontSize: 16, lineHeight: 1.9, color: C.ghost, marginBottom: 28 }}>
+                {data.personal.bio}
+              </p>
               {data.personal.tagline && (
-                <div style={{ padding: "16px 20px", borderRadius: 8, background: "rgba(126,184,218,.06)", borderLeft: `2px solid ${C.accent}`, marginBottom: 28 }}>
-                  <p style={{ fontSize: 15, fontStyle: "italic", color: C.accent }}>"{data.personal.tagline}"</p>
+                <div
+                  style={{
+                    padding: '16px 20px',
+                    borderRadius: 8,
+                    background: 'rgba(126,184,218,.06)',
+                    borderLeft: `2px solid ${C.accent}`,
+                    marginBottom: 28,
+                  }}
+                >
+                  <p style={{ fontSize: 15, fontStyle: 'italic', color: C.accent }}>
+                    "{data.personal.tagline}"
+                  </p>
                 </div>
               )}
-              <a href={resumeUrl} className="sm-btn sm-btn-ghost"><span>Download CV</span></a>
+              <a href={resumeUrl} className="sm-btn sm-btn-ghost">
+                <span>Download CV</span>
+              </a>
             </FogReveal>
           </div>
         </div>
@@ -395,15 +593,23 @@ export default function SmokeMist() {
       <hr className="sm-divider" />
 
       {/* ── SKILLS ── */}
-      <section id="skills" className="sm-sec" style={{ background: "rgba(13,18,32,.4)" }}>
+      <section id="skills" className="sm-sec" style={{ background: 'rgba(13,18,32,.4)' }}>
         <div className="sm-max">
           <FogReveal>
             <div className="sm-label">Skills</div>
-            <h2 className="sm-h2">Emerging <span style={{ color: C.accent }}>Abilities</span></h2>
+            <h2 className="sm-h2">
+              Emerging <span style={{ color: C.accent }}>Abilities</span>
+            </h2>
           </FogReveal>
           <div className="sm-skills-grid">
             {data.skills.map((skill, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -16, filter: "blur(4px)" }} whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }} viewport={{ once: true }} transition={{ delay: i * 0.06, duration: 0.7 }}>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -16, filter: 'blur(4px)' }}
+                whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06, duration: 0.7 }}
+              >
                 <SkillBar {...skill} />
               </motion.div>
             ))}
@@ -418,24 +624,72 @@ export default function SmokeMist() {
         <div className="sm-max">
           <FogReveal>
             <div className="sm-label">Projects</div>
-            <h2 className="sm-h2">Visions from the <span style={{ color: C.accent }}>Fog</span></h2>
+            <h2 className="sm-h2">
+              Visions from the <span style={{ color: C.accent }}>Fog</span>
+            </h2>
           </FogReveal>
           <div className="sm-projects-grid">
             {data.projects.map((proj, i) => (
-              <motion.div key={i} className="sm-card" initial={{ opacity: 0, y: 28, filter: "blur(6px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.8 }}>
-                <div style={{ position: "relative", overflow: "hidden" }}>
+              <motion.div
+                key={i}
+                className="sm-card"
+                initial={{ opacity: 0, y: 28, filter: 'blur(6px)' }}
+                whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.8 }}
+              >
+                <div style={{ position: 'relative', overflow: 'hidden' }}>
                   <img src={proj.image} alt={proj.title} className="sm-proj-img" />
-                  <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg,transparent 40%,${C.bg}DD 100%)` }} />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: `linear-gradient(180deg,transparent 40%,${C.bg}DD 100%)`,
+                    }}
+                  />
                 </div>
-                <div style={{ padding: "20px 22px 24px" }}>
-                  <h3 className="sm-serif" style={{ fontSize: 17, fontWeight: 600, marginBottom: 8, color: C.text }}>{proj.title}</h3>
-                  <p style={{ fontSize: 13, lineHeight: 1.65, color: C.muted, marginBottom: 16 }}>{proj.description}</p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 18 }}>
-                    {proj.techStack.map((t, j) => <span key={j} className="sm-tag">{t}</span>)}
+                <div style={{ padding: '20px 22px 24px' }}>
+                  <h3
+                    className="sm-serif"
+                    style={{ fontSize: 17, fontWeight: 600, marginBottom: 8, color: C.text }}
+                  >
+                    {proj.title}
+                  </h3>
+                  <p style={{ fontSize: 13, lineHeight: 1.65, color: C.muted, marginBottom: 16 }}>
+                    {proj.description}
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 18 }}>
+                    {proj.techStack.map((t, j) => (
+                      <span key={j} className="sm-tag">
+                        {t}
+                      </span>
+                    ))}
                   </div>
-                  <div style={{ display: "flex", gap: 10 }}>
-                    {proj.liveUrl   && <a href={proj.liveUrl}   target="_blank" rel="noreferrer" className="sm-btn sm-btn-ghost"  style={{ fontSize: 10, padding: "8px 14px" }}><ExternalLink size={11} /><span>Live</span></a>}
-                    {proj.githubUrl && <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="sm-btn sm-btn-solid" style={{ fontSize: 10, padding: "8px 14px" }}><Github       size={11} /><span>Code</span></a>}
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    {proj.liveUrl && (
+                      <a
+                        href={proj.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="sm-btn sm-btn-ghost"
+                        style={{ fontSize: 10, padding: '8px 14px' }}
+                      >
+                        <ExternalLink size={11} />
+                        <span>Live</span>
+                      </a>
+                    )}
+                    {proj.githubUrl && (
+                      <a
+                        href={proj.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="sm-btn sm-btn-solid"
+                        style={{ fontSize: 10, padding: '8px 14px' }}
+                      >
+                        <Github size={11} />
+                        <span>Code</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -447,24 +701,56 @@ export default function SmokeMist() {
       <hr className="sm-divider" />
 
       {/* ── EXPERIENCE ── */}
-      <section id="experience" className="sm-sec" style={{ background: "rgba(13,18,32,.4)" }}>
+      <section id="experience" className="sm-sec" style={{ background: 'rgba(13,18,32,.4)' }}>
         <div className="sm-max">
           <FogReveal>
             <div className="sm-label">Experience</div>
-            <h2 className="sm-h2">Paths Through the <span style={{ color: C.accent }}>Mist</span></h2>
+            <h2 className="sm-h2">
+              Paths Through the <span style={{ color: C.accent }}>Mist</span>
+            </h2>
           </FogReveal>
           <div style={{ maxWidth: 720 }}>
             <div className="sm-timeline">
               {data.experience.map((exp, i) => (
-                <motion.div key={i} className="sm-timeline-item" initial={{ opacity: 0, x: -20, filter: "blur(5px)" }} whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }} viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.8 }}>
+                <motion.div
+                  key={i}
+                  className="sm-timeline-item"
+                  initial={{ opacity: 0, x: -20, filter: 'blur(5px)' }}
+                  whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.12, duration: 0.8 }}
+                >
                   <div className="sm-timeline-dot" />
-                  <div className="sm-card" style={{ padding: "22px 26px" }}>
-                    <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, color: C.accent, marginBottom: 8, textTransform: "uppercase" }}>{exp.period}</div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "baseline", marginBottom: 10 }}>
-                      <h3 className="sm-serif" style={{ fontSize: 17, fontWeight: 600 }}>{exp.role}</h3>
+                  <div className="sm-card" style={{ padding: '22px 26px' }}>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 600,
+                        letterSpacing: 2,
+                        color: C.accent,
+                        marginBottom: 8,
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      {exp.period}
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 8,
+                        alignItems: 'baseline',
+                        marginBottom: 10,
+                      }}
+                    >
+                      <h3 className="sm-serif" style={{ fontSize: 17, fontWeight: 600 }}>
+                        {exp.role}
+                      </h3>
                       <span style={{ fontSize: 13, color: C.muted }}>@ {exp.company}</span>
                     </div>
-                    <p style={{ fontSize: 14, lineHeight: 1.7, color: C.muted }}>{exp.description}</p>
+                    <p style={{ fontSize: 14, lineHeight: 1.7, color: C.muted }}>
+                      {exp.description}
+                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -480,16 +766,57 @@ export default function SmokeMist() {
         <div className="sm-max">
           <FogReveal>
             <div className="sm-label">Testimonials</div>
-            <h2 className="sm-h2">Voices in the <span style={{ color: C.accent }}>Fog</span></h2>
+            <h2 className="sm-h2">
+              Voices in the <span style={{ color: C.accent }}>Fog</span>
+            </h2>
           </FogReveal>
           <div className="sm-testi-grid">
             {data.testimonials.map((t, i) => (
-              <motion.div key={i} className="sm-card" initial={{ opacity: 0, y: 20, filter: "blur(6px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.9 }}
-                style={{ padding: 28 }}>
-                <div style={{ fontSize: 42, lineHeight: 1, color: C.accent, opacity: 0.15, fontFamily: "'Cinzel',serif", marginBottom: -8 }}>&#8220;</div>
-                <p style={{ fontSize: 14, lineHeight: 1.8, color: C.ghost, marginBottom: 20, fontStyle: "italic" }}>{t.text}</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `1px solid ${C.border}`, filter: "saturate(.6)" }} />
+              <motion.div
+                key={i}
+                className="sm-card"
+                initial={{ opacity: 0, y: 20, filter: 'blur(6px)' }}
+                whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12, duration: 0.9 }}
+                style={{ padding: 28 }}
+              >
+                <div
+                  style={{
+                    fontSize: 42,
+                    lineHeight: 1,
+                    color: C.accent,
+                    opacity: 0.15,
+                    fontFamily: "'Cinzel',serif",
+                    marginBottom: -8,
+                  }}
+                >
+                  &#8220;
+                </div>
+                <p
+                  style={{
+                    fontSize: 14,
+                    lineHeight: 1.8,
+                    color: C.ghost,
+                    marginBottom: 20,
+                    fontStyle: 'italic',
+                  }}
+                >
+                  {t.text}
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <img
+                    src={t.avatar}
+                    alt={t.name}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: `1px solid ${C.border}`,
+                      filter: 'saturate(.6)',
+                    }}
+                  />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>
@@ -504,46 +831,170 @@ export default function SmokeMist() {
       <hr className="sm-divider" />
 
       {/* ── CONTACT ── */}
-      <section id="contact" className="sm-sec" style={{ background: "rgba(13,18,32,.4)" }}>
+      <section id="contact" className="sm-sec" style={{ background: 'rgba(13,18,32,.4)' }}>
         <div className="sm-max">
           <FogReveal>
             <div className="sm-label">Contact</div>
-            <h2 className="sm-h2">Find Me Through the <span style={{ color: C.accent }}>Mist</span></h2>
+            <h2 className="sm-h2">
+              Find Me Through the <span style={{ color: C.accent }}>Mist</span>
+            </h2>
           </FogReveal>
           <div className="sm-contact-grid">
             <FogReveal>
               <p style={{ fontSize: 15, lineHeight: 1.85, color: C.ghost, marginBottom: 32 }}>
                 Like a voice calling through fog, reach out — I'll find my way to you.
               </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {email && (
-                  <a href={`mailto:${email}`} style={{ display: "flex", alignItems: "center", gap: 14, color: C.text, textDecoration: "none", fontSize: 14 }}>
-                    <div style={{ width: 44, height: 44, borderRadius: 10, background: `rgba(126,184,218,.1)`, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <a
+                    href={`mailto:${email}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 14,
+                      color: C.text,
+                      textDecoration: 'none',
+                      fontSize: 14,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 10,
+                        background: `rgba(126,184,218,.1)`,
+                        border: `1px solid ${C.border}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
                       <Mail size={18} color={C.accent} />
                     </div>
                     {email}
                   </a>
                 )}
-                {data.socials.github && <a href={data.socials.github} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 14, color: C.text, textDecoration: "none", fontSize: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 10, background: `rgba(126,184,218,.08)`, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}><Github size={18} color={C.accent} /></div>GitHub</a>}
-                {data.socials.linkedin && <a href={data.socials.linkedin} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 14, color: C.text, textDecoration: "none", fontSize: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 10, background: `rgba(126,184,218,.08)`, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}><Linkedin size={18} color={C.accent} /></div>LinkedIn</a>}
+                {data.socials.github && (
+                  <a
+                    href={data.socials.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 14,
+                      color: C.text,
+                      textDecoration: 'none',
+                      fontSize: 14,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 10,
+                        background: `rgba(126,184,218,.08)`,
+                        border: `1px solid ${C.border}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Github size={18} color={C.accent} />
+                    </div>
+                    GitHub
+                  </a>
+                )}
+                {data.socials.linkedin && (
+                  <a
+                    href={data.socials.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 14,
+                      color: C.text,
+                      textDecoration: 'none',
+                      fontSize: 14,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 10,
+                        background: `rgba(126,184,218,.08)`,
+                        border: `1px solid ${C.border}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Linkedin size={18} color={C.accent} />
+                    </div>
+                    LinkedIn
+                  </a>
+                )}
               </div>
             </FogReveal>
             <FogReveal delay={0.2}>
-              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <input className="sm-input" placeholder="Your Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
-                <input className="sm-input" type="email" placeholder="Your Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
-                <textarea className="sm-input" placeholder="Your Message" rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required style={{ resize: "vertical" }} />
+              <form
+                onSubmit={handleSubmit}
+                style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
+              >
+                <input
+                  className="sm-input"
+                  placeholder="Your Name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                />
+                <input
+                  className="sm-input"
+                  type="email"
+                  placeholder="Your Email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  required
+                />
+                <textarea
+                  className="sm-input"
+                  placeholder="Your Message"
+                  rows={5}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  required
+                  style={{ resize: 'vertical' }}
+                />
                 <AnimatePresence mode="wait">
-                  {contactState === "done" ? (
-                    <motion.div key="done" initial={{ opacity: 0, filter: "blur(6px)" }} animate={{ opacity: 1, filter: "blur(0px)" }}
-                      style={{ padding: "16px", borderRadius: 8, background: "rgba(126,184,218,.08)", border: `1px solid ${C.border}`, textAlign: "center" }}>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: C.accent, letterSpacing: 2 }}>✓ Message Received</span>
+                  {contactState === 'done' ? (
+                    <motion.div
+                      key="done"
+                      initial={{ opacity: 0, filter: 'blur(6px)' }}
+                      animate={{ opacity: 1, filter: 'blur(0px)' }}
+                      style={{
+                        padding: '16px',
+                        borderRadius: 8,
+                        background: 'rgba(126,184,218,.08)',
+                        border: `1px solid ${C.border}`,
+                        textAlign: 'center',
+                      }}
+                    >
+                      <span
+                        style={{ fontSize: 13, fontWeight: 600, color: C.accent, letterSpacing: 2 }}
+                      >
+                        ✓ Message Received
+                      </span>
                     </motion.div>
                   ) : (
-                    <button type="submit" className="sm-btn sm-btn-ghost" disabled={contactState === "sending"} style={{ justifyContent: "center" }}>
-                      <span>{contactState === "sending" ? "Sending..." : "Send Message"}</span>
+                    <button
+                      type="submit"
+                      className="sm-btn sm-btn-ghost"
+                      disabled={contactState === 'sending'}
+                      style={{ justifyContent: 'center' }}
+                    >
+                      <span>{contactState === 'sending' ? 'Sending...' : 'Send Message'}</span>
                     </button>
                   )}
                 </AnimatePresence>
@@ -554,14 +1005,38 @@ export default function SmokeMist() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ position: "relative", zIndex: 1, padding: "28px 48px", borderTop: `1px solid ${C.border}`, display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+      <footer
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          padding: '28px 48px',
+          borderTop: `1px solid ${C.border}`,
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: 16,
+        }}
+      >
         <span className="sm-serif" style={{ fontSize: 12, color: C.muted, letterSpacing: 3 }}>
           © {new Date().getFullYear()} {data.personal.name.toUpperCase()}
         </span>
-        <div style={{ display: "flex", gap: 10 }}>
-          {data.socials.github   && <a href={data.socials.github}   className="sm-social" target="_blank" rel="noreferrer"><Github   size={16} /></a>}
-          {data.socials.linkedin && <a href={data.socials.linkedin} className="sm-social" target="_blank" rel="noreferrer"><Linkedin size={16} /></a>}
-          {data.socials.twitter  && <a href={data.socials.twitter}  className="sm-social" target="_blank" rel="noreferrer"><Twitter  size={16} /></a>}
+        <div style={{ display: 'flex', gap: 10 }}>
+          {data.socials.github && (
+            <a href={data.socials.github} className="sm-social" target="_blank" rel="noreferrer">
+              <Github size={16} />
+            </a>
+          )}
+          {data.socials.linkedin && (
+            <a href={data.socials.linkedin} className="sm-social" target="_blank" rel="noreferrer">
+              <Linkedin size={16} />
+            </a>
+          )}
+          {data.socials.twitter && (
+            <a href={data.socials.twitter} className="sm-social" target="_blank" rel="noreferrer">
+              <Twitter size={16} />
+            </a>
+          )}
         </div>
       </footer>
     </div>

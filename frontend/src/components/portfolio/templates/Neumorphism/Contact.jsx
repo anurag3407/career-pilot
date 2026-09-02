@@ -10,7 +10,7 @@ export default function Contact({ personal, socials }) {
         <h2 className="text-4xl font-extrabold mb-12 text-center text-gray-700 tracking-wide">
           Get In Touch
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* Contact Info */}
           <div className="p-8 rounded-3xl bg-gray-100 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]">
@@ -23,7 +23,10 @@ export default function Contact({ personal, socials }) {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 font-semibold">Email</p>
-                    <a href={`mailto:${personal.email}`} className="text-gray-800 font-medium hover:text-blue-600 transition-colors">
+                    <a
+                      href={`mailto:${personal.email}`}
+                      className="text-gray-800 font-medium hover:text-blue-600 transition-colors"
+                    >
                       {personal.email}
                     </a>
                   </div>

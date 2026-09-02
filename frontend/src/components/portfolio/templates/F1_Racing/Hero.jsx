@@ -1,85 +1,94 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Gauge, 
-  Zap, 
-  Flag, 
-  Timer, 
-  Cpu, 
-  Globe, 
-  Award, 
-  TrendingUp, 
-  ChevronsRight, 
-  RotateCcw, 
-  Github, 
-  Linkedin, 
-  Twitter, 
+import {
+  Gauge,
+  Zap,
+  Flag,
+  Timer,
+  Cpu,
+  Globe,
+  Award,
+  TrendingUp,
+  ChevronsRight,
+  RotateCcw,
+  Github,
+  Linkedin,
+  Twitter,
   ExternalLink,
-  Flame
+  Flame,
 } from 'lucide-react';
 
 export default function F1Hero({ data }) {
   // Default stunning F1 Racing template mock data
   const defaultData = {
     personalInfo: {
-      name: "Alex Verstappen",
-      title: "Lead Full-Stack Developer & Performance Architect",
-      location: "Monaco / Remote",
+      name: 'Alex Verstappen',
+      title: 'Lead Full-Stack Developer & Performance Architect',
+      location: 'Monaco / Remote',
       avatar: null,
-      bio: "Engineering high-performance web systems with sub-millisecond response times. Specializing in React, Node.js, Go, and high-octane system architecture.",
+      bio: 'Engineering high-performance web systems with sub-millisecond response times. Specializing in React, Node.js, Go, and high-octane system architecture.',
       socials: {
-        github: "https://github.com",
-        linkedin: "https://linkedin.com",
-        twitter: "https://twitter.com"
-      }
+        github: 'https://github.com',
+        linkedin: 'https://linkedin.com',
+        twitter: 'https://twitter.com',
+      },
     },
     stats: {
-      driverNumber: "33",
-      team: "Red Bull Technical Labs",
-      experience: "8 Yrs",
-      podiums: "42 Projects",
-      fastestLaps: "99.9% Uptime",
-      status: "ACTIVE CONTRACT"
+      driverNumber: '33',
+      team: 'Red Bull Technical Labs',
+      experience: '8 Yrs',
+      podiums: '42 Projects',
+      fastestLaps: '99.9% Uptime',
+      status: 'ACTIVE CONTRACT',
     },
     skills: [
-      { name: "React / Next.js", rating: 98, type: "Engine" },
-      { name: "Node.js / Go", rating: 95, type: "Turbocharger" },
-      { name: "Cloud & Devops", rating: 92, type: "Aerodynamics" },
-      { name: "DB Performance", rating: 96, type: "Tires" }
-    ]
+      { name: 'React / Next.js', rating: 98, type: 'Engine' },
+      { name: 'Node.js / Go', rating: 95, type: 'Turbocharger' },
+      { name: 'Cloud & Devops', rating: 92, type: 'Aerodynamics' },
+      { name: 'DB Performance', rating: 96, type: 'Tires' },
+    ],
   };
 
   const profileData = data?.personal || data?.personalInfo || defaultData.personalInfo;
   // Merge socials if they are separate, without mutating original object
   const profile = {
     ...profileData,
-    socials: data?.socials ? { ...(profileData.socials || {}), ...data.socials } : profileData.socials
+    socials: data?.socials
+      ? { ...(profileData.socials || {}), ...data.socials }
+      : profileData.socials,
   };
 
   const stats = data?.stats || {
-    driverNumber: "33",
-    team: data?.experience?.[0]?.company || "Freelance",
-    experience: data?.experience ? `${data.experience.length} Roles` : "8 Yrs",
-    podiums: data?.projects ? `${data.projects.length} Projects` : "42 Projects",
-    fastestLaps: "99.9% Uptime",
-    status: "ACTIVE"
+    driverNumber: '33',
+    team: data?.experience?.[0]?.company || 'Freelance',
+    experience: data?.experience ? `${data.experience.length} Roles` : '8 Yrs',
+    podiums: data?.projects ? `${data.projects.length} Projects` : '42 Projects',
+    fastestLaps: '99.9% Uptime',
+    status: 'ACTIVE',
   };
 
   let skills = data?.skills || defaultData.skills;
   if (skills && skills.length > 0) {
     if (typeof skills === 'string') {
-      skills = skills.split(',').map(s => s.trim()).filter(Boolean);
+      skills = skills
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
     }
     if (Array.isArray(skills)) {
       if (typeof skills[0] === 'string') {
-        skills = skills.slice(0, 5).map(s => ({ name: s, rating: 90, type: "Core" }));
+        skills = skills.slice(0, 5).map((s) => ({ name: s, rating: 90, type: 'Core' }));
       } else if (skills[0] && typeof skills[0] === 'object' && !skills[0].rating) {
-        skills = skills.slice(0, 5).map(s => {
+        skills = skills.slice(0, 5).map((s) => {
           let r = 85;
           if (s?.level?.toLowerCase?.()?.includes('expert')) r = 98;
           if (s?.level?.toLowerCase?.()?.includes('advanced')) r = 90;
           if (s?.level?.toLowerCase?.()?.includes('intermediate')) r = 75;
-          return { name: s?.name || s?.skill || s?.keyword || "Skill", rating: r, type: s?.category || "Engine" };
+          return {
+            name: s?.name || s?.skill || s?.keyword || 'Skill',
+            rating: r,
+            type: s?.category || 'Engine',
+          };
         });
       }
     }
@@ -116,11 +125,11 @@ export default function F1Hero({ data }) {
   // Trigger grid lights sequence
   useEffect(() => {
     if (isRaceStarted) return;
-    
+
     let interval;
     if (lightCount < 5) {
       interval = setTimeout(() => {
-        setLightCount(prev => prev + 1);
+        setLightCount((prev) => prev + 1);
       }, 800);
     } else {
       // 5 lights are ON, wait random time between 1s and 2s, then go OUT
@@ -171,7 +180,7 @@ export default function F1Hero({ data }) {
       // Simulate RPM and Gear shifting
       const calculatedGear = Math.min(8, Math.floor(currentSpeed / 40) + 1);
       setGear(calculatedGear);
-      setRpm(Math.floor((currentSpeed % 40) / 40 * 5000) + 7000);
+      setRpm(Math.floor(((currentSpeed % 40) / 40) * 5000) + 7000);
       if (currentSpeed > 280) setDrsActive(true);
     }, 50);
   };
@@ -179,18 +188,18 @@ export default function F1Hero({ data }) {
   // Telemetry updates based on mouse movement/hover on right panel
   const handleTelemetryHover = (e) => {
     if (!isRaceStarted) return;
-    
+
     // Simulate high-performance action on telemetry card hover
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left; // x position within element
-    const y = e.clientY - rect.top;  // y position within element
-    
+    const y = e.clientY - rect.top; // y position within element
+
     // Calculate values based on coordinates
     const speedFactor = (x / rect.width) * 100 + (y / rect.height) * 100;
     const targetSpeed = Math.min(345, Math.floor(180 + speedFactor * 0.8));
     const targetGear = Math.min(8, Math.floor(targetSpeed / 42) + 1);
     const targetRpm = Math.floor(8000 + (speedFactor % 50) * 80);
-    
+
     setSpeed(targetSpeed);
     setGear(targetGear);
     setRpm(targetRpm);
@@ -212,7 +221,7 @@ export default function F1Hero({ data }) {
     let intervalId;
     if (isTimerRunning && isRaceStarted) {
       const startTime = Date.now() - (lapTime.min * 60000 + lapTime.sec * 1000 + lapTime.ms);
-      
+
       intervalId = setInterval(() => {
         const timeDiff = Date.now() - startTime;
         const min = Math.floor(timeDiff / 60000);
@@ -228,10 +237,10 @@ export default function F1Hero({ data }) {
     <section className="relative min-h-screen bg-[#070709] text-white font-sans overflow-hidden flex flex-col justify-between selection:bg-[#E10600] selection:text-white pb-10">
       {/* Background Decorative Elements */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-red-950/20 via-neutral-950 to-neutral-950 -z-10" />
-      
+
       {/* Tech Grid Pattern overlay to mimic carbon fiber / race track texture */}
       <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none -z-10" />
-      
+
       {/* Racing Red Speed Trails */}
       <div className="absolute top-[30%] -left-64 w-[600px] h-[300px] bg-[#E10600]/5 blur-[150px] rounded-full pointer-events-none -z-10 transform -rotate-12" />
       <div className="absolute bottom-[10%] -right-64 w-[600px] h-[300px] bg-red-600/5 blur-[180px] rounded-full pointer-events-none -z-10" />
@@ -270,7 +279,7 @@ export default function F1Hero({ data }) {
           <div className="h-8 flex items-center pl-2 border-l border-neutral-800">
             <AnimatePresence mode="wait">
               {!lightsOut ? (
-                <motion.span 
+                <motion.span
                   key="waiting"
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -280,12 +289,12 @@ export default function F1Hero({ data }) {
                   PREPARING LAP {lightCount}/5
                 </motion.span>
               ) : (
-                <motion.span 
+                <motion.span
                   key="lightsout"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 15 }}
                   className="text-xs font-mono text-[#00ff66] font-extrabold tracking-widest uppercase pl-4 flex items-center gap-1.5"
                 >
                   <Flame className="w-3.5 h-3.5 animate-bounce text-[#00ff66]" />
@@ -297,8 +306,9 @@ export default function F1Hero({ data }) {
 
           {/* Reset button inside grid light panel */}
           {isRaceStarted && (
-            <button type="button" 
-              onClick={restartSequence} 
+            <button
+              type="button"
+              onClick={restartSequence}
               className="ml-4 p-1.5 rounded-full hover:bg-neutral-800 border border-neutral-800 text-neutral-400 hover:text-white transition-colors duration-150 group"
               title="Restart Lights Sequence"
             >
@@ -311,10 +321,8 @@ export default function F1Hero({ data }) {
       {/* --- HERO CONTENT MAIN CONTAINER --- */}
       <div className="container mx-auto px-4 mt-8 lg:mt-16 flex-grow flex items-center">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-center">
-          
           {/* LEFT SIDE: PERSONAL PROFILE AND HEADING */}
           <div className="lg:col-span-7 flex flex-col justify-center space-y-6 lg:space-y-8 z-10">
-            
             {/* Speed Badge */}
             <div className="inline-flex items-center self-start bg-neutral-900/80 backdrop-blur-sm border-l-4 border-[#E10600] px-3 py-1.5 text-xs font-mono text-neutral-300 gap-2 uppercase tracking-widest rounded-r-md">
               <Zap className="w-3.5 h-3.5 text-[#E10600] animate-pulse" />
@@ -333,7 +341,7 @@ export default function F1Hero({ data }) {
                   IN EVERY LINE OF CODE.
                 </span>
               </h1>
-              
+
               {/* Slanted racing stripes graphic element */}
               <div className="flex gap-1.5 py-2">
                 <div className="w-16 h-1 bg-[#E10600] transform -skew-x-12" />
@@ -379,7 +387,7 @@ export default function F1Hero({ data }) {
             {/* CALL TO ACTIONS: Custom Racing Triggers */}
             <div className="flex flex-wrap gap-4 pt-2">
               {/* PRIMARY ACTION: "Start Lap" / Hire Me */}
-              <a 
+              <a
                 href="#contact"
                 className="relative group overflow-hidden bg-[#E10600] text-white px-8 py-4 font-mono font-extrabold uppercase tracking-widest text-sm rounded-none border border-[#E10600] transition-all transform hover:-translate-y-0.5 active:translate-y-0 shadow-lg shadow-[#E10600]/25 transform -skew-x-12"
               >
@@ -393,7 +401,7 @@ export default function F1Hero({ data }) {
               </a>
 
               {/* SECONDARY ACTION: Telemetry Report / View Work */}
-              <a 
+              <a
                 href="#projects"
                 className="relative group overflow-hidden bg-transparent hover:bg-white/5 text-white px-8 py-4 font-mono font-bold uppercase tracking-widest text-sm rounded-none border border-neutral-700 hover:border-white transition-all transform hover:-translate-y-0.5 active:translate-y-0 transform -skew-x-12"
               >
@@ -410,29 +418,43 @@ export default function F1Hero({ data }) {
                 <span className="uppercase tracking-wider">Pit Lane Links:</span>
                 <div className="flex gap-4">
                   {profile.socials?.github && (
-                    <a href={profile.socials.github} target="_blank" rel="noopener noreferrer" className="hover:text-white text-neutral-400 transition-colors">
+                    <a
+                      href={profile.socials.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white text-neutral-400 transition-colors"
+                    >
                       <Github className="w-4.5 h-4.5" />
                     </a>
                   )}
                   {profile.socials?.linkedin && (
-                    <a href={profile.socials.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-white text-neutral-400 transition-colors">
+                    <a
+                      href={profile.socials.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white text-neutral-400 transition-colors"
+                    >
                       <Linkedin className="w-4.5 h-4.5" />
                     </a>
                   )}
                   {profile.socials?.twitter && (
-                    <a href={profile.socials.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-white text-neutral-400 transition-colors">
+                    <a
+                      href={profile.socials.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white text-neutral-400 transition-colors"
+                    >
                       <Twitter className="w-4.5 h-4.5" />
                     </a>
                   )}
                 </div>
               </div>
             )}
-
           </div>
 
           {/* RIGHT SIDE: TELEMETRY HUD / COCKPIT INTERACTIVE DIALS */}
           <div className="lg:col-span-5 z-10 w-full">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
@@ -460,9 +482,7 @@ export default function F1Hero({ data }) {
                   <h2 className="text-xl font-bold font-mono tracking-tight text-white uppercase mt-1">
                     {profile.name}
                   </h2>
-                  <p className="text-xs font-mono text-neutral-400">
-                    {stats.team}
-                  </p>
+                  <p className="text-xs font-mono text-neutral-400">{stats.team}</p>
                 </div>
 
                 {/* Big Driver Number */}
@@ -478,7 +498,6 @@ export default function F1Hero({ data }) {
 
               {/* Interactive Telemetry HUD Grid */}
               <div className="grid grid-cols-2 gap-4">
-                
                 {/* Telemetry Gauge: Gear */}
                 <div className="bg-neutral-950/60 border border-neutral-900 rounded-xl p-4 flex flex-col justify-between h-32 relative overflow-hidden group">
                   <div className="text-[10px] font-mono text-neutral-500 uppercase tracking-wider flex justify-between">
@@ -499,7 +518,9 @@ export default function F1Hero({ data }) {
                 <div className="bg-neutral-950/60 border border-neutral-900 rounded-xl p-4 flex flex-col justify-between h-32 relative overflow-hidden group">
                   {/* DRS Status */}
                   <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold tracking-widest flex items-center gap-1">
-                    <span className={`w-1.5 h-1.5 rounded-full ${drsActive ? 'bg-[#00ff66] animate-ping' : 'bg-neutral-600'}`} />
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${drsActive ? 'bg-[#00ff66] animate-ping' : 'bg-neutral-600'}`}
+                    />
                     <span className={drsActive ? 'text-[#00ff66]' : 'text-neutral-500'}>DRS</span>
                   </div>
 
@@ -514,37 +535,40 @@ export default function F1Hero({ data }) {
                       KM / H
                     </span>
                   </div>
-                  
+
                   {/* Speed Bar Visualizer */}
                   <div className="w-full bg-neutral-900 h-1 rounded-full overflow-hidden">
-                    <div 
-                      className="bg-gradient-to-r from-red-600 to-[#E10600] h-full transition-all duration-150" 
+                    <div
+                      className="bg-gradient-to-r from-red-600 to-[#E10600] h-full transition-all duration-150"
                       style={{ width: `${(speed / 345) * 100}%` }}
                     />
                   </div>
                 </div>
-
               </div>
 
               {/* Dynamic RPM Engine Band */}
               <div className="bg-neutral-950/60 border border-neutral-900 rounded-xl p-4 space-y-2.5">
                 <div className="flex justify-between items-center text-[10px] font-mono text-neutral-500">
                   <span className="uppercase tracking-wider">ENGINE TELEMETRY (RPM)</span>
-                  <span className={rpm > 11000 ? 'text-[#E10600] font-bold animate-pulse' : 'text-neutral-300'}>
+                  <span
+                    className={
+                      rpm > 11000 ? 'text-[#E10600] font-bold animate-pulse' : 'text-neutral-300'
+                    }
+                  >
                     {isRaceStarted ? `${rpm.toLocaleString()} RPM` : '0 RPM'}
                   </span>
                 </div>
-                
+
                 {/* RPM LED Bar */}
                 <div className="flex gap-1">
                   {Array.from({ length: 20 }).map((_, index) => {
                     const threshold = (index / 20) * 13500;
                     const isActive = isRaceStarted && rpm >= threshold;
-                    
+
                     // F1 LED pattern: Green -> Red -> Blue
                     let activeColorClass = 'bg-[#00ff66] shadow-[0_0_8px_#00ff66]';
                     let idleColorClass = 'bg-[#00ff66]/10 border border-neutral-900';
-                    
+
                     if (index >= 14) {
                       activeColorClass = 'bg-blue-500 shadow-[0_0_8px_#3b82f6]';
                       idleColorClass = 'bg-blue-500/10 border border-neutral-900';
@@ -554,8 +578,8 @@ export default function F1Hero({ data }) {
                     }
 
                     return (
-                      <div 
-                        key={index} 
+                      <div
+                        key={index}
                         className={`h-4 flex-grow rounded-sm transition-all duration-100 ${isActive ? activeColorClass : idleColorClass}`}
                       />
                     );
@@ -574,18 +598,17 @@ export default function F1Hero({ data }) {
                       LAP TIMING
                     </div>
                     <div className="text-xl font-bold font-mono tracking-widest text-white">
-                      {isRaceStarted ? (
-                        `${String(lapTime.min).padStart(2, '0')}:${String(lapTime.sec).padStart(2, '0')}.${String(Math.floor(lapTime.ms / 10)).padStart(2, '0')}`
-                      ) : (
-                        '00:00.00'
-                      )}
+                      {isRaceStarted
+                        ? `${String(lapTime.min).padStart(2, '0')}:${String(lapTime.sec).padStart(2, '0')}.${String(Math.floor(lapTime.ms / 10)).padStart(2, '0')}`
+                        : '00:00.00'}
                     </div>
                   </div>
                 </div>
 
                 {/* DRS and Control Buttons */}
-                <button type="button" 
-                  onClick={() => setIsTimerRunning(prev => !prev)}
+                <button
+                  type="button"
+                  onClick={() => setIsTimerRunning((prev) => !prev)}
                   className="px-3 py-1.5 border border-neutral-800 hover:border-neutral-600 bg-neutral-900 text-[10px] font-mono font-bold tracking-wider rounded-md transition-colors hover:text-white uppercase"
                   disabled={!isRaceStarted}
                 >
@@ -598,7 +621,7 @@ export default function F1Hero({ data }) {
                 <div className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
                   CAR SPECS & POWER UNITS
                 </div>
-                
+
                 <div className="space-y-2">
                   {skills.map((skill, index) => (
                     <div key={index} className="space-y-1">
@@ -613,10 +636,10 @@ export default function F1Hero({ data }) {
                       </div>
                       {/* Rating Progress Track */}
                       <div className="w-full bg-neutral-950 border border-neutral-900 h-1.5 rounded-full overflow-hidden">
-                        <motion.div 
+                        <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: isRaceStarted ? `${skill.rating}%` : '0%' }}
-                          transition={{ duration: 1.5, ease: "easeOut", delay: index * 0.1 }}
+                          transition={{ duration: 1.5, ease: 'easeOut', delay: index * 0.1 }}
                           className="bg-gradient-to-r from-red-600 via-[#E10600] to-neutral-200 h-full"
                         />
                       </div>
@@ -624,10 +647,8 @@ export default function F1Hero({ data }) {
                   ))}
                 </div>
               </div>
-
             </motion.div>
           </div>
-
         </div>
       </div>
 

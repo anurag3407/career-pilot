@@ -66,14 +66,12 @@ export default function Contact({ personal, socials }) {
               <span className="text-[#C41E3A] not-italic">Dialogue</span>
             </h2>
             <p className="text-[0.9rem] text-white/60 leading-relaxed max-w-md mb-8">
-              Open to new opportunities, collaborations, and discussions. Reach out to explore how we can create something exceptional together.
+              Open to new opportunities, collaborations, and discussions. Reach out to explore how
+              we can create something exceptional together.
             </p>
-            
+
             {socials?.email && (
-              <a
-                href={`mailto:${socials.email}`}
-                className="inline-flex items-center gap-4 group"
-              >
+              <a href={`mailto:${socials.email}`} className="inline-flex items-center gap-4 group">
                 <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-[#C41E3A] group-hover:border-[#C41E3A] transition-colors duration-300">
                   <Mail size={18} className="text-white group-hover:text-white" />
                 </div>
@@ -81,9 +79,7 @@ export default function Contact({ personal, socials }) {
                   <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-white/50 mb-1 group-hover:text-[#C41E3A] transition-colors">
                     Drop a Line
                   </span>
-                  <span className="text-white font-medium tracking-wide">
-                    {socials.email}
-                  </span>
+                  <span className="text-white font-medium tracking-wide">{socials.email}</span>
                 </div>
               </a>
             )}
@@ -99,8 +95,11 @@ export default function Contact({ personal, socials }) {
           >
             <div className="absolute top-0 right-0 w-24 h-24 border-l border-b border-white/5" />
             <div className="absolute bottom-0 left-0 w-24 h-24 border-r border-t border-white/5" />
-            
-            <form className="relative z-10 flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
+
+            <form
+              className="relative z-10 flex flex-col gap-6"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div>
                 <label className="block text-[0.6rem] font-bold uppercase tracking-[0.2em] text-white/40 mb-2">
                   Name
@@ -131,15 +130,15 @@ export default function Contact({ personal, socials }) {
                   className="w-full bg-transparent border-b border-white/20 pb-3 text-white placeholder-white/20 focus:outline-none focus:border-[#C41E3A] transition-colors resize-none"
                 />
               </div>
-              <button
-                type="button"
-                className="self-start mt-4 flex items-center gap-3 group"
-              >
+              <button type="button" className="self-start mt-4 flex items-center gap-3 group">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-white border-b border-white pb-0.5 group-hover:border-[#C41E3A] group-hover:text-[#C41E3A] transition-colors duration-300">
                   Send Message
                 </span>
                 <span className="w-7 h-7 rounded-full border border-white flex items-center justify-center group-hover:bg-[#C41E3A] group-hover:border-[#C41E3A] transition-all duration-300">
-                  <ArrowRight size={12} className="text-white group-hover:text-white transition-colors duration-300" />
+                  <ArrowRight
+                    size={12}
+                    className="text-white group-hover:text-white transition-colors duration-300"
+                  />
                 </span>
               </button>
             </form>

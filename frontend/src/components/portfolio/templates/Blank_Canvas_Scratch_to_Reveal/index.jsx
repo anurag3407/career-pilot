@@ -21,13 +21,13 @@ export default function BlankCanvasReveal({ portfolioData }) {
   const particleCanvasRef = useRef(null);
   const containerRef = useRef(null);
   const offscreenCanvasRef = useRef(null);
-  
+
   const lastPos = useRef(null);
   const isDrawing = useRef(false);
   const pointerPosRef = useRef({ x: 0, y: 0 });
   const [pointerActive, setPointerActive] = useState(false);
   const lastCheckRef = useRef(0);
-  
+
   const particlesRef = useRef([]);
   const animFrameIdRef = useRef(null);
   const spotlightAnimationRef = useRef(null);
@@ -36,7 +36,8 @@ export default function BlankCanvasReveal({ portfolioData }) {
   useEffect(() => {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap';
+    link.href =
+      'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap';
     document.head.appendChild(link);
     return () => {
       document.head.removeChild(link);
@@ -149,10 +150,7 @@ export default function BlankCanvasReveal({ portfolioData }) {
     const pointerY = pointerActive ? pointerPosRef.current.y : h / 2;
     const spotSize = pointerActive ? 300 : 240 + Math.sin(time) * 15;
 
-    const spotGrad = ctx.createRadialGradient(
-      pointerX, pointerY, 0,
-      pointerX, pointerY, spotSize
-    );
+    const spotGrad = ctx.createRadialGradient(pointerX, pointerY, 0, pointerX, pointerY, spotSize);
     // Neutral white and grey specular lights (completely monochromatic)
     spotGrad.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
     spotGrad.addColorStop(0.4, 'rgba(255, 255, 255, 0.03)');
@@ -192,13 +190,13 @@ export default function BlankCanvasReveal({ portfolioData }) {
     }
 
     const offscreen = offscreenCanvasRef.current;
-    
+
     // Save current scratch state
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = offscreen.width;
     tempCanvas.height = offscreen.height;
     const tempCtx = tempCanvas.getContext('2d');
-    
+
     const isInitial = offscreen.width === 0;
     if (!isInitial) {
       tempCtx.drawImage(offscreen, 0, 0);
@@ -309,7 +307,7 @@ export default function BlankCanvasReveal({ portfolioData }) {
         seed: Math.random() * 100,
         glow: Math.random() * 10 + 4,
         // Monochrome sparkles only: pure whites and silver/grey shades
-        color: i % 2 === 0 ? '#ffffff' : '#94a3b8'
+        color: i % 2 === 0 ? '#ffffff' : '#94a3b8',
       });
     }
 
@@ -363,7 +361,7 @@ export default function BlankCanvasReveal({ portfolioData }) {
     setIsFading(true);
     setScratchPercent(100);
     document.body.style.overflow = '';
-    
+
     setTimeout(() => {
       setIsRevealed(true);
       if (spotlightAnimationRef.current) {
@@ -428,10 +426,10 @@ export default function BlankCanvasReveal({ portfolioData }) {
     const ctx = offscreen.getContext('2d');
 
     ctx.save();
-    
+
     // Increased scratch brush size to 85 (170px diameter) for much faster reveals
     const brushRadius = 85;
-    
+
     ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.strokeStyle = 'rgba(0,0,0,1)';
     ctx.lineWidth = brushRadius * 2;
@@ -442,7 +440,7 @@ export default function BlankCanvasReveal({ portfolioData }) {
       const grad = ctx.createRadialGradient(x, y, brushRadius * 0.3, x, y, brushRadius);
       grad.addColorStop(0, 'rgba(0,0,0,1)');
       grad.addColorStop(1, 'rgba(0,0,0,0)');
-      
+
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(x, y, brushRadius, 0, Math.PI * 2);
@@ -452,7 +450,7 @@ export default function BlankCanvasReveal({ portfolioData }) {
       ctx.moveTo(lastPos.current.x, lastPos.current.y);
       ctx.lineTo(x, y);
       ctx.stroke();
-      
+
       const grad = ctx.createRadialGradient(x, y, brushRadius * 0.3, x, y, brushRadius);
       grad.addColorStop(0, 'rgba(0,0,0,1)');
       grad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -487,7 +485,7 @@ export default function BlankCanvasReveal({ portfolioData }) {
       skills = portfolioData.skills.map((s, i) => ({
         name: s,
         level: Math.floor(Math.random() * 20) + 75,
-        category: categories[i % categories.length]
+        category: categories[i % categories.length],
       }));
     } else {
       skills = portfolioData.skills;
@@ -496,54 +494,61 @@ export default function BlankCanvasReveal({ portfolioData }) {
 
   let projects = dummyData.projects;
 
-if (portfolioData?.projects?.length > 0) {
-  projects = portfolioData.projects
-    .map((p, i) => {
-      const techCount = (p.technologies || p.techStack || []).length;
+  if (portfolioData?.projects?.length > 0) {
+    projects = portfolioData.projects
+      .map((p, i) => {
+        const techCount = (p.technologies || p.techStack || []).length;
 
-      const score =
-        (p.description?.length || 0) +
-        techCount * 10 +
-        (p.liveUrl ? 20 : 0) +
-        (p.githubUrl ? 15 : 0);
+        const score =
+          (p.description?.length || 0) +
+          techCount * 10 +
+          (p.liveUrl ? 20 : 0) +
+          (p.githubUrl ? 15 : 0);
 
-      return {
-        title: p.title || p.name || "Project",
-        description: p.description || "",
-        techStack: p.technologies || p.techStack || [],
-        image:
-          p.image ||
-          dummyData.projects[i % dummyData.projects.length].image,
-        liveUrl: p.liveUrl || "#",
-        githubUrl: p.githubUrl || "#",
-        highlightScore: score,
-        featured: false,
-      };
-    })
-    .sort((a, b) => b.highlightScore - a.highlightScore);
+        return {
+          title: p.title || p.name || 'Project',
+          description: p.description || '',
+          techStack: p.technologies || p.techStack || [],
+          image: p.image || dummyData.projects[i % dummyData.projects.length].image,
+          liveUrl: p.liveUrl || '#',
+          githubUrl: p.githubUrl || '#',
+          highlightScore: score,
+          featured: false,
+        };
+      })
+      .sort((a, b) => b.highlightScore - a.highlightScore);
 
-  projects = projects.map((project, index) => ({
-    ...project,
-    featured: index < 3,
-  }));
-}
+    projects = projects.map((project, index) => ({
+      ...project,
+      featured: index < 3,
+    }));
+  }
 
-const featuredProjects = projects.filter(
-  (project) => project.featured
-);
+  const featuredProjects = projects.filter((project) => project.featured);
 
-  const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
-  const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
+  const experience =
+    portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
+  const testimonials =
+    portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
   const stats = portfolioData?.stats || dummyData.stats;
 
-  const data = { personal, socials, skills, projects, experience, testimonials, stats, portfolioData };
+  const data = {
+    personal,
+    socials,
+    skills,
+    projects,
+    experience,
+    testimonials,
+    stats,
+    portfolioData,
+  };
 
   return (
     <PortfolioContext.Provider value={data}>
       <div className="min-h-screen bg-black text-[#f4f4f7] font-sans antialiased selection:bg-slate-800 selection:text-white overflow-x-hidden relative">
         {/* Monochromatic grid background for the whole page */}
         <div className="fixed inset-0 bg-[linear-gradient(to_right,#0c0c0c_1px,transparent_1px),linear-gradient(to_bottom,#0c0c0c_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0" />
-        
+
         {/* Soft, neutral, dark grey ambient glows (no blue) */}
         <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-white/[0.015] rounded-full blur-[120px] pointer-events-none z-0" />
         <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-white/[0.015] rounded-full blur-[140px] pointer-events-none z-0" />
@@ -576,13 +581,13 @@ const featuredProjects = projects.filter(
               onPointerCancel={handlePointerLeave}
               className="absolute inset-0 w-full h-full cursor-crosshair z-10"
             />
-            
+
             {/* Particle Canvas Overlay */}
             <canvas
               ref={particleCanvasRef}
               className="absolute inset-0 w-full h-full pointer-events-none z-20"
             />
-            
+
             {/* Visual UI layer (mouse/touch events pass through to canvas) */}
             <div className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none z-30 py-16 px-6 text-center">
               {/* Top bar: Brand / Mode */}
@@ -599,11 +604,11 @@ const featuredProjects = projects.filter(
                   <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                   <span>Scratch to Unlock Portfolio</span>
                 </div>
-                
+
                 <h1 className="text-5xl md:text-8xl font-black font-outfit tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-300 to-slate-600 mb-6 uppercase leading-none select-none">
                   BLANK CANVAS
                 </h1>
-                
+
                 <p className="text-xs md:text-sm font-mono tracking-[0.2em] text-slate-400 uppercase max-w-md leading-relaxed select-none">
                   Discover the creator behind the canvas
                 </p>
@@ -614,9 +619,9 @@ const featuredProjects = projects.filter(
                 {/* Progress Bar & Percentage */}
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-48 h-1 bg-slate-950 border border-slate-900 rounded-full overflow-hidden backdrop-blur-sm">
-                    <div 
-                      style={{ width: `${scratchPercent}%` }} 
-                      className="h-full bg-gradient-to-r from-slate-600 via-slate-400 to-white transition-all duration-150 rounded-full" 
+                    <div
+                      style={{ width: `${scratchPercent}%` }}
+                      className="h-full bg-gradient-to-r from-slate-600 via-slate-400 to-white transition-all duration-150 rounded-full"
                     />
                   </div>
                   <span className="text-[10px] font-mono text-slate-400 font-medium tracking-widest uppercase">
@@ -625,7 +630,8 @@ const featuredProjects = projects.filter(
                 </div>
 
                 {/* Skip button (Pointer events enabled) */}
-                <button type="button"
+                <button
+                  type="button"
                   onClick={revealAll}
                   className="pointer-events-auto px-6 py-2.5 rounded-lg bg-black border border-slate-800 hover:border-white text-[10px] font-mono tracking-widest uppercase text-slate-300 hover:text-white transition-all duration-300 cursor-pointer flex items-center gap-2 shadow-2xl"
                   aria-label="Skip scratching and reveal portfolio immediately"

@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function ScrollCinema() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Scroll Cinema Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Cinematic widescreen sections that slide in like movie scenes. Letterbox bars at top/bottom, dramatic fade transitions, film grain overlay.
+            Cinematic widescreen sections that slide in like movie scenes. Letterbox bars at
+            top/bottom, dramatic fade transitions, film grain overlay.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

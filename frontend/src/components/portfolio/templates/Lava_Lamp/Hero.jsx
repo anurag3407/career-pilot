@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { WavyText } from './Shared';
 
 const Hero = ({ data }) => (
-  <motion.section 
+  <motion.section
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 0.8 }}
@@ -11,7 +11,7 @@ const Hero = ({ data }) => (
   >
     <div className="max-w-5xl mx-auto w-full px-4 relative">
       <WavyText text={data.personal.name} />
-      
+
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -26,7 +26,7 @@ const Hero = ({ data }) => (
         </p>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center w-full max-w-md mx-auto sm:max-w-none">
-          <motion.a 
+          <motion.a
             href="#projects"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -34,7 +34,7 @@ const Hero = ({ data }) => (
           >
             Explore Work
           </motion.a>
-          <motion.a 
+          <motion.a
             href="#contact"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

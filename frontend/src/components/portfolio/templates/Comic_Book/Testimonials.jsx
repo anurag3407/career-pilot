@@ -2,9 +2,19 @@ import React from 'react';
 import { Star } from 'lucide-react';
 
 const DotPattern = () => (
-  <svg className="absolute inset-0 w-full h-full opacity-[0.07] pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="absolute inset-0 w-full h-full opacity-[0.07] pointer-events-none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <defs>
-      <pattern id="comic-dots-tests" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <pattern
+        id="comic-dots-tests"
+        x="0"
+        y="0"
+        width="20"
+        height="20"
+        patternUnits="userSpaceOnUse"
+      >
         <circle cx="4" cy="4" r="2.5" fill="black" />
       </pattern>
     </defs>
@@ -26,7 +36,10 @@ export default function Testimonials({ testimonials }) {
   if (!testimonials || testimonials.length === 0) return null;
 
   return (
-    <section id="testimonials" className="relative w-full overflow-hidden bg-sky-400 py-20 px-4 sm:px-8 border-b-4 border-black">
+    <section
+      id="testimonials"
+      className="relative w-full overflow-hidden bg-sky-400 py-20 px-4 sm:px-8 border-b-4 border-black"
+    >
       <DotPattern />
       <div className="relative max-w-6xl mx-auto">
         <div className="flex flex-col items-center gap-6 mb-16 text-center">
@@ -45,7 +58,10 @@ export default function Testimonials({ testimonials }) {
           {testimonials.map((t, i) => {
             const rotate = i % 2 === 0 ? '-rotate-1' : 'rotate-2';
             return (
-              <div key={i} className={`relative bg-white border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] ${rotate} transition-transform hover:scale-[1.03] flex flex-col`}>
+              <div
+                key={i}
+                className={`relative bg-white border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] ${rotate} transition-transform hover:scale-[1.03] flex flex-col`}
+              >
                 <div className="absolute -top-5 -left-5 bg-yellow-400 border-4 border-black p-3 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-12">
                   <Star className="w-8 h-8 text-black" fill="currentColor" />
                 </div>
@@ -56,7 +72,9 @@ export default function Testimonials({ testimonials }) {
                 </div>
                 <div className="flex flex-col border-t-4 border-black pt-4">
                   <span className="font-black text-black uppercase text-xl">{t.author}</span>
-                  <span className="font-bold text-pink-600 uppercase tracking-widest text-sm">{t.role}</span>
+                  <span className="font-bold text-pink-600 uppercase tracking-widest text-sm">
+                    {t.role}
+                  </span>
                 </div>
               </div>
             );

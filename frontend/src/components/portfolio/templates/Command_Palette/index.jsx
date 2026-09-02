@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function CommandPalette() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Command Palette Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Cmd+K command palette as primary navigation (Raycast/Spotlight-style). Type to search and navigate to any section instantly. Keyboard-first design.
+            Cmd+K command palette as primary navigation (Raycast/Spotlight-style). Type to search
+            and navigate to any section instantly. Keyboard-first design.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

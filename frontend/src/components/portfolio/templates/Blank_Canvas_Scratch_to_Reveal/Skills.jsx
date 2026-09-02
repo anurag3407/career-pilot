@@ -71,7 +71,9 @@ export default function Skills() {
             viewport={{ once: true }}
             className="mb-4"
           >
-            <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">[[ 02 // Capability ]]</span>
+            <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">
+              [[ 02 // Capability ]]
+            </span>
           </motion.div>
 
           <motion.h2
@@ -91,7 +93,8 @@ export default function Skills() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-slate-400 max-w-xl mx-auto font-light"
           >
-            The tools, technologies, and practices used to turn blank canvases into finished digital masterpieces.
+            The tools, technologies, and practices used to turn blank canvases into finished digital
+            masterpieces.
           </motion.p>
         </div>
 
@@ -105,11 +108,7 @@ export default function Skills() {
           {categories.map((category) => {
             const categorySkills = skills.filter((s) => s.category === category);
             return (
-              <motion.div
-                key={category}
-                variants={categoryVariants}
-                className="space-y-6"
-              >
+              <motion.div key={category} variants={categoryVariants} className="space-y-6">
                 {/* Category Header */}
                 <div className="flex items-center gap-3 border-b border-slate-900/80 pb-3">
                   {getCategoryIcon(category)}
@@ -128,7 +127,7 @@ export default function Skills() {
                       whileHover={{
                         y: -8,
                         boxShadow: '0 12px 24px -10px rgba(255,255,255,0.05)',
-                        borderColor: 'rgba(255, 255, 255, 0.15)'
+                        borderColor: 'rgba(255, 255, 255, 0.15)',
                       }}
                       className="relative p-5 bg-[#05050c]/80 border border-slate-900 rounded-xl transition-all duration-300 group overflow-hidden"
                     >

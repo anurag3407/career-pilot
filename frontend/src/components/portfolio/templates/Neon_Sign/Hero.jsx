@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { motion as Motion, useAnimation } from "framer-motion";
-import { Download, Eye, Zap, ArrowRight } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { motion as Motion, useAnimation } from 'framer-motion';
+import { Download, Eye, Zap, ArrowRight } from 'lucide-react';
 
 const flickerKeyframes = `
   @keyframes neonFlicker {
@@ -69,7 +69,7 @@ export default function Hero({ data }) {
         <div
           className="absolute inset-0"
           style={{
-            backgroundColor: "#050505",
+            backgroundColor: '#050505',
             backgroundImage: `
               repeating-linear-gradient(
                 0deg,
@@ -101,7 +101,7 @@ export default function Hero({ data }) {
                 transparent 64px
               )
             `,
-            backgroundSize: "120px 64px",
+            backgroundSize: '120px 64px',
           }}
         />
         {/* Brick texture overlay */}
@@ -119,8 +119,7 @@ export default function Hero({ data }) {
         <div
           className="absolute inset-0"
           style={{
-            background:
-              "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.9) 100%)",
+            background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.9) 100%)',
           }}
         />
       </div>
@@ -130,8 +129,8 @@ export default function Hero({ data }) {
         className="absolute inset-0 z-0 pointer-events-none opacity-5"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.3) 2px, rgba(0,212,255,0.3) 4px)",
-          backgroundSize: "100% 4px",
+            'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.3) 2px, rgba(0,212,255,0.3) 4px)',
+          backgroundSize: '100% 4px',
         }}
       />
 
@@ -141,12 +140,11 @@ export default function Hero({ data }) {
       <div className="absolute bottom-20 left-1/2 w-96 h-48 rounded-full blur-[80px] bg-purple-600 opacity-10 pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-10 items-center">
-
         {/* LEFT — Text Content */}
         <Motion.div
           initial={{ opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
           className="flex flex-col gap-6 lg:col-span-1"
         >
           {/* HELLO I'M neon sign */}
@@ -155,7 +153,7 @@ export default function Hero({ data }) {
               className="inline-block px-4 py-2 rounded border-2 border-cyan-400 text-cyan-300 font-black text-sm md:text-base tracking-[0.3em] uppercase neon-tube"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 7px #00d4ff, 0 0 15px #00d4ff, 0 0 30px #00d4ff",
+                textShadow: '0 0 7px #00d4ff, 0 0 15px #00d4ff, 0 0 30px #00d4ff',
               }}
             >
               ⚡ HELLO, I'M
@@ -165,26 +163,26 @@ export default function Hero({ data }) {
           {/* Name — big neon sign */}
           <div className="relative">
             <h1
-              className={`text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-none tracking-tight neon-text-pink transition-all duration-75 ${glitchActive ? "translate-x-1 skew-x-1" : ""}`}
+              className={`text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-none tracking-tight neon-text-pink transition-all duration-75 ${glitchActive ? 'translate-x-1 skew-x-1' : ''}`}
               style={{
                 fontFamily: "'Courier New', monospace",
-                color: "#fff",
+                color: '#fff',
                 textShadow:
-                  "0 0 7px #fff, 0 0 10px #fff, 0 0 21px #ff2bd6, 0 0 42px #ff2bd6, 0 0 82px #ff2bd6",
+                  '0 0 7px #fff, 0 0 10px #fff, 0 0 21px #ff2bd6, 0 0 42px #ff2bd6, 0 0 82px #ff2bd6',
               }}
             >
-              {personal.name.split(" ")[0]}
+              {personal.name.split(' ')[0]}
             </h1>
             <h1
               className="text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-none tracking-tight neon-text-blue mt-1"
               style={{
                 fontFamily: "'Courier New', monospace",
-                color: "#fff",
+                color: '#fff',
                 textShadow:
-                  "0 0 7px #fff, 0 0 10px #00d4ff, 0 0 21px #00d4ff, 0 0 42px #00d4ff, 0 0 82px #00d4ff",
+                  '0 0 7px #fff, 0 0 10px #00d4ff, 0 0 21px #00d4ff, 0 0 42px #00d4ff, 0 0 82px #00d4ff',
               }}
             >
-              {personal.name.split(" ").slice(1).join(" ")}
+              {personal.name.split(' ').slice(1).join(' ')}
             </h1>
           </div>
 
@@ -192,15 +190,15 @@ export default function Hero({ data }) {
           <div
             className="relative px-5 py-3 border-2 border-yellow-400 rounded inline-block neon-text-yellow"
             style={{
-              background: "rgba(255,208,0,0.05)",
-              boxShadow: "0 0 15px #ffd000, inset 0 0 15px rgba(255,208,0,0.05)",
+              background: 'rgba(255,208,0,0.05)',
+              boxShadow: '0 0 15px #ffd000, inset 0 0 15px rgba(255,208,0,0.05)',
             }}
           >
             <p
               className="text-yellow-300 font-bold text-sm md:text-base tracking-wider uppercase"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 8px #ffd000, 0 0 16px #ffd000",
+                textShadow: '0 0 8px #ffd000, 0 0 16px #ffd000',
               }}
             >
               {personal.title}
@@ -224,15 +222,16 @@ export default function Hero({ data }) {
               className="flex items-center gap-2 px-6 py-3 rounded border-2 border-pink-500 text-pink-300 font-black text-sm uppercase tracking-widest cursor-pointer transition-all"
               style={{
                 fontFamily: "'Courier New', monospace",
-                background: "rgba(255,43,214,0.08)",
-                boxShadow: "0 0 15px #ff2bd640",
-                textShadow: "0 0 8px #ff2bd6",
+                background: 'rgba(255,43,214,0.08)',
+                boxShadow: '0 0 15px #ff2bd640',
+                textShadow: '0 0 8px #ff2bd6',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 30px #ff2bd6, inset 0 0 20px rgba(255,43,214,0.1)";
+                e.currentTarget.style.boxShadow =
+                  '0 0 30px #ff2bd6, inset 0 0 20px rgba(255,43,214,0.1)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 15px #ff2bd640";
+                e.currentTarget.style.boxShadow = '0 0 15px #ff2bd640';
               }}
             >
               <Eye size={16} />
@@ -248,15 +247,16 @@ export default function Hero({ data }) {
               className="flex items-center gap-2 px-6 py-3 rounded border-2 border-cyan-400 text-cyan-300 font-black text-sm uppercase tracking-widest cursor-pointer transition-all"
               style={{
                 fontFamily: "'Courier New', monospace",
-                background: "rgba(0,212,255,0.08)",
-                boxShadow: "0 0 15px #00d4ff40",
-                textShadow: "0 0 8px #00d4ff",
+                background: 'rgba(0,212,255,0.08)',
+                boxShadow: '0 0 15px #00d4ff40',
+                textShadow: '0 0 8px #00d4ff',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 30px #00d4ff, inset 0 0 20px rgba(0,212,255,0.1)";
+                e.currentTarget.style.boxShadow =
+                  '0 0 30px #00d4ff, inset 0 0 20px rgba(0,212,255,0.1)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 15px #00d4ff40";
+                e.currentTarget.style.boxShadow = '0 0 15px #00d4ff40';
               }}
             >
               <Download size={16} />
@@ -269,7 +269,7 @@ export default function Hero({ data }) {
         <Motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.9, type: "spring", stiffness: 100 }}
+          transition={{ duration: 0.9, type: 'spring', stiffness: 100 }}
           className="flex flex-col items-center justify-center gap-6 lg:col-span-1"
         >
           {/* Neon frame ring around avatar */}
@@ -277,18 +277,16 @@ export default function Hero({ data }) {
             {/* Outer spinning ring */}
             <div
               className="absolute w-72 h-72 rounded-full border-4 border-dashed border-pink-500 opacity-40"
-              style={{ animation: "rotateSlow 12s linear infinite" }}
+              style={{ animation: 'rotateSlow 12s linear infinite' }}
             />
             {/* Middle glowing ring */}
-            <div
-              className="absolute w-60 h-60 rounded-full border-2 border-cyan-400 neon-pulse"
-            />
+            <div className="absolute w-60 h-60 rounded-full border-2 border-cyan-400 neon-pulse" />
             {/* Inner neon frame */}
             <div
               className="relative w-52 h-52 rounded-full border-4 border-pink-400 overflow-hidden"
               style={{
                 boxShadow:
-                  "0 0 20px #ff2bd6, 0 0 40px #ff2bd6, 0 0 80px #ff2bd640, inset 0 0 20px #ff2bd610",
+                  '0 0 20px #ff2bd6, 0 0 40px #ff2bd6, 0 0 80px #ff2bd640, inset 0 0 20px #ff2bd610',
               }}
             >
               <img
@@ -301,7 +299,7 @@ export default function Hero({ data }) {
                 className="absolute inset-0 rounded-full"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(255,43,214,0.15) 0%, transparent 50%, rgba(0,212,255,0.15) 100%)",
+                    'linear-gradient(135deg, rgba(255,43,214,0.15) 0%, transparent 50%, rgba(0,212,255,0.15) 100%)',
                 }}
               />
             </div>
@@ -312,8 +310,8 @@ export default function Hero({ data }) {
                 key={i}
                 className="absolute w-3 h-3 rounded-full"
                 style={{
-                  background: i % 2 === 0 ? "#ff2bd6" : "#00d4ff",
-                  boxShadow: `0 0 8px ${i % 2 === 0 ? "#ff2bd6" : "#00d4ff"}`,
+                  background: i % 2 === 0 ? '#ff2bd6' : '#00d4ff',
+                  boxShadow: `0 0 8px ${i % 2 === 0 ? '#ff2bd6' : '#00d4ff'}`,
                   transform: `rotate(${deg}deg) translateX(148px)`,
                   animation: `neonFlicker ${2 + i * 0.3}s infinite`,
                 }}
@@ -325,10 +323,10 @@ export default function Hero({ data }) {
           <div
             className="px-6 py-2 rounded border border-yellow-400 text-yellow-300 text-xs font-black tracking-[0.25em] uppercase text-center"
             style={{
-              background: "rgba(255,208,0,0.05)",
-              boxShadow: "0 0 12px #ffd00050",
+              background: 'rgba(255,208,0,0.05)',
+              boxShadow: '0 0 12px #ffd00050',
               fontFamily: "'Courier New', monospace",
-              textShadow: "0 0 8px #ffd000",
+              textShadow: '0 0 8px #ffd000',
             }}
           >
             ✦ AVAILABLE FOR WORK ✦
@@ -339,22 +337,22 @@ export default function Hero({ data }) {
         <Motion.div
           initial={{ opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+          transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
           className="flex flex-col items-center gap-6 lg:col-span-1"
         >
           {/* Arrow billboard sign */}
           <div
             className="w-full max-w-xs p-5 rounded-lg border-2 border-orange-400 relative"
             style={{
-              background: "rgba(255,140,0,0.05)",
-              boxShadow: "0 0 20px #ff8c00, 0 0 40px #ff8c0040",
+              background: 'rgba(255,140,0,0.05)',
+              boxShadow: '0 0 20px #ff8c00, 0 0 40px #ff8c0040',
             }}
           >
             <div
               className="text-orange-300 font-black text-lg uppercase tracking-widest text-center"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 10px #ff8c00, 0 0 20px #ff8c00",
+                textShadow: '0 0 10px #ff8c00, 0 0 20px #ff8c00',
               }}
             >
               ➤ PORTFOLIO ➤
@@ -363,7 +361,7 @@ export default function Hero({ data }) {
               <ArrowRight className="text-orange-400" size={20} />
               <span
                 className="text-orange-400 text-xs font-bold tracking-widest"
-                style={{ textShadow: "0 0 8px #ff8c00" }}
+                style={{ textShadow: '0 0 8px #ff8c00' }}
               >
                 OPEN 24/7
               </span>
@@ -374,13 +372,13 @@ export default function Hero({ data }) {
           <div
             className="w-full max-w-xs p-5 rounded-lg border-2 border-green-400 text-center"
             style={{
-              background: "rgba(57,255,20,0.05)",
-              boxShadow: "0 0 20px #39ff14, 0 0 40px #39ff1440",
+              background: 'rgba(57,255,20,0.05)',
+              boxShadow: '0 0 20px #39ff14, 0 0 40px #39ff1440',
             }}
           >
             <div
               className="text-5xl float-anim"
-              style={{ filter: "drop-shadow(0 0 10px #39ff14)" }}
+              style={{ filter: 'drop-shadow(0 0 10px #39ff14)' }}
             >
               🌵
             </div>
@@ -388,7 +386,7 @@ export default function Hero({ data }) {
               className="text-green-300 font-black text-xs uppercase tracking-widest mt-2"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 8px #39ff14",
+                textShadow: '0 0 8px #39ff14',
               }}
             >
               CODE IS ART
@@ -399,28 +397,28 @@ export default function Hero({ data }) {
           <div
             className="w-full max-w-xs p-4 rounded-lg border-2 border-purple-400 flex items-center justify-center gap-3"
             style={{
-              background: "rgba(176,38,255,0.05)",
-              boxShadow: "0 0 20px #b026ff, 0 0 40px #b026ff40",
+              background: 'rgba(176,38,255,0.05)',
+              boxShadow: '0 0 20px #b026ff, 0 0 40px #b026ff40',
             }}
           >
             <Zap
               size={28}
               className="text-purple-300 float-anim"
-              style={{ filter: "drop-shadow(0 0 8px #b026ff)" }}
+              style={{ filter: 'drop-shadow(0 0 8px #b026ff)' }}
             />
             <div>
               <div
                 className="text-purple-300 font-black text-sm uppercase tracking-widest"
                 style={{
                   fontFamily: "'Courier New', monospace",
-                  textShadow: "0 0 8px #b026ff",
+                  textShadow: '0 0 8px #b026ff',
                 }}
               >
                 POWERED BY
               </div>
               <div
                 className="text-purple-400 font-black text-xs tracking-widest"
-                style={{ textShadow: "0 0 5px #b026ff" }}
+                style={{ textShadow: '0 0 5px #b026ff' }}
               >
                 CREATIVITY
               </div>
@@ -431,13 +429,13 @@ export default function Hero({ data }) {
           <div
             className="w-full max-w-xs px-4 py-3 rounded border border-cyan-500 flex items-center gap-2"
             style={{
-              background: "rgba(0,212,255,0.04)",
-              boxShadow: "0 0 10px #00d4ff30",
+              background: 'rgba(0,212,255,0.04)',
+              boxShadow: '0 0 10px #00d4ff30',
             }}
           >
             <span
               className="text-cyan-400 text-lg"
-              style={{ filter: "drop-shadow(0 0 6px #00d4ff)" }}
+              style={{ filter: 'drop-shadow(0 0 6px #00d4ff)' }}
             >
               📍
             </span>
@@ -445,7 +443,7 @@ export default function Hero({ data }) {
               className="text-cyan-300 text-xs font-bold tracking-widest uppercase"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 6px #00d4ff",
+                textShadow: '0 0 6px #00d4ff',
               }}
             >
               {personal.location}

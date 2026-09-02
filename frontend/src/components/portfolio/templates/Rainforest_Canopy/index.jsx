@@ -1,15 +1,7 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import {
-  Github,
-  Linkedin,
-  Twitter,
-  Mail,
-  MapPin,
-  ExternalLink,
-  Leaf,
-} from "lucide-react";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Leaf } from 'lucide-react';
 
 function LeafSVG({ className, style }) {
   const { portfolioData: data } = usePortfolio();
@@ -48,7 +40,7 @@ const LEAVES = Array.from({ length: 12 }, (_, i) => ({
   delay: Math.random() * 8,
   duration: Math.random() * 6 + 8,
   rotate: Math.random() * 360,
-  color: ["text-emerald-400", "text-green-500", "text-lime-400"][Math.floor(Math.random() * 3)],
+  color: ['text-emerald-400', 'text-green-500', 'text-lime-400'][Math.floor(Math.random() * 3)],
 }));
 
 const BIRDS = Array.from({ length: 5 }, (_, i) => ({
@@ -89,8 +81,18 @@ export default function RainforestCanopy() {
               }}
             >
               <LeafSVG
-                className={i % 3 === 0 ? "text-emerald-800" : i % 3 === 1 ? "text-green-900" : "text-emerald-900"}
-                style={{ width: `${80 + (i % 4) * 20}px`, height: `${100 + (i % 3) * 25}px`, opacity: 0.9 }}
+                className={
+                  i % 3 === 0
+                    ? 'text-emerald-800'
+                    : i % 3 === 1
+                      ? 'text-green-900'
+                      : 'text-emerald-900'
+                }
+                style={{
+                  width: `${80 + (i % 4) * 20}px`,
+                  height: `${100 + (i % 3) * 25}px`,
+                  opacity: 0.9,
+                }}
               />
             </div>
           ))}
@@ -103,14 +105,19 @@ export default function RainforestCanopy() {
           <motion.div
             key={spot.id}
             animate={{ opacity: [0.03, 0.1, 0.03], scale: [1, 1.2, 1] }}
-            transition={{ duration: spot.duration, repeat: Infinity, delay: spot.delay, ease: "easeInOut" }}
+            transition={{
+              duration: spot.duration,
+              repeat: Infinity,
+              delay: spot.delay,
+              ease: 'easeInOut',
+            }}
             className="absolute rounded-full bg-[radial-gradient(circle,rgba(255,230,100,0.6),transparent)]"
             style={{
               left: `${spot.x}%`,
               top: `${spot.y}%`,
               width: spot.size,
               height: spot.size,
-              transform: "translate(-50%, -50%)",
+              transform: 'translate(-50%, -50%)',
             }}
           />
         ))}
@@ -121,13 +128,18 @@ export default function RainforestCanopy() {
         {LEAVES.map((leaf) => (
           <motion.div
             key={leaf.id}
-            initial={{ x: `${leaf.x}vw`, y: "-5vh", rotate: leaf.rotate }}
+            initial={{ x: `${leaf.x}vw`, y: '-5vh', rotate: leaf.rotate }}
             animate={{
-              y: "110vh",
+              y: '110vh',
               x: [`${leaf.x}vw`, `${leaf.x + 10}vw`, `${leaf.x - 5}vw`],
               rotate: [leaf.rotate, leaf.rotate + 180, leaf.rotate + 360],
             }}
-            transition={{ duration: leaf.duration, delay: leaf.delay, repeat: Infinity, ease: "linear" }}
+            transition={{
+              duration: leaf.duration,
+              delay: leaf.delay,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
           >
             <LeafSVG
               className={leaf.color}
@@ -142,9 +154,14 @@ export default function RainforestCanopy() {
         {BIRDS.map((bird) => (
           <motion.div
             key={bird.id}
-            initial={{ x: "-10vw" }}
-            animate={{ x: "110vw" }}
-            transition={{ duration: bird.duration, delay: bird.delay, repeat: Infinity, ease: "linear" }}
+            initial={{ x: '-10vw' }}
+            animate={{ x: '110vw' }}
+            transition={{
+              duration: bird.duration,
+              delay: bird.delay,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
             className="absolute"
             style={{ top: `${bird.y}%` }}
           >
@@ -158,7 +175,6 @@ export default function RainforestCanopy() {
 
       {/* Content */}
       <div className="relative z-20 max-w-4xl mx-auto px-4 sm:px-6 pt-52 pb-20">
-
         {/* HERO */}
         <motion.section
           initial={{ opacity: 0, y: 40 }}
@@ -183,10 +199,10 @@ export default function RainforestCanopy() {
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-4">
             {[
-              { icon: <Github size={16} />, href: data.socials.github, label: "GitHub" },
-              { icon: <Linkedin size={16} />, href: data.socials.linkedin, label: "LinkedIn" },
-              { icon: <Twitter size={16} />, href: data.socials.twitter, label: "Twitter" },
-              { icon: <Mail size={16} />, href: `mailto:${data.socials.email}`, label: "Email" },
+              { icon: <Github size={16} />, href: data.socials.github, label: 'GitHub' },
+              { icon: <Linkedin size={16} />, href: data.socials.linkedin, label: 'LinkedIn' },
+              { icon: <Twitter size={16} />, href: data.socials.twitter, label: 'Twitter' },
+              { icon: <Mail size={16} />, href: `mailto:${data.socials.email}`, label: 'Email' },
             ].map((s) => (
               <a
                 key={s.label}
@@ -207,9 +223,9 @@ export default function RainforestCanopy() {
         {/* STATS */}
         <div className="grid grid-cols-3 gap-4 mb-16">
           {[
-            { label: "Years Experience", value: `${data.stats.yearsExperience}+` },
-            { label: "Projects Completed", value: `${data.stats.projectsCompleted}+` },
-            { label: "Happy Clients", value: `${data.stats.happyClients}+` },
+            { label: 'Years Experience', value: `${data.stats.yearsExperience}+` },
+            { label: 'Projects Completed', value: `${data.stats.projectsCompleted}+` },
+            { label: 'Happy Clients', value: `${data.stats.happyClients}+` },
           ].map((s, i) => (
             <motion.div
               key={s.label}
@@ -227,32 +243,38 @@ export default function RainforestCanopy() {
 
         {/* ABOUT */}
         <ForestCard title="About Me">
-          <p className="leading-relaxed text-sm sm:text-base text-emerald-200/70">{data.personal.bio}</p>
+          <p className="leading-relaxed text-sm sm:text-base text-emerald-200/70">
+            {data.personal.bio}
+          </p>
         </ForestCard>
 
         {/* SKILLS */}
         <ForestCard title="Skills">
           {skillCategories.map((cat) => (
             <div key={cat} className="mb-6">
-              <h4 className="text-xs font-bold uppercase tracking-widest mb-3 text-emerald-400">{cat}</h4>
+              <h4 className="text-xs font-bold uppercase tracking-widest mb-3 text-emerald-400">
+                {cat}
+              </h4>
               <div className="space-y-3">
-                {data.skills.filter((s) => s.category === cat).map((skill) => (
-                  <div key={skill.name}>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm text-emerald-100">{skill.name}</span>
-                      <span className="text-xs text-emerald-400/60">{skill.level}%</span>
+                {data.skills
+                  .filter((s) => s.category === cat)
+                  .map((skill) => (
+                    <div key={skill.name}>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-emerald-100">{skill.name}</span>
+                        <span className="text-xs text-emerald-400/60">{skill.level}%</span>
+                      </div>
+                      <div className="h-1.5 rounded-full overflow-hidden bg-emerald-950/60">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.level}%` }}
+                          transition={{ duration: 1, ease: 'easeOut' }}
+                          viewport={{ once: true }}
+                          className="h-full rounded-full bg-gradient-to-r from-emerald-600 to-lime-400"
+                        />
+                      </div>
                     </div>
-                    <div className="h-1.5 rounded-full overflow-hidden bg-emerald-950/60">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        transition={{ duration: 1, ease: "easeOut" }}
-                        viewport={{ once: true }}
-                        className="h-full rounded-full bg-gradient-to-r from-emerald-600 to-lime-400"
-                      />
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           ))}
@@ -273,19 +295,34 @@ export default function RainforestCanopy() {
                 <img src={p.image} alt={p.title} className="w-full h-36 object-cover opacity-80" />
                 <div className="p-4">
                   <h3 className="font-bold text-sm mb-2 text-emerald-100">{p.title}</h3>
-                  <p className="text-xs leading-relaxed mb-3 text-emerald-300/60">{p.description}</p>
+                  <p className="text-xs leading-relaxed mb-3 text-emerald-300/60">
+                    {p.description}
+                  </p>
                   <div className="flex flex-wrap gap-1 mb-3">
                     {p.techStack.map((t) => (
-                      <span key={t} className="text-xs px-2 py-0.5 rounded-full border border-emerald-500/30 bg-emerald-900/40 text-emerald-300">
+                      <span
+                        key={t}
+                        className="text-xs px-2 py-0.5 rounded-full border border-emerald-500/30 bg-emerald-900/40 text-emerald-300"
+                      >
                         {t}
                       </span>
                     ))}
                   </div>
                   <div className="flex gap-3">
-                    <a href={p.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300">
+                    <a
+                      href={p.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300"
+                    >
                       <ExternalLink size={11} /> Live
                     </a>
-                    <a href={p.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300">
+                    <a
+                      href={p.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300"
+                    >
                       <Github size={11} /> Code
                     </a>
                   </div>
@@ -330,9 +367,15 @@ export default function RainforestCanopy() {
                 viewport={{ once: true }}
                 className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-950/40"
               >
-                <p className="text-xs italic leading-relaxed mb-4 text-emerald-200/60">&ldquo;{t.text}&rdquo;</p>
+                <p className="text-xs italic leading-relaxed mb-4 text-emerald-200/60">
+                  &ldquo;{t.text}&rdquo;
+                </p>
                 <div className="flex items-center gap-3">
-                  <img src={t.avatar} alt={t.name} className="w-9 h-9 rounded-full object-cover border-2 border-emerald-500/30" />
+                  <img
+                    src={t.avatar}
+                    alt={t.name}
+                    className="w-9 h-9 rounded-full object-cover border-2 border-emerald-500/30"
+                  />
                   <div>
                     <div className="text-xs font-bold text-emerald-100">{t.name}</div>
                     <div className="text-xs text-emerald-400/60">{t.role}</div>
@@ -384,7 +427,11 @@ export default function RainforestCanopy() {
             >
               <LeafSVG
                 className="text-emerald-900"
-                style={{ width: `${60 + (i % 3) * 20}px`, height: `${80 + (i % 4) * 15}px`, opacity: 0.95 }}
+                style={{
+                  width: `${60 + (i % 3) * 20}px`,
+                  height: `${80 + (i % 4) * 15}px`,
+                  opacity: 0.95,
+                }}
               />
             </div>
           ))}
@@ -405,7 +452,9 @@ function ForestCard({ title, children }) {
       transition={{ duration: 0.6 }}
       className="mb-10 p-6 sm:p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/50 backdrop-blur-md shadow-lg shadow-emerald-950/50"
     >
-      <h2 className="text-xl font-bold mb-6 pb-3 border-b border-emerald-500/20 text-emerald-100">{title}</h2>
+      <h2 className="text-xl font-bold mb-6 pb-3 border-b border-emerald-500/20 text-emerald-100">
+        {title}
+      </h2>
       {children}
     </motion.section>
   );

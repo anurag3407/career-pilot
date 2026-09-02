@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function BentoBox() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Bento Box Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Apple-style Bento box grid with mixed-size cards in a tight grid layout. Each card showcases a different aspect (photo, stat, skill, project).
+            Apple-style Bento box grid with mixed-size cards in a tight grid layout. Each card
+            showcases a different aspect (photo, stat, skill, project).
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

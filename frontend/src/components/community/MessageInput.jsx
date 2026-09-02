@@ -1,18 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSocket } from '../../hooks/useSocket';
-import { 
-  Send, 
-  Smile, 
-  Paperclip, 
-  AtSign, 
-  Hash,
-  X,
-  Image as ImageIcon
-} from 'lucide-react';
+import { Send, Smile, Paperclip, AtSign, Hash, X, Image as ImageIcon } from 'lucide-react';
 
 const EMOJI_LIST = ['👍', '❤️', '😂', '🎉', '🔥', '👏', '💯', '🚀', '✨', '🙌', '💪', '🤔'];
 
-export default function MessageInput({ channelId, channelName, onTyping, replyTo, onCancelReply, onOptimisticMessage, currentUser }) {
+export default function MessageInput({
+  channelId,
+  channelName,
+  onTyping,
+  replyTo,
+  onCancelReply,
+  onOptimisticMessage,
+  currentUser,
+}) {
   const { sendMessage, isConnected } = useSocket();
   const [content, setContent] = useState('');
   const [showEmoji, setShowEmoji] = useState(false);
@@ -25,19 +25,22 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
     attachmentsRef.current = attachments;
   }, [attachments]);
 
-  useEffect(() => () => {
-    attachmentsRef.current.forEach((attachment) => {
-      if (attachment.url) {
-        URL.revokeObjectURL(attachment.url);
-      }
-    });
-  }, []);
+  useEffect(
+    () => () => {
+      attachmentsRef.current.forEach((attachment) => {
+        if (attachment.url) {
+          URL.revokeObjectURL(attachment.url);
+        }
+      });
+    },
+    []
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!content.trim() && attachments.length === 0) return;
-    
+
     if (!isConnected) {
       console.error('Socket not connected, cannot send message');
       return;
@@ -45,7 +48,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
 
     const messageContent = content.trim();
     const tempId = `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     // Create optimistic message for immediate display
     const optimisticMessage = {
       id: tempId,
@@ -56,21 +59,23 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
         uid: currentUser?.uid,
         name: currentUser?.displayName || currentUser?.name || 'You',
         email: currentUser?.email,
-        avatar: currentUser?.photoURL || currentUser?.avatar || null
+        avatar: currentUser?.photoURL || currentUser?.avatar || null,
       },
       messageType: 'text',
       attachments: attachments,
       reactions: [],
       replyTo: replyTo?._id || null,
-      replyToPreview: replyTo ? {
-        content: replyTo.content?.substring(0, 100),
-        senderName: replyTo.sender?.name
-      } : null,
+      replyToPreview: replyTo
+        ? {
+            content: replyTo.content?.substring(0, 100),
+            senderName: replyTo.sender?.name,
+          }
+        : null,
       isEdited: false,
       isDeleted: false,
       isPinned: false,
       createdAt: new Date().toISOString(),
-      isOptimistic: true // Flag to identify optimistic messages
+      isOptimistic: true, // Flag to identify optimistic messages
     };
 
     // Immediately show in UI
@@ -84,7 +89,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
       content: messageContent,
       replyTo: replyTo?._id,
       attachments,
-      tempId // Send tempId so server can reference it
+      tempId, // Send tempId so server can reference it
     });
 
     attachments.forEach((attachment) => {
@@ -112,25 +117,25 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
   };
 
   const insertEmoji = (emoji) => {
-    setContent(prev => prev + emoji);
+    setContent((prev) => prev + emoji);
     inputRef.current?.focus();
   };
 
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
     // For now, just store file names - actual upload would go to your storage
-    const newAttachments = files.map(file => ({
+    const newAttachments = files.map((file) => ({
       name: file.name,
       type: file.type,
       size: file.size,
       // In production, you'd upload and get a URL
-      url: URL.createObjectURL(file)
+      url: URL.createObjectURL(file),
     }));
-    setAttachments(prev => [...prev, ...newAttachments]);
+    setAttachments((prev) => [...prev, ...newAttachments]);
   };
 
   const removeAttachment = (index) => {
-    setAttachments(prev => {
+    setAttachments((prev) => {
       const attachment = prev[index];
       if (attachment?.url) {
         URL.revokeObjectURL(attachment.url);
@@ -162,7 +167,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
       {attachments.length > 0 && (
         <div className="px-4 py-2 border-b border-border flex gap-2 flex-wrap">
           {attachments.map((file, index) => (
-            <div 
+            <div
               key={index}
               className="relative group bg-muted rounded-lg px-3 py-2 flex items-center gap-2"
             >
@@ -171,9 +176,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
               ) : (
                 <Paperclip className="w-4 h-4 text-muted-foreground" />
               )}
-              <span className="text-sm text-foreground max-w-[150px] truncate">
-                {file.name}
-              </span>
+              <span className="text-sm text-foreground max-w-[150px] truncate">{file.name}</span>
               <button
                 onClick={() => removeAttachment(index)}
                 className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
@@ -217,7 +220,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
               className="w-full px-4 py-2.5 pr-24 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground resize-none focus:ring-2 focus:ring-primary focus:border-primary max-h-32"
               style={{ minHeight: '44px' }}
             />
-            
+
             {/* Action Buttons inside input */}
             <div className="absolute right-2 bottom-1.5 flex items-center gap-1">
               {/* Emoji Picker */}
@@ -226,7 +229,9 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
                   type="button"
                   onClick={() => setShowEmoji(!showEmoji)}
                   className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                    showEmoji ? 'text-primary bg-primary/20' : 'text-muted-foreground hover:text-foreground'
+                    showEmoji
+                      ? 'text-primary bg-primary/20'
+                      : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   <Smile className="w-5 h-5" />
@@ -236,7 +241,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
                 {showEmoji && (
                   <div className="absolute bottom-full right-0 mb-2 bg-card border border-border rounded-xl shadow-lg p-2 w-64">
                     <div className="grid grid-cols-6 gap-1">
-                      {EMOJI_LIST.map(emoji => (
+                      {EMOJI_LIST.map((emoji) => (
                         <button
                           key={emoji}
                           type="button"

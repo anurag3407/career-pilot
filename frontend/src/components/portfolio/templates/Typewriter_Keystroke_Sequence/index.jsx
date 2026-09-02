@@ -39,7 +39,8 @@ function Navbar({ name, onScrollTo }) {
     <>
       <nav className="tks-nav" role="navigation" aria-label="Main navigation">
         {/* Brand */}
-        <button type="button"
+        <button
+          type="button"
           className="tks-nav-brand"
           onClick={() => onScrollTo('hero')}
           aria-label="Back to top"
@@ -49,8 +50,9 @@ function Navbar({ name, onScrollTo }) {
 
         {/* Desktop links */}
         <div className="tks-nav-links" role="list">
-          {NAV_SECTIONS.map(s => (
-            <button type="button"
+          {NAV_SECTIONS.map((s) => (
+            <button
+              type="button"
               key={s}
               className="tks-nav-link"
               onClick={() => onScrollTo(s.toLowerCase())}
@@ -62,29 +64,39 @@ function Navbar({ name, onScrollTo }) {
         </div>
 
         {/* Mobile hamburger */}
-        <button type="button"
-          onClick={() => setMenuOpen(v => !v)}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
           style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            padding: 4, display: 'none',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 4,
+            display: 'none',
           }}
           className="tks-hamburger-btn"
         >
-          {[0, 1, 2].map(i => (
-            <div key={i} style={{
-              width: 20, height: 2,
-              background: i === 1 ? C.deepRed : C.inkGray,
-              margin: '4px 0',
-              transition: 'all 0.2s',
-              transform: menuOpen
-                ? i === 0 ? 'rotate(45deg) translate(3px, 5px)'
-                : i === 2 ? 'rotate(-45deg) translate(3px, -5px)'
-                : 'none'
-                : 'none',
-              opacity: menuOpen && i === 1 ? 0 : 1,
-            }} />
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              style={{
+                width: 20,
+                height: 2,
+                background: i === 1 ? C.deepRed : C.inkGray,
+                margin: '4px 0',
+                transition: 'all 0.2s',
+                transform: menuOpen
+                  ? i === 0
+                    ? 'rotate(45deg) translate(3px, 5px)'
+                    : i === 2
+                      ? 'rotate(-45deg) translate(3px, -5px)'
+                      : 'none'
+                  : 'none',
+                opacity: menuOpen && i === 1 ? 0 : 1,
+              }}
+            />
           ))}
         </button>
       </nav>
@@ -111,11 +123,15 @@ function Navbar({ name, onScrollTo }) {
             }}
             role="menu"
           >
-            {NAV_SECTIONS.map(s => (
-              <button type="button"
+            {NAV_SECTIONS.map((s) => (
+              <button
+                type="button"
                 key={s}
                 className="tks-nav-link"
-                onClick={() => { onScrollTo(s.toLowerCase()); setMenuOpen(false); }}
+                onClick={() => {
+                  onScrollTo(s.toLowerCase());
+                  setMenuOpen(false);
+                }}
                 style={{ textAlign: 'left', padding: '8px 0' }}
                 role="menuitem"
               >
@@ -141,11 +157,7 @@ function Navbar({ name, onScrollTo }) {
 // ── Section divider ───────────────────────────────────────────────────────────
 function SectionRule({ sym = '* * *', alt = false }) {
   return (
-    <hr
-      className={`tks-rule${alt ? ' tks-rule-alt' : ''}`}
-      data-sym={sym}
-      aria-hidden="true"
-    />
+    <hr className={`tks-rule${alt ? ' tks-rule-alt' : ''}`} data-sym={sym} aria-hidden="true" />
   );
 }
 
@@ -165,30 +177,64 @@ function Footer({ data }) {
       }}
     >
       <div>
-        <span style={{
-          fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: 10,
-          color: C.warmBrown,
-          letterSpacing: 2,
-        }}>
+        <span
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10,
+            color: C.warmBrown,
+            letterSpacing: 2,
+          }}
+        >
           © {new Date().getFullYear()} {data.personal.name} &nbsp;—&nbsp;
           <span style={{ color: C.border }}>EOF</span>
         </span>
-        <div style={{
-          fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: 9,
-          color: C.border,
-          letterSpacing: 1,
-          marginTop: 2,
-        }}>
+        <div
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 9,
+            color: C.border,
+            letterSpacing: 1,
+            marginTop: 2,
+          }}
+        >
           crafted with Typewriter_Keystroke_Sequence template
         </div>
       </div>
 
       <div style={{ display: 'flex', gap: 8 }}>
-        {data.socials?.github   && <a href={data.socials.github}   className="tks-social" target="_blank" rel="noreferrer" aria-label="GitHub"><Github   size={14} /></a>}
-        {data.socials?.linkedin && <a href={data.socials.linkedin} className="tks-social" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={14} /></a>}
-        {data.socials?.twitter  && <a href={data.socials.twitter}  className="tks-social" target="_blank" rel="noreferrer" aria-label="Twitter"><Twitter  size={14} /></a>}
+        {data.socials?.github && (
+          <a
+            href={data.socials.github}
+            className="tks-social"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="GitHub"
+          >
+            <Github size={14} />
+          </a>
+        )}
+        {data.socials?.linkedin && (
+          <a
+            href={data.socials.linkedin}
+            className="tks-social"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="LinkedIn"
+          >
+            <Linkedin size={14} />
+          </a>
+        )}
+        {data.socials?.twitter && (
+          <a
+            href={data.socials.twitter}
+            className="tks-social"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Twitter"
+          >
+            <Twitter size={14} />
+          </a>
+        )}
       </div>
     </footer>
   );
@@ -207,7 +253,10 @@ export default function TypewriterKeystrokeSequence() {
     <div className="tks-root">
       {/* SEO meta */}
       <title>{data.personal.name} — Portfolio</title>
-      <meta name="description" content={`Portfolio of ${data.personal.name} — ${data.personal.title}`} />
+      <meta
+        name="description"
+        content={`Portfolio of ${data.personal.name} — ${data.personal.title}`}
+      />
 
       {/* Styles */}
       <GlobalStyles />

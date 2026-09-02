@@ -1,14 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Search,
-  Github,
-  Briefcase,
-  Sparkles,
-  FileText,
-  TrendingUp,
-  Clock,
-} from 'lucide-react';
+import { Search, Github, Briefcase, Sparkles, FileText, TrendingUp, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const actions = [
@@ -95,8 +87,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
         inputRef.current?.focus();
       }, 50);
 
-      const saved =
-        JSON.parse(localStorage.getItem('recentCommands')) || [];
+      const saved = JSON.parse(localStorage.getItem('recentCommands')) || [];
 
       setRecentActions(saved);
     } else {
@@ -115,9 +106,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
       return actions;
     }
 
-    return actions.filter((action) =>
-      action.title.toLowerCase().includes(query.toLowerCase())
-    );
+    return actions.filter((action) => action.title.toLowerCase().includes(query.toLowerCase()));
   }, [query]);
 
   useEffect(() => {
@@ -131,17 +120,13 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
 
-        setSelectedIndex((prev) =>
-          prev < filteredActions.length - 1 ? prev + 1 : 0
-        );
+        setSelectedIndex((prev) => (prev < filteredActions.length - 1 ? prev + 1 : 0));
       }
 
       if (e.key === 'ArrowUp') {
         e.preventDefault();
 
-        setSelectedIndex((prev) =>
-          prev > 0 ? prev - 1 : filteredActions.length - 1
-        );
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : filteredActions.length - 1));
       }
 
       if (e.key === 'Enter') {
@@ -157,8 +142,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
 
     window.addEventListener('keydown', handleKeyDown);
 
-    return () =>
-      window.removeEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, selectedIndex, filteredActions]);
 
   const handleSelect = (action) => {
@@ -174,10 +158,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
       ...recentActions.filter((a) => a.id !== action.id),
     ].slice(0, 5);
 
-    localStorage.setItem(
-      'recentCommands',
-      JSON.stringify(recentWithoutIcons)
-    );
+    localStorage.setItem('recentCommands', JSON.stringify(recentWithoutIcons));
 
     setRecentActions(recentWithoutIcons);
 
@@ -187,10 +168,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
   };
 
   const handleOutsideClick = (e) => {
-    if (
-      containerRef.current &&
-      !containerRef.current.contains(e.target)
-    ) {
+    if (containerRef.current && !containerRef.current.contains(e.target)) {
       setIsOpen(false);
     }
   };
@@ -222,9 +200,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
           />
 
           <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500">
-            <kbd className="rounded bg-white/10 px-2 py-1">
-              ESC
-            </kbd>
+            <kbd className="rounded bg-white/10 px-2 py-1">ESC</kbd>
           </div>
         </div>
 
@@ -237,12 +213,9 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
 
             <div className="space-y-1">
               {recentActions.map((action) => {
-                const matchedAction = actions.find(
-                  (a) => a.id === action.id
-                );
+                const matchedAction = actions.find((a) => a.id === action.id);
 
-                const Icon =
-                  matchedAction?.icon || Briefcase;
+                const Icon = matchedAction?.icon || Briefcase;
 
                 return (
                   <button
@@ -255,13 +228,9 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
                     </div>
 
                     <div>
-                      <p className="text-sm text-white">
-                        {action.title}
-                      </p>
+                      <p className="text-sm text-white">{action.title}</p>
 
-                      <p className="text-xs text-gray-500">
-                        {action.description}
-                      </p>
+                      <p className="text-xs text-gray-500">{action.description}</p>
                     </div>
                   </button>
                 );
@@ -290,22 +259,16 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
                   </div>
 
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-white">
-                      {action.title}
-                    </p>
+                    <p className="text-sm font-medium text-white">{action.title}</p>
 
-                    <p className="text-xs text-gray-500">
-                      {action.description}
-                    </p>
+                    <p className="text-xs text-gray-500">{action.description}</p>
                   </div>
                 </button>
               );
             })
           ) : (
             <div className="py-12 text-center">
-              <p className="text-sm text-gray-400">
-                No matching commands found.
-              </p>
+              <p className="text-sm text-gray-400">No matching commands found.</p>
             </div>
           )}
         </div>
@@ -317,15 +280,11 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
           </div>
 
           <div className="flex items-center gap-2">
-            <kbd className="rounded bg-white/10 px-2 py-1">
-              Ctrl
-            </kbd>
+            <kbd className="rounded bg-white/10 px-2 py-1">Ctrl</kbd>
 
             <span>+</span>
 
-            <kbd className="rounded bg-white/10 px-2 py-1">
-              K
-            </kbd>
+            <kbd className="rounded bg-white/10 px-2 py-1">K</kbd>
           </div>
         </div>
       </div>

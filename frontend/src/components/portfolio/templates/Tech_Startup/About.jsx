@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { ArrowUpRight, ExternalLink } from 'lucide-react';
-import "./About.css";
+import './About.css';
 
 /**
  * @component AboutSection
@@ -10,33 +10,33 @@ import "./About.css";
 
 // ── Content Configuration
 const PERSON = {
-  firstName: "Alex",
-  lastName: "Rivera",
-  role: "Principal Engineer",
-  tagline: "Building products people reach for without thinking.",
+  firstName: 'Alex',
+  lastName: 'Rivera',
+  role: 'Principal Engineer',
+  tagline: 'Building products people reach for without thinking.',
   bio1: "I write software with a designer's eye, focusing on system responsiveness, clean architecture, and delightful micro-interactions. Over the past decade, I've led engineering teams at high-growth startups and design-led technology companies.",
-  bio2: "Outside of writing production code, I'm dedicated to mentoring designers who code and engineers who design. I believe that the screen is a physical medium, and code is our chisel."
+  bio2: "Outside of writing production code, I'm dedicated to mentoring designers who code and engineers who design. I believe that the screen is a physical medium, and code is our chisel.",
 };
 
 const STATS = [
-  { number: "07+", label: "Years in the craft" },
-  { number: "40k+", label: "Engineers reached via OSS" },
-  { number: "12", label: "Products shipped to production" }
+  { number: '07+', label: 'Years in the craft' },
+  { number: '40k+', label: 'Engineers reached via OSS' },
+  { number: '12', label: 'Products shipped to production' },
 ];
 
 const EXPERTISE = [
-  "React",
-  "System Design",
-  "TypeScript",
-  "Distributed Systems",
-  "DX",
-  "Web Assembly",
-  "WebGL"
+  'React',
+  'System Design',
+  'TypeScript',
+  'Distributed Systems',
+  'DX',
+  'Web Assembly',
+  'WebGL',
 ];
 
 const CURRENTLY = {
-  project: "→ Building CraftOS — a workspace for creative engineers",
-  date: "Mar 2025"
+  project: '→ Building CraftOS — a workspace for creative engineers',
+  date: 'Mar 2025',
 };
 
 // ── Sub-components
@@ -47,7 +47,9 @@ const CURRENTLY = {
  */
 function StatItem({ number, label, isIndented }) {
   return (
-    <div className={`group/stat flex flex-col items-start ${isIndented ? 'pl-8' : 'pl-0'} pb-6 border-b border-[rgba(224,185,106,0.1)] last:pb-0 last:border-b-0`}>
+    <div
+      className={`group/stat flex flex-col items-start ${isIndented ? 'pl-8' : 'pl-0'} pb-6 border-b border-[rgba(224,185,106,0.1)] last:pb-0 last:border-b-0`}
+    >
       <div className="font-display-custom italic text-[clamp(2.8rem,5vw,3.5rem)] text-[var(--primary-accent)] group-hover/stat:text-[var(--secondary-accent)] transition-colors duration-200 leading-none">
         {number}
       </div>
@@ -67,16 +69,18 @@ function CurrentlyCard({ project, date }) {
     <div className="glass-panel border-l-2 border-l-[var(--secondary-accent)] hover:border-l-[var(--secondary-accent)] p-4 w-full">
       <div className="flex items-center gap-2 mb-2">
         <span className="w-1.5 h-1.5 rounded-full bg-[var(--secondary-accent)] animate-pulse" />
-        <span className="font-mono-custom text-[0.625rem] tracking-[0.2em] uppercase text-[var(--text-muted)]">CURRENTLY</span>
+        <span className="font-mono-custom text-[0.625rem] tracking-[0.2em] uppercase text-[var(--text-muted)]">
+          CURRENTLY
+        </span>
       </div>
       <div className="font-body-custom text-sm text-[var(--text-primary)] font-light mb-1">
         {project}
       </div>
       <div className="font-mono-custom text-[0.625rem] text-[var(--text-secondary)] flex justify-between items-center">
         <span>Last updated {date}</span>
-        <a 
-          href="https://github.com" 
-          target="_blank" 
+        <a
+          href="https://github.com"
+          target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 hover:text-[var(--primary-accent)] transition-colors focus-visible:ring-2 focus-visible:ring-[var(--primary-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D0B08] outline-none rounded-sm"
         >
@@ -101,7 +105,9 @@ function ExpertiseTags({ items }) {
             {item}
           </span>
           {index < items.length - 1 && (
-            <span className="text-[rgba(224,185,106,0.3)] select-none" aria-hidden="true">·</span>
+            <span className="text-[rgba(224,185,106,0.3)] select-none" aria-hidden="true">
+              ·
+            </span>
           )}
         </React.Fragment>
       ))}
@@ -127,7 +133,11 @@ function CTARow() {
         className="cta-secondary group inline-flex items-center gap-1.5 font-mono-custom text-sm tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D0B08]"
       >
         <span className="cta-secondary-underline">Read Case Studies</span>
-        <ArrowUpRight size={14} className="text-[var(--primary-accent)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+        <ArrowUpRight
+          size={14}
+          className="text-[var(--primary-accent)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          aria-hidden="true"
+        />
       </a>
     </div>
   );
@@ -164,34 +174,35 @@ export default function AboutSection() {
       aria-labelledby="about-heading"
       className="tech-startup-about reveal-section relative w-full min-h-screen bg-[#0D0B08] text-[var(--text-secondary)] px-6 py-20 lg:py-32 overflow-hidden flex items-center justify-center font-body-custom"
     >
-
-
       {/* ── Background Stack (Layers 2, 3, 4) */}
       <svg className="sr-only" aria-hidden="true">
         <filter id="noise-filter">
-          <feTurbulence type="fractalNoise" baseFrequency="0.80" numOctaves="4" stitchTiles="stitch" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.80"
+            numOctaves="4"
+            stitchTiles="stitch"
+          />
         </filter>
       </svg>
       <div className="noise-bg" aria-hidden="true" />
-      
+
       {/* Spotlight Radial Gradients */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0" 
+      <div
+        className="absolute inset-0 pointer-events-none z-0"
         style={{
           backgroundImage: `
             radial-gradient(ellipse 60% 50% at 15% 20%, rgba(224, 185, 106, 0.07) 0%, transparent 70%),
             radial-gradient(ellipse 40% 40% at 85% 85%, rgba(232, 114, 74, 0.04) 0%, transparent 70%)
-          `
-        }} 
-        aria-hidden="true" 
+          `,
+        }}
+        aria-hidden="true"
       />
 
       {/* ── Content Grid */}
       <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[58%_minmax(0,1fr)] gap-16 lg:gap-20 items-start">
-        
         {/* ── LEFT COLUMN (Narrative) */}
         <div className="flex flex-col gap-8 md:gap-10">
-          
           {/* Block 1 — Eyebrow */}
           <div className="flex items-center gap-3 font-mono-custom text-[0.625rem] tracking-[0.25em] uppercase">
             <span className="w-6 h-[1px] bg-[rgba(224,185,106,0.2)]" aria-hidden="true" />
@@ -203,15 +214,20 @@ export default function AboutSection() {
 
           {/* Block 2 — Name */}
           <header>
-            <h1 
-              id="about-heading" 
+            <h1
+              id="about-heading"
               className="font-display-custom italic text-[clamp(2.5rem,7vw,5rem)] leading-none tracking-tight text-[var(--text-secondary)] flex flex-wrap items-baseline gap-x-4"
             >
               <span className="font-light">{PERSON.firstName}</span>
               <span className="relative text-[var(--text-primary)] font-bold pb-2">
                 {PERSON.lastName}
                 <span className="absolute left-0 -bottom-1 w-full h-3 overflow-visible pointer-events-none">
-                  <svg className="w-full h-full" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+                  <svg
+                    className="w-full h-full"
+                    viewBox="0 0 100 10"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
                     <path
                       className="animated-underline-path"
                       d="M2,6 C30,3 70,8 98,4"
@@ -253,15 +269,18 @@ export default function AboutSection() {
 
         {/* ── RIGHT COLUMN (Visual Artifacts) */}
         <aside className="flex flex-col gap-8 w-full max-w-md lg:max-w-none">
-          
           {/* Artifact C — Abstract Identity Mark */}
           <div className="flex justify-start pl-2 lg:pl-0">
-            <div 
-              className="relative w-[90px] h-[90px] lg:w-[120px] lg:h-[120px] flex items-center justify-center transition-all duration-300" 
-              role="img" 
+            <div
+              className="relative w-[90px] h-[90px] lg:w-[120px] lg:h-[120px] flex items-center justify-center transition-all duration-300"
+              role="img"
               aria-label={`${PERSON.firstName} ${PERSON.lastName} monogram`}
             >
-              <svg className="absolute inset-0 w-full h-full spin-slow-custom" viewBox="0 0 120 120" aria-hidden="true">
+              <svg
+                className="absolute inset-0 w-full h-full spin-slow-custom"
+                viewBox="0 0 120 120"
+                aria-hidden="true"
+              >
                 <circle
                   cx="60"
                   cy="60"
@@ -274,7 +293,8 @@ export default function AboutSection() {
                 />
               </svg>
               <span className="font-display-custom italic text-2xl lg:text-3.5xl text-[var(--primary-accent)] opacity-60 select-none transition-all duration-300">
-                {PERSON.firstName[0]}{PERSON.lastName[0]}
+                {PERSON.firstName[0]}
+                {PERSON.lastName[0]}
               </span>
             </div>
           </div>
@@ -283,11 +303,11 @@ export default function AboutSection() {
           <div className="glass-panel p-[1.5rem_1.25rem] lg:p-[2.5rem_2rem] w-full transition-all duration-300 ease-in-out">
             <div className="flex flex-col gap-8">
               {STATS.map((stat, index) => (
-                <StatItem 
-                  key={stat.label} 
-                  number={stat.number} 
-                  label={stat.label} 
-                  isIndented={index === 1} 
+                <StatItem
+                  key={stat.label}
+                  number={stat.number}
+                  label={stat.label}
+                  isIndented={index === 1}
                 />
               ))}
             </div>
@@ -296,7 +316,6 @@ export default function AboutSection() {
           {/* Artifact B — Currently Working On Card */}
           <CurrentlyCard project={CURRENTLY.project} date={CURRENTLY.date} />
         </aside>
-
       </div>
     </section>
   );

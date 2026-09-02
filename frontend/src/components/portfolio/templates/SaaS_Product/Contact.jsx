@@ -17,7 +17,12 @@ function socialsList(socials = {}) {
     { label: 'Github', value: socials.github, href: socials.github, Icon: Github },
     { label: 'LinkedIn', value: socials.linkedin, href: socials.linkedin, Icon: Linkedin },
     { label: 'Twitter', value: socials.twitter, href: socials.twitter, Icon: Twitter },
-    { label: 'Email', value: socials.email, href: socials.email ? `mailto:${socials.email}` : '', Icon: Mail },
+    {
+      label: 'Email',
+      value: socials.email,
+      href: socials.email ? `mailto:${socials.email}` : '',
+      Icon: Mail,
+    },
   ].filter((item) => item.value);
 }
 
@@ -37,7 +42,9 @@ export default function Contact({ data }) {
           <div>
             <h2 className="text-2xl font-bold text-[#F1F0FF]">{data.personal?.name}</h2>
             <p className="mt-2 text-[#8884A8]">{data.personal?.title}</p>
-            <p className="mt-5 max-w-md text-sm leading-relaxed text-[#4B4870]">{teaser(data.personal?.bio)}</p>
+            <p className="mt-5 max-w-md text-sm leading-relaxed text-[#4B4870]">
+              {teaser(data.personal?.bio)}
+            </p>
             <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#10B981]/20 bg-[#10B981]/10 px-3 py-1.5 text-xs font-medium text-[#D1FAE5]">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981]" />
@@ -69,11 +76,12 @@ export default function Contact({ data }) {
         </div>
 
         <div className="mt-12 flex flex-col justify-between gap-3 border-t border-white/5 pt-6 text-xs text-[#4B4870] md:flex-row">
-          <p>&copy; {year} {data.personal?.name}. All rights reserved.</p>
+          <p>
+            &copy; {year} {data.personal?.name}. All rights reserved.
+          </p>
           <p>Built with React & Tailwind</p>
         </div>
       </motion.div>
     </footer>
   );
 }
-

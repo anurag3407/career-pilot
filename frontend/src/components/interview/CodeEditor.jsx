@@ -1,9 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Loader2 } from 'lucide-react';
 
-const Editor = lazy(() =>
-  import('@monaco-editor/react').then((m) => ({ default: m.Editor }))
-);
+const Editor = lazy(() => import('@monaco-editor/react').then((m) => ({ default: m.Editor })));
 
 /**
  * CodeEditor — Monaco-based code editor wrapper.
@@ -23,14 +21,14 @@ const LANG_TO_MONACO = {
   python: 'python',
   java: 'java',
   cpp: 'cpp',
-  go: 'go'
+  go: 'go',
 };
 
 export default function CodeEditor({
   language = 'javascript',
   value = '',
   onChange,
-  height = '420px'
+  height = '420px',
 }) {
   const monacoLang = LANG_TO_MONACO[language] || 'javascript';
 
@@ -64,7 +62,7 @@ export default function CodeEditor({
             renderLineHighlight: 'gutter',
             cursorBlinking: 'smooth',
             smoothScrolling: true,
-            padding: { top: 16, bottom: 16 }
+            padding: { top: 16, bottom: 16 },
           }}
           loading={
             <div

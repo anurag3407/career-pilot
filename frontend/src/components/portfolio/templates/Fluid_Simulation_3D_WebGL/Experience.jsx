@@ -6,23 +6,27 @@ export default function Experience({ data }) {
   const experiences = data?.experience || [];
 
   const handleMilestoneHover = (e) => {
-    window.dispatchEvent(new CustomEvent('fluid-burst', {
-      detail: {
-        x: e.clientX,
-        y: e.clientY,
-        count: 12,
-        color: '#f97316' // warm magma/amber flow
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-burst', {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          count: 12,
+          color: '#f97316', // warm magma/amber flow
+        },
+      })
+    );
   };
 
   return (
-    <section id="experience-section" className="relative py-28 px-6 md:px-12 bg-slate-950/20 backdrop-blur-[2px] border-t border-b border-slate-900 overflow-hidden text-white">
+    <section
+      id="experience-section"
+      className="relative py-28 px-6 md:px-12 bg-slate-950/20 backdrop-blur-[2px] border-t border-b border-slate-900 overflow-hidden text-white"
+    >
       {/* Dynamic vector flow indicator */}
       <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 via-cyan-500/0 to-teal-500/5 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto relative z-10 space-y-16">
-        
         {/* Title */}
         <div className="text-center space-y-4 max-w-xl mx-auto">
           <motion.h2
@@ -39,13 +43,13 @@ export default function Experience({ data }) {
             viewport={{ once: true }}
             className="text-slate-400 text-sm md:text-base leading-relaxed"
           >
-            Chronological milestones representing professional growth. Hover over cards to stream warm energy vectors into the grid.
+            Chronological milestones representing professional growth. Hover over cards to stream
+            warm energy vectors into the grid.
           </motion.p>
         </div>
 
         {/* Timeline Path Container */}
         <div className="relative">
-          
           {/* Animated Winding Wavy Current SVG Line (Hidden on tiny screens, left-aligned on mobile, centered on desktop) */}
           <div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-8 pointer-events-none hidden sm:block">
             <svg className="w-full h-full" preserveAspectRatio="none">
@@ -72,10 +76,12 @@ export default function Experience({ data }) {
             {experiences.map((exp, index) => {
               const role = exp.role || exp.title || 'Software Engineer';
               const company = exp.company || 'Tech Company';
-              const period = exp.period || (exp.startDate && exp.endDate ? `${exp.startDate} – ${exp.endDate}` : '');
+              const period =
+                exp.period ||
+                (exp.startDate && exp.endDate ? `${exp.startDate} – ${exp.endDate}` : '');
               const description = exp.description || '';
               const location = exp.location || '';
-              
+
               const isEven = index % 2 === 0;
 
               return (
@@ -90,7 +96,7 @@ export default function Experience({ data }) {
 
                   {/* Winding Node Marker */}
                   <div className="relative z-10 flex items-center justify-start md:justify-center">
-                    <div 
+                    <div
                       onMouseEnter={handleMilestoneHover}
                       className="w-10 h-10 rounded-2xl bg-slate-900 border-2 border-cyan-500/50 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-500/10 cursor-pointer hover:scale-110 active:scale-95 transition-all"
                     >
@@ -144,9 +150,7 @@ export default function Experience({ data }) {
               );
             })}
           </div>
-
         </div>
-
       </div>
     </section>
   );

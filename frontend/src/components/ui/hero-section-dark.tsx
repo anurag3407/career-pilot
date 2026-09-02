@@ -1,49 +1,49 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { ChevronRight } from "lucide-react"
+import * as React from 'react';
+import { cn } from '@/lib/utils';
+import { ChevronRight } from 'lucide-react';
 
 interface HeroSectionProps extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string
+  title?: string;
   subtitle?: {
-    regular: string
-    gradient: string
-  }
-  description?: string
-  ctaText?: string
-  ctaHref?: string
+    regular: string;
+    gradient: string;
+  };
+  description?: string;
+  ctaText?: string;
+  ctaHref?: string;
   bottomImage?: {
-    light: string
-    dark: string
-  }
+    light: string;
+    dark: string;
+  };
   gridOptions?: {
-    angle?: number
-    cellSize?: number
-    opacity?: number
-    lightLineColor?: string
-    darkLineColor?: string
-  }
+    angle?: number;
+    cellSize?: number;
+    opacity?: number;
+    lightLineColor?: string;
+    darkLineColor?: string;
+  };
 }
 
 const RetroGrid = ({
   angle = 65,
   cellSize = 60,
   opacity = 0.5,
-  lightLineColor = "gray",
-  darkLineColor = "gray",
+  lightLineColor = 'gray',
+  darkLineColor = 'gray',
 }) => {
   const gridStyles = {
-    "--grid-angle": `${angle}deg`,
-    "--cell-size": `${cellSize}px`,
-    "--opacity": opacity,
-    "--light-line": lightLineColor,
-    "--dark-line": darkLineColor,
-  } as React.CSSProperties
+    '--grid-angle': `${angle}deg`,
+    '--cell-size': `${cellSize}px`,
+    '--opacity': opacity,
+    '--light-line': lightLineColor,
+    '--dark-line': darkLineColor,
+  } as React.CSSProperties;
 
   return (
     <div
       className={cn(
-        "pointer-events-none absolute size-full overflow-hidden [perspective:200px]",
-        `opacity-[var(--opacity)]`,
+        'pointer-events-none absolute size-full overflow-hidden [perspective:200px]',
+        `opacity-[var(--opacity)]`
       )}
       style={gridStyles}
     >
@@ -52,32 +52,32 @@ const RetroGrid = ({
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent to-90% dark:from-black" />
     </div>
-  )
-}
+  );
+};
 
 const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
   (
     {
       className,
-      title = "Build products for everyone",
+      title = 'Build products for everyone',
       subtitle = {
-        regular: "Designing your projects faster with ",
-        gradient: "the largest figma UI kit.",
+        regular: 'Designing your projects faster with ',
+        gradient: 'the largest figma UI kit.',
       },
-      description = "Sed ut perspiciatis unde omnis iste natus voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae.",
-      ctaText = "Browse courses",
-      ctaHref = "#",
+      description = 'Sed ut perspiciatis unde omnis iste natus voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae.',
+      ctaText = 'Browse courses',
+      ctaHref = '#',
       bottomImage = {
-        light: "https://farmui.vercel.app/dashboard-light.png",
-        dark: "https://farmui.vercel.app/dashboard.png",
+        light: 'https://farmui.vercel.app/dashboard-light.png',
+        dark: 'https://farmui.vercel.app/dashboard.png',
       },
       gridOptions,
       ...props
     },
-    ref,
+    ref
   ) => {
     return (
-      <div className={cn("relative", className)} ref={ref} {...props}>
+      <div className={cn('relative', className)} ref={ref} {...props}>
         <div className="absolute top-0 z-[0] h-screen w-screen bg-purple-950/10 dark:bg-purple-950/10 bg-[radial-gradient(ellipse_20%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_20%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
         <section className="relative max-w-full mx-auto z-1">
           <RetroGrid {...gridOptions} />
@@ -93,9 +93,7 @@ const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
                   {subtitle.gradient}
                 </span>
               </h2>
-              <p className="max-w-2xl mx-auto text-gray-600 dark:text-gray-300">
-                {description}
-              </p>
+              <p className="max-w-2xl mx-auto text-gray-600 dark:text-gray-300">{description}</p>
               <div className="items-center justify-center gap-x-3 space-y-3 sm:flex sm:space-y-0">
                 <span className="relative inline-block overflow-hidden rounded-full p-[1.5px]">
                   <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
@@ -127,9 +125,9 @@ const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
           </div>
         </section>
       </div>
-    )
-  },
-)
-HeroSection.displayName = "HeroSection"
+    );
+  }
+);
+HeroSection.displayName = 'HeroSection';
 
-export { HeroSection }
+export { HeroSection };

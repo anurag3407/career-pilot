@@ -1,22 +1,25 @@
-import { cn } from '@/lib/utils'
-import { useState, forwardRef } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { cn } from '@/lib/utils';
+import { useState, forwardRef } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
-const Input = forwardRef(function Input({
-  label,
-  type = 'text',
-  name,
-  value,
-  onChange,
-  placeholder,
-  error,
-  required = false,
-  disabled = false,
-  className = ''
-}, ref) {
-  const [showPassword, setShowPassword] = useState(false)
+const Input = forwardRef(function Input(
+  {
+    label,
+    type = 'text',
+    name,
+    value,
+    onChange,
+    placeholder,
+    error,
+    required = false,
+    disabled = false,
+    className = '',
+  },
+  ref
+) {
+  const [showPassword, setShowPassword] = useState(false);
 
-  const inputType = type === 'password' ? (showPassword ? 'text' : 'password') : type
+  const inputType = type === 'password' ? (showPassword ? 'text' : 'password') : type;
 
   return (
     <div className="mb-6">
@@ -63,7 +66,7 @@ const Input = forwardRef(function Input({
         <p className="mt-2 text-sm font-bold text-destructive uppercase tracking-wide">{error}</p>
       )}
     </div>
-  )
-})
+  );
+});
 
-export default Input
+export default Input;

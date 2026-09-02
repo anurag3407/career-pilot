@@ -4,81 +4,81 @@ import { Heart, Camera, MapPin, Calendar } from 'lucide-react';
 const polaroids = [
   {
     id: 1,
-    title: "Summer Picnic",
-    caption: "golden afternoons ☀️",
-    date: "July 2023",
-    location: "Central Park",
-    rotate: "-rotate-3",
-    bg: "bg-amber-50",
-    tape: "bg-red-300",
-    tapeRotate: "rotate-12",
-    emoji: "🌻",
-    color: "text-amber-700",
+    title: 'Summer Picnic',
+    caption: 'golden afternoons ☀️',
+    date: 'July 2023',
+    location: 'Central Park',
+    rotate: '-rotate-3',
+    bg: 'bg-amber-50',
+    tape: 'bg-red-300',
+    tapeRotate: 'rotate-12',
+    emoji: '🌻',
+    color: 'text-amber-700',
   },
   {
     id: 2,
-    title: "Road Trip!!",
-    caption: "best adventure ever",
-    date: "Aug 2023",
-    location: "Route 66",
-    rotate: "rotate-2",
-    bg: "bg-sky-50",
-    tape: "bg-blue-300",
-    tapeRotate: "-rotate-6",
-    emoji: "🚗",
-    color: "text-sky-700",
+    title: 'Road Trip!!',
+    caption: 'best adventure ever',
+    date: 'Aug 2023',
+    location: 'Route 66',
+    rotate: 'rotate-2',
+    bg: 'bg-sky-50',
+    tape: 'bg-blue-300',
+    tapeRotate: '-rotate-6',
+    emoji: '🚗',
+    color: 'text-sky-700',
   },
   {
     id: 3,
-    title: "Birthday Bash",
-    caption: "cake + chaos = love",
-    date: "Sep 2023",
-    location: "Home Sweet Home",
-    rotate: "-rotate-1",
-    bg: "bg-pink-50",
-    tape: "bg-pink-300",
-    tapeRotate: "rotate-3",
-    emoji: "🎂",
-    color: "text-pink-700",
+    title: 'Birthday Bash',
+    caption: 'cake + chaos = love',
+    date: 'Sep 2023',
+    location: 'Home Sweet Home',
+    rotate: '-rotate-1',
+    bg: 'bg-pink-50',
+    tape: 'bg-pink-300',
+    tapeRotate: 'rotate-3',
+    emoji: '🎂',
+    color: 'text-pink-700',
   },
   {
     id: 4,
-    title: "Beach Day",
+    title: 'Beach Day',
     caption: "salty hair, don't care",
-    date: "Oct 2023",
-    location: "Malibu Beach",
-    rotate: "rotate-3",
-    bg: "bg-teal-50",
-    tape: "bg-teal-300",
-    tapeRotate: "-rotate-12",
-    emoji: "🏖️",
-    color: "text-teal-700",
+    date: 'Oct 2023',
+    location: 'Malibu Beach',
+    rotate: 'rotate-3',
+    bg: 'bg-teal-50',
+    tape: 'bg-teal-300',
+    tapeRotate: '-rotate-12',
+    emoji: '🏖️',
+    color: 'text-teal-700',
   },
   {
     id: 5,
-    title: "Winter Walk",
-    caption: "hot cocoa weather ❄️",
-    date: "Dec 2023",
-    location: "City Streets",
-    rotate: "-rotate-2",
-    bg: "bg-violet-50",
-    tape: "bg-violet-300",
-    tapeRotate: "rotate-6",
-    emoji: "☃️",
-    color: "text-violet-700",
+    title: 'Winter Walk',
+    caption: 'hot cocoa weather ❄️',
+    date: 'Dec 2023',
+    location: 'City Streets',
+    rotate: '-rotate-2',
+    bg: 'bg-violet-50',
+    tape: 'bg-violet-300',
+    tapeRotate: 'rotate-6',
+    emoji: '☃️',
+    color: 'text-violet-700',
   },
   {
     id: 6,
-    title: "Garden Party",
-    caption: "flowers everywhere 🌸",
-    date: "May 2024",
+    title: 'Garden Party',
+    caption: 'flowers everywhere 🌸',
+    date: 'May 2024',
     location: "Grandma's Garden",
-    rotate: "rotate-1",
-    bg: "bg-lime-50",
-    tape: "bg-lime-300",
-    tapeRotate: "-rotate-3",
-    emoji: "🌺",
-    color: "text-lime-700",
+    rotate: 'rotate-1',
+    bg: 'bg-lime-50',
+    tape: 'bg-lime-300',
+    tapeRotate: '-rotate-3',
+    emoji: '🌺',
+    color: 'text-lime-700',
   },
 ];
 
@@ -113,7 +113,6 @@ export default function MemoryPolaroids() {
       <div className="absolute bottom-6 right-6 text-2xl opacity-30 rotate-6">🎀</div>
 
       <div className="relative z-10 max-w-6xl mx-auto">
-
         {/* Header */}
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 mb-3">
@@ -135,7 +134,11 @@ export default function MemoryPolaroids() {
           </h2>
 
           {/* Zigzag underline */}
-          <svg viewBox="0 0 200 12" className="mx-auto w-48 mb-4" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 200 12"
+            className="mx-auto w-48 mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <polyline
               points="0,8 20,2 40,8 60,2 80,8 100,2 120,8 140,2 160,8 180,2 200,8"
               fill="none"
@@ -172,7 +175,6 @@ export default function MemoryPolaroids() {
 
               {/* Polaroid card */}
               <div className={`${p.bg} p-3 pb-10 rounded-sm border border-stone-200`}>
-
                 {/* Photo area */}
                 <div
                   className="w-full aspect-square rounded-sm flex items-center justify-center relative overflow-hidden mb-1"
@@ -234,7 +236,8 @@ export default function MemoryPolaroids() {
               </div>
 
               {/* Like button */}
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => toggleLike(p.id)}
                 className="absolute bottom-2 right-3 transition-transform duration-150 hover:scale-125 active:scale-90"
                 aria-label="Like"
@@ -262,7 +265,6 @@ export default function MemoryPolaroids() {
             </p>
           </div>
         </div>
-
       </div>
     </section>
   );

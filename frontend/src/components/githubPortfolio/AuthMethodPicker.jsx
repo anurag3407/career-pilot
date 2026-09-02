@@ -27,8 +27,7 @@ const OPTIONS = [
     title: 'Public profile only',
     icon: Github,
     color: 'foreground',
-    description:
-      'Just type a username. Public data only. Rate-limited to 60 requests/hour.',
+    description: 'Just type a username. Public data only. Rate-limited to 60 requests/hour.',
     perk: 'Zero setup',
   },
 ];
@@ -78,12 +77,7 @@ export default function AuthMethodPicker({ value, onChange, onContinue }) {
                   isSelected ? 'bg-primary/15' : 'bg-foreground/5'
                 )}
               >
-                <Icon
-                  className={cn(
-                    'h-5 w-5',
-                    isSelected ? 'text-primary' : 'text-foreground'
-                  )}
-                />
+                <Icon className={cn('h-5 w-5', isSelected ? 'text-primary' : 'text-foreground')} />
               </div>
               <h3 className="text-sm font-bold">{opt.title}</h3>
               <p className="mt-1 text-xs text-muted-foreground leading-relaxed">

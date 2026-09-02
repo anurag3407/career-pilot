@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { MessageSquare, ThumbsUp, User } from "lucide-react";
+import React, { useState } from 'react';
+import { MessageSquare, ThumbsUp, User } from 'lucide-react';
 
 export default function Testimonials({ testimonials = [] }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -15,7 +15,10 @@ export default function Testimonials({ testimonials = [] }) {
   };
 
   return (
-    <section id="testimonials" className="relative min-h-[80vh] w-full bg-[#0c051a] py-20 px-4 sm:px-6 lg:px-8 border-b-8 border-black select-none flex items-center justify-center">
+    <section
+      id="testimonials"
+      className="relative min-h-[80vh] w-full bg-[#0c051a] py-20 px-4 sm:px-6 lg:px-8 border-b-8 border-black select-none flex items-center justify-center"
+    >
       <div className="absolute inset-0 bg-[radial-gradient(#1c0f3a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-40" />
 
       <div className="relative z-20 w-full max-w-4xl flex flex-col items-center">
@@ -46,7 +49,12 @@ export default function Testimonials({ testimonials = [] }) {
             <div className="flex-shrink-0 flex flex-col items-center">
               <div className="w-24 h-24 bg-neutral-900 border-4 border-black p-1 shadow-[4px_4px_0px_0px_#00f0ff] mb-4 overflow-hidden relative">
                 {testimonials[activeIndex].avatar ? (
-                  <img src={testimonials[activeIndex].avatar} alt={testimonials[activeIndex].name} className="w-full h-full object-cover pixelated grayscale hover:grayscale-0 transition-all" style={{ imageRendering: 'pixelated' }} />
+                  <img
+                    src={testimonials[activeIndex].avatar}
+                    alt={testimonials[activeIndex].name}
+                    className="w-full h-full object-cover pixelated grayscale hover:grayscale-0 transition-all"
+                    style={{ imageRendering: 'pixelated' }}
+                  />
                 ) : (
                   <div className="w-full h-full bg-black flex items-center justify-center">
                     <User className="w-12 h-12 text-[#00f0ff]" />
@@ -71,7 +79,7 @@ export default function Testimonials({ testimonials = [] }) {
                     LVL. 99 {testimonials[activeIndex].role}
                   </span>
                 </div>
-                
+
                 {/* Typewriter text effect container */}
                 <div className="relative">
                   <p className="font-retro-body text-xl md:text-2xl text-white leading-relaxed tracking-wide min-h-[100px]">
@@ -87,13 +95,15 @@ export default function Testimonials({ testimonials = [] }) {
                   MSG {activeIndex + 1} / {testimonials.length}
                 </span>
                 <div className="flex gap-4">
-                  <button type="button" 
+                  <button
+                    type="button"
                     onClick={prevTestimonial}
                     className="font-retro-title text-[10px] px-3 py-2 bg-neutral-900 border-2 border-black text-[#ffde00] hover:bg-neutral-800 active:translate-y-1 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
                   >
                     ◀ PREV
                   </button>
-                  <button type="button" 
+                  <button
+                    type="button"
                     onClick={nextTestimonial}
                     className="font-retro-title text-[10px] px-3 py-2 bg-[#ffde00] border-2 border-black text-black hover:bg-[#ffea00] active:translate-y-1 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
                   >

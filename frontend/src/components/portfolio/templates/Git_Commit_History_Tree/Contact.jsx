@@ -28,7 +28,8 @@ function RemoteRow({ name, url, type, icon: Icon, color, delay, inView }) {
           {url}
         </a>
       </span>
-      <button type="button"
+      <button
+        type="button"
         onClick={handleCopy}
         aria-label={`Copy ${name} URL`}
         className="opacity-0 group-hover:opacity-100 transition-opacity text-[#8B949E] hover:text-white"
@@ -43,22 +44,22 @@ function RemoteRow({ name, url, type, icon: Icon, color, delay, inView }) {
 export default function Contact() {
   const { portfolioData } = usePortfolio();
   const { personal, socials } = portfolioData;
-  const ref    = useRef(null);
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
 
   const remotes = [
-    { name: 'github',   url: socials.github,            type: '(fetch)',  icon: Github,   color: '#8B949E' },
-    { name: 'github',   url: socials.github,            type: '(push)',   icon: Github,   color: '#8B949E' },
-    { name: 'linkedin', url: socials.linkedin,          type: '(fetch)',  icon: Linkedin, color: '#58A6FF' },
-    { name: 'linkedin', url: socials.linkedin,          type: '(push)',   icon: Linkedin, color: '#58A6FF' },
-    { name: 'email',    url: `mailto:${socials.email}`, type: '(send)',   icon: Mail,     color: '#3FB950' },
-    { name: 'twitter',  url: socials.twitter,           type: '(follow)', icon: Twitter,  color: '#58A6FF' },
-  ].filter(r => r.url && r.url !== 'mailto:undefined');
+    { name: 'github', url: socials.github, type: '(fetch)', icon: Github, color: '#8B949E' },
+    { name: 'github', url: socials.github, type: '(push)', icon: Github, color: '#8B949E' },
+    { name: 'linkedin', url: socials.linkedin, type: '(fetch)', icon: Linkedin, color: '#58A6FF' },
+    { name: 'linkedin', url: socials.linkedin, type: '(push)', icon: Linkedin, color: '#58A6FF' },
+    { name: 'email', url: `mailto:${socials.email}`, type: '(send)', icon: Mail, color: '#3FB950' },
+    { name: 'twitter', url: socials.twitter, type: '(follow)', icon: Twitter, color: '#58A6FF' },
+  ].filter((r) => r.url && r.url !== 'mailto:undefined');
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     // In production this would POST to a backend / email service
     setSubmitted(true);
@@ -72,7 +73,6 @@ export default function Contact() {
       aria-label="Contact"
     >
       <div className="max-w-5xl mx-auto space-y-8">
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -105,12 +105,16 @@ export default function Contact() {
               <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
               <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
               <div className="w-3 h-3 rounded-full bg-[#28C840]" />
-              <span className="ml-3 font-mono text-xs text-[#8B949E]">terminal — git remote -v</span>
+              <span className="ml-3 font-mono text-xs text-[#8B949E]">
+                terminal — git remote -v
+              </span>
             </div>
 
             {/* Prompt */}
             <div className="px-4 py-3 font-mono text-sm border-b border-[#30363D]">
-              <span className="text-[#3FB950]">~/{personal.name?.toLowerCase().replace(/\s+/g, '-')}</span>
+              <span className="text-[#3FB950]">
+                ~/{personal.name?.toLowerCase().replace(/\s+/g, '-')}
+              </span>
               <span className="text-[#8B949E]"> $ </span>
               <span className="text-white">git remote -v</span>
             </div>
@@ -118,13 +122,20 @@ export default function Contact() {
             {/* Remotes */}
             <div className="py-2">
               {remotes.map((r, i) => (
-                <RemoteRow key={`${r.name}-${r.type}`} {...r} delay={0.2 + i * 0.06} inView={inView} />
+                <RemoteRow
+                  key={`${r.name}-${r.type}`}
+                  {...r}
+                  delay={0.2 + i * 0.06}
+                  inView={inView}
+                />
               ))}
             </div>
 
             {/* Cursor prompt */}
             <div className="px-4 py-3 border-t border-[#30363D] font-mono text-sm flex items-center gap-2">
-              <span className="text-[#3FB950]">~/{personal.name?.toLowerCase().replace(/\s+/g, '-')}</span>
+              <span className="text-[#3FB950]">
+                ~/{personal.name?.toLowerCase().replace(/\s+/g, '-')}
+              </span>
               <span className="text-[#8B949E]">$</span>
               <span
                 className="inline-block w-2 h-4 bg-[#3FB950] ml-0.5 align-middle"
@@ -146,7 +157,9 @@ export default function Contact() {
               <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
               <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
               <div className="w-3 h-3 rounded-full bg-[#28C840]" />
-              <span className="ml-3 font-mono text-xs text-[#8B949E]">COMMIT_EDITMSG — git commit</span>
+              <span className="ml-3 font-mono text-xs text-[#8B949E]">
+                COMMIT_EDITMSG — git commit
+              </span>
             </div>
 
             {submitted ? (
@@ -174,9 +187,21 @@ export default function Contact() {
                 </div>
 
                 {[
-                  { id: 'contact-name',    label: 'name',    type: 'text',  placeholder: 'Your full name',        key: 'name'    },
-                  { id: 'contact-email',   label: 'email',   type: 'email', placeholder: 'your@email.com',        key: 'email'   },
-                ].map(field => (
+                  {
+                    id: 'contact-name',
+                    label: 'name',
+                    type: 'text',
+                    placeholder: 'Your full name',
+                    key: 'name',
+                  },
+                  {
+                    id: 'contact-email',
+                    label: 'email',
+                    type: 'email',
+                    placeholder: 'your@email.com',
+                    key: 'email',
+                  },
+                ].map((field) => (
                   <div key={field.key} className="space-y-1">
                     <label htmlFor={field.id} className="font-mono text-xs text-[#3FB950]">
                       # {field.label}:
@@ -187,7 +212,7 @@ export default function Contact() {
                       required
                       placeholder={field.placeholder}
                       value={formState[field.key]}
-                      onChange={e => setFormState(s => ({ ...s, [field.key]: e.target.value }))}
+                      onChange={(e) => setFormState((s) => ({ ...s, [field.key]: e.target.value }))}
                       className="w-full bg-[#0D1117] border border-[#30363D] rounded-md px-3 py-2 text-sm font-mono text-white placeholder-[#484F58] focus:outline-none focus:border-[#58A6FF] transition-colors"
                     />
                   </div>
@@ -203,7 +228,7 @@ export default function Contact() {
                     rows={4}
                     placeholder="Write your commit message here..."
                     value={formState.message}
-                    onChange={e => setFormState(s => ({ ...s, message: e.target.value }))}
+                    onChange={(e) => setFormState((s) => ({ ...s, message: e.target.value }))}
                     className="w-full bg-[#0D1117] border border-[#30363D] rounded-md px-3 py-2 text-sm font-mono text-white placeholder-[#484F58] focus:outline-none focus:border-[#58A6FF] transition-colors resize-none"
                   />
                 </div>

@@ -1,33 +1,31 @@
-import { useState } from "react";
-import logger from "../../../../../utils/logger";
-import { motion } from "framer-motion";
-import { Mail, Github, Linkedin, Twitter, Send, CheckCircle } from "lucide-react";
+import { useState } from 'react';
+import logger from '../../../../../utils/logger';
+import { motion } from 'framer-motion';
+import { Mail, Github, Linkedin, Twitter, Send, CheckCircle } from 'lucide-react';
 
 export default function Contact({ personal, socials }) {
- const [sent, setSent] = useState(false);
- const [loading, setLoading] = useState(false);
- const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    // Simulate send delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Simulate send delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
+      setSent(true);
+      setTimeout(() => setSent(false), 4000);
 
-    setForm({ name: "", email: "", message: "" });
-
-  } catch (error) {
-    logger.error('Contact form submission failed', error);
-
-  } finally {
-    setLoading(false);
-  }
-};
+      setForm({ name: '', email: '', message: '' });
+    } catch (error) {
+      logger.error('Contact form submission failed', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section id="contact" className="py-16 px-4 md:px-12">
@@ -100,22 +98,22 @@ export default function Contact({ personal, socials }) {
                 />
               </div>
               <button
-  type="submit"
-  disabled={loading}
-  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#E50914] text-white font-bold text-sm rounded-lg hover:bg-red-700 transition-colors shadow-[0_0_20px_rgba(229,9,20,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
->
-  {loading ? (
-    <>
-      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-      Sending...
-    </>
-  ) : (
-    <>
-      <Send className="w-4 h-4" />
-      Send Message
-    </>
-  )}
-</button>
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#E50914] text-white font-bold text-sm rounded-lg hover:bg-red-700 transition-colors shadow-[0_0_20px_rgba(229,9,20,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    Send Message
+                  </>
+                )}
+              </button>
             </form>
           )}
         </motion.div>
@@ -132,10 +130,25 @@ export default function Contact({ personal, socials }) {
             <h3 className="text-white text-lg font-bold mb-4">Connect With Me</h3>
             <div className="space-y-3">
               {[
-                { icon: Mail, label: "Email", value: socials.email, href: `mailto:${socials.email}` },
-                { icon: Github, label: "GitHub", value: "github.com/alexrivera", href: socials.github },
-                { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/alexrivera", href: socials.linkedin },
-                { icon: Twitter, label: "Twitter", value: "@alexrivera", href: socials.twitter },
+                {
+                  icon: Mail,
+                  label: 'Email',
+                  value: socials.email,
+                  href: `mailto:${socials.email}`,
+                },
+                {
+                  icon: Github,
+                  label: 'GitHub',
+                  value: 'github.com/alexrivera',
+                  href: socials.github,
+                },
+                {
+                  icon: Linkedin,
+                  label: 'LinkedIn',
+                  value: 'linkedin.com/in/alexrivera',
+                  href: socials.linkedin,
+                },
+                { icon: Twitter, label: 'Twitter', value: '@alexrivera', href: socials.twitter },
               ].map(({ icon: Icon, label, value, href }) => (
                 <a
                   key={label}
@@ -148,7 +161,9 @@ export default function Contact({ personal, socials }) {
                     <Icon className="w-4 h-4 text-[#E50914]" />
                   </div>
                   <div>
-                    <p className="text-[#737373] text-[10px] font-semibold uppercase tracking-wider">{label}</p>
+                    <p className="text-[#737373] text-[10px] font-semibold uppercase tracking-wider">
+                      {label}
+                    </p>
                     <p className="text-[#e5e5e5] text-xs">{value}</p>
                   </div>
                 </a>

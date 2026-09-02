@@ -5,7 +5,9 @@ import { CheckCircle2, MapPin } from 'lucide-react';
 const ease = [0.22, 1, 0.36, 1];
 
 export default function About({ data }) {
-  const categories = [...new Set((data.skills || []).map((skill) => skill?.category).filter(Boolean))].slice(0, 3);
+  const categories = [
+    ...new Set((data.skills || []).map((skill) => skill?.category).filter(Boolean)),
+  ].slice(0, 3);
 
   return (
     <section id="about" className="bg-[#FFFDF8] px-5 py-24 md:px-8 md:py-32">
@@ -35,7 +37,9 @@ export default function About({ data }) {
               <div key={category} className="rounded-2xl border border-[#E7DED1] bg-[#FFFDF8] p-4">
                 <CheckCircle2 size={18} className="mb-3 text-[#8FA58A]" />
                 <p className="text-sm font-semibold text-[#283028]">{category}</p>
-                <p className="mt-1 text-xs leading-5 text-[#8B7D6B]">Measured, durable, and thoughtfully shipped.</p>
+                <p className="mt-1 text-xs leading-5 text-[#8B7D6B]">
+                  Measured, durable, and thoughtfully shipped.
+                </p>
               </div>
             ))}
           </div>

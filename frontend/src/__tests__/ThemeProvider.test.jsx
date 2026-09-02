@@ -21,7 +21,7 @@ describe('ThemeProvider', () => {
     // Mock matchMedia
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: vi.fn().mockImplementation(query => ({
+      value: vi.fn().mockImplementation((query) => ({
         matches: false,
         media: query,
         onchange: null,
@@ -54,25 +54,25 @@ describe('ThemeProvider', () => {
         <TestComponent />
       </ThemeProvider>
     );
-    
+
     // Initial: light
     expect(screen.getByTestId('theme-display').textContent).toBe('light');
     expect(document.documentElement.classList.contains('light')).toBe(true);
-    
+
     // Cycle 1: dark
     act(() => {
       screen.getByText('Toggle Theme').click();
     });
     expect(screen.getByTestId('theme-display').textContent).toBe('dark');
     expect(document.documentElement.classList.contains('dark')).toBe(true);
-    
+
     // Cycle 2: highContrast
     act(() => {
       screen.getByText('Toggle Theme').click();
     });
     expect(screen.getByTestId('theme-display').textContent).toBe('highContrast');
     expect(document.documentElement.classList.contains('highContrast')).toBe(true);
-    
+
     // Cycle 3: light
     act(() => {
       screen.getByText('Toggle Theme').click();
@@ -85,7 +85,7 @@ describe('ThemeProvider', () => {
     const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
       throw new Error('Access denied');
     });
-    
+
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     render(
@@ -95,7 +95,10 @@ describe('ThemeProvider', () => {
     );
 
     expect(screen.getByTestId('theme-display').textContent).toBe('light');
-    expect(consoleWarnSpy).toHaveBeenCalledWith('Failed to read from localStorage:', expect.any(Error));
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'Failed to read from localStorage:',
+      expect.any(Error)
+    );
 
     getItemSpy.mockRestore();
     consoleWarnSpy.mockRestore();

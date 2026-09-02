@@ -1,14 +1,14 @@
-import React from "react";
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import Hero from "./Hero";
-import About from "./About";
-import Skills from "./Skills";
-import Experience from "./Experience";
-import Projects from "./Projects";
-import SlotMachine from "./SlotMachine";
-import Testimonials from "./Testimonials";
-import ResumeCTA from "./ResumeCTA";
-import Contact from "./Contact";
+import React from 'react';
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Experience from './Experience';
+import Projects from './Projects';
+import SlotMachine from './SlotMachine';
+import Testimonials from './Testimonials';
+import ResumeCTA from './ResumeCTA';
+import Contact from './Contact';
 
 export default function CasinoVegas() {
   const { portfolioData: data } = usePortfolio();

@@ -1,6 +1,6 @@
-import React from "react";
-import data from "../../../../../data/dummy_data.json";
-import { motion } from "framer-motion";
+import React from 'react';
+import data from '../../../../../data/dummy_data.json';
+import { motion } from 'framer-motion';
 
 export default function Testimonials() {
   // duplicate array for seamless loop
@@ -8,18 +8,15 @@ export default function Testimonials() {
 
   return (
     <section className="relative py-28 overflow-hidden">
-
       {/* TITLE */}
       <div className="text-center mb-16 px-6">
         <h2 className="text-5xl font-black">
-          What people{" "}
+          What people{' '}
           <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-300 text-transparent bg-clip-text">
             say
           </span>
         </h2>
-        <p className="text-gray-400 mt-4">
-          Real feedback from collaborations and projects
-        </p>
+        <p className="text-gray-400 mt-4">Real feedback from collaborations and projects</p>
       </div>
 
       {/* EDGE GRADIENT OVERLAYS */}
@@ -30,14 +27,13 @@ export default function Testimonials() {
       <div className="relative overflow-hidden">
         <motion.div
           className="flex gap-8 w-max"
-          animate={{ x: ["0%", "-50%"] }}
+          animate={{ x: ['0%', '-50%'] }}
           transition={{
             repeat: Infinity,
             duration: 25,
-            ease: "linear",
+            ease: 'linear',
           }}
         >
-
           {looped.map((t, i) => (
             <div
               key={i}
@@ -63,16 +59,11 @@ export default function Testimonials() {
               </div>
 
               {/* text */}
-              <p className="text-gray-300 italic leading-relaxed">
-                “{t.text}”
-              </p>
+              <p className="text-gray-300 italic leading-relaxed">“{t.text}”</p>
 
               {/* user */}
               <div className="mt-6 flex items-center gap-4">
-                <img
-                  src={t.avatar}
-                  className="w-12 h-12 rounded-full border border-white/10"
-                />
+                <img src={t.avatar} className="w-12 h-12 rounded-full border border-white/10" />
 
                 <div>
                   <h4 className="font-semibold text-white">{t.name}</h4>
@@ -81,7 +72,6 @@ export default function Testimonials() {
               </div>
             </div>
           ))}
-
         </motion.div>
       </div>
     </section>

@@ -15,14 +15,35 @@ export default function ProjectVisualizerMockup() {
         {/* Nodes and edges (Graph) */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-50">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <line x1="30%" y1="40%" x2="50%" y2="50%" stroke="var(--color-primary)" strokeWidth="2" />
-            <line x1="70%" y1="35%" x2="50%" y2="50%" stroke="var(--color-primary)" strokeWidth="2" />
-            <line x1="45%" y1="70%" x2="50%" y2="50%" stroke="var(--color-primary)" strokeWidth="2" />
+            <line
+              x1="30%"
+              y1="40%"
+              x2="50%"
+              y2="50%"
+              stroke="var(--color-primary)"
+              strokeWidth="2"
+            />
+            <line
+              x1="70%"
+              y1="35%"
+              x2="50%"
+              y2="50%"
+              stroke="var(--color-primary)"
+              strokeWidth="2"
+            />
+            <line
+              x1="45%"
+              y1="70%"
+              x2="50%"
+              y2="50%"
+              stroke="var(--color-primary)"
+              strokeWidth="2"
+            />
           </svg>
         </div>
 
         {/* Node: Frontend */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
@@ -32,7 +53,7 @@ export default function ProjectVisualizerMockup() {
         </motion.div>
 
         {/* Node: Backend */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
@@ -42,7 +63,7 @@ export default function ProjectVisualizerMockup() {
         </motion.div>
 
         {/* Node: Database */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
@@ -52,7 +73,7 @@ export default function ProjectVisualizerMockup() {
         </motion.div>
 
         {/* Node: Core (Center) */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
@@ -62,7 +83,7 @@ export default function ProjectVisualizerMockup() {
         </motion.div>
 
         {/* Chat / Sidebar Overlap */}
-        <motion.div 
+        <motion.div
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.6 }}

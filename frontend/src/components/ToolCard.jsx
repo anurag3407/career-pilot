@@ -1,8 +1,16 @@
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
-export default function ToolCard({ to, icon: Icon, title, description, color = 'primary', badge, onClick }) {
+export default function ToolCard({
+  to,
+  icon: Icon,
+  title,
+  description,
+  color = 'primary',
+  badge,
+  onClick,
+}) {
   const content = (
     <motion.div
       whileHover={{ y: -4, scale: 1.01 }}
@@ -20,7 +28,9 @@ export default function ToolCard({ to, icon: Icon, title, description, color = '
       )}
 
       {/* Icon */}
-      <div className={`relative w-14 h-14 rounded-xl bg-${color}/10 border border-${color}/20 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-${color}/15 transition-all duration-300`}>
+      <div
+        className={`relative w-14 h-14 rounded-xl bg-${color}/10 border border-${color}/20 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-${color}/15 transition-all duration-300`}
+      >
         <Icon className={`w-7 h-7 text-${color} transition-colors`} />
       </div>
 
@@ -38,15 +48,15 @@ export default function ToolCard({ to, icon: Icon, title, description, color = '
         <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
       </div>
     </motion.div>
-  )
+  );
 
   if (onClick) {
-    return <div onClick={onClick}>{content}</div>
+    return <div onClick={onClick}>{content}</div>;
   }
 
   return (
     <Link to={to} className="block">
       {content}
     </Link>
-  )
+  );
 }

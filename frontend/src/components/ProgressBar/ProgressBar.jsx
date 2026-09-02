@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 const colorMap = {
-  primary: "bg-blue-500",
-  success: "bg-green-500",
-  warning: "bg-yellow-400",
-  error: "bg-red-500",
+  primary: 'bg-blue-500',
+  success: 'bg-green-500',
+  warning: 'bg-yellow-400',
+  error: 'bg-red-500',
 };
 
 const sizeMap = {
-  sm: "h-2",
-  md: "h-4",
-  lg: "h-6",
+  sm: 'h-2',
+  md: 'h-4',
+  lg: 'h-6',
 };
 
 /**
@@ -23,8 +23,8 @@ const sizeMap = {
  */
 const ProgressBar = ({
   value = 0,
-  color = "primary",
-  size = "md",
+  color = 'primary',
+  size = 'md',
   label = false,
   animated = false,
 }) => {
@@ -46,7 +46,7 @@ const ProgressBar = ({
     <div className="w-full">
       {label && !isIndeterminate && (
         <div className="flex justify-between mb-1 text-sm font-medium text-gray-600">
-          <span>{typeof label === "string" ? label : "Progress"}</span>
+          <span>{typeof label === 'string' ? label : 'Progress'}</span>
           <span>{width}%</span>
         </div>
       )}
@@ -57,13 +57,13 @@ const ProgressBar = ({
         aria-valuenow={isIndeterminate ? undefined : width}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label={typeof label === "string" ? label : "Progress bar"}
+        aria-label={typeof label === 'string' ? label : 'Progress bar'}
       >
         {isIndeterminate ? (
           <>
             <div
               className={`${barHeight} ${barColor} rounded-full w-1/3`}
-              style={{ animation: "indeterminate 1.5s infinite ease-in-out" }}
+              style={{ animation: 'indeterminate 1.5s infinite ease-in-out' }}
             />
             <style>{`
               @keyframes indeterminate {
@@ -81,7 +81,7 @@ const ProgressBar = ({
             className={`
               ${barHeight} ${barColor} rounded-full
               transition-all duration-700 ease-in-out
-              ${animated ? "progress-stripes" : ""}
+              ${animated ? 'progress-stripes' : ''}
             `}
             style={{ width: `${width}%` }}
           />

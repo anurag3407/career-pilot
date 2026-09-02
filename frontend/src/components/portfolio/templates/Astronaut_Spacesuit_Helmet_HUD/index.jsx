@@ -1050,7 +1050,15 @@ function RadarWidget({ skills }) {
       <svg width="200" height="200" viewBox="0 0 200 200">
         {/* Rings */}
         {[70, 55, 40, 25].map((r, i) => (
-          <circle key={i} cx="100" cy="100" r={r} fill="none" stroke="rgba(0,212,255,0.12)" strokeWidth="1" />
+          <circle
+            key={i}
+            cx="100"
+            cy="100"
+            r={r}
+            fill="none"
+            stroke="rgba(0,212,255,0.12)"
+            strokeWidth="1"
+          />
         ))}
         {/* Crosshairs */}
         <line x1="100" y1="30" x2="100" y2="170" stroke="rgba(0,212,255,0.12)" strokeWidth="1" />
@@ -1058,13 +1066,27 @@ function RadarWidget({ skills }) {
         {/* Sweep */}
         <g className="radar-sweep">
           <defs>
-            <radialGradient id="sweepGrad" cx="0" cy="50%" r="100%" gradientUnits="objectBoundingBox">
+            <radialGradient
+              id="sweepGrad"
+              cx="0"
+              cy="50%"
+              r="100%"
+              gradientUnits="objectBoundingBox"
+            >
               <stop offset="0%" stopColor="#00D4FF" stopOpacity="0.4" />
               <stop offset="100%" stopColor="#00D4FF" stopOpacity="0" />
             </radialGradient>
           </defs>
           <path d="M100,100 L170,100 A70,70 0 0,0 100,30 Z" fill="url(#sweepGrad)" />
-          <line x1="100" y1="100" x2="170" y2="100" stroke="#00D4FF" strokeWidth="1.5" opacity="0.7" />
+          <line
+            x1="100"
+            y1="100"
+            x2="170"
+            y2="100"
+            stroke="#00D4FF"
+            strokeWidth="1.5"
+            opacity="0.7"
+          />
         </g>
         {/* Skill dots */}
         {featured.map((s, i) => {
@@ -1075,9 +1097,23 @@ function RadarWidget({ skills }) {
           return (
             <g key={i}>
               <circle cx={x} cy={y} r="4" fill="#39FF14" opacity="0.9" />
-              <circle cx={x} cy={y} r="4" fill="none" stroke="#39FF14" strokeWidth="1" opacity="0.4">
+              <circle
+                cx={x}
+                cy={y}
+                r="4"
+                fill="none"
+                stroke="#39FF14"
+                strokeWidth="1"
+                opacity="0.4"
+              >
                 <animate attributeName="r" from="4" to="12" dur="2s" repeatCount="indefinite" />
-                <animate attributeName="opacity" from="0.4" to="0" dur="2s" repeatCount="indefinite" />
+                <animate
+                  attributeName="opacity"
+                  from="0.4"
+                  to="0"
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
               </circle>
             </g>
           );
@@ -1092,23 +1128,77 @@ function RadarWidget({ skills }) {
 /* ── Helmet frame corners ── */
 function HelmetFrame() {
   return (
-    <svg className="helmet-frame" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className="helmet-frame"
+      viewBox="0 0 1440 900"
+      preserveAspectRatio="xMidYMid slice"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       {/* Corner brackets */}
       {/* TL */}
-      <path d="M 40 80 L 40 40 L 80 40" fill="none" stroke="#00D4FF" strokeWidth="1.5" opacity="0.6" />
+      <path
+        d="M 40 80 L 40 40 L 80 40"
+        fill="none"
+        stroke="#00D4FF"
+        strokeWidth="1.5"
+        opacity="0.6"
+      />
       {/* TR */}
-      <path d="M 1360 40 L 1400 40 L 1400 80" fill="none" stroke="#00D4FF" strokeWidth="1.5" opacity="0.6" />
+      <path
+        d="M 1360 40 L 1400 40 L 1400 80"
+        fill="none"
+        stroke="#00D4FF"
+        strokeWidth="1.5"
+        opacity="0.6"
+      />
       {/* BL */}
-      <path d="M 40 820 L 40 860 L 80 860" fill="none" stroke="#00D4FF" strokeWidth="1.5" opacity="0.6" />
+      <path
+        d="M 40 820 L 40 860 L 80 860"
+        fill="none"
+        stroke="#00D4FF"
+        strokeWidth="1.5"
+        opacity="0.6"
+      />
       {/* BR */}
-      <path d="M 1360 860 L 1400 860 L 1400 820" fill="none" stroke="#00D4FF" strokeWidth="1.5" opacity="0.6" />
+      <path
+        d="M 1360 860 L 1400 860 L 1400 820"
+        fill="none"
+        stroke="#00D4FF"
+        strokeWidth="1.5"
+        opacity="0.6"
+      />
       {/* Top center label bracket */}
-      <path d="M 660 0 L 660 18 M 780 0 L 780 18" fill="none" stroke="rgba(0,212,255,0.3)" strokeWidth="1" />
-      <text x="720" y="14" textAnchor="middle" fontFamily="Share Tech Mono,monospace" fontSize="8" fill="rgba(0,212,255,0.5)" letterSpacing="3">HUD.SYS.v4.2</text>
+      <path
+        d="M 660 0 L 660 18 M 780 0 L 780 18"
+        fill="none"
+        stroke="rgba(0,212,255,0.3)"
+        strokeWidth="1"
+      />
+      <text
+        x="720"
+        y="14"
+        textAnchor="middle"
+        fontFamily="Share Tech Mono,monospace"
+        fontSize="8"
+        fill="rgba(0,212,255,0.5)"
+        letterSpacing="3"
+      >
+        HUD.SYS.v4.2
+      </text>
       {/* Bottom status bar */}
       <line x1="120" y1="876" x2="600" y2="876" stroke="rgba(0,212,255,0.15)" strokeWidth="1" />
       <line x1="840" y1="876" x2="1320" y2="876" stroke="rgba(0,212,255,0.15)" strokeWidth="1" />
-      <text x="720" y="880" textAnchor="middle" fontFamily="Share Tech Mono,monospace" fontSize="8" fill="rgba(255,140,0,0.4)" letterSpacing="2">LIFE SUPPORT NOMINAL</text>
+      <text
+        x="720"
+        y="880"
+        textAnchor="middle"
+        fontFamily="Share Tech Mono,monospace"
+        fontSize="8"
+        fill="rgba(255,140,0,0.4)"
+        letterSpacing="2"
+      >
+        LIFE SUPPORT NOMINAL
+      </text>
     </svg>
   );
 }
@@ -1128,7 +1218,7 @@ export default function AstronautSpacesuitHelmetHUD() {
     const tick = () => {
       const now = new Date();
       setTime(
-        `${String(now.getUTCHours()).padStart(2,'0')}:${String(now.getUTCMinutes()).padStart(2,'0')}:${String(now.getUTCSeconds()).padStart(2,'0')} UTC`
+        `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`
       );
     };
     tick();
@@ -1136,8 +1226,9 @@ export default function AstronautSpacesuitHelmetHUD() {
     return () => clearInterval(id);
   }, []);
 
-  const categories = ['All', ...Array.from(new Set(skills.map(s => s.category)))];
-  const filteredSkills = activeCat === 'All' ? skills : skills.filter(s => s.category === activeCat);
+  const categories = ['All', ...Array.from(new Set(skills.map((s) => s.category)))];
+  const filteredSkills =
+    activeCat === 'All' ? skills : skills.filter((s) => s.category === activeCat);
 
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -1156,11 +1247,19 @@ export default function AstronautSpacesuitHelmetHUD() {
             <span style={{ color: 'rgba(200,232,255,0.3)', marginLeft: 8 }}>◈ HUD</span>
           </div>
           <ul className="hud-nav-links">
-            {['systems','missions','trajectory','crew', 'contact'].map((sec, i) => {
-              const labels = ['SKILLS','PROJECTS','EXPERIENCE','TESTIMONIALS', 'COMM LINK'];
+            {['systems', 'missions', 'trajectory', 'crew', 'contact'].map((sec, i) => {
+              const labels = ['SKILLS', 'PROJECTS', 'EXPERIENCE', 'TESTIMONIALS', 'COMM LINK'];
               return (
                 <li key={i}>
-                  <a href="#" onClick={e => { e.preventDefault(); scrollTo(sec); }}>{labels[i]}</a>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollTo(sec);
+                    }}
+                  >
+                    {labels[i]}
+                  </a>
                 </li>
               );
             })}
@@ -1175,20 +1274,67 @@ export default function AstronautSpacesuitHelmetHUD() {
           {/* ── HERO ── */}
           <section className="hero">
             {/* Crosshair SVG */}
-            <svg className="hero-crosshair" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              className="hero-crosshair"
+              viewBox="0 0 320 320"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <circle cx="160" cy="160" r="150" stroke="rgba(0,212,255,0.06)" strokeWidth="1" />
               <circle cx="160" cy="160" r="100" stroke="rgba(0,212,255,0.08)" strokeWidth="1" />
               <circle cx="160" cy="160" r="50" stroke="rgba(0,212,255,0.12)" strokeWidth="1" />
-              <line x1="160" y1="10" x2="160" y2="60" stroke="rgba(0,212,255,0.4)" strokeWidth="1" />
-              <line x1="160" y1="260" x2="160" y2="310" stroke="rgba(0,212,255,0.4)" strokeWidth="1" />
-              <line x1="10" y1="160" x2="60" y2="160" stroke="rgba(0,212,255,0.4)" strokeWidth="1" />
-              <line x1="260" y1="160" x2="310" y2="160" stroke="rgba(0,212,255,0.4)" strokeWidth="1" />
-              <rect x="155" y="155" width="10" height="10" fill="none" stroke="rgba(0,212,255,0.5)" strokeWidth="1" transform="rotate(45 160 160)" />
+              <line
+                x1="160"
+                y1="10"
+                x2="160"
+                y2="60"
+                stroke="rgba(0,212,255,0.4)"
+                strokeWidth="1"
+              />
+              <line
+                x1="160"
+                y1="260"
+                x2="160"
+                y2="310"
+                stroke="rgba(0,212,255,0.4)"
+                strokeWidth="1"
+              />
+              <line
+                x1="10"
+                y1="160"
+                x2="60"
+                y2="160"
+                stroke="rgba(0,212,255,0.4)"
+                strokeWidth="1"
+              />
+              <line
+                x1="260"
+                y1="160"
+                x2="310"
+                y2="160"
+                stroke="rgba(0,212,255,0.4)"
+                strokeWidth="1"
+              />
+              <rect
+                x="155"
+                y="155"
+                width="10"
+                height="10"
+                fill="none"
+                stroke="rgba(0,212,255,0.5)"
+                strokeWidth="1"
+                transform="rotate(45 160 160)"
+              />
             </svg>
 
             <div className="hero-content">
               <div className="hero-left">
-                <p className="hero-callsign">⬡ CALLSIGN-{String(personal.name ?? '').toUpperCase().replace(/\s/g,'.')}</p>
+                <p className="hero-callsign">
+                  ⬡ CALLSIGN-
+                  {String(personal.name ?? '')
+                    .toUpperCase()
+                    .replace(/\s/g, '.')}
+                </p>
                 <h1 className="hero-name">
                   {personal.name?.split(' ')[0] ?? 'ALEX'}{' '}
                   <span>{personal.name?.split(' ').slice(1).join(' ') ?? 'RIVERA'}</span>
@@ -1196,38 +1342,73 @@ export default function AstronautSpacesuitHelmetHUD() {
                 <p className="hero-title">{personal.title ?? 'Full Stack Developer'}</p>
                 <p className="hero-bio">{personal.bio}</p>
                 <div className="hero-actions">
-                  <button type="button" className="btn-primary" onClick={() => scrollTo('missions')}>VIEW MISSIONS</button>
-                  <button type="button" className="btn-secondary" onClick={() => scrollTo('trajectory')}>TRAJECTORY LOG</button>
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => scrollTo('missions')}
+                  >
+                    VIEW MISSIONS
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => scrollTo('trajectory')}
+                  >
+                    TRAJECTORY LOG
+                  </button>
                 </div>
               </div>
 
               {/* Telemetry */}
-              <div className="telemetry-panel" data-id={`ID-${String(Math.random()).slice(2,8)}`}>
+              <div className="telemetry-panel" data-id={`ID-${String(Math.random()).slice(2, 8)}`}>
                 <div className="telemetry-avatar-wrap">
                   <img
                     className="telemetry-avatar"
-                    src={personal.avatar ?? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face'}
+                    src={
+                      personal.avatar ??
+                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face'
+                    }
                     alt={personal.name}
-                    onError={e => { e.target.style.display='none'; }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
                   />
                   <div className="telemetry-avatar-ring" />
                 </div>
 
-                <div style={{ textAlign:'center', marginBottom: 16 }}>
-                  <p style={{ fontFamily:'Share Tech Mono,monospace', fontSize:10, letterSpacing:2, color:'rgba(200,232,255,0.4)', marginBottom:4 }}>
+                <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                  <p
+                    style={{
+                      fontFamily: 'Share Tech Mono,monospace',
+                      fontSize: 10,
+                      letterSpacing: 2,
+                      color: 'rgba(200,232,255,0.4)',
+                      marginBottom: 4,
+                    }}
+                  >
                     🕐 {time}
                   </p>
-                  <p style={{ fontFamily:'Share Tech Mono,monospace', fontSize:10, letterSpacing:2, color:'var(--bio)' }}>
+                  <p
+                    style={{
+                      fontFamily: 'Share Tech Mono,monospace',
+                      fontSize: 10,
+                      letterSpacing: 2,
+                      color: 'var(--bio)',
+                    }}
+                  >
                     ◉ SYSTEMS NOMINAL
                   </p>
                 </div>
 
                 <div className="telemetry-items">
-                  {skills.slice(0,5).map((s,i) => (
+                  {skills.slice(0, 5).map((s, i) => (
                     <div className="telemetry-row" key={i}>
-                      <span className="telemetry-key">{s.name.substring(0,10)}</span>
+                      <span className="telemetry-key">{s.name.substring(0, 10)}</span>
                       <div className="telemetry-bar-wrap">
-                        <div className="telemetry-bar" style={{ width: `${s.level}%`, animationDelay: `${i*0.4}s` }} />
+                        <div
+                          className="telemetry-bar"
+                          style={{ width: `${s.level}%`, animationDelay: `${i * 0.4}s` }}
+                        />
                       </div>
                       <span className="telemetry-val">{s.level}%</span>
                     </div>
@@ -1236,15 +1417,24 @@ export default function AstronautSpacesuitHelmetHUD() {
 
                 <div className="stat-grid">
                   <div className="stat-cell">
-                    <span className="stat-cell-val">{stats.yearsExperience}<span>yr</span></span>
+                    <span className="stat-cell-val">
+                      {stats.yearsExperience}
+                      <span>yr</span>
+                    </span>
                     <span className="stat-cell-key">Experience</span>
                   </div>
                   <div className="stat-cell">
-                    <span className="stat-cell-val">{stats.projectsCompleted}<span>+</span></span>
+                    <span className="stat-cell-val">
+                      {stats.projectsCompleted}
+                      <span>+</span>
+                    </span>
                     <span className="stat-cell-key">Missions</span>
                   </div>
                   <div className="stat-cell">
-                    <span className="stat-cell-val">{stats.happyClients}<span>+</span></span>
+                    <span className="stat-cell-val">
+                      {stats.happyClients}
+                      <span>+</span>
+                    </span>
                     <span className="stat-cell-key">Crew</span>
                   </div>
                 </div>
@@ -1257,7 +1447,16 @@ export default function AstronautSpacesuitHelmetHUD() {
           {/* ── SKILLS ── */}
           <section id="systems" className="hud-section">
             <p className="hud-section-label">SYSTEMS DIAGNOSTICS</p>
-            <h2 style={{ fontFamily:'Orbitron,monospace', fontSize: 28, fontWeight:700, color:'#fff', marginBottom:24, letterSpacing:1 }}>
+            <h2
+              style={{
+                fontFamily: 'Orbitron,monospace',
+                fontSize: 28,
+                fontWeight: 700,
+                color: '#fff',
+                marginBottom: 24,
+                letterSpacing: 1,
+              }}
+            >
               Core Competencies
             </h2>
 
@@ -1265,15 +1464,20 @@ export default function AstronautSpacesuitHelmetHUD() {
               <RadarWidget skills={skills} />
               <div style={{ flex: 1 }}>
                 <div className="cat-filters">
-                  {categories.map(c => (
-                    <button type="button" key={c} className={`cat-pill ${activeCat===c?'active':''}`} onClick={() => setActiveCat(c)}>
+                  {categories.map((c) => (
+                    <button
+                      type="button"
+                      key={c}
+                      className={`cat-pill ${activeCat === c ? 'active' : ''}`}
+                      onClick={() => setActiveCat(c)}
+                    >
                       {c}
                     </button>
                   ))}
                 </div>
                 <div className="skills-grid">
                   {filteredSkills.map((s, i) => (
-                    <div className="skill-card" key={i} style={{ animationDelay: `${i*0.05}s` }}>
+                    <div className="skill-card" key={i} style={{ animationDelay: `${i * 0.05}s` }}>
                       <div className="skill-header">
                         <span className="skill-name">{s.name}</span>
                         <span className="skill-pct">{s.level}%</span>
@@ -1294,29 +1498,73 @@ export default function AstronautSpacesuitHelmetHUD() {
           {/* ── PROJECTS ── */}
           <section id="missions" className="hud-section">
             <p className="hud-section-label">MISSION LOGS</p>
-            <h2 style={{ fontFamily:'Orbitron,monospace', fontSize:28, fontWeight:700, color:'#fff', marginBottom:8, letterSpacing:1 }}>
+            <h2
+              style={{
+                fontFamily: 'Orbitron,monospace',
+                fontSize: 28,
+                fontWeight: 700,
+                color: '#fff',
+                marginBottom: 8,
+                letterSpacing: 1,
+              }}
+            >
               Completed Missions
             </h2>
-            <p style={{ fontFamily:'Share Tech Mono,monospace', fontSize:11, color:'rgba(200,232,255,0.4)', letterSpacing:2, marginBottom:0 }}>
+            <p
+              style={{
+                fontFamily: 'Share Tech Mono,monospace',
+                fontSize: 11,
+                color: 'rgba(200,232,255,0.4)',
+                letterSpacing: 2,
+                marginBottom: 0,
+              }}
+            >
               {projects.length} CLASSIFIED OPERATIONS ON RECORD
             </p>
             <div className="projects-grid">
               {projects.map((p, i) => (
                 <div className="project-card" key={i}>
-                  <img className="project-img" src={p.image} alt={p.title} onError={e => { e.target.style.display='none'; }} />
+                  <img
+                    className="project-img"
+                    src={p.image}
+                    alt={p.title}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
                   <div className="project-img-overlay" />
-                  <span className="project-num">OBJ-{String(i+1).padStart(3,'0')}</span>
+                  <span className="project-num">OBJ-{String(i + 1).padStart(3, '0')}</span>
                   <div className="project-body">
                     <h3 className="project-title">{p.title}</h3>
                     <p className="project-desc">{p.description}</p>
                     <div className="project-stack">
                       {(p.techStack ?? []).map((t, j) => (
-                        <span className="tech-tag" key={j}>{t}</span>
+                        <span className="tech-tag" key={j}>
+                          {t}
+                        </span>
                       ))}
                     </div>
                     <div className="project-links">
-                      {p.liveUrl && <a className="project-link" href={p.liveUrl} target="_blank" rel="noreferrer">LAUNCH ↗</a>}
-                      {p.githubUrl && <a className="project-link" href={p.githubUrl} target="_blank" rel="noreferrer">SOURCE ↗</a>}
+                      {p.liveUrl && (
+                        <a
+                          className="project-link"
+                          href={p.liveUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          LAUNCH ↗
+                        </a>
+                      )}
+                      {p.githubUrl && (
+                        <a
+                          className="project-link"
+                          href={p.githubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          SOURCE ↗
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1329,12 +1577,21 @@ export default function AstronautSpacesuitHelmetHUD() {
           {/* ── EXPERIENCE ── */}
           <section id="trajectory" className="hud-section">
             <p className="hud-section-label">TRAJECTORY LOG</p>
-            <h2 style={{ fontFamily:'Orbitron,monospace', fontSize:28, fontWeight:700, color:'#fff', marginBottom:8, letterSpacing:1 }}>
+            <h2
+              style={{
+                fontFamily: 'Orbitron,monospace',
+                fontSize: 28,
+                fontWeight: 700,
+                color: '#fff',
+                marginBottom: 8,
+                letterSpacing: 1,
+              }}
+            >
               Flight History
             </h2>
             <div className="exp-timeline">
               {experience.map((e, i) => (
-                <div className="exp-item" key={i} style={{ animationDelay: `${i*0.1}s` }}>
+                <div className="exp-item" key={i} style={{ animationDelay: `${i * 0.1}s` }}>
                   <div className="exp-dot" />
                   <p className="exp-period">{e.period}</p>
                   <h3 className="exp-role">{e.role}</h3>
@@ -1350,7 +1607,16 @@ export default function AstronautSpacesuitHelmetHUD() {
           {/* ── TESTIMONIALS ── */}
           <section id="crew" className="hud-section">
             <p className="hud-section-label">CREW COMMUNICATIONS</p>
-            <h2 style={{ fontFamily:'Orbitron,monospace', fontSize:28, fontWeight:700, color:'#fff', marginBottom:24, letterSpacing:1 }}>
+            <h2
+              style={{
+                fontFamily: 'Orbitron,monospace',
+                fontSize: 28,
+                fontWeight: 700,
+                color: '#fff',
+                marginBottom: 24,
+                letterSpacing: 1,
+              }}
+            >
               Mission Debrief
             </h2>
             <div className="testi-grid">
@@ -1359,7 +1625,14 @@ export default function AstronautSpacesuitHelmetHUD() {
                   <div className="testi-quote-mark">"</div>
                   <p className="testi-text">{t.text}</p>
                   <div className="testi-author">
-                    <img className="testi-avatar" src={t.avatar} alt={t.name} onError={e => { e.target.style.display='none'; }} />
+                    <img
+                      className="testi-avatar"
+                      src={t.avatar}
+                      alt={t.name}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
                     <div>
                       <p className="testi-name">{t.name}</p>
                       <p className="testi-role">{t.role}</p>
@@ -1375,20 +1648,39 @@ export default function AstronautSpacesuitHelmetHUD() {
           {/* ── CONTACT ── */}
           <section id="contact" className="hud-section">
             <p className="hud-section-label">COMMUNICATIONS LINK</p>
-            <h2 style={{ fontFamily:'Orbitron,monospace', fontSize:28, fontWeight:700, color:'#fff', marginBottom:8, letterSpacing:1 }}>
+            <h2
+              style={{
+                fontFamily: 'Orbitron,monospace',
+                fontSize: 28,
+                fontWeight: 700,
+                color: '#fff',
+                marginBottom: 8,
+                letterSpacing: 1,
+              }}
+            >
               Establish Contact
             </h2>
-            <p style={{ fontFamily:'Share Tech Mono,monospace', fontSize:11, color:'rgba(200,232,255,0.4)', letterSpacing:2, marginBottom:24 }}>
+            <p
+              style={{
+                fontFamily: 'Share Tech Mono,monospace',
+                fontSize: 11,
+                color: 'rgba(200,232,255,0.4)',
+                letterSpacing: 2,
+                marginBottom: 24,
+              }}
+            >
               OPENING SECURE CHANNEL TO PILOT...
             </p>
-            
+
             <div className="contact-grid">
               {/* Left Side: Telemetry Data */}
               <div className="contact-info">
                 {socials.email && (
                   <div className="contact-card">
                     <p className="contact-card-title">SECURE EMAIL ROUTE</p>
-                    <a href={`mailto:${socials.email}`} className="contact-card-val">{socials.email}</a>
+                    <a href={`mailto:${socials.email}`} className="contact-card-val">
+                      {socials.email}
+                    </a>
                   </div>
                 )}
                 {personal.location && (
@@ -1400,34 +1692,69 @@ export default function AstronautSpacesuitHelmetHUD() {
                 <div className="contact-card">
                   <p className="contact-card-title">SOCIAL UPLINKS</p>
                   <div className="social-links" style={{ marginTop: 8 }}>
-                    {socials.github && <a className="social-link" href={socials.github} target="_blank" rel="noreferrer">GitHub</a>}
-                    {socials.linkedin && <a className="social-link" href={socials.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>}
-                    {socials.twitter && <a className="social-link" href={socials.twitter} target="_blank" rel="noreferrer">Twitter</a>}
+                    {socials.github && (
+                      <a
+                        className="social-link"
+                        href={socials.github}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        GitHub
+                      </a>
+                    )}
+                    {socials.linkedin && (
+                      <a
+                        className="social-link"
+                        href={socials.linkedin}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        LinkedIn
+                      </a>
+                    )}
+                    {socials.twitter && (
+                      <a
+                        className="social-link"
+                        href={socials.twitter}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Twitter
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
 
               {/* Right Side: Interface Form */}
               <form className="contact-form" onSubmit={(e) => e.preventDefault()}>
-                <p style={{ fontFamily:'Share Tech Mono,monospace', fontSize:10, letterSpacing:2, color:'var(--visor)', marginBottom: 8 }}>
+                <p
+                  style={{
+                    fontFamily: 'Share Tech Mono,monospace',
+                    fontSize: 10,
+                    letterSpacing: 2,
+                    color: 'var(--visor)',
+                    marginBottom: 8,
+                  }}
+                >
                   [ TRANSMIT MESSAGE ]
                 </p>
-                <input 
-                  type="text" 
-                  className="hud-input" 
-                  placeholder="IDENTIFICATION (NAME)" 
-                  required 
+                <input
+                  type="text"
+                  className="hud-input"
+                  placeholder="IDENTIFICATION (NAME)"
+                  required
                 />
-                <input 
-                  type="email" 
-                  className="hud-input" 
-                  placeholder="RETURN FREQUENCY (EMAIL)" 
-                  required 
+                <input
+                  type="email"
+                  className="hud-input"
+                  placeholder="RETURN FREQUENCY (EMAIL)"
+                  required
                 />
-                <textarea 
-                  className="hud-textarea" 
-                  placeholder="ENCRYPTED PAYLOAD (MESSAGE)" 
-                  required 
+                <textarea
+                  className="hud-textarea"
+                  placeholder="ENCRYPTED PAYLOAD (MESSAGE)"
+                  required
                 />
                 <button type="submit" className="btn-primary" style={{ marginTop: 8 }}>
                   INITIATE TRANSMISSION
@@ -1440,15 +1767,25 @@ export default function AstronautSpacesuitHelmetHUD() {
           <div className="hud-divider" />
           <footer className="hud-footer">
             <div>
-              <p className="footer-sig">{personal.name} ◈ {new Date().getFullYear()}</p>
+              <p className="footer-sig">
+                {personal.name} ◈ {new Date().getFullYear()}
+              </p>
               {personal.location && (
                 <p className="loc-tag" style={{ marginTop: 6 }}>
-                  <span style={{ color:'var(--visor)' }}>⊹</span>
+                  <span style={{ color: 'var(--visor)' }}>⊹</span>
                   {personal.location}
                 </p>
               )}
             </div>
-            <p style={{ fontFamily:'Share Tech Mono,monospace', fontSize:9, letterSpacing:3, color:'rgba(200,232,255,0.2)', textTransform:'uppercase' }}>
+            <p
+              style={{
+                fontFamily: 'Share Tech Mono,monospace',
+                fontSize: 9,
+                letterSpacing: 3,
+                color: 'rgba(200,232,255,0.2)',
+                textTransform: 'uppercase',
+              }}
+            >
               ALL SYSTEMS GO
             </p>
           </footer>

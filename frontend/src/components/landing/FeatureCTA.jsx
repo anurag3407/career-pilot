@@ -5,11 +5,11 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export default function FeatureCTA({
-  heading = "Ready to transform your career?",
-  subheading = "Join thousands of professionals who have already accelerated their job search with our AI tools.",
-  primaryCtaText = "Get Started for Free",
-  primaryCtaLink = "/register",
-  guaranteeText = "No credit card required. Free forever plan available."
+  heading = 'Ready to transform your career?',
+  subheading = 'Join thousands of professionals who have already accelerated their job search with our AI tools.',
+  primaryCtaText = 'Get Started for Free',
+  primaryCtaLink = '/register',
+  guaranteeText = 'No credit card required. Free forever plan available.',
 }) {
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden bg-background border-t border-border">
@@ -20,22 +20,22 @@ export default function FeatureCTA({
       </div>
 
       <div className="container relative z-10 mx-auto px-4 md:px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
           className="mx-auto max-w-3xl text-center"
         >
           <div className="inline-flex items-center justify-center rounded-full bg-card/50 px-3 py-1 text-sm font-medium text-foreground ring-1 ring-inset ring-border mb-8 backdrop-blur-md">
             <Sparkles className="h-4 w-4 text-amber-400 mr-2" />
             Start your journey today
           </div>
-          
+
           <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl mb-6">
             {heading}
           </h2>
-          
+
           <p className="mx-auto max-w-2xl text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed">
             {subheading}
           </p>
@@ -54,10 +54,8 @@ export default function FeatureCTA({
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </span>
             </Link>
-            
-            <p className="text-sm text-muted-foreground mt-2 font-medium">
-              {guaranteeText}
-            </p>
+
+            <p className="text-sm text-muted-foreground mt-2 font-medium">{guaranteeText}</p>
           </div>
         </motion.div>
       </div>

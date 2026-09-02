@@ -22,17 +22,18 @@ export const useAnalyzerStore = create((set) => ({
   setIsInterviewMode: (mode) => set({ isInterviewMode: mode }),
   setIsLoading: (loading) => set({ isLoading: loading }),
   setIsStreaming: (streaming) => set({ isStreaming: streaming }),
-  
-  reset: () => set({
-    repoUrl: '',
-    sessionId: null,
-    nodes: [],
-    edges: [],
-    selectedFile: null,
-    fileContent: '',
-    messages: [],
-    isInterviewMode: false,
-    isLoading: false,
-    isStreaming: false
-  })
+
+  reset: () =>
+    set({
+      repoUrl: '',
+      sessionId: null,
+      nodes: [],
+      edges: [],
+      selectedFile: null,
+      fileContent: '',
+      messages: [],
+      isInterviewMode: false,
+      isLoading: false,
+      isStreaming: false,
+    }),
 }));

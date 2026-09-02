@@ -42,7 +42,8 @@ describe('Visual Regression Testing - Core Logic', () => {
     });
 
     it('should retry on failure and eventually succeed', async () => {
-      const mockTest = vi.fn()
+      const mockTest = vi
+        .fn()
         .mockRejectedValueOnce(new Error('fail'))
         .mockResolvedValue('success');
       const result = await visualRegressionUtils.retryTest(mockTest);
@@ -52,24 +53,27 @@ describe('Visual Regression Testing - Core Logic', () => {
 
     it('should throw error after max retries', async () => {
       const mockTest = vi.fn().mockRejectedValue(new Error('always fails'));
-      await expect(visualRegressionUtils.retryTest(mockTest, 3))
-        .rejects.toThrow('Test failed after 3 retries');
+      await expect(visualRegressionUtils.retryTest(mockTest, 3)).rejects.toThrow(
+        'Test failed after 3 retries'
+      );
     });
 
     it('should throw RangeError when retries is 0', async () => {
       const mockTest = vi.fn().mockResolvedValue('success');
-      await expect(visualRegressionUtils.retryTest(mockTest, 0))
-        .rejects.toBeInstanceOf(RangeError);
-      await expect(visualRegressionUtils.retryTest(mockTest, 0))
-        .rejects.toThrow('retries must be at least 1');
+      await expect(visualRegressionUtils.retryTest(mockTest, 0)).rejects.toBeInstanceOf(RangeError);
+      await expect(visualRegressionUtils.retryTest(mockTest, 0)).rejects.toThrow(
+        'retries must be at least 1'
+      );
     });
 
     it('should throw RangeError when retries is negative', async () => {
       const mockTest = vi.fn().mockResolvedValue('success');
-      await expect(visualRegressionUtils.retryTest(mockTest, -1))
-        .rejects.toBeInstanceOf(RangeError);
-      await expect(visualRegressionUtils.retryTest(mockTest, -1))
-        .rejects.toThrow('retries must be at least 1');
+      await expect(visualRegressionUtils.retryTest(mockTest, -1)).rejects.toBeInstanceOf(
+        RangeError
+      );
+      await expect(visualRegressionUtils.retryTest(mockTest, -1)).rejects.toThrow(
+        'retries must be at least 1'
+      );
     });
   });
 
@@ -89,5 +93,4 @@ describe('Visual Regression Testing - Core Logic', () => {
       expect(config.diffThreshold).toBe(0.063);
     });
   });
-
 });

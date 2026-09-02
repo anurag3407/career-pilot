@@ -1,14 +1,6 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import {
-  Github,
-  Linkedin,
-  Twitter,
-  Mail,
-  ArrowRight,
-  MapPin,
-  ExternalLink,
-} from 'lucide-react';
+import { Github, Linkedin, Twitter, Mail, ArrowRight, MapPin, ExternalLink } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
 
 /* ─── Data ─────────────────────────────────────────────────────────────────── */
@@ -42,16 +34,32 @@ const drawLine = {
 
 /* ─── Story Highlights data ────────────────────────────────────────────────── */
 const HIGHLIGHTS = [
-  { num: '01', title: 'Creative Direction', desc: 'Turning vision into visual narrative through intentional design thinking.' },
-  { num: '02', title: 'UI/UX Excellence',   desc: 'Crafting interfaces that feel effortless and deeply human-centered.'       },
-  { num: '03', title: 'Product Innovation', desc: 'Engineering scalable solutions that balance beauty and performance.'      },
-  { num: '04', title: 'Visual Storytelling', desc: 'Using code as a medium to express ideas that resonate and inspire.'     },
+  {
+    num: '01',
+    title: 'Creative Direction',
+    desc: 'Turning vision into visual narrative through intentional design thinking.',
+  },
+  {
+    num: '02',
+    title: 'UI/UX Excellence',
+    desc: 'Crafting interfaces that feel effortless and deeply human-centered.',
+  },
+  {
+    num: '03',
+    title: 'Product Innovation',
+    desc: 'Engineering scalable solutions that balance beauty and performance.',
+  },
+  {
+    num: '04',
+    title: 'Visual Storytelling',
+    desc: 'Using code as a medium to express ideas that resonate and inspire.',
+  },
 ];
 
 /* ─── Magazine metadata ────────────────────────────────────────────────────── */
-const now         = new Date();
-const ISSUE_DATE  = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-const ISSUE_NO    = `No. ${String(now.getMonth() + 1).padStart(2, '0')}`;
+const now = new Date();
+const ISSUE_DATE = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+const ISSUE_NO = `No. ${String(now.getMonth() + 1).padStart(2, '0')}`;
 
 /* ─── Social link atom ─────────────────────────────────────────────────────── */
 function SocialPill({ href, icon: Icon, label }) {
@@ -63,7 +71,11 @@ function SocialPill({ href, icon: Icon, label }) {
       aria-label={label}
       className="group flex items-center gap-2 text-[#1a1a1a]/60 hover:text-[#C41E3A] transition-colors duration-300"
     >
-      <Icon size={15} strokeWidth={1.8} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
+      <Icon
+        size={15}
+        strokeWidth={1.8}
+        className="transition-transform duration-300 group-hover:-translate-y-0.5"
+      />
       <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] border-b border-transparent group-hover:border-[#C41E3A] transition-all duration-300 pb-px">
         {label}
       </span>
@@ -89,8 +101,8 @@ function Rule({ className = '' }) {
 /*  MAIN COMPONENT                                                             */
 /* ═══════════════════════════════════════════════════════════════════════════ */
 export default function CoverStory() {
-  const rootRef    = useRef(null);
-  const isInView   = useInView(rootRef, { once: true, margin: '-80px' });
+  const rootRef = useRef(null);
+  const isInView = useInView(rootRef, { once: true, margin: '-80px' });
 
   return (
     <section
@@ -145,9 +157,7 @@ export default function CoverStory() {
             custom={0.3}
             className="flex-1 h-px bg-[#1a1a1a]/15 origin-left"
           />
-          <span
-            className="text-[0.55rem] font-bold uppercase tracking-[0.28em] text-[#1a1a1a]/40 border border-[#1a1a1a]/20 px-2.5 py-1"
-          >
+          <span className="text-[0.55rem] font-bold uppercase tracking-[0.28em] text-[#1a1a1a]/40 border border-[#1a1a1a]/20 px-2.5 py-1">
             Featured
           </span>
         </motion.div>
@@ -156,15 +166,18 @@ export default function CoverStory() {
       {/* ── 3. MAIN HERO SPLIT ─────────────────────────────────────────────── */}
       <div className="px-6 md:px-16 pb-0">
         <div className="grid grid-cols-1 lg:grid-cols-[55fr_45fr] gap-0 border border-[#1a1a1a]/12">
-
           {/* ── LEFT: Typography panel ─────────────────────────────────────── */}
           <div className="relative flex flex-col justify-between p-8 md:p-12 border-b lg:border-b-0 lg:border-r border-[#1a1a1a]/12 overflow-hidden">
-
             {/* Ghost watermark letter */}
             <div
               aria-hidden="true"
               className="pointer-events-none select-none absolute -top-4 -left-2 text-[#1a1a1a]/[0.035] leading-none"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 900, fontStyle: 'italic', fontSize: 'clamp(10rem, 20vw, 16rem)' }}
+              style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontWeight: 900,
+                fontStyle: 'italic',
+                fontSize: 'clamp(10rem, 20vw, 16rem)',
+              }}
             >
               {personal.name.charAt(0)}
             </div>
@@ -178,9 +191,7 @@ export default function CoverStory() {
                 custom={0.15}
                 className="flex items-baseline gap-3 mb-6"
               >
-                <span
-                  className="text-[0.55rem] font-bold uppercase tracking-[0.38em] text-[#1a1a1a]/40"
-                >
+                <span className="text-[0.55rem] font-bold uppercase tracking-[0.38em] text-[#1a1a1a]/40">
                   Featured Story
                 </span>
                 <div className="h-px w-8 bg-[#C41E3A]" />
@@ -247,7 +258,12 @@ export default function CoverStory() {
                 </span>
                 <p
                   className="text-[#1a1a1a] leading-relaxed"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(1rem, 2vw, 1.25rem)' }}
+                  style={{
+                    fontFamily: "'Playfair Display', Georgia, serif",
+                    fontStyle: 'italic',
+                    fontWeight: 700,
+                    fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+                  }}
                 >
                   {personal.tagline}
                 </p>
@@ -279,7 +295,10 @@ export default function CoverStory() {
                   Read Full Story
                 </span>
                 <span className="w-7 h-7 rounded-full border border-[#1a1a1a] flex items-center justify-center group-hover:bg-[#C41E3A] group-hover:border-[#C41E3A] transition-all duration-300">
-                  <ArrowRight size={12} className="text-[#1a1a1a] group-hover:text-white transition-colors duration-300" />
+                  <ArrowRight
+                    size={12}
+                    className="text-[#1a1a1a] group-hover:text-white transition-colors duration-300"
+                  />
                 </span>
               </motion.a>
             </div>
@@ -294,10 +313,10 @@ export default function CoverStory() {
             >
               <div className="grid grid-cols-2 gap-x-6 gap-y-2">
                 {[
-                  { tag: 'EXCLUSIVE',  line: 'Full-Stack Architecture'  },
-                  { tag: 'FEATURE',    line: 'From Concept to Launch'   },
-                  { tag: 'SPOTLIGHT',  line: 'Open Source Contributor'  },
-                  { tag: 'INSIDE',     line: 'Clean Code Philosophy'    },
+                  { tag: 'EXCLUSIVE', line: 'Full-Stack Architecture' },
+                  { tag: 'FEATURE', line: 'From Concept to Launch' },
+                  { tag: 'SPOTLIGHT', line: 'Open Source Contributor' },
+                  { tag: 'INSIDE', line: 'Clean Code Philosophy' },
                 ].map((cl) => (
                   <div key={cl.tag} className="flex items-baseline gap-2">
                     <span className="text-[0.45rem] font-black uppercase tracking-[0.3em] text-[#C41E3A] shrink-0 mt-0.5">
@@ -349,10 +368,18 @@ export default function CoverStory() {
             {/* Column grid lines */}
             <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
               {[25, 50, 75].map((p) => (
-                <div key={p} className="absolute top-0 bottom-0 w-px bg-white/[0.04]" style={{ left: `${p}%` }} />
+                <div
+                  key={p}
+                  className="absolute top-0 bottom-0 w-px bg-white/[0.04]"
+                  style={{ left: `${p}%` }}
+                />
               ))}
               {[33, 66].map((p) => (
-                <div key={p} className="absolute left-0 right-0 h-px bg-white/[0.04]" style={{ top: `${p}%` }} />
+                <div
+                  key={p}
+                  className="absolute left-0 right-0 h-px bg-white/[0.04]"
+                  style={{ top: `${p}%` }}
+                />
               ))}
             </div>
 
@@ -374,7 +401,12 @@ export default function CoverStory() {
             <div
               aria-hidden="true"
               className="absolute bottom-0 right-0 leading-none text-white/[0.04] select-none pointer-events-none"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 900, fontStyle: 'italic', fontSize: 'clamp(8rem, 16vw, 13rem)' }}
+              style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontWeight: 900,
+                fontStyle: 'italic',
+                fontSize: 'clamp(8rem, 16vw, 13rem)',
+              }}
             >
               {personal.name.split(' ').pop()?.charAt(0)}
             </div>
@@ -384,7 +416,10 @@ export default function CoverStory() {
               <div className="w-8 h-0.5 bg-[#C41E3A] mb-3" />
               <p
                 className="text-white font-bold italic leading-snug mb-1"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)' }}
+                style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
+                }}
               >
                 "{personal.tagline}"
               </p>
@@ -409,10 +444,10 @@ export default function CoverStory() {
       >
         <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#1a1a1a]/12">
           {[
-            { label: 'Issue No.',         value: ISSUE_NO                },
-            { label: 'Category',          value: 'Tech & Design'        },
-            { label: 'Reading Time',      value: '8 min read'           },
-            { label: 'Published',         value: ISSUE_DATE             },
+            { label: 'Issue No.', value: ISSUE_NO },
+            { label: 'Category', value: 'Tech & Design' },
+            { label: 'Reading Time', value: '8 min read' },
+            { label: 'Published', value: ISSUE_DATE },
           ].map((m, i) => (
             <div key={i} className="px-6 py-5">
               <p className="text-[0.5rem] font-bold uppercase tracking-[0.3em] text-[#1a1a1a]/40 mb-1">
@@ -420,7 +455,11 @@ export default function CoverStory() {
               </p>
               <p
                 className="font-bold text-[#1a1a1a] leading-tight"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(0.8rem, 1.5vw, 1rem)', fontStyle: 'italic' }}
+                style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontSize: 'clamp(0.8rem, 1.5vw, 1rem)',
+                  fontStyle: 'italic',
+                }}
               >
                 {m.value}
               </p>
@@ -439,16 +478,21 @@ export default function CoverStory() {
       >
         <div className="grid grid-cols-3 divide-x divide-white/10">
           {[
-            { value: stats.yearsExperience,   suffix: '+', label: 'Years Experience'  },
-            { value: stats.projectsCompleted, suffix: '+', label: 'Projects Shipped'  },
-            { value: stats.happyClients,      suffix: '+', label: 'Happy Clients'     },
+            { value: stats.yearsExperience, suffix: '+', label: 'Years Experience' },
+            { value: stats.projectsCompleted, suffix: '+', label: 'Projects Shipped' },
+            { value: stats.happyClients, suffix: '+', label: 'Happy Clients' },
           ].map((s, i) => (
             <div key={i} className="py-8 px-6 text-center">
               <p
                 className="font-black text-white leading-none mb-1"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)', letterSpacing: '-0.04em' }}
+                style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                  letterSpacing: '-0.04em',
+                }}
               >
-                {s.value}<span className="text-[#C41E3A]">{s.suffix}</span>
+                {s.value}
+                <span className="text-[#C41E3A]">{s.suffix}</span>
               </p>
               <p className="text-[0.55rem] font-semibold uppercase tracking-[0.26em] text-white/40">
                 {s.label}
@@ -464,7 +508,11 @@ export default function CoverStory() {
         <div
           aria-hidden="true"
           className="absolute -top-6 left-8 leading-none text-[#1a1a1a]/[0.05] select-none pointer-events-none"
-          style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 900, fontSize: 'clamp(8rem, 15vw, 12rem)' }}
+          style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontWeight: 900,
+            fontSize: 'clamp(8rem, 15vw, 12rem)',
+          }}
         >
           "
         </div>
@@ -481,7 +529,13 @@ export default function CoverStory() {
 
           <blockquote
             className="text-[#1a1a1a] leading-tight mb-6"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(1.4rem, 3.5vw, 2.5rem)', letterSpacing: '-0.02em' }}
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontStyle: 'italic',
+              fontWeight: 700,
+              fontSize: 'clamp(1.4rem, 3.5vw, 2.5rem)',
+              letterSpacing: '-0.02em',
+            }}
           >
             "Design is not just what it looks like.
             <br className="hidden md:block" />
@@ -526,7 +580,11 @@ export default function CoverStory() {
               {/* Large number */}
               <p
                 className="font-black text-[#1a1a1a]/10 group-hover:text-white/10 leading-none mb-4 transition-colors duration-400"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', letterSpacing: '-0.05em' }}
+                style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+                  letterSpacing: '-0.05em',
+                }}
               >
                 {h.num}
               </p>
@@ -535,7 +593,11 @@ export default function CoverStory() {
 
               <h3
                 className="font-bold text-[#1a1a1a] group-hover:text-white mb-3 transition-colors duration-400 leading-tight"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic', fontSize: 'clamp(1rem, 1.8vw, 1.2rem)' }}
+                style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontStyle: 'italic',
+                  fontSize: 'clamp(1rem, 1.8vw, 1.2rem)',
+                }}
               >
                 {h.title}
               </h3>
@@ -560,10 +622,14 @@ export default function CoverStory() {
           Connect
         </span>
         <div className="flex items-center gap-6 flex-wrap">
-          {socials.github   && <SocialPill href={socials.github}                 icon={Github}   label="GitHub"   />}
-          {socials.linkedin && <SocialPill href={socials.linkedin}               icon={Linkedin} label="LinkedIn" />}
-          {socials.twitter  && <SocialPill href={socials.twitter}                icon={Twitter}  label="Twitter"  />}
-          {socials.email    && <SocialPill href={`mailto:${socials.email}`}      icon={Mail}     label="Email"    />}
+          {socials.github && <SocialPill href={socials.github} icon={Github} label="GitHub" />}
+          {socials.linkedin && (
+            <SocialPill href={socials.linkedin} icon={Linkedin} label="LinkedIn" />
+          )}
+          {socials.twitter && <SocialPill href={socials.twitter} icon={Twitter} label="Twitter" />}
+          {socials.email && (
+            <SocialPill href={`mailto:${socials.email}`} icon={Mail} label="Email" />
+          )}
         </div>
         <div className="flex items-center gap-2">
           <div className="w-5 h-px bg-[#1a1a1a]/20" />
@@ -585,7 +651,10 @@ export default function CoverStory() {
             className="flex whitespace-nowrap py-3"
           >
             {[...Array(4)].map((_, i) => (
-              <span key={i} className="inline-flex items-center gap-4 px-4 text-[0.55rem] font-semibold uppercase tracking-[0.22em] text-white/35">
+              <span
+                key={i}
+                className="inline-flex items-center gap-4 px-4 text-[0.55rem] font-semibold uppercase tracking-[0.22em] text-white/35"
+              >
                 <span>{personal.name}</span>
                 <span className="text-[#C41E3A]">◆</span>
                 <span>{personal.title}</span>
@@ -597,7 +666,6 @@ export default function CoverStory() {
           </motion.div>
         </div>
       </div>
-
     </section>
   );
 }

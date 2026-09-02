@@ -18,9 +18,7 @@ export const initializeSocket = async () => {
   const session = window.Clerk?.session;
 
   if (!session) {
-    console.warn(
-      'Cannot initialize socket: No authenticated user'
-    );
+    console.warn('Cannot initialize socket: No authenticated user');
     return null;
   }
 
@@ -42,10 +40,7 @@ export const initializeSocket = async () => {
    * Keep a stable instance reference for all listeners. The module-level
    * socket variable may later be cleared by disconnectSocket().
    */
-  const socketInstance = io(
-    SOCKET_URL,
-    createSocketOptions(getFreshToken)
-  );
+  const socketInstance = io(SOCKET_URL, createSocketOptions(getFreshToken));
 
   /**
    * Assign synchronously before authentication finishes. A second concurrent
@@ -58,31 +53,23 @@ export const initializeSocket = async () => {
     const initialTransport = engine.transport.name;
 
     if (import.meta.env.DEV) {
-      console.info(
-        `🔌 Socket connected using ${initialTransport}`
-      );
+      console.info(`🔌 Socket connected using ${initialTransport}`);
     }
 
     engine.once('upgrade', (transport) => {
       if (import.meta.env.DEV) {
         console.info(
-          `⬆️ Socket transport upgraded from ` +
-            `${initialTransport} to ${transport.name}`
+          `⬆️ Socket transport upgraded from ` + `${initialTransport} to ${transport.name}`
         );
       }
     });
   });
 
-  socketInstance.io.on(
-    'reconnect_attempt',
-    (attempt) => {
-      if (import.meta.env.DEV) {
-        console.info(
-          `🔄 Socket reconnection attempt ${attempt}`
-        );
-      }
+  socketInstance.io.on('reconnect_attempt', (attempt) => {
+    if (import.meta.env.DEV) {
+      console.info(`🔄 Socket reconnection attempt ${attempt}`);
     }
-  );
+  });
 
   socketInstance.io.on('reconnect', (attempt) => {
     if (import.meta.env.DEV) {
@@ -94,40 +81,23 @@ export const initializeSocket = async () => {
     }
   });
 
-  socketInstance.io.on(
-    'reconnect_error',
-    (error) => {
-      console.warn(
-        'Socket reconnection error:',
-        error.message
-      );
-    }
-  );
+  socketInstance.io.on('reconnect_error', (error) => {
+    console.warn('Socket reconnection error:', error.message);
+  });
 
-  socketInstance.io.on(
-    'reconnect_failed',
-    () => {
-      console.error(
-        'Socket reconnection attempts exhausted'
-      );
-    }
-  );
+  socketInstance.io.on('reconnect_failed', () => {
+    console.error('Socket reconnection attempts exhausted');
+  });
 
-  socketInstance.on(
-    'connect_error',
-    (error) => {
-      const msg = error?.message || '';
-      if (msg.includes('xhr poll error') || msg.includes('404') || msg.includes('websocket error')) {
-        // Real-time Socket.IO server is not available on serverless hosts (Vercel/Netlify). Disconnect gracefully.
-        socketInstance.disconnect();
-      } else {
-        console.warn(
-          'Socket connection note:',
-          msg
-        );
-      }
+  socketInstance.on('connect_error', (error) => {
+    const msg = error?.message || '';
+    if (msg.includes('xhr poll error') || msg.includes('404') || msg.includes('websocket error')) {
+      // Real-time Socket.IO server is not available on serverless hosts (Vercel/Netlify). Disconnect gracefully.
+      socketInstance.disconnect();
+    } else {
+      console.warn('Socket connection note:', msg);
     }
-  );
+  });
 
   socketInstance.on('error', (error) => {
     console.error('Socket error:', error);
@@ -229,7 +199,7 @@ export const socketEvents = {
 
   updateStatus: (status) => {
     socket?.emit('update_status', { status });
-  }
+  },
 };
 
 export default { initializeSocket, getSocket, disconnectSocket, socketEvents };

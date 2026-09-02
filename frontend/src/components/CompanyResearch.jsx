@@ -1,41 +1,53 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  X, Briefcase, MapPin, DollarSign, Calendar,
-  Globe, Users, Target, ShieldAlert, Sparkles,
-  Award, Heart, Star, Newspaper, ChevronRight
-} from 'lucide-react'
-import { jobTrackerApi } from '../services/api'
-import { SkeletonList } from './ui/Skeleton'
+  X,
+  Briefcase,
+  MapPin,
+  DollarSign,
+  Calendar,
+  Globe,
+  Users,
+  Target,
+  ShieldAlert,
+  Sparkles,
+  Award,
+  Heart,
+  Star,
+  Newspaper,
+  ChevronRight,
+} from 'lucide-react';
+import { jobTrackerApi } from '../services/api';
+import { SkeletonList } from './ui/Skeleton';
 
 export default function CompanyResearch({ companyName, industry = '', onClose }) {
-  const [loading, setLoading] = useState(true)
-  const [researchData, setResearchData] = useState(null)
-  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true);
+  const [researchData, setResearchData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!companyName) return
+    if (!companyName) return;
 
     const loadResearch = async () => {
       try {
-        setLoading(true)
-        setError(null)
-        const response = await jobTrackerApi.researchCompany(companyName, industry)
+        setLoading(true);
+        setError(null);
+        const response = await jobTrackerApi.researchCompany(companyName, industry);
         if (response.success && response.data) {
-          setResearchData(response.data)
+          setResearchData(response.data);
         } else {
-          throw new Error('Invalid response structure')
+          throw new Error('Invalid response structure');
         }
       } catch (err) {
-        console.error('Failed to load company research:', err)
-        setError('Could not retrieve company details. Please try again.')
+        console.error('Failed to load company research:', err);
+        setError('Could not retrieve company details. Please try again.');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    loadResearch()
-  }, [companyName, industry])
+    loadResearch();
+  }, [companyName, industry]);
 
   return (
     <AnimatePresence>
@@ -108,7 +120,9 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                   <h4 className="text-sm font-bold text-foreground mb-2.5 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-primary" /> AI Company Overview
                   </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{researchData.overview}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {researchData.overview}
+                  </p>
                 </div>
 
                 {/* Company Details Grid */}
@@ -118,7 +132,9 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                     <Users className="w-5 h-5 text-sky-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-muted-foreground">Employee Count</p>
-                      <p className="text-sm font-semibold text-foreground mt-0.5">{researchData.size}</p>
+                      <p className="text-sm font-semibold text-foreground mt-0.5">
+                        {researchData.size}
+                      </p>
                     </div>
                   </div>
 
@@ -127,7 +143,9 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                     <Target className="w-5 h-5 text-indigo-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-muted-foreground">Industry Sector</p>
-                      <p className="text-sm font-semibold text-foreground mt-0.5 line-clamp-1">{researchData.industry}</p>
+                      <p className="text-sm font-semibold text-foreground mt-0.5 line-clamp-1">
+                        {researchData.industry}
+                      </p>
                     </div>
                   </div>
 
@@ -136,7 +154,9 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                     <DollarSign className="w-5 h-5 text-green-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-muted-foreground">Funding Status</p>
-                      <p className="text-sm font-semibold text-foreground mt-0.5">{researchData.funding}</p>
+                      <p className="text-sm font-semibold text-foreground mt-0.5">
+                        {researchData.funding}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -146,10 +166,12 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                   <h4 className="text-sm font-bold text-foreground mb-4 flex items-center gap-1.5">
                     <Star className="w-4 h-4 text-yellow-400" /> Employee &amp; Glassdoor Sentiment
                   </h4>
-                  
+
                   {/* Overall score */}
                   <div className="flex items-center gap-4 mb-5 pb-4 border-b border-border">
-                    <div className="text-4xl font-extrabold text-foreground">{researchData.glassdoorRating}</div>
+                    <div className="text-4xl font-extrabold text-foreground">
+                      {researchData.glassdoorRating}
+                    </div>
                     <div>
                       <div className="flex items-center gap-0.5 text-yellow-400 mb-0.5">
                         {[...Array(5)].map((_, i) => (
@@ -159,7 +181,9 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                           />
                         ))}
                       </div>
-                      <p className="text-xs text-muted-foreground">Average overall employer rating</p>
+                      <p className="text-xs text-muted-foreground">
+                        Average overall employer rating
+                      </p>
                     </div>
                   </div>
 
@@ -170,12 +194,16 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                       <div>
                         <div className="flex justify-between text-xs font-medium mb-1">
                           <span className="text-muted-foreground">Work-Life Balance</span>
-                          <span className="text-foreground">{researchData.glassdoorBreakdown.workLifeBalance} / 5.0</span>
+                          <span className="text-foreground">
+                            {researchData.glassdoorBreakdown.workLifeBalance} / 5.0
+                          </span>
                         </div>
                         <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
                           <div
                             className="h-full bg-green-500 rounded-full"
-                            style={{ width: `${(researchData.glassdoorBreakdown.workLifeBalance / 5) * 100}%` }}
+                            style={{
+                              width: `${(researchData.glassdoorBreakdown.workLifeBalance / 5) * 100}%`,
+                            }}
                           />
                         </div>
                       </div>
@@ -184,12 +212,16 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                       <div>
                         <div className="flex justify-between text-xs font-medium mb-1">
                           <span className="text-muted-foreground">Culture &amp; Values</span>
-                          <span className="text-foreground">{researchData.glassdoorBreakdown.cultureValues} / 5.0</span>
+                          <span className="text-foreground">
+                            {researchData.glassdoorBreakdown.cultureValues} / 5.0
+                          </span>
                         </div>
                         <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
                           <div
                             className="h-full bg-indigo-500 rounded-full"
-                            style={{ width: `${(researchData.glassdoorBreakdown.cultureValues / 5) * 100}%` }}
+                            style={{
+                              width: `${(researchData.glassdoorBreakdown.cultureValues / 5) * 100}%`,
+                            }}
                           />
                         </div>
                       </div>
@@ -198,12 +230,16 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                       <div>
                         <div className="flex justify-between text-xs font-medium mb-1">
                           <span className="text-muted-foreground">Career Opportunities</span>
-                          <span className="text-foreground">{researchData.glassdoorBreakdown.careerOpportunities} / 5.0</span>
+                          <span className="text-foreground">
+                            {researchData.glassdoorBreakdown.careerOpportunities} / 5.0
+                          </span>
                         </div>
                         <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
                           <div
                             className="h-full bg-amber-500 rounded-full"
-                            style={{ width: `${(researchData.glassdoorBreakdown.careerOpportunities / 5) * 100}%` }}
+                            style={{
+                              width: `${(researchData.glassdoorBreakdown.careerOpportunities / 5) * 100}%`,
+                            }}
                           />
                         </div>
                       </div>
@@ -242,7 +278,9 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                           <h5 className="text-sm font-bold text-foreground group-hover:text-primary transition line-clamp-2 leading-snug">
                             {news.title}
                           </h5>
-                          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">{news.summary}</p>
+                          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                            {news.summary}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -254,5 +292,5 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
         </motion.div>
       </div>
     </AnimatePresence>
-  )
+  );
 }

@@ -108,7 +108,6 @@ const Terminal_Skills = () => {
 
       {/* Main Content */}
       <div className="relative z-10 max-w-[1200px] mx-auto px-6 py-16 md:py-24">
-        
         {/* Header Section */}
         <header className="mb-20">
           <div className="flex items-center gap-3 mb-6 text-[#22c55e]">
@@ -117,7 +116,7 @@ const Terminal_Skills = () => {
               {personal?.name || 'Developer_Profile'}
             </h1>
           </div>
-          
+
           <div className="space-y-4 max-w-2xl">
             <p className="text-gray-400 text-lg leading-relaxed">
               <span className="text-[#22c55e] mr-2">$ cat bio.txt</span>
@@ -131,12 +130,22 @@ const Terminal_Skills = () => {
             )}
             <div className="flex gap-4 pt-4">
               {personal?.github && (
-                <a href={personal.github} target="_blank" rel="noreferrer" className="text-gray-400 hover:text-[#22c55e] transition-colors flex items-center gap-2">
+                <a
+                  href={personal.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-400 hover:text-[#22c55e] transition-colors flex items-center gap-2"
+                >
                   <Code2 className="w-4 h-4" /> GitHub
                 </a>
               )}
               {personal?.linkedin && (
-                <a href={personal.linkedin} target="_blank" rel="noreferrer" className="text-gray-400 hover:text-[#22c55e] transition-colors flex items-center gap-2">
+                <a
+                  href={personal.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-400 hover:text-[#22c55e] transition-colors flex items-center gap-2"
+                >
                   <ExternalLink className="w-4 h-4" /> LinkedIn
                 </a>
               )}
@@ -150,7 +159,10 @@ const Terminal_Skills = () => {
             <h2 className="text-xl font-semibold mb-8 text-[#22c55e] bracket-heading">SKILLS</h2>
             <div className="flex flex-wrap gap-3">
               {dataSkills.map((skill, i) => (
-                <span key={i} className="ts-tag px-3 py-1.5 text-sm text-gray-300 rounded flex items-center gap-2">
+                <span
+                  key={i}
+                  className="ts-tag px-3 py-1.5 text-sm text-gray-300 rounded flex items-center gap-2"
+                >
                   <span className="text-[#22c55e] opacity-50">#</span>
                   {skill.name || skill}
                 </span>
@@ -166,7 +178,7 @@ const Terminal_Skills = () => {
               <h2 className="text-xl font-semibold text-[#22c55e] bracket-heading">PROJECTS</h2>
               <span className="text-gray-600 text-sm ml-2">--all</span>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {dataProjects.map((project, i) => (
                 <div key={i} className="ts-card rounded-lg p-6 flex flex-col h-full relative group">
@@ -174,14 +186,19 @@ const Terminal_Skills = () => {
                   <div className="flex justify-between items-start mb-4">
                     <Folder className="w-6 h-6 text-[#22c55e]" />
                     {project.link && (
-                      <a href={project.link} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-white transition-colors">
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-gray-500 hover:text-white transition-colors"
+                      >
                         <ExternalLink className="w-4 h-4" />
                       </a>
                     )}
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2">{project.title}</h3>
                   <p className="text-gray-400 text-sm mb-6 flex-grow">{project.description}</p>
-                  
+
                   {project.technologies && (
                     <div className="flex flex-wrap gap-2 mt-auto pt-4 border-t border-gray-800/50">
                       {project.technologies.map((tech, j) => (
@@ -200,25 +217,28 @@ const Terminal_Skills = () => {
         {/* Experience / Logs */}
         {dataExperience.length > 0 && (
           <section className="mb-20">
-             <h2 className="text-xl font-semibold mb-8 text-[#22c55e] bracket-heading">SYSTEM_LOGS</h2>
-             <div className="space-y-6">
-               {dataExperience.map((exp, i) => (
-                 <div key={i} className="flex gap-4 md:gap-8 group">
-                   <div className="w-32 flex-shrink-0 text-sm text-gray-500 font-mono mt-1">
-                     [{exp.duration || exp.year || '----'}]
-                   </div>
-                   <div className="flex-grow pb-6 border-l border-gray-800 pl-6 relative">
-                     <div className="absolute w-2 h-2 bg-gray-800 rounded-full -left-[5px] top-1.5 group-hover:bg-[#22c55e] transition-colors"></div>
-                     <h3 className="text-lg font-bold text-white mb-1">{exp.role || exp.title}</h3>
-                     <h4 className="text-[#22c55e] text-sm mb-3">@ {exp.company || exp.organization}</h4>
-                     <p className="text-gray-400 text-sm leading-relaxed">{exp.description}</p>
-                   </div>
-                 </div>
-               ))}
-             </div>
+            <h2 className="text-xl font-semibold mb-8 text-[#22c55e] bracket-heading">
+              SYSTEM_LOGS
+            </h2>
+            <div className="space-y-6">
+              {dataExperience.map((exp, i) => (
+                <div key={i} className="flex gap-4 md:gap-8 group">
+                  <div className="w-32 flex-shrink-0 text-sm text-gray-500 font-mono mt-1">
+                    [{exp.duration || exp.year || '----'}]
+                  </div>
+                  <div className="flex-grow pb-6 border-l border-gray-800 pl-6 relative">
+                    <div className="absolute w-2 h-2 bg-gray-800 rounded-full -left-[5px] top-1.5 group-hover:bg-[#22c55e] transition-colors"></div>
+                    <h3 className="text-lg font-bold text-white mb-1">{exp.role || exp.title}</h3>
+                    <h4 className="text-[#22c55e] text-sm mb-3">
+                      @ {exp.company || exp.organization}
+                    </h4>
+                    <p className="text-gray-400 text-sm leading-relaxed">{exp.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </section>
         )}
-
       </div>
     </div>
   );

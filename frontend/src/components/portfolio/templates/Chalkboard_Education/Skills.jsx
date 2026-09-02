@@ -1,5 +1,5 @@
-import React from "react";
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import React from 'react';
+import { usePortfolio } from '../../../../context/PortfolioContext';
 
 export default function Skills() {
   const { portfolioData: data } = usePortfolio();
@@ -14,8 +14,8 @@ export default function Skills() {
         className="absolute inset-0 opacity-20 pointer-events-none"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 10px 10px, rgba(125, 211, 252, 0.4) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
+            'radial-gradient(circle at 10px 10px, rgba(125, 211, 252, 0.4) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
         }}
       />
 
@@ -28,9 +28,9 @@ export default function Skills() {
             className="text-[#F8FFFC] font-bold m-0"
             style={{
               fontFamily: "'Caveat', cursive",
-              fontSize: "clamp(3.5rem, 6vw, 5.5rem)",
+              fontSize: 'clamp(3.5rem, 6vw, 5.5rem)',
               lineHeight: 0.9,
-              textShadow: "0 0 1px rgba(248,255,252,0.6), 0 14px 30px rgba(34, 211, 238, 0.15)",
+              textShadow: '0 0 1px rgba(248,255,252,0.6), 0 14px 30px rgba(34, 211, 238, 0.15)',
             }}
           >
             Skill Repertory
@@ -46,23 +46,21 @@ export default function Skills() {
                 className="group relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/40 p-6 backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/40 hover:bg-slate-900/60 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(6,17,40,0.6),0_0_20px_rgba(34,211,238,0.1)]"
               >
                 <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-cyan-400/10 to-transparent blur-2xl transition-opacity group-hover:opacity-100 opacity-0" />
-                
+
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-semibold text-white tracking-wide">
-                    {skill.name}
-                  </h3>
+                  <h3 className="text-xl font-semibold text-white tracking-wide">{skill.name}</h3>
                   <span className="text-sm font-medium text-cyan-200/80 uppercase tracking-widest">
                     {progress}%
                   </span>
                 </div>
-                
+
                 <div className="h-2.5 w-full rounded-full bg-white/5 overflow-hidden">
                   <div
                     className="h-full rounded-full bg-gradient-to-r from-teal-400 via-cyan-400 to-sky-500 shadow-[0_0_12px_rgba(34,211,238,0.4)] transition-all duration-1000 ease-out"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
-                
+
                 {skill.tags && skill.tags.length > 0 && (
                   <div className="mt-5 flex flex-wrap gap-2">
                     {skill.tags.map((tag, i) => (

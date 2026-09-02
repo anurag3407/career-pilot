@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion';
 import { usePortfolio } from '../../../../context/PortfolioContext';
@@ -35,8 +34,7 @@ const DARK = '#0A0B11'; // interior plastic of the cube
    the DOM in this same order so logical state stays aligned. */
 const POSITIONS = [];
 for (let x = -1; x <= 1; x++)
-  for (let y = -1; y <= 1; y++)
-    for (let z = -1; z <= 1; z++) POSITIONS.push([x, y, z]);
+  for (let y = -1; y <= 1; y++) for (let z = -1; z <= 1; z++) POSITIONS.push([x, y, z]);
 
 const AXIS_CSS = ['rotateX', 'rotateY', 'rotateZ'];
 
@@ -77,11 +75,27 @@ function Cubie({ pos }) {
   const [x, y, z] = pos;
   const faces = [
     { k: 'fz', t: 'translateZ(calc(var(--F) / 2))', c: z === 1 ? CUBE.red : DARK },
-    { k: 'bz', t: 'rotateY(180deg) translateZ(calc(var(--F) / 2))', c: z === -1 ? CUBE.orange : DARK },
+    {
+      k: 'bz',
+      t: 'rotateY(180deg) translateZ(calc(var(--F) / 2))',
+      c: z === -1 ? CUBE.orange : DARK,
+    },
     { k: 'rx', t: 'rotateY(90deg) translateZ(calc(var(--F) / 2))', c: x === 1 ? CUBE.blue : DARK },
-    { k: 'lx', t: 'rotateY(-90deg) translateZ(calc(var(--F) / 2))', c: x === -1 ? CUBE.green : DARK },
-    { k: 'ty', t: 'rotateX(90deg) translateZ(calc(var(--F) / 2))', c: y === -1 ? CUBE.white : DARK },
-    { k: 'by', t: 'rotateX(-90deg) translateZ(calc(var(--F) / 2))', c: y === 1 ? CUBE.yellow : DARK },
+    {
+      k: 'lx',
+      t: 'rotateY(-90deg) translateZ(calc(var(--F) / 2))',
+      c: x === -1 ? CUBE.green : DARK,
+    },
+    {
+      k: 'ty',
+      t: 'rotateX(90deg) translateZ(calc(var(--F) / 2))',
+      c: y === -1 ? CUBE.white : DARK,
+    },
+    {
+      k: 'by',
+      t: 'rotateX(-90deg) translateZ(calc(var(--F) / 2))',
+      c: y === 1 ? CUBE.yellow : DARK,
+    },
   ];
   const base = cubieTransform(pos, IDENTITY(), 0, 0);
   return (
@@ -209,8 +223,7 @@ function GiantCube() {
       parX += (pointerX * 6 - parX) * 0.05;
       parY += (pointerY * 5 - parY) * 0.05;
 
-      cube.style.transform =
-        `translateZ(calc(var(--S) * -0.35)) rotateX(${rotX - parY}deg) rotateY(${rotY + parX}deg)`;
+      cube.style.transform = `translateZ(calc(var(--S) * -0.35)) rotateX(${rotX - parY}deg) rotateY(${rotY + parX}deg)`;
 
       // layer-turn mechanism: rest briefly between moves, then turn one
       // slice at a time (start -> ease -> commit -> rest -> repeat).
@@ -679,7 +692,11 @@ export default function RubiksCube3DRotate() {
               <motion.a
                 className="rk-btn"
                 href={`mailto:${socials.email}`}
-                whileHover={{ y: -4, scale: 1.05, boxShadow: '0 20px 40px -12px rgba(229,53,47,0.85)' }}
+                whileHover={{
+                  y: -4,
+                  scale: 1.05,
+                  boxShadow: '0 20px 40px -12px rgba(229,53,47,0.85)',
+                }}
                 whileTap={{ scale: 0.96 }}
               >
                 Solve Together
@@ -699,7 +716,6 @@ export default function RubiksCube3DRotate() {
             )}
           </motion.div>
         </motion.div>
-      
       </header>
 
       {/* ABOUT */}
@@ -709,11 +725,31 @@ export default function RubiksCube3DRotate() {
           <p className="rk-about-body">{personal?.bio}</p>
           <div className="rk-stats">
             {[
-              ['years', stats?.yearsExperience, 'Years Experience', 'linear-gradient(90deg, var(--red), var(--orange))'],
-              ['projects', stats?.projectsCompleted, 'Projects Solved', 'linear-gradient(90deg, var(--blue), var(--green))'],
-              ['clients', stats?.happyClients, 'Happy Clients', 'linear-gradient(90deg, var(--yellow), var(--orange))'],
+              [
+                'years',
+                stats?.yearsExperience,
+                'Years Experience',
+                'linear-gradient(90deg, var(--red), var(--orange))',
+              ],
+              [
+                'projects',
+                stats?.projectsCompleted,
+                'Projects Solved',
+                'linear-gradient(90deg, var(--blue), var(--green))',
+              ],
+              [
+                'clients',
+                stats?.happyClients,
+                'Happy Clients',
+                'linear-gradient(90deg, var(--yellow), var(--orange))',
+              ],
             ].map(([k, v, l, edge]) => (
-              <motion.div key={k} className="rk-stat" style={{ '--edge': edge }} whileHover={{ y: -4, scale: 1.04 }}>
+              <motion.div
+                key={k}
+                className="rk-stat"
+                style={{ '--edge': edge }}
+                whileHover={{ y: -4, scale: 1.04 }}
+              >
                 <span className="num">{v ?? '—'}</span>
                 <span className="label">{l}</span>
               </motion.div>
@@ -758,7 +794,11 @@ export default function RubiksCube3DRotate() {
                       initial={{ scaleX: 0 }}
                       whileInView={{ scaleX: lvl / 100 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 1, delay: 0.2 + (i % 4) * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.2 + (i % 4) * 0.06,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
                     />
                   </span>
                 </div>
@@ -787,12 +827,40 @@ export default function RubiksCube3DRotate() {
                 </div>
               )}
               <div className="rk-proj-body">
-                <h3 className="rk-display" style={{ fontSize: '1.35rem', marginBottom: '0.7rem', color: '#FFFFFF' }}>{proj.title}</h3>
-                <p style={{ color: '#9FAEC6', lineHeight: '1.65', marginBottom: '1rem', fontSize: '0.95rem' }}>{proj.description}</p>
-                <div>{proj.techStack?.map((t, idx) => <span key={idx} className="rk-tag">{t}</span>)}</div>
+                <h3
+                  className="rk-display"
+                  style={{ fontSize: '1.35rem', marginBottom: '0.7rem', color: '#FFFFFF' }}
+                >
+                  {proj.title}
+                </h3>
+                <p
+                  style={{
+                    color: '#9FAEC6',
+                    lineHeight: '1.65',
+                    marginBottom: '1rem',
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  {proj.description}
+                </p>
+                <div>
+                  {proj.techStack?.map((t, idx) => (
+                    <span key={idx} className="rk-tag">
+                      {t}
+                    </span>
+                  ))}
+                </div>
                 <div className="rk-proj-links">
-                  {proj.liveUrl && <a href={proj.liveUrl} target="_blank" rel="noreferrer">Live →</a>}
-                  {proj.githubUrl && <a href={proj.githubUrl} target="_blank" rel="noreferrer">Code →</a>}
+                  {proj.liveUrl && (
+                    <a href={proj.liveUrl} target="_blank" rel="noreferrer">
+                      Live →
+                    </a>
+                  )}
+                  {proj.githubUrl && (
+                    <a href={proj.githubUrl} target="_blank" rel="noreferrer">
+                      Code →
+                    </a>
+                  )}
                 </div>
               </div>
             </TiltCard>
@@ -822,9 +890,22 @@ export default function RubiksCube3DRotate() {
                   style={{ padding: '1.6rem 1.8rem' }}
                 >
                   <div className="rk-tl-period">{job.period}</div>
-                  <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#FFFFFF', margin: '0.2rem 0' }}>{job.role}</h3>
-                  <div style={{ fontWeight: 600, color: '#93A0B8', marginBottom: '0.7rem' }}>{job.company}</div>
-                  <p style={{ color: '#C6D0E2', lineHeight: '1.65', margin: 0 }}>{job.description}</p>
+                  <h3
+                    style={{
+                      fontSize: '1.25rem',
+                      fontWeight: 700,
+                      color: '#FFFFFF',
+                      margin: '0.2rem 0',
+                    }}
+                  >
+                    {job.role}
+                  </h3>
+                  <div style={{ fontWeight: 600, color: '#93A0B8', marginBottom: '0.7rem' }}>
+                    {job.company}
+                  </div>
+                  <p style={{ color: '#C6D0E2', lineHeight: '1.65', margin: 0 }}>
+                    {job.description}
+                  </p>
                 </TiltCard>
               </div>
             );
@@ -844,10 +925,36 @@ export default function RubiksCube3DRotate() {
                 'linear-gradient(90deg, var(--red), var(--blue))',
               ];
               return (
-                <TiltCard key={i} className="rk-quote-card" edge={edges[i % edges.length]} tiltMax={8} floatDur={7 + (i % 3)}>
-                  <p style={{ fontStyle: 'italic', color: '#C6D0E2', marginBottom: '1.4rem', lineHeight: '1.65' }}>“{t.text}”</p>
+                <TiltCard
+                  key={i}
+                  className="rk-quote-card"
+                  edge={edges[i % edges.length]}
+                  tiltMax={8}
+                  floatDur={7 + (i % 3)}
+                >
+                  <p
+                    style={{
+                      fontStyle: 'italic',
+                      color: '#C6D0E2',
+                      marginBottom: '1.4rem',
+                      lineHeight: '1.65',
+                    }}
+                  >
+                    “{t.text}”
+                  </p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem' }}>
-                    {t.avatar && <img src={t.avatar} alt={t.name} style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover' }} />}
+                    {t.avatar && (
+                      <img
+                        src={t.avatar}
+                        alt={t.name}
+                        style={{
+                          width: '42px',
+                          height: '42px',
+                          borderRadius: '50%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                    )}
                     <div>
                       <div style={{ fontWeight: 700, color: '#FFFFFF' }}>{t.name}</div>
                       <div style={{ fontSize: '0.8rem', color: '#93A0B8' }}>{t.role}</div>
@@ -870,28 +977,79 @@ export default function RubiksCube3DRotate() {
           floatDur={9}
         >
           <div className="rk-final-grid" aria-hidden="true">
-            {Array.from({ length: 9 }).map((_, i) => <span key={i} />)}
+            {Array.from({ length: 9 }).map((_, i) => (
+              <span key={i} />
+            ))}
           </div>
-          <h3 className="rk-display" style={{ fontSize: '2.1rem', marginBottom: '1rem', color: '#FFFFFF' }}>Ready to solve the next puzzle?</h3>
-          <p style={{ fontSize: '1.05rem', color: '#93A0B8', maxWidth: '600px', margin: '0 auto 2.5rem' }}>
-            Whether it's a tricky problem or a new collaboration, let's twist it into place together.
+          <h3
+            className="rk-display"
+            style={{ fontSize: '2.1rem', marginBottom: '1rem', color: '#FFFFFF' }}
+          >
+            Ready to solve the next puzzle?
+          </h3>
+          <p
+            style={{
+              fontSize: '1.05rem',
+              color: '#93A0B8',
+              maxWidth: '600px',
+              margin: '0 auto 2.5rem',
+            }}
+          >
+            Whether it's a tricky problem or a new collaboration, let's twist it into place
+            together.
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             {socials?.email && (
-              <motion.a className="rk-btn" href={`mailto:${socials.email}`} whileHover={{ y: -4, scale: 1.05 }} whileTap={{ scale: 0.95 }}>Email Me</motion.a>
+              <motion.a
+                className="rk-btn"
+                href={`mailto:${socials.email}`}
+                whileHover={{ y: -4, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Email Me
+              </motion.a>
             )}
             {socials?.github && (
-              <motion.a className="rk-btn rk-btn-ghost" href={socials.github} target="_blank" rel="noreferrer" whileHover={{ y: -4, scale: 1.05 }} whileTap={{ scale: 0.95 }}>GitHub</motion.a>
+              <motion.a
+                className="rk-btn rk-btn-ghost"
+                href={socials.github}
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ y: -4, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                GitHub
+              </motion.a>
             )}
             {socials?.linkedin && (
-              <motion.a className="rk-btn rk-btn-ghost" href={socials.linkedin} target="_blank" rel="noreferrer" whileHover={{ y: -4, scale: 1.05 }} whileTap={{ scale: 0.95 }}>LinkedIn</motion.a>
+              <motion.a
+                className="rk-btn rk-btn-ghost"
+                href={socials.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ y: -4, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                LinkedIn
+              </motion.a>
             )}
             {socials?.twitter && (
-              <motion.a className="rk-btn rk-btn-ghost" href={socials.twitter} target="_blank" rel="noreferrer" whileHover={{ y: -4, scale: 1.05 }} whileTap={{ scale: 0.95 }}>Twitter</motion.a>
+              <motion.a
+                className="rk-btn rk-btn-ghost"
+                href={socials.twitter}
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ y: -4, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Twitter
+              </motion.a>
             )}
           </div>
         </TiltCard>
-        <div className="rk-footer">© {new Date().getFullYear()} {personal?.name}. Solved &amp; shipped.</div>
+        <div className="rk-footer">
+          © {new Date().getFullYear()} {personal?.name}. Solved &amp; shipped.
+        </div>
       </section>
     </div>
   );

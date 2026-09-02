@@ -4,7 +4,15 @@ import { Mail, Github, Linkedin, Twitter, Copy, Check, Send } from 'lucide-react
 import { usePortfolio } from './PortfolioContext';
 
 /* ─── Command button ─────────────────────────────────────────────── */
-function CmdButton({ icon: Icon, label, cmd, href, id, color = 'text-green-400', borderColor = 'border-green-900/50' }) {
+function CmdButton({
+  icon: Icon,
+  label,
+  cmd,
+  href,
+  id,
+  color = 'text-green-400',
+  borderColor = 'border-green-900/50',
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -38,10 +46,7 @@ function CmdButton({ icon: Icon, label, cmd, href, id, color = 'text-green-400',
             whileTap={{ scale: 0.9 }}
           >
             <div className="border border-green-900/50 p-1 cursor-pointer text-green-800 hover:text-green-500">
-              {copied
-                ? <Check size={10} className="text-green-400" />
-                : <Copy size={10} />
-              }
+              {copied ? <Check size={10} className="text-green-400" /> : <Copy size={10} />}
             </div>
           </motion.div>
         </div>
@@ -110,7 +115,6 @@ export default function Contact() {
       aria-label="Contact"
     >
       <div className="max-w-4xl mx-auto space-y-8">
-
         {/* Command header */}
         <motion.div {...fadeUp(0)} className="font-mono">
           <div className="flex items-center gap-2 text-sm">
@@ -128,10 +132,22 @@ export default function Contact() {
           className="border border-green-900/40 bg-green-950/10 font-mono text-xs p-4 space-y-1"
         >
           <div className="text-green-700">{'// connection_status.json'}</div>
-          <div><span className="text-green-500">&nbsp;&nbsp;"status":</span> <span className="text-white">"AVAILABLE"</span></div>
-          <div><span className="text-green-500">&nbsp;&nbsp;"response_time":</span> <span className="text-cyan-400">"&lt; 24h"</span></div>
-          <div><span className="text-green-500">&nbsp;&nbsp;"location":</span> <span className="text-white">"{data.personal.location || 'Remote'}"</span></div>
-          <div><span className="text-green-500">&nbsp;&nbsp;"open_to":</span> <span className="text-amber-400">["freelance", "full-time", "consulting"]</span></div>
+          <div>
+            <span className="text-green-500">&nbsp;&nbsp;"status":</span>{' '}
+            <span className="text-white">"AVAILABLE"</span>
+          </div>
+          <div>
+            <span className="text-green-500">&nbsp;&nbsp;"response_time":</span>{' '}
+            <span className="text-cyan-400">"&lt; 24h"</span>
+          </div>
+          <div>
+            <span className="text-green-500">&nbsp;&nbsp;"location":</span>{' '}
+            <span className="text-white">"{data.personal.location || 'Remote'}"</span>
+          </div>
+          <div>
+            <span className="text-green-500">&nbsp;&nbsp;"open_to":</span>{' '}
+            <span className="text-amber-400">["freelance", "full-time", "consulting"]</span>
+          </div>
         </motion.div>
 
         {/* Contact grid */}
@@ -205,9 +221,7 @@ export default function Contact() {
             {'# ── EOF ────────────────────────────────────────────────────'}
           </div>
           <div className="text-green-800">
-            Built with{' '}
-            <span className="text-green-500">{'<Terminal />'}</span>
-            {' '}by{' '}
+            Built with <span className="text-green-500">{'<Terminal />'}</span> by{' '}
             <span className="text-amber-400">{data.personal.name}</span>
           </div>
           <div className="text-green-900 text-[10px]">

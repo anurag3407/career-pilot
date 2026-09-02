@@ -8,14 +8,14 @@ export default function Contact({ personal, socials }) {
   const socialIcons = {
     linkedin: <Linkedin className="w-5 h-5" />,
     github: <Github className="w-5 h-5" />,
-    twitter: <Twitter className="w-5 h-5" />
+    twitter: <Twitter className="w-5 h-5" />,
   };
 
   return (
     <section className="relative w-full bg-gray-950 text-white py-24 px-6 md:px-16 overflow-hidden border-t border-white/5">
       {/* Background elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
-      
+
       <div className="relative max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div
@@ -29,11 +29,12 @@ export default function Contact({ personal, socials }) {
               <span className="text-xs tracking-widest uppercase">Connect</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-semibold leading-tight mb-6">
-              Let's Discuss <br/>
+              Let's Discuss <br />
               <span className="text-emerald-400">Opportunities</span>
             </h2>
             <p className="text-slate-400 leading-relaxed mb-8 max-w-md">
-              Whether you have a question, a project proposal, or just want to say hi, I'll try my best to get back to you!
+              Whether you have a question, a project proposal, or just want to say hi, I'll try my
+              best to get back to you!
             </p>
 
             <div className="space-y-6">
@@ -44,7 +45,9 @@ export default function Contact({ personal, socials }) {
                   </div>
                   <div>
                     <p className="text-sm text-slate-400 mb-1">Email</p>
-                    <p className="font-medium text-white/90 group-hover:text-emerald-400 transition-colors">{personal.email}</p>
+                    <p className="font-medium text-white/90 group-hover:text-emerald-400 transition-colors">
+                      {personal.email}
+                    </p>
                   </div>
                 </div>
               )}
@@ -55,7 +58,9 @@ export default function Contact({ personal, socials }) {
                   </div>
                   <div>
                     <p className="text-sm text-slate-400 mb-1">Phone</p>
-                    <p className="font-medium text-white/90 group-hover:text-emerald-400 transition-colors">{personal.phone}</p>
+                    <p className="font-medium text-white/90 group-hover:text-emerald-400 transition-colors">
+                      {personal.phone}
+                    </p>
                   </div>
                 </div>
               )}
@@ -66,12 +71,14 @@ export default function Contact({ personal, socials }) {
                   </div>
                   <div>
                     <p className="text-sm text-slate-400 mb-1">Location</p>
-                    <p className="font-medium text-white/90 group-hover:text-emerald-400 transition-colors">{personal.location}</p>
+                    <p className="font-medium text-white/90 group-hover:text-emerald-400 transition-colors">
+                      {personal.location}
+                    </p>
                   </div>
                 </div>
               )}
             </div>
-            
+
             {socials && socials.length > 0 && (
               <div className="mt-10 flex items-center gap-4 pt-8 border-t border-white/10">
                 {socials.map((social, i) => (
@@ -82,7 +89,9 @@ export default function Contact({ personal, socials }) {
                     rel="noopener noreferrer"
                     className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:bg-emerald-500/20 hover:text-emerald-400 hover:border-emerald-500/50 transition-all"
                   >
-                    {socialIcons[social.platform.toLowerCase()] || <ArrowRight className="w-4 h-4" />}
+                    {socialIcons[social.platform.toLowerCase()] || (
+                      <ArrowRight className="w-4 h-4" />
+                    )}
                   </a>
                 ))}
               </div>
@@ -101,22 +110,41 @@ export default function Contact({ personal, socials }) {
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm text-slate-400">First Name</label>
-                  <input type="text" className="w-full bg-gray-950/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all" placeholder="John" />
+                  <input
+                    type="text"
+                    className="w-full bg-gray-950/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                    placeholder="John"
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm text-slate-400">Last Name</label>
-                  <input type="text" className="w-full bg-gray-950/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all" placeholder="Doe" />
+                  <input
+                    type="text"
+                    className="w-full bg-gray-950/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                    placeholder="Doe"
+                  />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm text-slate-400">Email Address</label>
-                <input type="email" className="w-full bg-gray-950/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all" placeholder="john@company.com" />
+                <input
+                  type="email"
+                  className="w-full bg-gray-950/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                  placeholder="john@company.com"
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm text-slate-400">Message</label>
-                <textarea rows={4} className="w-full bg-gray-950/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all resize-none" placeholder="How can we help you?"></textarea>
+                <textarea
+                  rows={4}
+                  className="w-full bg-gray-950/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all resize-none"
+                  placeholder="How can we help you?"
+                ></textarea>
               </div>
-              <button type="button" className="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 group">
+              <button
+                type="button"
+                className="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 group"
+              >
                 Send Message
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>

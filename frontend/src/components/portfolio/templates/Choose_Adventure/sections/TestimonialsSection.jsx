@@ -13,8 +13,12 @@ export default function TestimonialsSection({ data, onChoice }) {
   ];
 
   const count = testimonials?.length ?? 0;
-  const prev = () => { if (count > 0) setActive((p) => (p - 1 + count) % count); };
-  const next = () => { if (count > 0) setActive((p) => (p + 1) % count); };
+  const prev = () => {
+    if (count > 0) setActive((p) => (p - 1 + count) % count);
+  };
+  const next = () => {
+    if (count > 0) setActive((p) => (p + 1) % count);
+  };
   const current = count > 0 ? testimonials[active] : null;
 
   if (count === 0) {
@@ -71,7 +75,9 @@ export default function TestimonialsSection({ data, onChoice }) {
                     src={current.avatar}
                     alt={current.name}
                     className="w-full h-full object-cover"
-                    onError={(e) => { e.target.style.display = 'none'; }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
                   />
                 </div>
                 <div>
@@ -83,7 +89,8 @@ export default function TestimonialsSection({ data, onChoice }) {
           </AnimatePresence>
 
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-violet-800/30">
-            <button type="button"
+            <button
+              type="button"
               onClick={prev}
               className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors"
             >
@@ -92,7 +99,8 @@ export default function TestimonialsSection({ data, onChoice }) {
             </button>
             <div className="flex gap-1.5">
               {testimonials.map((t, i) => (
-                <button type="button"
+                <button
+                  type="button"
                   key={i}
                   onClick={() => setActive(i)}
                   aria-label={`View testimonial from ${t.name}`}
@@ -101,7 +109,8 @@ export default function TestimonialsSection({ data, onChoice }) {
                 />
               ))}
             </div>
-            <button type="button"
+            <button
+              type="button"
               onClick={next}
               className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors"
             >
@@ -121,7 +130,10 @@ export default function TestimonialsSection({ data, onChoice }) {
               onClick={() => onChoice(choice.next)}
               className="w-full flex items-center gap-3 text-left px-5 py-4 rounded-xl border border-violet-700/40 hover:border-violet-400/70 bg-violet-950/30 hover:bg-violet-900/40 text-violet-200 hover:text-white transition-all duration-200 group"
             >
-              <ChevronRightIcon size={14} className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0" />
+              <ChevronRightIcon
+                size={14}
+                className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0"
+              />
               <span className="text-sm">{choice.label}</span>
             </motion.button>
           ))}

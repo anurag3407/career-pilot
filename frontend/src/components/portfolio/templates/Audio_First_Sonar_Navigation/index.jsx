@@ -1,30 +1,38 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
-  Github, Linkedin, Twitter, Mail, ExternalLink,
-  Volume2, Mic, Radio, Music, Headphones
-} from "lucide-react";
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  ExternalLink,
+  Volume2,
+  Mic,
+  Radio,
+  Music,
+  Headphones,
+} from 'lucide-react';
 
 const C = {
-  bg:     "#0A0A12",
-  mid:    "#12121C",
-  card:   "#1A1A28",
-  text:   "#F0F0F8",
-  muted:  "rgba(240,240,248,.5)",
-  accent: "#00E5CC",
-  accent2: "#7B61FF",
-  border: "rgba(255,255,255,.07)",
+  bg: '#0A0A12',
+  mid: '#12121C',
+  card: '#1A1A28',
+  text: '#F0F0F8',
+  muted: 'rgba(240,240,248,.5)',
+  accent: '#00E5CC',
+  accent2: '#7B61FF',
+  border: 'rgba(255,255,255,.07)',
 };
 
 const SONAR_ITEMS = [
-  { id: "hero",         label: "Home",      Icon: Radio,     color: "#00E5CC" },
-  { id: "about",        label: "About",     Icon: Mic,       color: "#7B61FF" },
-  { id: "skills",       label: "Skills",    Icon: Volume2,   color: "#FF6B6B" },
-  { id: "projects",     label: "Projects",  Icon: Music,     color: "#FFB347" },
-  { id: "experience",   label: "Experience",Icon: Headphones, color: "#4ECDC4" },
-  { id: "testimonials", label: "Reviews",   Icon: Volume2,   color: "#FF6B9D" },
-  { id: "contact",      label: "Contact",   Icon: Radio,     color: "#00E5CC" },
+  { id: 'hero', label: 'Home', Icon: Radio, color: '#00E5CC' },
+  { id: 'about', label: 'About', Icon: Mic, color: '#7B61FF' },
+  { id: 'skills', label: 'Skills', Icon: Volume2, color: '#FF6B6B' },
+  { id: 'projects', label: 'Projects', Icon: Music, color: '#FFB347' },
+  { id: 'experience', label: 'Experience', Icon: Headphones, color: '#4ECDC4' },
+  { id: 'testimonials', label: 'Reviews', Icon: Volume2, color: '#FF6B9D' },
+  { id: 'contact', label: 'Contact', Icon: Radio, color: '#00E5CC' },
 ];
 
 function GlobalStyles() {
@@ -122,22 +130,29 @@ function SonarPulsingCircle({ color = C.accent, size = 80, duration = 2 }) {
   const { portfolioData: data } = usePortfolio();
 
   return (
-    <div style={{ position: "relative", width: size, height: size }}>
+    <div style={{ position: 'relative', width: size, height: size }}>
       {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
           style={{
-            position: "absolute", inset: 0, borderRadius: "50%",
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '50%',
             border: `1px solid ${color}`,
           }}
           animate={{ scale: [1, 2], opacity: [0.6, 0] }}
-          transition={{ duration, repeat: Infinity, delay: i * (duration / 3), ease: "easeOut" }}
+          transition={{ duration, repeat: Infinity, delay: i * (duration / 3), ease: 'easeOut' }}
         />
       ))}
-      <div style={{
-        position: "absolute", inset: "30%", borderRadius: "50%",
-        background: color, boxShadow: `0 0 16px ${color}80`,
-      }} />
+      <div
+        style={{
+          position: 'absolute',
+          inset: '30%',
+          borderRadius: '50%',
+          background: color,
+          boxShadow: `0 0 16px ${color}80`,
+        }}
+      />
     </div>
   );
 }
@@ -147,13 +162,18 @@ function AudioBars({ style = {} }) {
 
   const bars = [0.6, 1, 0.8, 1.2, 0.7, 1.1, 0.5, 0.9, 1.3, 0.6];
   return (
-    <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 48, ...style }}>
+    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 48, ...style }}>
       {bars.map((h, i) => (
         <motion.div
           key={i}
           animate={{ height: [`${h * 10}px`, `${h * 44}px`, `${h * 10}px`] }}
-          transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.07, ease: "easeInOut" }}
-          style={{ width: 5, borderRadius: 3, background: `linear-gradient(180deg,${C.accent},${C.accent2})`, opacity: 0.8 }}
+          transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.07, ease: 'easeInOut' }}
+          style={{
+            width: 5,
+            borderRadius: 3,
+            background: `linear-gradient(180deg,${C.accent},${C.accent2})`,
+            opacity: 0.8,
+          }}
         />
       ))}
     </div>
@@ -166,24 +186,37 @@ function SonarNav({ activeSection, onNavigate }) {
   const [hoveredId, setHoveredId] = useState(null);
 
   return (
-    <div style={{ position: "fixed", right: 24, top: "50%", transform: "translateY(-50%)", zIndex: 50 }}>
+    <div
+      style={{
+        position: 'fixed',
+        right: 24,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        zIndex: 50,
+      }}
+    >
       <motion.div
         initial={{ x: 60, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 0.6, type: "spring", stiffness: 260, damping: 20 }}
+        transition={{ delay: 0.6, type: 'spring', stiffness: 260, damping: 20 }}
         style={{
-          display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-          background: `${C.mid}CC`, backdropFilter: "blur(16px)",
-          border: "1px solid rgba(255,255,255,.08)",
-          borderRadius: 20, padding: "14px 10px",
-          boxShadow: "0 16px 48px rgba(0,0,0,.4)",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+          background: `${C.mid}CC`,
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255,255,255,.08)',
+          borderRadius: 20,
+          padding: '14px 10px',
+          boxShadow: '0 16px 48px rgba(0,0,0,.4)',
         }}
       >
         {SONAR_ITEMS.map(({ id, label, Icon, color }) => {
           const isActive = activeSection === id;
           const isHovered = hoveredId === id;
           return (
-            <div key={id} style={{ position: "relative" }}>
+            <div key={id} style={{ position: 'relative' }}>
               <motion.button
                 onClick={() => onNavigate(id)}
                 onMouseEnter={() => setHoveredId(id)}
@@ -191,12 +224,17 @@ function SonarNav({ activeSection, onNavigate }) {
                 aria-label={label}
                 whileTap={{ scale: 0.85 }}
                 style={{
-                  width: 42, height: 42, borderRadius: 12,
-                  background: isActive ? `${color}25` : isHovered ? `${color}15` : "transparent",
-                  border: `1px solid ${isActive ? color + "60" : "transparent"}`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  cursor: "pointer", transition: "background .2s, border-color .2s",
-                  boxShadow: isActive ? `0 0 12px ${color}40` : "none",
+                  width: 42,
+                  height: 42,
+                  borderRadius: 12,
+                  background: isActive ? `${color}25` : isHovered ? `${color}15` : 'transparent',
+                  border: `1px solid ${isActive ? color + '60' : 'transparent'}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'background .2s, border-color .2s',
+                  boxShadow: isActive ? `0 0 12px ${color}40` : 'none',
                 }}
               >
                 <Icon size={18} color={isActive ? color : isHovered ? color : C.muted} />
@@ -209,11 +247,19 @@ function SonarNav({ activeSection, onNavigate }) {
                     exit={{ opacity: 0, x: -6 }}
                     transition={{ duration: 0.12 }}
                     style={{
-                      position: "absolute", right: "calc(100% + 8px)", top: "50%", transform: "translateY(-50%)",
-                      background: `${C.mid}EE`, color: "#fff",
-                      padding: "5px 12px", borderRadius: 8, fontSize: 11,
-                      fontWeight: 600, whiteSpace: "nowrap",
-                      pointerEvents: "none", border: "1px solid rgba(255,255,255,.1)",
+                      position: 'absolute',
+                      right: 'calc(100% + 8px)',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: `${C.mid}EE`,
+                      color: '#fff',
+                      padding: '5px 12px',
+                      borderRadius: 8,
+                      fontSize: 11,
+                      fontWeight: 600,
+                      whiteSpace: 'nowrap',
+                      pointerEvents: 'none',
+                      border: '1px solid rgba(255,255,255,.1)',
                       fontFamily: "'Space Grotesk', sans-serif",
                     }}
                   >
@@ -231,26 +277,36 @@ function SonarNav({ activeSection, onNavigate }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1 }}
         style={{
-          marginTop: 12, textAlign: "center",
-          fontSize: 9, fontWeight: 700, letterSpacing: 3, color: SONAR_ITEMS.find(i => i.id === activeSection)?.color || C.accent,
-          textTransform: "uppercase", fontFamily: "'Space Grotesk', sans-serif",
+          marginTop: 12,
+          textAlign: 'center',
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: 3,
+          color: SONAR_ITEMS.find((i) => i.id === activeSection)?.color || C.accent,
+          textTransform: 'uppercase',
+          fontFamily: "'Space Grotesk', sans-serif",
         }}
       >
-        {SONAR_ITEMS.find(i => i.id === activeSection)?.label || "Home"}
+        {SONAR_ITEMS.find((i) => i.id === activeSection)?.label || 'Home'}
       </motion.div>
     </div>
   );
 }
 
-function FadeIn({ children, delay = 0, className = "", style = {} }) {
+function FadeIn({ children, delay = 0, className = '', style = {} }) {
   const { portfolioData: data } = usePortfolio();
 
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: '-80px' });
   return (
-    <motion.div ref={ref} className={className} style={style}
-      initial={{ opacity: 0, y: 28 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, delay, ease: "easeOut" }}>
+    <motion.div
+      ref={ref}
+      className={className}
+      style={style}
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.65, delay, ease: 'easeOut' }}
+    >
       {children}
     </motion.div>
   );
@@ -262,15 +318,17 @@ function SkillBar({ name, level, category }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
-    <div ref={ref} className="asn-card" style={{ padding: "16px 20px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+    <div ref={ref} className="asn-card" style={{ padding: '16px 20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
         <span style={{ fontSize: 13, fontWeight: 600 }}>{name}</span>
         <span style={{ fontSize: 12, color: C.accent, fontWeight: 700 }}>{level}%</span>
       </div>
       <div className="asn-skill-track">
-        <div className="asn-skill-fill" style={{ width: inView ? `${level}%` : "0%" }} />
+        <div className="asn-skill-fill" style={{ width: inView ? `${level}%` : '0%' }} />
       </div>
-      <div style={{ marginTop: 8 }}><span className="asn-tag">{category}</span></div>
+      <div style={{ marginTop: 8 }}>
+        <span className="asn-tag">{category}</span>
+      </div>
     </div>
   );
 }
@@ -278,22 +336,22 @@ function SkillBar({ name, level, category }) {
 export default function AudioFirstSonarNavigation() {
   const { portfolioData: data } = usePortfolio();
 
-  const [activeSection, setActiveSection] = useState("hero");
-  const [contactState, setContactState] = useState("idle");
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [activeSection, setActiveSection] = useState('hero');
+  const [contactState, setContactState] = useState('idle');
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
 
-  const email = data.socials?.email || data.personal?.email || "";
-  const resumeUrl = data.personal?.resumeUrl || "#contact";
+  const email = data.socials?.email || data.personal?.email || '';
+  const resumeUrl = data.personal?.resumeUrl || '#contact';
 
   const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setActiveSection(id);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setContactState("sending");
-    setTimeout(() => setContactState("done"), 1500);
+    setContactState('sending');
+    setTimeout(() => setContactState('done'), 1500);
   };
 
   return (
@@ -301,65 +359,200 @@ export default function AudioFirstSonarNavigation() {
       <GlobalStyles />
       <SonarNav activeSection={activeSection} onNavigate={scrollTo} />
 
-      <section id="hero" className="asn-sec" style={{ minHeight: "100vh", display: "flex", alignItems: "center", overflow: "hidden", position: "relative" }}>
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+      <section
+        id="hero"
+        className="asn-sec"
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
           {[280, 200, 140].map((size, i) => (
             <motion.div
               key={i}
               style={{
-                position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)",
-                border: `1px solid ${C.accent}15`, borderRadius: "50%", width: size, height: size,
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%,-50%)',
+                border: `1px solid ${C.accent}15`,
+                borderRadius: '50%',
+                width: size,
+                height: size,
               }}
               animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 4 + i, repeat: Infinity, ease: 'easeInOut' }}
             />
           ))}
         </div>
 
-        <div className="asn-max" style={{ width: "100%", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 28, justifyContent: "center" }}>
+        <div className="asn-max" style={{ width: '100%', position: 'relative', zIndex: 1 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 20,
+              marginBottom: 28,
+              justifyContent: 'center',
+            }}
+          >
             <SonarPulsingCircle size={70} color={C.accent} duration={2.5} />
             <AudioBars />
             <SonarPulsingCircle size={50} color={C.accent2} duration={2} />
           </div>
 
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ textAlign: "center", marginBottom: 24 }}>
-            <img src={data.personal.avatar} alt={data.personal.name} style={{ width: 90, height: 90, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}`, margin: "0 auto", display: "block", boxShadow: `0 0 24px ${C.accent}40` }} />
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ textAlign: 'center', marginBottom: 24 }}
+          >
+            <img
+              src={data.personal.avatar}
+              alt={data.personal.name}
+              style={{
+                width: 90,
+                height: 90,
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: `3px solid ${C.accent}`,
+                margin: '0 auto',
+                display: 'block',
+                boxShadow: `0 0 24px ${C.accent}40`,
+              }}
+            />
           </motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-            style={{ fontSize: "clamp(2.8rem,10vw,7rem)", fontWeight: 800, lineHeight: 1, marginBottom: 16, letterSpacing: -3, textAlign: "center" }}>
+          <motion.h1
+            initial={{ opacity: 0, y: 36 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            style={{
+              fontSize: 'clamp(2.8rem,10vw,7rem)',
+              fontWeight: 800,
+              lineHeight: 1,
+              marginBottom: 16,
+              letterSpacing: -3,
+              textAlign: 'center',
+            }}
+          >
             {data.personal.name}
           </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25 }}
-            style={{ fontSize: "clamp(.85rem,2vw,1.1rem)", color: C.accent, fontWeight: 600, marginBottom: 24, letterSpacing: 3, textTransform: "uppercase", textAlign: "center" }}>
+          <motion.p
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            style={{
+              fontSize: 'clamp(.85rem,2vw,1.1rem)',
+              color: C.accent,
+              fontWeight: 600,
+              marginBottom: 24,
+              letterSpacing: 3,
+              textTransform: 'uppercase',
+              textAlign: 'center',
+            }}
+          >
             {data.personal.title}
           </motion.p>
-          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.38 }} style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.38 }}
+            style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}
+          >
             <AudioBars style={{ height: 40 }} />
           </motion.div>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.4 }}
-            style={{ fontSize: 16, lineHeight: 1.8, color: C.muted, maxWidth: 500, margin: "0 auto 44px", textAlign: "center" }}>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            style={{
+              fontSize: 16,
+              lineHeight: 1.8,
+              color: C.muted,
+              maxWidth: 500,
+              margin: '0 auto 44px',
+              textAlign: 'center',
+            }}
+          >
             {data.personal.bio}
           </motion.p>
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.55 }}
-            style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center", marginBottom: 52 }}>
-            <button type="button" className="asn-btn asn-btn-primary" onClick={() => scrollTo("projects")}><Music size={14} />View Work</button>
-            <button type="button" className="asn-btn asn-btn-ghost" onClick={() => scrollTo("contact")}><Radio size={14} />Get In Touch</button>
-          </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.55 }}
             style={{
-              display: "grid", gridTemplateColumns: "repeat(3,1fr)", maxWidth: 460, margin: "0 auto",
-              border: `1px solid ${C.border}`, borderRadius: 16, overflow: "hidden",
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 16,
+              justifyContent: 'center',
+              marginBottom: 52,
+            }}
+          >
+            <button
+              type="button"
+              className="asn-btn asn-btn-primary"
+              onClick={() => scrollTo('projects')}
+            >
+              <Music size={14} />
+              View Work
+            </button>
+            <button
+              type="button"
+              className="asn-btn asn-btn-ghost"
+              onClick={() => scrollTo('contact')}
+            >
+              <Radio size={14} />
+              Get In Touch
+            </button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3,1fr)',
+              maxWidth: 460,
+              margin: '0 auto',
+              border: `1px solid ${C.border}`,
+              borderRadius: 16,
+              overflow: 'hidden',
               background: C.mid,
-            }}>
+            }}
+          >
             {[
-              { val: `${data.stats.yearsExperience}+`, label: "Years" },
-              { val: `${data.stats.projectsCompleted}+`, label: "Projects" },
-              { val: `${data.stats.happyClients}+`, label: "Clients" },
+              { val: `${data.stats.yearsExperience}+`, label: 'Years' },
+              { val: `${data.stats.projectsCompleted}+`, label: 'Projects' },
+              { val: `${data.stats.happyClients}+`, label: 'Clients' },
             ].map(({ val, label }, i) => (
-              <div key={i} style={{ textAlign: "center", padding: "20px 12px", borderRight: i < 2 ? `1px solid ${C.border}` : "none" }}>
-                <div style={{ fontSize: "clamp(1.4rem,4vw,2.2rem)", fontWeight: 800, color: C.accent }}>{val}</div>
-                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: 2, marginTop: 4 }}>{label}</div>
+              <div
+                key={i}
+                style={{
+                  textAlign: 'center',
+                  padding: '20px 12px',
+                  borderRight: i < 2 ? `1px solid ${C.border}` : 'none',
+                }}
+              >
+                <div
+                  style={{ fontSize: 'clamp(1.4rem,4vw,2.2rem)', fontWeight: 800, color: C.accent }}
+                >
+                  {val}
+                </div>
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: C.muted,
+                    textTransform: 'uppercase',
+                    letterSpacing: 2,
+                    marginTop: 4,
+                  }}
+                >
+                  {label}
+                </div>
               </div>
             ))}
           </motion.div>
@@ -376,29 +569,93 @@ export default function AudioFirstSonarNavigation() {
           </FadeIn>
           <div className="asn-about-grid">
             <FadeIn>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
-                <div style={{ position: "relative" }}>
+              <div
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}
+              >
+                <div style={{ position: 'relative' }}>
                   <SonarPulsingCircle size={180} color={C.accent} duration={3} />
-                  <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
-                    <img src={data.personal.avatar} alt={data.personal.name} style={{ width: 120, height: 120, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}` }} />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%,-50%)',
+                    }}
+                  >
+                    <img
+                      src={data.personal.avatar}
+                      alt={data.personal.name}
+                      style={{
+                        width: 120,
+                        height: 120,
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: `3px solid ${C.accent}`,
+                      }}
+                    />
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 10 }}>
-                  {data.socials.github   && <a href={data.socials.github}   className="asn-social" target="_blank" rel="noreferrer"><Github   size={18} /></a>}
-                  {data.socials.linkedin && <a href={data.socials.linkedin} className="asn-social" target="_blank" rel="noreferrer"><Linkedin size={18} /></a>}
-                  {data.socials.twitter  && <a href={data.socials.twitter}  className="asn-social" target="_blank" rel="noreferrer"><Twitter  size={18} /></a>}
-                  {email                 && <a href={`mailto:${email}`}     className="asn-social"><Mail     size={18} /></a>}
+                <div style={{ display: 'flex', gap: 10 }}>
+                  {data.socials.github && (
+                    <a
+                      href={data.socials.github}
+                      className="asn-social"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Github size={18} />
+                    </a>
+                  )}
+                  {data.socials.linkedin && (
+                    <a
+                      href={data.socials.linkedin}
+                      className="asn-social"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Linkedin size={18} />
+                    </a>
+                  )}
+                  {data.socials.twitter && (
+                    <a
+                      href={data.socials.twitter}
+                      className="asn-social"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Twitter size={18} />
+                    </a>
+                  )}
+                  {email && (
+                    <a href={`mailto:${email}`} className="asn-social">
+                      <Mail size={18} />
+                    </a>
+                  )}
                 </div>
               </div>
             </FadeIn>
             <FadeIn delay={0.15}>
-              <p style={{ fontSize: 16, lineHeight: 1.85, color: C.muted, marginBottom: 28 }}>{data.personal.bio}</p>
+              <p style={{ fontSize: 16, lineHeight: 1.85, color: C.muted, marginBottom: 28 }}>
+                {data.personal.bio}
+              </p>
               {data.personal.tagline && (
-                <div className="asn-card" style={{ padding: "18px 24px", marginBottom: 28, borderLeft: `3px solid ${C.accent}` }}>
-                  <p style={{ fontSize: 16, fontStyle: "italic", color: C.accent }}>"{data.personal.tagline}"</p>
+                <div
+                  className="asn-card"
+                  style={{
+                    padding: '18px 24px',
+                    marginBottom: 28,
+                    borderLeft: `3px solid ${C.accent}`,
+                  }}
+                >
+                  <p style={{ fontSize: 16, fontStyle: 'italic', color: C.accent }}>
+                    "{data.personal.tagline}"
+                  </p>
                 </div>
               )}
-              <a href={resumeUrl} className="asn-btn asn-btn-primary"><Mic size={14} /><span>Download CV</span></a>
+              <a href={resumeUrl} className="asn-btn asn-btn-primary">
+                <Mic size={14} />
+                <span>Download CV</span>
+              </a>
             </FadeIn>
           </div>
         </div>
@@ -414,7 +671,13 @@ export default function AudioFirstSonarNavigation() {
           </FadeIn>
           <div className="asn-skills-grid">
             {data.skills.map((skill, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.04 }}
+              >
                 <SkillBar {...skill} />
               </motion.div>
             ))}
@@ -432,23 +695,68 @@ export default function AudioFirstSonarNavigation() {
           </FadeIn>
           <div className="asn-proj-grid">
             {data.projects.map((proj, i) => (
-              <motion.div key={i} className="asn-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
-                <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }} />
-                  <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg,transparent 40%,${C.bg}EE 100%)` }} />
-                  <div style={{ position: "absolute", top: 12, right: 12 }}>
+              <motion.div
+                key={i}
+                className="asn-card"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+              >
+                <div style={{ position: 'relative', overflow: 'hidden' }}>
+                  <img
+                    src={proj.image}
+                    alt={proj.title}
+                    style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: `linear-gradient(180deg,transparent 40%,${C.bg}EE 100%)`,
+                    }}
+                  />
+                  <div style={{ position: 'absolute', top: 12, right: 12 }}>
                     <AudioBars style={{ height: 28 }} />
                   </div>
                 </div>
-                <div style={{ padding: "18px 20px 22px" }}>
+                <div style={{ padding: '18px 20px 22px' }}>
                   <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>{proj.title}</h3>
-                  <p style={{ fontSize: 13, lineHeight: 1.65, color: C.muted, marginBottom: 14 }}>{proj.description}</p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 14 }}>
-                    {proj.techStack.slice(0, 4).map((t, j) => <span key={j} className="asn-tag">{t}</span>)}
+                  <p style={{ fontSize: 13, lineHeight: 1.65, color: C.muted, marginBottom: 14 }}>
+                    {proj.description}
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 14 }}>
+                    {proj.techStack.slice(0, 4).map((t, j) => (
+                      <span key={j} className="asn-tag">
+                        {t}
+                      </span>
+                    ))}
                   </div>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    {proj.liveUrl   && <a href={proj.liveUrl}   target="_blank" rel="noreferrer" className="asn-btn asn-btn-primary" style={{ fontSize: 10, padding: "8px 14px" }}><ExternalLink size={11} /><span>Live</span></a>}
-                    {proj.githubUrl && <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="asn-btn asn-btn-ghost" style={{ fontSize: 10, padding: "8px 14px" }}><Github size={11} /><span>Code</span></a>}
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {proj.liveUrl && (
+                      <a
+                        href={proj.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="asn-btn asn-btn-primary"
+                        style={{ fontSize: 10, padding: '8px 14px' }}
+                      >
+                        <ExternalLink size={11} />
+                        <span>Live</span>
+                      </a>
+                    )}
+                    {proj.githubUrl && (
+                      <a
+                        href={proj.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="asn-btn asn-btn-ghost"
+                        style={{ fontSize: 10, padding: '8px 14px' }}
+                      >
+                        <Github size={11} />
+                        <span>Code</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -468,15 +776,43 @@ export default function AudioFirstSonarNavigation() {
           <div style={{ maxWidth: 720 }}>
             <div className="asn-timeline">
               {data.experience.map((exp, i) => (
-                <motion.div key={i} className="asn-timeline-item" initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                <motion.div
+                  key={i}
+                  className="asn-timeline-item"
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
                   <div className="asn-timeline-dot" />
-                  <div className="asn-card" style={{ padding: "20px 24px" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: C.accent, marginBottom: 6, textTransform: "uppercase" }}>{exp.period}</div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "baseline", marginBottom: 8 }}>
+                  <div className="asn-card" style={{ padding: '20px 24px' }}>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        letterSpacing: 2,
+                        color: C.accent,
+                        marginBottom: 6,
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      {exp.period}
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 8,
+                        alignItems: 'baseline',
+                        marginBottom: 8,
+                      }}
+                    >
                       <h3 style={{ fontSize: 17, fontWeight: 700 }}>{exp.role}</h3>
                       <span style={{ fontSize: 13, color: C.muted }}>@ {exp.company}</span>
                     </div>
-                    <p style={{ fontSize: 13, lineHeight: 1.7, color: C.muted }}>{exp.description}</p>
+                    <p style={{ fontSize: 13, lineHeight: 1.7, color: C.muted }}>
+                      {exp.description}
+                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -495,14 +831,33 @@ export default function AudioFirstSonarNavigation() {
           </FadeIn>
           <div className="asn-testi-grid">
             {data.testimonials.map((t, i) => (
-              <motion.div key={i} className="asn-card" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
-                style={{ padding: 24 }}>
+              <motion.div
+                key={i}
+                className="asn-card"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                style={{ padding: 24 }}
+              >
                 <div style={{ marginBottom: 16 }}>
                   <AudioBars style={{ height: 24 }} />
                 </div>
-                <p style={{ fontSize: 14, lineHeight: 1.75, color: C.muted, marginBottom: 18 }}>"{t.text}"</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.border}` }} />
+                <p style={{ fontSize: 14, lineHeight: 1.75, color: C.muted, marginBottom: 18 }}>
+                  "{t.text}"
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <img
+                    src={t.avatar}
+                    alt={t.name}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: `2px solid ${C.border}`,
+                    }}
+                  />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>
@@ -524,36 +879,163 @@ export default function AudioFirstSonarNavigation() {
           </FadeIn>
           <div className="asn-contact-grid">
             <FadeIn>
-              <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 28 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 28 }}>
                 <SonarPulsingCircle size={80} color={C.accent} duration={2} />
                 <p style={{ fontSize: 15, lineHeight: 1.8, color: C.muted }}>
-                  Ready to collaborate on the next big thing? Drop a message — I typically respond within 24 hours.
+                  Ready to collaborate on the next big thing? Drop a message — I typically respond
+                  within 24 hours.
                 </p>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                {email && <a href={`mailto:${email}`} style={{ display: "flex", alignItems: "center", gap: 12, color: C.text, textDecoration: "none", fontSize: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: `${C.accent}15`, border: `1px solid ${C.accent}30`, display: "flex", alignItems: "center", justifyContent: "center" }}><Mail size={18} color={C.accent} /></div>
-                  {email}</a>}
-                {data.socials.github && <a href={data.socials.github} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 12, color: C.text, textDecoration: "none", fontSize: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: C.card, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}><Github size={18} /></div>GitHub</a>}
-                {data.socials.linkedin && <a href={data.socials.linkedin} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 12, color: C.text, textDecoration: "none", fontSize: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: C.card, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}><Linkedin size={18} /></div>LinkedIn</a>}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {email && (
+                  <a
+                    href={`mailto:${email}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      color: C.text,
+                      textDecoration: 'none',
+                      fontSize: 14,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 12,
+                        background: `${C.accent}15`,
+                        border: `1px solid ${C.accent}30`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Mail size={18} color={C.accent} />
+                    </div>
+                    {email}
+                  </a>
+                )}
+                {data.socials.github && (
+                  <a
+                    href={data.socials.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      color: C.text,
+                      textDecoration: 'none',
+                      fontSize: 14,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 12,
+                        background: C.card,
+                        border: `1px solid ${C.border}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Github size={18} />
+                    </div>
+                    GitHub
+                  </a>
+                )}
+                {data.socials.linkedin && (
+                  <a
+                    href={data.socials.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      color: C.text,
+                      textDecoration: 'none',
+                      fontSize: 14,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 12,
+                        background: C.card,
+                        border: `1px solid ${C.border}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Linkedin size={18} />
+                    </div>
+                    LinkedIn
+                  </a>
+                )}
               </div>
             </FadeIn>
             <FadeIn delay={0.15}>
-              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <input className="asn-input" placeholder="Your Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
-                <input className="asn-input" type="email" placeholder="Your Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
-                <textarea className="asn-input" placeholder="Your Message" rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required style={{ resize: "vertical" }} />
+              <form
+                onSubmit={handleSubmit}
+                style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
+              >
+                <input
+                  className="asn-input"
+                  placeholder="Your Name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                />
+                <input
+                  className="asn-input"
+                  type="email"
+                  placeholder="Your Email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  required
+                />
+                <textarea
+                  className="asn-input"
+                  placeholder="Your Message"
+                  rows={5}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  required
+                  style={{ resize: 'vertical' }}
+                />
                 <AnimatePresence mode="wait">
-                  {contactState === "done" ? (
-                    <motion.div key="done" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                      style={{ padding: "14px", borderRadius: 12, background: `${C.accent}12`, border: `1px solid ${C.accent}30`, textAlign: "center" }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: C.accent }}>Signal Received — I'll be in touch!</span>
+                  {contactState === 'done' ? (
+                    <motion.div
+                      key="done"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{
+                        padding: '14px',
+                        borderRadius: 12,
+                        background: `${C.accent}12`,
+                        border: `1px solid ${C.accent}30`,
+                        textAlign: 'center',
+                      }}
+                    >
+                      <span style={{ fontSize: 13, fontWeight: 700, color: C.accent }}>
+                        Signal Received — I'll be in touch!
+                      </span>
                     </motion.div>
                   ) : (
-                    <button type="submit" className="asn-btn asn-btn-primary" disabled={contactState === "sending"} style={{ justifyContent: "center" }}>
-                      <Radio size={14} /><span>{contactState === "sending" ? "Transmitting…" : "Send Message"}</span>
+                    <button
+                      type="submit"
+                      className="asn-btn asn-btn-primary"
+                      disabled={contactState === 'sending'}
+                      style={{ justifyContent: 'center' }}
+                    >
+                      <Radio size={14} />
+                      <span>{contactState === 'sending' ? 'Transmitting…' : 'Send Message'}</span>
                     </button>
                   )}
                 </AnimatePresence>

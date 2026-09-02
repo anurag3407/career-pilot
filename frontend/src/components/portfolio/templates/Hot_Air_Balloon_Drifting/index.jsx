@@ -28,15 +28,31 @@ function SkyRig({ scrollYProgress }) {
     <motion.div className="hab-fixed-sky" style={{ background: skyColor }}>
       {/* Background Clouds */}
       <motion.div className="hab-cloud-layer" style={{ x: cloudFarX, y: cloudFarY, zIndex: 1 }}>
-        <CssCloud style={{ top: '15%', left: '10%', transform: 'scale(1.2)', opacity: 0.7 }} duration={25} />
-        <CssCloud style={{ top: '40%', left: '60%', transform: 'scale(0.8)', opacity: 0.5 }} duration={35} reverse />
-        <CssCloud style={{ top: '70%', left: '20%', transform: 'scale(1.5)', opacity: 0.6 }} duration={20} />
+        <CssCloud
+          style={{ top: '15%', left: '10%', transform: 'scale(1.2)', opacity: 0.7 }}
+          duration={25}
+        />
+        <CssCloud
+          style={{ top: '40%', left: '60%', transform: 'scale(0.8)', opacity: 0.5 }}
+          duration={35}
+          reverse
+        />
+        <CssCloud
+          style={{ top: '70%', left: '20%', transform: 'scale(1.5)', opacity: 0.6 }}
+          duration={20}
+        />
       </motion.div>
 
       {/* The animated balloon track (Shifted to 75% left to occupy the right-side of the hero) */}
-      <motion.div className="hab-balloon-track" style={{ y: balloonY, rotate: balloonRotate, zIndex: 2 }}>
+      <motion.div
+        className="hab-balloon-track"
+        style={{ y: balloonY, rotate: balloonRotate, zIndex: 2 }}
+      >
         <div className="hotair-balloon">
-          <div className="cloud" style={{ top: '80px', right: '-40px', transform: 'scale(0.6)', opacity: 0.8 }}></div>
+          <div
+            className="cloud"
+            style={{ top: '80px', right: '-40px', transform: 'scale(0.6)', opacity: 0.8 }}
+          ></div>
           <div className="balloon"></div>
           <div className="basket"></div>
         </div>
@@ -44,8 +60,15 @@ function SkyRig({ scrollYProgress }) {
 
       {/* Foreground Clouds */}
       <motion.div className="hab-cloud-layer" style={{ x: cloudNearX, y: cloudNearY, zIndex: 3 }}>
-        <CssCloud style={{ top: '25%', left: '75%', transform: 'scale(1.8)', opacity: 0.9 }} duration={18} reverse />
-        <CssCloud style={{ top: '80%', left: '80%', transform: 'scale(1.4)', opacity: 0.8 }} duration={28} />
+        <CssCloud
+          style={{ top: '25%', left: '75%', transform: 'scale(1.8)', opacity: 0.9 }}
+          duration={18}
+          reverse
+        />
+        <CssCloud
+          style={{ top: '80%', left: '80%', transform: 'scale(1.4)', opacity: 0.8 }}
+          duration={28}
+        />
       </motion.div>
     </motion.div>
   );
@@ -78,7 +101,13 @@ function DriftText({ text, className }) {
           transition={{
             delay: i * 0.035,
             duration: 0.6,
-            y: { duration: 3.2 + (i % 4) * 0.4, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut', delay: 0.6 + i * 0.035 },
+            y: {
+              duration: 3.2 + (i % 4) * 0.4,
+              repeat: Infinity,
+              repeatType: 'mirror',
+              ease: 'easeInOut',
+              delay: 0.6 + i * 0.035,
+            },
           }}
         >
           {ch === ' ' ? '\u00A0' : ch}
@@ -103,7 +132,10 @@ export default function HotAirBalloonDrifting() {
 
   const { personal, socials, stats, skills, projects, experience, testimonials } = portfolioData;
   const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end end'] });
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  });
 
   return (
     <div className="hab-root" ref={containerRef}>
@@ -257,13 +289,27 @@ export default function HotAirBalloonDrifting() {
         <div className="hab-hero-grid">
           <motion.div initial="hidden" animate="show" variants={stagger}>
             <h1 className="hab-display">
-              <motion.div variants={fadeUp}><DriftText text={personal.name || 'Alex Rivera'} /></motion.div>
-              <motion.div variants={fadeUp}><DriftText text={personal.title || 'Full Stack Developer'} className="hab-shimmer" /></motion.div>
+              <motion.div variants={fadeUp}>
+                <DriftText text={personal.name || 'Alex Rivera'} />
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <DriftText
+                  text={personal.title || 'Full Stack Developer'}
+                  className="hab-shimmer"
+                />
+              </motion.div>
             </h1>
-            <motion.p className="hab-tagline" variants={fadeUp}>{personal.tagline || personal.bio}</motion.p>
+            <motion.p className="hab-tagline" variants={fadeUp}>
+              {personal.tagline || personal.bio}
+            </motion.p>
             <motion.div variants={fadeUp}>
               {socials?.email && (
-                <motion.a className="hab-btn" href={`mailto:${socials.email}`} whileHover={{ y: -4, scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.a
+                  className="hab-btn"
+                  href={`mailto:${socials.email}`}
+                  whileHover={{ y: -4, scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   Begin Journey
                 </motion.a>
               )}
@@ -276,15 +322,35 @@ export default function HotAirBalloonDrifting() {
       {/* ABOUT */}
       <section className="hab-section-wrapper">
         <div className="bg-pattern circular"></div>
-        <motion.div className="hab-section-head" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }} variants={fadeUp}>
-           <h2 className="hab-display">The Pilot</h2>
+        <motion.div
+          className="hab-section-head"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={fadeUp}
+        >
+          <h2 className="hab-display">The Pilot</h2>
         </motion.div>
         <div className="hab-panel">
-          <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#4B5563', marginBottom: '1rem' }}>{personal.bio}</p>
+          <p
+            style={{
+              fontSize: '1.1rem',
+              lineHeight: '1.8',
+              color: '#4B5563',
+              marginBottom: '1rem',
+            }}
+          >
+            {personal.bio}
+          </p>
           <div className="hab-gauges">
-            {[ ['years', stats?.yearsExperience, 'Years Aloft'], ['flights', stats?.projectsCompleted, 'Missions'], ['clients', stats?.happyClients, 'Passengers'] ].map(([k, v, l]) => (
+            {[
+              ['years', stats?.yearsExperience, 'Years Aloft'],
+              ['flights', stats?.projectsCompleted, 'Missions'],
+              ['clients', stats?.happyClients, 'Passengers'],
+            ].map(([k, v, l]) => (
               <motion.div key={k} className="hab-gauge" whileHover={{ scale: 1.1 }}>
-                <span className="num">{v || '-'}</span><span className="label">{l}</span>
+                <span className="num">{v || '-'}</span>
+                <span className="label">{l}</span>
               </motion.div>
             ))}
           </div>
@@ -293,36 +359,80 @@ export default function HotAirBalloonDrifting() {
 
       {/* SKILLS */}
       <section className="hab-section-wrapper">
-         <div className="bg-pattern hypnotic opacity-5"></div>
-         <motion.div className="hab-section-head" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }} variants={fadeUp}>
-           <h2 className="hab-display">Control Board</h2>
-         </motion.div>
-         <div className="hab-panel hab-skill-grid">
-            {skills?.slice(0, 8).map((skill, i) => (
-               <motion.div className="hab-skill-row" key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-                  <span className="hab-skill-name">{skill.name}</span>
-                  <span className="hab-skill-track">
-                     <motion.div className="hab-skill-fill" initial={{ scaleX: 0 }} whileInView={{ scaleX: (skill.level || 70)/100 }} viewport={{ once: true }} transition={{ duration: 1, delay: i * 0.1 }} />
-                  </span>
-               </motion.div>
-            ))}
-         </div>
+        <div className="bg-pattern hypnotic opacity-5"></div>
+        <motion.div
+          className="hab-section-head"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={fadeUp}
+        >
+          <h2 className="hab-display">Control Board</h2>
+        </motion.div>
+        <div className="hab-panel hab-skill-grid">
+          {skills?.slice(0, 8).map((skill, i) => (
+            <motion.div
+              className="hab-skill-row"
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <span className="hab-skill-name">{skill.name}</span>
+              <span className="hab-skill-track">
+                <motion.div
+                  className="hab-skill-fill"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: (skill.level || 70) / 100 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: i * 0.1 }}
+                />
+              </span>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* PROJECTS */}
       <section className="hab-section-wrapper">
         <div className="bg-pattern evermore"></div>
-        <motion.div className="hab-section-head" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }} variants={fadeUp}>
+        <motion.div
+          className="hab-section-head"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={fadeUp}
+        >
           <h2 className="hab-display">Flight Log</h2>
         </motion.div>
         <div>
           {projects?.map((proj, i) => (
-            <motion.article key={i} className="hab-log-entry" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} whileHover={{ y: -5 }}>
+            <motion.article
+              key={i}
+              className="hab-log-entry"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              whileHover={{ y: -5 }}
+            >
               {proj.image && <img src={proj.image} alt="project" className="hab-log-img" />}
               <div className="hab-log-body">
-                <h3 className="hab-display" style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#1F2937' }}>{proj.title}</h3>
-                <p style={{ color: '#4B5563', lineHeight: '1.6', marginBottom: '1.5rem' }}>{proj.description}</p>
-                <div>{proj.techStack?.map((t, idx) => <span key={idx} className="hab-tag">{t}</span>)}</div>
+                <h3
+                  className="hab-display"
+                  style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#1F2937' }}
+                >
+                  {proj.title}
+                </h3>
+                <p style={{ color: '#4B5563', lineHeight: '1.6', marginBottom: '1.5rem' }}>
+                  {proj.description}
+                </p>
+                <div>
+                  {proj.techStack?.map((t, idx) => (
+                    <span key={idx} className="hab-tag">
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
             </motion.article>
           ))}
@@ -331,41 +441,87 @@ export default function HotAirBalloonDrifting() {
 
       {/* EXPERIENCE */}
       <section className="hab-section-wrapper">
-         <div className="bg-pattern rvo opacity-[0.04]"></div>
-         <motion.div className="hab-section-head" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }} variants={fadeUp}>
-           <h2 className="hab-display">Logged Hours</h2>
-         </motion.div>
-         <div className="hab-timeline">
-           {experience?.map((job, i) => (
-             <motion.div key={i} className="hab-tl-item" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-               <div className="hab-tl-dot"></div>
-               <div style={{ color: '#F27C68', fontWeight: '700', marginBottom: '0.2rem' }}>{job.period}</div>
-               <h3 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#1F2937' }}>{job.role}</h3>
-               <div style={{ fontWeight: '600', color: '#6B7280', marginBottom: '0.8rem' }}>{job.company}</div>
-               <p style={{ color: '#4B5563', lineHeight: '1.6' }}>{job.description}</p>
-             </motion.div>
-           ))}
-         </div>
+        <div className="bg-pattern rvo opacity-[0.04]"></div>
+        <motion.div
+          className="hab-section-head"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={fadeUp}
+        >
+          <h2 className="hab-display">Logged Hours</h2>
+        </motion.div>
+        <div className="hab-timeline">
+          {experience?.map((job, i) => (
+            <motion.div
+              key={i}
+              className="hab-tl-item"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <div className="hab-tl-dot"></div>
+              <div style={{ color: '#F27C68', fontWeight: '700', marginBottom: '0.2rem' }}>
+                {job.period}
+              </div>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#1F2937' }}>
+                {job.role}
+              </h3>
+              <div style={{ fontWeight: '600', color: '#6B7280', marginBottom: '0.8rem' }}>
+                {job.company}
+              </div>
+              <p style={{ color: '#4B5563', lineHeight: '1.6' }}>{job.description}</p>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* TESTIMONIALS */}
       {testimonials && testimonials.length > 0 && (
         <section className="hab-section-wrapper">
           <div className="bg-pattern rotated opacity-[0.03]"></div>
-          <motion.div className="hab-section-head" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }} variants={fadeUp}>
+          <motion.div
+            className="hab-section-head"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+            variants={fadeUp}
+          >
             <h2 className="hab-display">Postcards</h2>
           </motion.div>
           <div className="hab-postcard-grid">
             {testimonials.map((t, i) => (
-              <motion.div key={i} className="hab-postcard" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} whileHover={{ y: -5 }}>
-                 <p style={{ fontStyle: 'italic', color: '#4B5563', marginBottom: '1.5rem', lineHeight: '1.6' }}>"{t.text}"</p>
-                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    {t.avatar && <img src={t.avatar} alt="avatar" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />}
-                    <div>
-                      <div style={{ fontWeight: '700', color: '#1F2937' }}>{t.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#6B7280' }}>{t.role}</div>
-                    </div>
-                 </div>
+              <motion.div
+                key={i}
+                className="hab-postcard"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <p
+                  style={{
+                    fontStyle: 'italic',
+                    color: '#4B5563',
+                    marginBottom: '1.5rem',
+                    lineHeight: '1.6',
+                  }}
+                >
+                  "{t.text}"
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  {t.avatar && (
+                    <img
+                      src={t.avatar}
+                      alt="avatar"
+                      style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+                    />
+                  )}
+                  <div>
+                    <div style={{ fontWeight: '700', color: '#1F2937' }}>{t.name}</div>
+                    <div style={{ fontSize: '0.8rem', color: '#6B7280' }}>{t.role}</div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -374,46 +530,99 @@ export default function HotAirBalloonDrifting() {
 
       {/* CONTACT / TOUCHDOWN */}
       <section className="hab-section-wrapper" id="contact" style={{ paddingBottom: '10rem' }}>
-         <div className="bg-pattern moon opacity-[0.05]"></div>
-         <motion.div className="hab-section-head" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }} variants={fadeUp}>
-           <h2 className="hab-display">Touchdown & Contact</h2>
-         </motion.div>
-         
-         <div className="hab-panel" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-           <h3 className="hab-display" style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#1F2937' }}>Ready for a new expedition?</h3>
-           <p style={{ fontSize: '1.1rem', color: '#4B5563', marginBottom: '2.5rem', maxWidth: '600px', margin: '0 auto' }}>
-             My radio comms are always open for new alliances, collaborative constructs, or simple data exchanges. Let's build something remarkable.
-           </p>
-           
-           <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-             {socials?.email && (
-               <motion.a className="hab-btn" href={`mailto:${socials.email}`} whileHover={{ y: -4, scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                 Send Transmission
-               </motion.a>
-             )}
-             {socials?.github && (
-               <motion.a className="hab-btn hab-btn-ghost" href={socials.github} target="_blank" rel="noreferrer" whileHover={{ y: -4, scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                 GitHub
-               </motion.a>
-             )}
-             {socials?.linkedin && (
-               <motion.a className="hab-btn hab-btn-ghost" href={socials.linkedin} target="_blank" rel="noreferrer" whileHover={{ y: -4, scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                 LinkedIn
-               </motion.a>
-             )}
-             {socials?.twitter && (
-               <motion.a className="hab-btn hab-btn-ghost" href={socials.twitter} target="_blank" rel="noreferrer" whileHover={{ y: -4, scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                 Twitter
-               </motion.a>
-             )}
-           </div>
-         </div>
-         
-         <div style={{ textAlign: 'center', marginTop: '4rem', fontSize: '0.9rem', color: '#6B7280', fontWeight: '500' }}>
-            © {new Date().getFullYear()} {personal.name}. Safely landed.
-         </div>
-      </section>
+        <div className="bg-pattern moon opacity-[0.05]"></div>
+        <motion.div
+          className="hab-section-head"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={fadeUp}
+        >
+          <h2 className="hab-display">Touchdown & Contact</h2>
+        </motion.div>
 
+        <div className="hab-panel" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+          <h3
+            className="hab-display"
+            style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#1F2937' }}
+          >
+            Ready for a new expedition?
+          </h3>
+          <p
+            style={{
+              fontSize: '1.1rem',
+              color: '#4B5563',
+              marginBottom: '2.5rem',
+              maxWidth: '600px',
+              margin: '0 auto',
+            }}
+          >
+            My radio comms are always open for new alliances, collaborative constructs, or simple
+            data exchanges. Let's build something remarkable.
+          </p>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            {socials?.email && (
+              <motion.a
+                className="hab-btn"
+                href={`mailto:${socials.email}`}
+                whileHover={{ y: -4, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Send Transmission
+              </motion.a>
+            )}
+            {socials?.github && (
+              <motion.a
+                className="hab-btn hab-btn-ghost"
+                href={socials.github}
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ y: -4, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                GitHub
+              </motion.a>
+            )}
+            {socials?.linkedin && (
+              <motion.a
+                className="hab-btn hab-btn-ghost"
+                href={socials.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ y: -4, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                LinkedIn
+              </motion.a>
+            )}
+            {socials?.twitter && (
+              <motion.a
+                className="hab-btn hab-btn-ghost"
+                href={socials.twitter}
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ y: -4, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Twitter
+              </motion.a>
+            )}
+          </div>
+        </div>
+
+        <div
+          style={{
+            textAlign: 'center',
+            marginTop: '4rem',
+            fontSize: '0.9rem',
+            color: '#6B7280',
+            fontWeight: '500',
+          }}
+        >
+          © {new Date().getFullYear()} {personal.name}. Safely landed.
+        </div>
+      </section>
     </div>
   );
 }

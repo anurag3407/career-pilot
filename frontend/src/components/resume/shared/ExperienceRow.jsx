@@ -20,8 +20,8 @@ export default function ExperienceRow({
   bulletColor = '#374151',
   fontSize = '10pt',
 }) {
-  const roleFontSize = `calc(${fontSize} + 1pt)`
-  const periodFontSize = `calc(${fontSize} - 1pt)`
+  const roleFontSize = `calc(${fontSize} + 1pt)`;
+  const periodFontSize = `calc(${fontSize} - 1pt)`;
   return (
     <article style={{ marginBottom: '5mm' }}>
       <div
@@ -82,5 +82,5 @@ export default function ExperienceRow({
         </ul>
       )}
     </article>
-  )
+  );
 }

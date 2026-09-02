@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion } from 'framer-motion';
+import { useInView } from 'framer-motion';
+import { useRef } from 'react';
 
 function SkillBar({ name, level, delay, inView }) {
   return (
@@ -24,10 +24,10 @@ function SkillBar({ name, level, delay, inView }) {
 export default function Skills({ data }) {
   const { skills } = data;
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   const grouped = skills?.reduce((acc, skill) => {
-    const cat = skill.category ?? "General";
+    const cat = skill.category ?? 'General';
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(skill);
     return acc;
@@ -44,11 +44,19 @@ export default function Skills({ data }) {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-blue-600 text-sm font-semibold tracking-widest uppercase block mb-3">Expertise</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+          <span className="text-blue-600 text-sm font-semibold tracking-widest uppercase block mb-3">
+            Expertise
+          </span>
+          <h2
+            className="text-3xl md:text-4xl font-bold text-slate-900"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+          >
             Clinical Skills & Competencies
           </h2>
-          <p className="text-slate-500 mt-4 max-w-xl mx-auto text-base">A comprehensive overview of medical proficiencies developed through years of dedicated practice and continuous education.</p>
+          <p className="text-slate-500 mt-4 max-w-xl mx-auto text-base">
+            A comprehensive overview of medical proficiencies developed through years of dedicated
+            practice and continuous education.
+          </p>
         </motion.div>
 
         {categories.length > 0 ? (

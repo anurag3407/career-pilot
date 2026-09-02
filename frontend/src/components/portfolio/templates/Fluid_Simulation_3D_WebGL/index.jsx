@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import dummyData from '../../../../data/dummy_data.json';
 
 import FluidCanvas from './FluidCanvas';
@@ -52,28 +52,29 @@ export default function FluidSimulation3DWebGL({ portfolioData: propData }) {
   };
 
   const handleNavHover = (e) => {
-    window.dispatchEvent(new CustomEvent('fluid-burst', {
-      detail: {
-        x: e.clientX,
-        y: e.clientY,
-        count: 5,
-        color: '#06b6d4'
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-burst', {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          count: 5,
+          color: '#06b6d4',
+        },
+      })
+    );
   };
 
   return (
     <div className="relative min-h-screen bg-slate-950 font-sans text-slate-100 selection:bg-cyan-500/20 selection:text-cyan-300 antialiased overflow-x-hidden">
-      
       {/* Background Interactive Fluid Canvas */}
       <FluidCanvas />
 
       {/* Sticky Header Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-slate-950/60 border-b border-slate-900/50 backdrop-blur-md transition-all duration-300">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          
           {/* Logo Name */}
-          <button type="button" 
+          <button
+            type="button"
             onClick={() => handleNavClick('home')}
             onMouseEnter={handleNavHover}
             className="flex items-center gap-1.5 font-black text-sm tracking-wider uppercase bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent cursor-pointer"
@@ -89,18 +90,17 @@ export default function FluidSimulation3DWebGL({ portfolioData: propData }) {
               { id: 'projects', label: 'Projects' },
               { id: 'experience', label: 'Experience' },
               { id: 'education', label: 'Education' },
-              { id: 'contact', label: 'Contact' }
-            ].map(item => {
+              { id: 'contact', label: 'Contact' },
+            ].map((item) => {
               const active = activeSection === item.id;
               return (
-                <button type="button"
+                <button
+                  type="button"
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
                   onMouseEnter={handleNavHover}
                   className={`text-xs font-bold uppercase tracking-wider transition-all cursor-pointer relative py-1 ${
-                    active 
-                      ? 'text-cyan-400 font-extrabold' 
-                      : 'text-slate-400 hover:text-slate-200'
+                    active ? 'text-cyan-400 font-extrabold' : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   {item.label}
@@ -111,7 +111,6 @@ export default function FluidSimulation3DWebGL({ portfolioData: propData }) {
               );
             })}
           </nav>
-
         </div>
       </header>
 
@@ -136,7 +135,6 @@ export default function FluidSimulation3DWebGL({ portfolioData: propData }) {
           <Contact data={data} />
         </div>
       </main>
-
     </div>
   );
 }

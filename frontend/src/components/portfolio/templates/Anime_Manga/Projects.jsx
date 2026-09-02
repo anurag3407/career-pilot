@@ -20,25 +20,36 @@ export default function Projects({ projects }) {
                 <h3 className="text-3xl font-black uppercase tracking-tight">{project.title}</h3>
                 <div className="flex gap-2">
                   {project.githubUrl && (
-                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-gray-600 transition-colors"
+                    >
                       <Github size={24} strokeWidth={3} />
                     </a>
                   )}
                   {project.liveUrl && (
-                    <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-gray-600 transition-colors"
+                    >
                       <ExternalLink size={24} strokeWidth={3} />
                     </a>
                   )}
                 </div>
               </div>
-              
-              <p className="text-lg font-bold mb-6 flex-grow">
-                {project.description}
-              </p>
-              
+
+              <p className="text-lg font-bold mb-6 flex-grow">{project.description}</p>
+
               <div className="flex flex-wrap gap-2 mt-auto">
                 {project.technologies.map((tech, i) => (
-                  <span key={i} className="bg-black text-white px-3 py-1 text-sm font-bold skew-x-[-10deg]">
+                  <span
+                    key={i}
+                    className="bg-black text-white px-3 py-1 text-sm font-bold skew-x-[-10deg]"
+                  >
                     <span className="skew-x-[10deg] block">{tech}</span>
                   </span>
                 ))}

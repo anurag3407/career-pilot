@@ -1,6 +1,6 @@
-import { GraduationCap, Mic, Mail, Linkedin, Sparkles, Award } from 'lucide-react'
-import HubLayout from '../../components/HubLayout'
-import ToolCard from '../../components/ToolCard'
+import { GraduationCap, Mic, Mail, Linkedin, Sparkles, Award } from 'lucide-react';
+import HubLayout from '../../components/HubLayout';
+import ToolCard from '../../components/ToolCard';
 
 export default function CareerGrowthHub() {
   return (
@@ -49,9 +49,12 @@ export default function CareerGrowthHub() {
           Growth Roadmap
         </h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Combine these tools to maximize your success: Start by practicing your elevator pitch in <strong>AI Interview Prep</strong>, draft your networking messages using the <strong>Email Generator</strong>, and make sure your <strong>LinkedIn profile</strong> is fully optimized before reaching out to hiring managers.
+          Combine these tools to maximize your success: Start by practicing your elevator pitch in{' '}
+          <strong>AI Interview Prep</strong>, draft your networking messages using the{' '}
+          <strong>Email Generator</strong>, and make sure your <strong>LinkedIn profile</strong> is
+          fully optimized before reaching out to hiring managers.
         </p>
       </div>
     </HubLayout>
-  )
+  );
 }

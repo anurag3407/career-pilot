@@ -22,7 +22,7 @@ export default function Template() {
       <Hero data={data} />
       <About data={data} />
       <Projects projects={data.projects} />
-      
+
       {/* Newly added sections */}
       <Skills data={data} />
       <Experience data={data} />

@@ -45,14 +45,11 @@ export default function SchedulePost({ onClose, onSchedule }) {
       return;
     }
 
-
     onSchedule(chosen.toISOString());
   };
 
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const formattedPreview = value
-    ? format(new Date(value), "EEEE, MMMM d, yyyy 'at' h:mm a")
-    : '';
+  const formattedPreview = value ? format(new Date(value), "EEEE, MMMM d, yyyy 'at' h:mm a") : '';
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] p-4">
@@ -112,8 +109,8 @@ export default function SchedulePost({ onClose, onSchedule }) {
           )}
 
           <p className="text-xs text-neutral-500 leading-relaxed">
-            Your post will be saved as a draft and automatically published at the chosen time.
-            You can cancel it any time before it goes live.
+            Your post will be saved as a draft and automatically published at the chosen time. You
+            can cancel it any time before it goes live.
           </p>
         </div>
 

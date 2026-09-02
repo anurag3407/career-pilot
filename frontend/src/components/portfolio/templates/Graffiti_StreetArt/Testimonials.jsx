@@ -7,10 +7,14 @@ export default function Testimonials({ testimonials }) {
   return (
     <section className="relative py-24 bg-gradient-to-b from-gray-900 via-purple-950 to-black overflow-hidden">
       {/* Brick wall texture overlay (simulated with CSS) */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: 'linear-gradient(335deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
-        backgroundSize: '20px 20px'
-      }} />
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            'linear-gradient(335deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
+          backgroundSize: '20px 20px',
+        }}
+      />
 
       <div className="absolute right-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 translate-x-1/3 animate-pulse rounded-full bg-pink-600 opacity-10 blur-[120px]" />
 
@@ -29,17 +33,19 @@ export default function Testimonials({ testimonials }) {
               <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-pink-500 via-yellow-500 to-green-500 opacity-30 blur transition duration-500 group-hover:opacity-70" />
               <div className="relative h-full bg-black/90 p-8 backdrop-blur-xl">
                 <Quote className="absolute right-4 top-4 h-12 w-12 text-white/5" />
-                
+
                 <div className="mb-6 flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-pink-500 bg-gray-800 text-xl font-bold text-pink-400">
                     {test.name.charAt(0)}
                   </div>
                   <div>
                     <h3 className="text-lg font-bold uppercase text-white">{test.name}</h3>
-                    <p className="text-xs font-black uppercase text-green-400">{test.role || 'Collaborator'}</p>
+                    <p className="text-xs font-black uppercase text-green-400">
+                      {test.role || 'Collaborator'}
+                    </p>
                   </div>
                 </div>
-                
+
                 <p className="relative z-10 text-gray-300 font-medium italic leading-relaxed">
                   "{test.content}"
                 </p>

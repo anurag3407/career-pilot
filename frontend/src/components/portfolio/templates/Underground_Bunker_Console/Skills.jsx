@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 export default function Skills({ data }) {
   const skills = data.skills || [];
-  const categories = [...new Set(skills.map(s => s.category))];
+  const categories = [...new Set(skills.map((s) => s.category))];
 
   const getLevelColor = (level) => {
     if (typeof level === 'number') {
@@ -26,50 +26,98 @@ export default function Skills({ data }) {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
             <span style={{ color: '#ff6600', fontSize: '0.75rem' }}>&#x25B6; SYSTEM_SPECS</span>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(51,255,51,0.3), transparent)' }} />
+            <div
+              style={{
+                flex: 1,
+                height: 1,
+                background: 'linear-gradient(90deg, rgba(51,255,51,0.3), transparent)',
+              }}
+            />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
             {categories.map((cat, ci) => (
-              <div key={ci} style={{
-                border: '1px solid rgba(51, 255, 51, 0.1)',
-                background: 'rgba(51, 255, 51, 0.02)',
-                padding: 28,
-              }}>
-                <div style={{
-                  color: '#33ff33', fontSize: '0.75rem', fontWeight: 600,
-                  marginBottom: 20, letterSpacing: '0.1em', textTransform: 'uppercase',
-                }}>
-                  {'> '}{cat}_MODULE
+              <div
+                key={ci}
+                style={{
+                  border: '1px solid rgba(51, 255, 51, 0.1)',
+                  background: 'rgba(51, 255, 51, 0.02)',
+                  padding: 28,
+                }}
+              >
+                <div
+                  style={{
+                    color: '#33ff33',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    marginBottom: 20,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {'> '}
+                  {cat}_MODULE
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
-                  {skills.filter(s => s.category === cat).map((skill, si) => (
-                    <motion.div
-                      key={si}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: si * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                      whileHover={{ x: 4, transition: { duration: 0.2 } }}
-                      style={{ cursor: 'default' }}
-                    >
-                      <div style={{ fontSize: '0.8125rem', color: '#ccc', marginBottom: 8 }}>
-                        {skill.name}
-                      </div>
-                      <div style={{ height: 4, background: 'rgba(51,255,51,0.08)', borderRadius: 0, overflow: 'hidden' }}>
-                        <motion.div
-                          initial={{ width: 0 }}
-                          whileInView={{ width: typeof skill.level === 'number' ? skill.level + '%' : '70%' }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1.2, delay: si * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                          style={{ height: '100%', background: getLevelColor(skill.level), borderRadius: 0 }}
-                        />
-                      </div>
-                      <div style={{ fontSize: '0.625rem', color: '#666', marginTop: 4, textAlign: 'right' }}>
-                        {typeof skill.level === 'number' ? skill.level + '%' : skill.level}
-                      </div>
-                    </motion.div>
-                  ))}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                    gap: 16,
+                  }}
+                >
+                  {skills
+                    .filter((s) => s.category === cat)
+                    .map((skill, si) => (
+                      <motion.div
+                        key={si}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: si * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                        whileHover={{ x: 4, transition: { duration: 0.2 } }}
+                        style={{ cursor: 'default' }}
+                      >
+                        <div style={{ fontSize: '0.8125rem', color: '#ccc', marginBottom: 8 }}>
+                          {skill.name}
+                        </div>
+                        <div
+                          style={{
+                            height: 4,
+                            background: 'rgba(51,255,51,0.08)',
+                            borderRadius: 0,
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <motion.div
+                            initial={{ width: 0 }}
+                            whileInView={{
+                              width: typeof skill.level === 'number' ? skill.level + '%' : '70%',
+                            }}
+                            viewport={{ once: true }}
+                            transition={{
+                              duration: 1.2,
+                              delay: si * 0.1,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                            style={{
+                              height: '100%',
+                              background: getLevelColor(skill.level),
+                              borderRadius: 0,
+                            }}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '0.625rem',
+                            color: '#666',
+                            marginTop: 4,
+                            textAlign: 'right',
+                          }}
+                        >
+                          {typeof skill.level === 'number' ? skill.level + '%' : skill.level}
+                        </div>
+                      </motion.div>
+                    ))}
                 </div>
               </div>
             ))}

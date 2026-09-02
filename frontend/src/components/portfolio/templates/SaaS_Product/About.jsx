@@ -5,7 +5,9 @@ import { CheckCircle, MapPin, User } from 'lucide-react';
 const ease = [0.22, 1, 0.36, 1];
 
 export default function About({ data }) {
-  const categories = [...new Set((data.skills || []).map((skill) => skill?.category).filter(Boolean))].slice(0, 3);
+  const categories = [
+    ...new Set((data.skills || []).map((skill) => skill?.category).filter(Boolean)),
+  ].slice(0, 3);
 
   return (
     <section className="px-5 py-24 md:py-32">
@@ -61,12 +63,18 @@ export default function About({ data }) {
                 <span className="h-3 w-3 rounded-full bg-[#F59E0B]" />
                 <span className="h-3 w-3 rounded-full bg-[#10B981]" />
               </div>
-              <p className="font-mono text-xs text-[#4B4870]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+              <p
+                className="font-mono text-xs text-[#4B4870]"
+                style={{ fontFamily: 'JetBrains Mono, monospace' }}
+              >
                 profile.json
               </p>
             </div>
 
-            <div className="space-y-3 overflow-hidden font-mono text-sm" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+            <div
+              className="space-y-3 overflow-hidden font-mono text-sm"
+              style={{ fontFamily: 'JetBrains Mono, monospace' }}
+            >
               <p className="text-[#8884A8]">{'{'}</p>
               <p className="pl-4">
                 <span className="text-[#6366F1]">&quot;name&quot;</span>

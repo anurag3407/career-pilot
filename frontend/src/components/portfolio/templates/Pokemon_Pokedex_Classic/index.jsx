@@ -1,6 +1,6 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React, { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import React, { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PokemonPokedexClassic = ({ portfolioData }) => {
   const { portfolioData: data } = usePortfolio();
@@ -17,10 +17,10 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
   /* ── Helper function to format and secure URLs ── */
   // EDIT 1: Added URL Sanitizer function
   const formatUrl = (url) => {
-    if (!url || url === "#") return null;
+    if (!url || url === '#') return null;
     const cleanUrl = url.trim();
-    return cleanUrl.startsWith("http://") || cleanUrl.startsWith("https://") 
-      ? cleanUrl 
+    return cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')
+      ? cleanUrl
       : `https://${cleanUrl}`;
   };
 
@@ -34,9 +34,9 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
       return {
         id: idx + 1,
         name: project.title || `Project ${idx + 1}`,
-        type: project.techStack?.[0] || "Unknown",
-        description: project.description || "No description",
-        image: project.image || "https://via.placeholder.com/200",
+        type: project.techStack?.[0] || 'Unknown',
+        description: project.description || 'No description',
+        image: project.image || 'https://via.placeholder.com/200',
         height: `${150 + Math.floor(Math.random() * 50)}cm`, // Math.floor used for cleaner data display
         weight: `${50 + Math.floor(Math.random() * 100)}kg`,
         techStack: project.techStack || [],
@@ -346,21 +346,17 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
         className="pokedex-container"
         initial={{ rotateY: -15, opacity: 0 }}
         animate={{ rotateY: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
       >
         <div className="pokedex-body">
           {/* Top Section */}
           <div className="pokedex-top">
             <div className="screen-grid">
-              <div style={{ textAlign: "center" }}>
-                <div style={{ color: "#000", fontWeight: "bold", fontSize: "10px" }}>
-                  POKé
-                </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ color: '#000', fontWeight: 'bold', fontSize: '10px' }}>POKé</div>
               </div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ color: "#000", fontWeight: "bold", fontSize: "10px" }}>
-                  DEXT
-                </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ color: '#000', fontWeight: 'bold', fontSize: '10px' }}>DEXT</div>
               </div>
             </div>
           </div>
@@ -393,7 +389,7 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.1 }}
                   >
-                    <span>#{ currentEntry.id }</span>
+                    <span>#{currentEntry.id}</span>
                     <span>{currentEntry.name}</span>
                   </motion.div>
 
@@ -413,7 +409,7 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
                   >
-                    <span style={{ fontSize: "7px" }}>
+                    <span style={{ fontSize: '7px' }}>
                       {currentEntry.description?.substring(0, 45)}...
                     </span>
                   </motion.div>
@@ -437,12 +433,11 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
 
           {/* D-Pad Navigation */}
           <div className="dpad">
-            <button type="button"
+            <button
+              type="button"
               className="dpad-btn"
               onClick={() =>
-                setSelectedIndex((prev) =>
-                  prev > 0 ? prev - 1 : pokedexEntries.length - 1
-                )
+                setSelectedIndex((prev) => (prev > 0 ? prev - 1 : pokedexEntries.length - 1))
               }
               title="Previous"
             />
@@ -451,12 +446,11 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
             <button type="button" className="dpad-btn" title="Left" />
             <div className="dpad-center" />
             <button type="button" className="dpad-btn" title="Right" />
-            <button type="button"
+            <button
+              type="button"
               className="dpad-btn"
               onClick={() =>
-                setSelectedIndex((prev) =>
-                  prev < pokedexEntries.length - 1 ? prev + 1 : 0
-                )
+                setSelectedIndex((prev) => (prev < pokedexEntries.length - 1 ? prev + 1 : 0))
               }
               title="Down"
             />
@@ -467,25 +461,27 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
           {/* Buttons */}
           {/* EDIT 4: Changed click triggers to use fully sanitized, absolute links safely */}
           <div className="button-section">
-            <button type="button" 
-              className="pokedex-btn" 
+            <button
+              type="button"
+              className="pokedex-btn"
               onClick={() => {
                 if (currentEntry.links?.github) {
-                  window.open(currentEntry.links.github, "_blank", "noopener,noreferrer");
+                  window.open(currentEntry.links.github, '_blank', 'noopener,noreferrer');
                 } else {
-                  alert("No GitHub link available for this project!");
+                  alert('No GitHub link available for this project!');
                 }
               }}
             >
               GitHub
             </button>
-            <button type="button" 
-              className="pokedex-btn" 
+            <button
+              type="button"
+              className="pokedex-btn"
               onClick={() => {
                 if (currentEntry.links?.live) {
-                  window.open(currentEntry.links.live, "_blank", "noopener,noreferrer");
+                  window.open(currentEntry.links.live, '_blank', 'noopener,noreferrer');
                 } else {
-                  alert("No Live deployment link available!");
+                  alert('No Live deployment link available!');
                 }
               }}
             >
@@ -503,7 +499,7 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
             {pokedexEntries.map((entry, idx) => (
               <motion.button
                 key={entry.id}
-                className={`entry-btn ${idx === selectedIndex ? "active" : ""}`}
+                className={`entry-btn ${idx === selectedIndex ? 'active' : ''}`}
                 onClick={() => setSelectedIndex(idx)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -514,10 +510,8 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
           </motion.div>
 
           {/* Power Button */}
-          <div className="bottom-row" style={{ marginTop: "12px" }}>
-            <div style={{ color: "#000", fontSize: "8px", fontWeight: "bold" }}>
-              PORTFOLIO
-            </div>
+          <div className="bottom-row" style={{ marginTop: '12px' }}>
+            <div style={{ color: '#000', fontSize: '8px', fontWeight: 'bold' }}>PORTFOLIO</div>
             <button type="button" className="red-btn" title="View All Projects">
               PROJ
             </button>

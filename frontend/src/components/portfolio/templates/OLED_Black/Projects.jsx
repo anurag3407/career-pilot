@@ -31,15 +31,27 @@ const ProjectCard = ({ project, index }) => (
 
     <div className="relative z-10 p-8">
       <div className="mb-4 flex items-start justify-between">
-        <h3 className="text-2xl font-semibold text-white transition-colors group-hover:text-cyan-400">{project.title}</h3>
+        <h3 className="text-2xl font-semibold text-white transition-colors group-hover:text-cyan-400">
+          {project.title}
+        </h3>
         <div className="flex gap-3 text-gray-500">
           {project.githubUrl && (
-            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-cyan-400 hover:drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-cyan-400 hover:drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]"
+            >
               <Github size={20} />
             </a>
           )}
           {project.liveUrl && (
-            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-cyan-400 hover:drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-cyan-400 hover:drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]"
+            >
               <ExternalLink size={20} />
             </a>
           )}
@@ -48,7 +60,10 @@ const ProjectCard = ({ project, index }) => (
       <p className="mb-6 line-clamp-2 font-light text-gray-400">{project.description}</p>
       <div className="flex flex-wrap gap-2">
         {project.techStack.map((tech, techIndex) => (
-          <span key={techIndex} className="border border-cyan-900/50 bg-cyan-950/30 px-2 py-1 font-mono text-xs text-cyan-400/70">
+          <span
+            key={techIndex}
+            className="border border-cyan-900/50 bg-cyan-950/30 px-2 py-1 font-mono text-xs text-cyan-400/70"
+          >
             {tech}
           </span>
         ))}

@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
-import { Package, ShieldAlert, CheckCircle, ArrowUpCircle, AlertTriangle, AlertCircle, RefreshCw } from 'lucide-react';
+import {
+  Package,
+  ShieldAlert,
+  CheckCircle,
+  ArrowUpCircle,
+  AlertTriangle,
+  AlertCircle,
+  RefreshCw,
+} from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { motion } from 'framer-motion';
 
@@ -20,7 +28,7 @@ const DependencyHealth = () => {
 
   const { manifests, packages, summary } = dependencies;
 
-  const filteredPackages = packages.filter(pkg => {
+  const filteredPackages = packages.filter((pkg) => {
     if (filter === 'all') return true;
     if (filter === 'outdated') return pkg.status !== 'up-to-date';
     return pkg.status === filter;
@@ -28,21 +36,31 @@ const DependencyHealth = () => {
 
   const StatusIcon = ({ status, className }) => {
     switch (status) {
-      case 'up-to-date': return <CheckCircle className={cn("text-emerald-400", className)} />;
-      case 'minor-update': return <ArrowUpCircle className={cn("text-blue-400", className)} />;
-      case 'major-update': return <AlertTriangle className={cn("text-amber-400", className)} />;
-      case 'critical': return <AlertCircle className={cn("text-red-400", className)} />;
-      default: return <Package className={cn("text-slate-400", className)} />;
+      case 'up-to-date':
+        return <CheckCircle className={cn('text-emerald-400', className)} />;
+      case 'minor-update':
+        return <ArrowUpCircle className={cn('text-blue-400', className)} />;
+      case 'major-update':
+        return <AlertTriangle className={cn('text-amber-400', className)} />;
+      case 'critical':
+        return <AlertCircle className={cn('text-red-400', className)} />;
+      default:
+        return <Package className={cn('text-slate-400', className)} />;
     }
   };
 
   const getStatusText = (status) => {
     switch (status) {
-      case 'up-to-date': return 'Up to date';
-      case 'minor-update': return 'Minor update available';
-      case 'major-update': return 'Major update available';
-      case 'critical': return 'Critically outdated';
-      default: return 'Unknown';
+      case 'up-to-date':
+        return 'Up to date';
+      case 'minor-update':
+        return 'Minor update available';
+      case 'major-update':
+        return 'Major update available';
+      case 'critical':
+        return 'Critically outdated';
+      default:
+        return 'Unknown';
     }
   };
 
@@ -57,7 +75,7 @@ const DependencyHealth = () => {
           </div>
           <Package className="w-8 h-8 text-slate-600" />
         </div>
-        
+
         <div className="p-4 rounded-xl bg-emerald-900/20 border border-emerald-800/50 flex items-center justify-between">
           <div>
             <p className="text-emerald-400/80 text-sm font-medium mb-1">Up to Date</p>
@@ -65,7 +83,7 @@ const DependencyHealth = () => {
           </div>
           <CheckCircle className="w-8 h-8 text-emerald-500/50" />
         </div>
-        
+
         <div className="p-4 rounded-xl bg-amber-900/20 border border-amber-800/50 flex items-center justify-between">
           <div>
             <p className="text-amber-400/80 text-sm font-medium mb-1">Major Updates</p>
@@ -73,7 +91,7 @@ const DependencyHealth = () => {
           </div>
           <AlertTriangle className="w-8 h-8 text-amber-500/50" />
         </div>
-        
+
         <div className="p-4 rounded-xl bg-red-900/20 border border-red-800/50 flex items-center justify-between">
           <div>
             <p className="text-red-400/80 text-sm font-medium mb-1">Critical/Unknown</p>
@@ -91,9 +109,9 @@ const DependencyHealth = () => {
               {filteredPackages.length} packages
             </span>
           </div>
-          
+
           <div className="flex items-center gap-2">
-            <select 
+            <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               className="bg-slate-900 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-slate-300 outline-none focus:border-amber-500/50"
@@ -106,7 +124,7 @@ const DependencyHealth = () => {
             </select>
           </div>
         </div>
-        
+
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-slate-400">
             <thead className="bg-slate-900/80 text-slate-300 text-xs uppercase font-medium">
@@ -127,11 +145,11 @@ const DependencyHealth = () => {
                 </tr>
               ) : (
                 filteredPackages.map((pkg, i) => (
-                  <motion.tr 
+                  <motion.tr
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.02 }}
-                    key={i} 
+                    key={i}
                     className="hover:bg-slate-800/30 transition-colors"
                   >
                     <td className="px-6 py-4 font-medium text-slate-200 flex items-center gap-3">
@@ -144,17 +162,24 @@ const DependencyHealth = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 font-mono text-slate-300">{pkg.currentVersion}</td>
-                    <td className="px-6 py-4 font-mono text-slate-300">{pkg.latestVersion || '-'}</td>
+                    <td className="px-6 py-4 font-mono text-slate-300">
+                      {pkg.latestVersion || '-'}
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <StatusIcon status={pkg.status} className="w-4 h-4" />
-                        <span className={cn(
-                          "text-xs font-medium",
-                          pkg.status === 'up-to-date' ? "text-emerald-400" :
-                          pkg.status === 'minor-update' ? "text-blue-400" :
-                          pkg.status === 'major-update' ? "text-amber-400" :
-                          "text-red-400"
-                        )}>
+                        <span
+                          className={cn(
+                            'text-xs font-medium',
+                            pkg.status === 'up-to-date'
+                              ? 'text-emerald-400'
+                              : pkg.status === 'minor-update'
+                                ? 'text-blue-400'
+                                : pkg.status === 'major-update'
+                                  ? 'text-amber-400'
+                                  : 'text-red-400'
+                          )}
+                        >
                           {getStatusText(pkg.status)}
                         </span>
                       </div>

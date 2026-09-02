@@ -27,7 +27,10 @@ export function SkillsContent({ data }) {
         isBot
         index={0}
       >
-        <p>Here's a breakdown of <span className="font-semibold text-white">{p.name}</span>'s technical skills 🛠️</p>
+        <p>
+          Here's a breakdown of <span className="font-semibold text-white">{p.name}</span>'s
+          technical skills 🛠️
+        </p>
       </Message>
 
       {Object.entries(grouped).map(([category, skills], catIdx) => (
@@ -39,10 +42,17 @@ export function SkillsContent({ data }) {
           index={catIdx + 1}
         >
           <div className="max-w-[520px] mt-1 flex rounded overflow-hidden bg-[#2B2D31] border border-[#1E1F22]">
-            <div className="w-1 shrink-0" style={{ backgroundColor: categoryColors[category] || '#5865F2' }} />
+            <div
+              className="w-1 shrink-0"
+              style={{ backgroundColor: categoryColors[category] || '#5865F2' }}
+            />
             <div className="p-3 flex-1 min-w-0">
-              <div className="text-sm font-semibold mb-3" style={{ color: categoryColors[category] || '#5865F2' }}>
-                {category === 'Frontend' && '🎨'} {category === 'Backend' && '⚙️'} {category === 'DevOps' && '🚀'} {category === 'Design' && '✏️'} {category}
+              <div
+                className="text-sm font-semibold mb-3"
+                style={{ color: categoryColors[category] || '#5865F2' }}
+              >
+                {category === 'Frontend' && '🎨'} {category === 'Backend' && '⚙️'}{' '}
+                {category === 'DevOps' && '🚀'} {category === 'Design' && '✏️'} {category}
               </div>
               <div className="space-y-2">
                 {skills.map((skill, i) => (
@@ -54,7 +64,9 @@ export function SkillsContent({ data }) {
                     <div className="h-2 bg-[#1E1F22] rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${Math.min(100, Math.max(0, Number(skill.level) || 0))}%` }}
+                        animate={{
+                          width: `${Math.min(100, Math.max(0, Number(skill.level) || 0))}%`,
+                        }}
                         transition={{ duration: 1, delay: catIdx * 0.2 + i * 0.1 }}
                         className="h-full rounded-full"
                         style={{ backgroundColor: categoryColors[category] || '#5865F2' }}

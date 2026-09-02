@@ -19,15 +19,15 @@ const MosaicImage = ({ src, alt, rows = 5, cols = 5, className = '' }) => {
         const quadX = c < cols / 2 ? -1 : 1;
         const quadY = r < rows / 2 ? -1 : 1;
         temp.push({
-          r, c,
+          r,
+          c,
           /* distance varies wildly so tiles arrive at different times */
           x: quadX * (220 + Math.random() * 350),
           y: quadY * (180 + Math.random() * 280),
           rot: (Math.random() - 0.5) * 240,
           scale: 0.2 + Math.random() * 0.5,
           /* delay clustered around distance from centre, not row order */
-          delay: (Math.abs(r - rows / 2) + Math.abs(c - cols / 2)) * 0.075
-            + Math.random() * 0.18,
+          delay: (Math.abs(r - rows / 2) + Math.abs(c - cols / 2)) * 0.075 + Math.random() * 0.18,
           spring: SPRING_CONFIGS[Math.floor(Math.random() * SPRING_CONFIGS.length)],
         });
       }
@@ -58,7 +58,11 @@ const MosaicImage = ({ src, alt, rows = 5, cols = 5, className = '' }) => {
             variants={{
               hidden: {},
               show: {
-                opacity: 1, x: 0, y: 0, rotate: 0, scale: 1,
+                opacity: 1,
+                x: 0,
+                y: 0,
+                rotate: 0,
+                scale: 1,
                 transition: { ...tile.spring, delay: tile.delay },
               },
             }}

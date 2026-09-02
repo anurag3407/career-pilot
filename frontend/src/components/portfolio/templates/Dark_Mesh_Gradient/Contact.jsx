@@ -48,26 +48,16 @@ export default function Contact() {
               >
                 <Mail className="w-5 h-5 text-purple-400" />
                 <div>
-                  <span className="text-xs text-gray-500 uppercase block">
-                    Email Me
-                  </span>
-                  <span className="text-sm text-gray-200 block mt-0.5">
-                    {socials.email}
-                  </span>
+                  <span className="text-xs text-gray-500 uppercase block">Email Me</span>
+                  <span className="text-sm text-gray-200 block mt-0.5">{socials.email}</span>
                 </div>
               </a>
 
               <div className="flex items-center gap-4 p-5 rounded-2xl bg-gray-900/30 border border-white/5">
-                <div className="text-pink-400">
-                  📍
-                </div>
+                <div className="text-pink-400">📍</div>
                 <div>
-                  <span className="text-xs text-gray-500 uppercase block">
-                    Location
-                  </span>
-                  <span className="text-sm text-gray-200 block mt-0.5">
-                    {personal.location}
-                  </span>
+                  <span className="text-xs text-gray-500 uppercase block">Location</span>
+                  <span className="text-sm text-gray-200 block mt-0.5">{personal.location}</span>
                 </div>
               </div>
             </div>
@@ -169,7 +159,9 @@ export default function Contact() {
 
       {/* Footer */}
       <div className="mt-24 pt-8 border-t border-white/5 text-center text-gray-500 text-sm">
-        <p>© {new Date().getFullYear()} {personal.name}. All rights reserved.</p>
+        <p>
+          © {new Date().getFullYear()} {personal.name}. All rights reserved.
+        </p>
       </div>
     </section>
   );

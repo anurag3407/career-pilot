@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.075, 0.82, 0.165, 1] } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.075, 0.82, 0.165, 1] } },
 };
 
 export default function SectionHeader({ title, subtitle }) {

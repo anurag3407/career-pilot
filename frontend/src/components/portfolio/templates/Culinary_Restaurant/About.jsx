@@ -1,23 +1,12 @@
 import React, { useState } from 'react';
-import {
-  ChefHat,
-  Award,
-  Flame,
-  Leaf,
-  Star,
-  UtensilsCrossed,
-  Globe,
-  Heart,
-} from 'lucide-react';
+import { ChefHat, Award, Flame, Leaf, Star, UtensilsCrossed, Globe, Heart } from 'lucide-react';
 
 const CHEF_STORY = {
   name: 'Alexandre Moreau',
   title: 'Executive Chef & Founder',
   tagline: 'Born in Lyon. Perfected in Paris. Celebrated Worldwide.',
-  bio1:
-    'With over two decades behind the pass, Alexandre Moreau has transformed simple ingredients into extraordinary experiences. Trained under three Michelin-starred mentors across France and Japan, his philosophy marries classical French technique with fearless global inspiration.',
-  bio2:
-    'Every plate that leaves our kitchen carries the weight of tradition and the spark of creativity. A promise to honour the seasons, respect the craft, and never stop pushing the boundary of what fine dining can be.',
+  bio1: 'With over two decades behind the pass, Alexandre Moreau has transformed simple ingredients into extraordinary experiences. Trained under three Michelin-starred mentors across France and Japan, his philosophy marries classical French technique with fearless global inspiration.',
+  bio2: 'Every plate that leaves our kitchen carries the weight of tradition and the spark of creativity. A promise to honour the seasons, respect the craft, and never stop pushing the boundary of what fine dining can be.',
   since: '2004',
   restaurants: '3',
   michelin: '2',
@@ -86,7 +75,6 @@ export default function About() {
     <section className="w-full bg-[#0a0a0a] text-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 lg:py-36">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-
           <div className="relative order-2 lg:order-1">
             <div className="absolute -inset-4 border border-[#c5a880]/20 pointer-events-none" />
             <div className="absolute -inset-8 border border-[#c5a880]/10 pointer-events-none" />
@@ -216,7 +204,8 @@ export default function About() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {VALUES.map(({ icon: Icon, title, desc }, i) => (
-             <button type="button"
+              <button
+                type="button"
                 key={title}
                 onClick={() => setActiveValue(i)}
                 aria-pressed={activeValue === i}
@@ -277,8 +266,8 @@ export default function About() {
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <GoldDivider icon={ChefHat} />
           <blockquote className="font-serif text-3xl md:text-4xl lg:text-5xl text-white font-light leading-relaxed tracking-wide mb-10">
-            "Cooking is not a profession. It is a devotion. Every flame, every knife stroke,
-            every plated moment is an act of love for the person sitting at the table."
+            "Cooking is not a profession. It is a devotion. Every flame, every knife stroke, every
+            plated moment is an act of love for the person sitting at the table."
           </blockquote>
           <div className="flex items-center justify-center gap-4">
             <div className="h-px w-16 bg-[#c5a880]/50" />

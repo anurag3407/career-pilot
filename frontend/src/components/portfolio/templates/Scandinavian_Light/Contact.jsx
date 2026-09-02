@@ -9,7 +9,12 @@ function socialRows(socials = {}) {
     { label: 'Github', value: socials.github, href: socials.github, Icon: Github },
     { label: 'LinkedIn', value: socials.linkedin, href: socials.linkedin, Icon: Linkedin },
     { label: 'Twitter', value: socials.twitter, href: socials.twitter, Icon: Twitter },
-    { label: 'Email', value: socials.email, href: socials.email ? `mailto:${socials.email}` : '', Icon: Mail },
+    {
+      label: 'Email',
+      value: socials.email,
+      href: socials.email ? `mailto:${socials.email}` : '',
+      Icon: Mail,
+    },
   ].filter((item) => item.value);
 }
 
@@ -28,7 +33,9 @@ export default function Contact({ data }) {
       >
         <div className="grid gap-10 rounded-[2rem] border border-[#E7DED1] bg-[#FFFDF8] p-6 shadow-[0_24px_80px_rgba(70,56,39,0.08)] md:grid-cols-[0.9fr_1.1fr] md:p-10">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#C58A63]">Contact</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#C58A63]">
+              Contact
+            </p>
             <h2 className="scandi-serif mt-4 text-4xl font-semibold leading-tight text-[#283028] md:text-5xl">
               Open to thoughtful collaborations.
             </h2>
@@ -56,7 +63,9 @@ export default function Contact({ data }) {
         </div>
 
         <div className="mt-8 flex flex-col justify-between gap-3 text-xs text-[#8B7D6B] md:flex-row">
-          <p>&copy; {year} {data.personal?.name}. All rights reserved.</p>
+          <p>
+            &copy; {year} {data.personal?.name}. All rights reserved.
+          </p>
           <p>Built with React and Tailwind</p>
         </div>
       </motion.div>

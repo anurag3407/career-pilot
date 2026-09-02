@@ -15,7 +15,9 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('../components/SearchInput', () => ({
-  default: ({ value, onChange }) => <input value={value} onChange={(event) => onChange(event.target.value)} />,
+  default: ({ value, onChange }) => (
+    <input value={value} onChange={(event) => onChange(event.target.value)} />
+  ),
 }));
 
 vi.mock('../components/ReportBugModal', () => ({

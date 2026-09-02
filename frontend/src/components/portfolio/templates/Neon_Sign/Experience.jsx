@@ -1,8 +1,8 @@
-import React from "react";
-import { motion as Motion } from "framer-motion";
-import { Briefcase, Calendar, Building2 } from "lucide-react";
+import React from 'react';
+import { motion as Motion } from 'framer-motion';
+import { Briefcase, Calendar, Building2 } from 'lucide-react';
 
-const TIMELINE_COLORS = ["#ff2bd6", "#00d4ff", "#ffd000", "#b026ff"];
+const TIMELINE_COLORS = ['#ff2bd6', '#00d4ff', '#ffd000', '#b026ff'];
 
 export default function Experience({ data = {} }) {
   const { experience = [] } = data;
@@ -25,15 +25,15 @@ export default function Experience({ data = {} }) {
           <div
             className="inline-block px-6 py-3 rounded border-2 border-yellow-400 mb-4"
             style={{
-              background: "rgba(255,208,0,0.05)",
-              boxShadow: "0 0 20px #ffd000, 0 0 40px #ffd00040",
+              background: 'rgba(255,208,0,0.05)',
+              boxShadow: '0 0 20px #ffd000, 0 0 40px #ffd00040',
             }}
           >
             <h2
               className="text-3xl md:text-4xl font-black uppercase tracking-widest text-yellow-300"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 10px #ffd000, 0 0 20px #ffd000, 0 0 40px #ffd000",
+                textShadow: '0 0 10px #ffd000, 0 0 20px #ffd000, 0 0 40px #ffd000',
               }}
             >
               ◈ EXPERIENCE ◈
@@ -42,8 +42,8 @@ export default function Experience({ data = {} }) {
           <div
             className="w-40 h-1 mx-auto mt-2 rounded-full"
             style={{
-              background: "linear-gradient(90deg, transparent, #ffd000, transparent)",
-              boxShadow: "0 0 10px #ffd000",
+              background: 'linear-gradient(90deg, transparent, #ffd000, transparent)',
+              boxShadow: '0 0 10px #ffd000',
             }}
           />
         </Motion.div>
@@ -54,8 +54,8 @@ export default function Experience({ data = {} }) {
           <div
             className="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2"
             style={{
-              background: "linear-gradient(to bottom, #ff2bd6, #00d4ff, #ffd000, #b026ff)",
-              boxShadow: "0 0 10px #00d4ff, 0 0 20px #00d4ff40",
+              background: 'linear-gradient(to bottom, #ff2bd6, #00d4ff, #ffd000, #b026ff)',
+              boxShadow: '0 0 10px #00d4ff, 0 0 20px #00d4ff40',
             }}
           />
 
@@ -72,17 +72,19 @@ export default function Experience({ data = {} }) {
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, delay: idx * 0.1 }}
                   className={`relative flex items-start gap-6 md:gap-0 ${
-                    isLeft ? "md:flex-row" : "md:flex-row-reverse"
+                    isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
                   }`}
                 >
                   {/* Content Card (takes up half width on desktop) */}
-                  <div className={`pl-14 md:pl-0 md:w-[calc(50%_-_2rem)] ${isLeft ? "md:pr-10" : "md:pl-10"}`}>
+                  <div
+                    className={`pl-14 md:pl-0 md:w-[calc(50%_-_2rem)] ${isLeft ? 'md:pr-10' : 'md:pl-10'}`}
+                  >
                     <div
                       className="group rounded-2xl border-2 p-5 md:p-6 relative overflow-hidden cursor-default transition-all duration-500"
                       style={{
                         borderColor: `${color}60`,
                         background: `${color}06`,
-                        backdropFilter: "blur(10px)",
+                        backdropFilter: 'blur(10px)',
                         boxShadow: `0 0 20px ${color}15`,
                       }}
                       onMouseEnter={(e) => {
@@ -96,10 +98,10 @@ export default function Experience({ data = {} }) {
                     >
                       {/* Corner accent */}
                       <div
-                        className={`absolute top-0 ${isLeft ? "right-0" : "left-0"} w-6 h-6`}
+                        className={`absolute top-0 ${isLeft ? 'right-0' : 'left-0'} w-6 h-6`}
                         style={{
                           borderTop: `2px solid ${color}`,
-                          [isLeft ? "borderRight" : "borderLeft"]: `2px solid ${color}`,
+                          [isLeft ? 'borderRight' : 'borderLeft']: `2px solid ${color}`,
                           boxShadow: `0 0 8px ${color}`,
                         }}
                       />
@@ -169,7 +171,10 @@ export default function Experience({ data = {} }) {
                         border: `2px solid ${color}`,
                       }}
                     >
-                      <Briefcase size={16} style={{ color, filter: `drop-shadow(0 0 4px ${color})` }} />
+                      <Briefcase
+                        size={16}
+                        style={{ color, filter: `drop-shadow(0 0 4px ${color})` }}
+                      />
                     </Motion.div>
                   </div>
 

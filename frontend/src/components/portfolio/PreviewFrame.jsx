@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Monitor, Tablet, Smartphone } from 'lucide-react';
 
-const PreviewFrame = ({ url, title = "Portfolio Preview" }) => {
+const PreviewFrame = ({ url, title = 'Portfolio Preview' }) => {
   const [device, setDevice] = useState('desktop');
 
   const getFrameWidth = () => {
@@ -23,7 +23,9 @@ const PreviewFrame = ({ url, title = "Portfolio Preview" }) => {
         <button
           onClick={() => setDevice('desktop')}
           className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-            device === 'desktop' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:bg-background/50'
+            device === 'desktop'
+              ? 'bg-background shadow-sm text-foreground'
+              : 'text-muted-foreground hover:bg-background/50'
           }`}
           title="Desktop view"
         >
@@ -33,7 +35,9 @@ const PreviewFrame = ({ url, title = "Portfolio Preview" }) => {
         <button
           onClick={() => setDevice('tablet')}
           className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-            device === 'tablet' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:bg-background/50'
+            device === 'tablet'
+              ? 'bg-background shadow-sm text-foreground'
+              : 'text-muted-foreground hover:bg-background/50'
           }`}
           title="Tablet view"
         >
@@ -43,7 +47,9 @@ const PreviewFrame = ({ url, title = "Portfolio Preview" }) => {
         <button
           onClick={() => setDevice('mobile')}
           className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-            device === 'mobile' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:bg-background/50'
+            device === 'mobile'
+              ? 'bg-background shadow-sm text-foreground'
+              : 'text-muted-foreground hover:bg-background/50'
           }`}
           title="Mobile view"
         >

@@ -16,7 +16,7 @@ function AsciiBar({ name, level, animated, index }) {
   }, [inView, animated, level, count, index]);
 
   useEffect(() => {
-    const unsubscribe = count.on('change', v => setDisplayPct(Math.round(v)));
+    const unsubscribe = count.on('change', (v) => setDisplayPct(Math.round(v)));
     return unsubscribe;
   }, [count]);
 
@@ -45,15 +45,11 @@ function AsciiBar({ name, level, animated, index }) {
         <span className="text-green-700">]</span>
 
         {/* Numeric */}
-        <span className="text-cyan-400 w-8 text-right inline-block">
-          {displayPct}%
-        </span>
+        <span className="text-cyan-400 w-8 text-right inline-block">{displayPct}%</span>
       </div>
     </motion.div>
   );
 }
-
-
 
 /* ─── Category group ─────────────────────────────────────────────── */
 const CATEGORY_COLORS = {
@@ -91,7 +87,6 @@ export default function Skills() {
       aria-label="Skills"
     >
       <div className="max-w-4xl mx-auto space-y-8">
-
         {/* Command header */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -118,7 +113,9 @@ export default function Skills() {
           <span>FORMAT: skill_name [████████░░] pct%</span>
           <span className="text-green-900">|</span>
           {Object.entries(CATEGORY_COLORS).map(([cat, color]) => (
-            <span key={cat} className={color}># {cat}</span>
+            <span key={cat} className={color}>
+              # {cat}
+            </span>
           ))}
         </motion.div>
 
@@ -133,7 +130,9 @@ export default function Skills() {
               className="font-mono text-xs"
             >
               <span className={CATEGORY_COLORS[category] || 'text-white'}>
-                {'/* '}{category}{' */'}
+                {'/* '}
+                {category}
+                {' */'}
               </span>
             </motion.div>
 

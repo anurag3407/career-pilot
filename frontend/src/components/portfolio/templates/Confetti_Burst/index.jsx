@@ -1,24 +1,15 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React from "react";
-import { motion } from "framer-motion";
-import {
-  Github,
-  Linkedin,
-  Mail,
-  ExternalLink,
-  Briefcase,
-  MapPin,
-  Sparkles,
-} from "lucide-react";
-
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Github, Linkedin, Mail, ExternalLink, Briefcase, MapPin, Sparkles } from 'lucide-react';
 
 const confettiColors = [
-  "bg-pink-500",
-  "bg-yellow-400",
-  "bg-cyan-400",
-  "bg-green-400",
-  "bg-purple-500",
-  "bg-orange-400",
+  'bg-pink-500',
+  'bg-yellow-400',
+  'bg-cyan-400',
+  'bg-green-400',
+  'bg-purple-500',
+  'bg-orange-400',
 ];
 
 export default function ConfettiBurst() {
@@ -39,21 +30,15 @@ export default function ConfettiBurst() {
     setBursts((prev) => [...prev, newBurst]);
 
     setTimeout(() => {
-      setBursts((prev) =>
-        prev.filter((burst) => burst.id !== newBurst.id)
-      );
+      setBursts((prev) => prev.filter((burst) => burst.id !== newBurst.id));
     }, 1000);
   };
 
   return (
     <div className="min-h-screen overflow-hidden bg-gradient-to-br from-pink-950 via-purple-950 to-indigo-950 text-white relative">
-      
       {/* CLICK BURST CONFETTI */}
       {bursts.map((burst) => (
-        <div
-          key={burst.id}
-          className="pointer-events-none fixed inset-0 z-50"
-        >
+        <div key={burst.id} className="pointer-events-none fixed inset-0 z-50">
           {[...Array(24)].map((_, i) => {
             const angle = (360 / 24) * i;
             const distance = 80 + Math.random() * 80;
@@ -68,19 +53,15 @@ export default function ConfettiBurst() {
                   opacity: 1,
                 }}
                 animate={{
-                  x:
-                    burst.x +
-                    Math.cos((angle * Math.PI) / 180) * distance,
-                  y:
-                    burst.y +
-                    Math.sin((angle * Math.PI) / 180) * distance,
+                  x: burst.x + Math.cos((angle * Math.PI) / 180) * distance,
+                  y: burst.y + Math.sin((angle * Math.PI) / 180) * distance,
                   rotate: 360,
                   scale: 0,
                   opacity: 0,
                 }}
                 transition={{
                   duration: 0.9,
-                  ease: "easeOut",
+                  ease: 'easeOut',
                 }}
                 className={`absolute w-3 h-3 rounded-sm ${
                   confettiColors[i % confettiColors.length]
@@ -103,7 +84,7 @@ export default function ConfettiBurst() {
               opacity: 0.8,
             }}
             animate={{
-              y: "120vh",
+              y: '120vh',
               rotate: 360,
               opacity: [1, 1, 0],
             }}
@@ -111,11 +92,9 @@ export default function ConfettiBurst() {
               duration: 6 + Math.random() * 6,
               repeat: Infinity,
               delay: Math.random() * 5,
-              ease: "linear",
+              ease: 'linear',
             }}
-            className={`absolute w-3 h-3 rounded-sm ${
-              confettiColors[i % confettiColors.length]
-            }`}
+            className={`absolute w-3 h-3 rounded-sm ${confettiColors[i % confettiColors.length]}`}
           />
         ))}
       </div>
@@ -158,13 +137,9 @@ export default function ConfettiBurst() {
           {data.personal.name}
         </motion.h1>
 
-        <p className="text-2xl text-pink-200 mt-5">
-          {data.personal.title}
-        </p>
+        <p className="text-2xl text-pink-200 mt-5">{data.personal.title}</p>
 
-        <p className="max-w-2xl text-gray-300 mt-6 leading-relaxed">
-          {data.personal.bio}
-        </p>
+        <p className="max-w-2xl text-gray-300 mt-6 leading-relaxed">{data.personal.bio}</p>
 
         <motion.button
           onClick={createBurst}
@@ -172,7 +147,7 @@ export default function ConfettiBurst() {
           whileTap={{ scale: 0.95 }}
           className="mt-10 px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-yellow-400 text-black font-bold shadow-xl"
         >
-          Celebrate Creativity 
+          Celebrate Creativity
         </motion.button>
 
         <div className="flex gap-5 mt-10 flex-wrap justify-center">
@@ -215,13 +190,9 @@ export default function ConfettiBurst() {
           viewport={{ once: true }}
           className="bg-white/10 backdrop-blur-lg rounded-3xl p-10 border border-white/10"
         >
-          <h2 className="text-4xl font-bold mb-8 text-pink-300">
-            About Me
-          </h2>
+          <h2 className="text-4xl font-bold mb-8 text-pink-300">About Me</h2>
 
-          <p className="text-gray-200 leading-relaxed mb-8">
-            {data.personal.bio}
-          </p>
+          <p className="text-gray-200 leading-relaxed mb-8">{data.personal.bio}</p>
 
           <div className="flex items-center gap-3 text-yellow-300">
             <MapPin />
@@ -230,23 +201,17 @@ export default function ConfettiBurst() {
 
           <div className="grid grid-cols-3 gap-6 mt-10">
             <div className="bg-pink-500/20 rounded-2xl p-6 text-center">
-              <h3 className="text-3xl font-bold">
-                {data.stats.yearsExperience}
-              </h3>
+              <h3 className="text-3xl font-bold">{data.stats.yearsExperience}</h3>
               <p>Years</p>
             </div>
 
             <div className="bg-cyan-500/20 rounded-2xl p-6 text-center">
-              <h3 className="text-3xl font-bold">
-                {data.stats.projectsCompleted}
-              </h3>
+              <h3 className="text-3xl font-bold">{data.stats.projectsCompleted}</h3>
               <p>Projects</p>
             </div>
 
             <div className="bg-yellow-400/20 rounded-2xl p-6 text-center">
-              <h3 className="text-3xl font-bold">
-                {data.stats.happyClients}
-              </h3>
+              <h3 className="text-3xl font-bold">{data.stats.happyClients}</h3>
               <p>Clients</p>
             </div>
           </div>
@@ -255,9 +220,7 @@ export default function ConfettiBurst() {
 
       {/* SKILLS */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-24">
-        <h2 className="text-4xl font-bold text-center text-yellow-300 mb-16">
-          Skills
-        </h2>
+        <h2 className="text-4xl font-bold text-center text-yellow-300 mb-16">Skills</h2>
 
         <div className="grid md:grid-cols-2 gap-8">
           {data.skills.map((skill, index) => (
@@ -287,9 +250,7 @@ export default function ConfettiBurst() {
 
       {/* PROJECTS */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 py-24">
-        <h2 className="text-4xl font-bold text-center text-pink-300 mb-16">
-          Projects
-        </h2>
+        <h2 className="text-4xl font-bold text-center text-pink-300 mb-16">Projects</h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {data.projects.map((project, index) => (
@@ -299,20 +260,12 @@ export default function ConfettiBurst() {
               onClick={createBurst}
               className="bg-white/10 rounded-3xl overflow-hidden border border-white/10 backdrop-blur-lg cursor-pointer"
             >
-              <img
-                src={project.image}
-                alt={project.title}
-                className="w-full h-56 object-cover"
-              />
+              <img src={project.image} alt={project.title} className="w-full h-56 object-cover" />
 
               <div className="p-6">
-                <h3 className="text-2xl font-bold text-yellow-300 mb-4">
-                  {project.title}
-                </h3>
+                <h3 className="text-2xl font-bold text-yellow-300 mb-4">{project.title}</h3>
 
-                <p className="text-gray-300 mb-5">
-                  {project.description}
-                </p>
+                <p className="text-gray-300 mb-5">{project.description}</p>
 
                 <div className="flex flex-wrap gap-2 mb-6">
                   {project.techStack.map((tech, i) => (
@@ -354,11 +307,9 @@ export default function ConfettiBurst() {
         </div>
       </section>
 
-            {/* EXPERIENCE */}
+      {/* EXPERIENCE */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 py-24">
-        <h2 className="text-4xl font-bold text-center text-cyan-300 mb-16">
-          Experience
-        </h2>
+        <h2 className="text-4xl font-bold text-center text-cyan-300 mb-16">Experience</h2>
 
         <div className="space-y-8">
           {data.experience.map((exp, index) => (
@@ -385,9 +336,7 @@ export default function ConfettiBurst() {
 
       {/* TESTIMONIALS */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-24">
-        <h2 className="text-4xl font-bold text-center text-yellow-300 mb-16">
-          Testimonials
-        </h2>
+        <h2 className="text-4xl font-bold text-center text-yellow-300 mb-16">Testimonials</h2>
 
         <div className="grid md:grid-cols-2 gap-8">
           {data.testimonials.map((testimonial, index) => (
@@ -397,9 +346,7 @@ export default function ConfettiBurst() {
               onClick={createBurst}
               className="bg-white/10 rounded-3xl p-8 border border-white/10 cursor-pointer"
             >
-              <p className="italic text-gray-200 mb-6">
-                "{testimonial.text}"
-              </p>
+              <p className="italic text-gray-200 mb-6">"{testimonial.text}"</p>
 
               <div className="flex items-center gap-4">
                 <img
@@ -410,9 +357,7 @@ export default function ConfettiBurst() {
 
                 <div>
                   <h4 className="font-bold">{testimonial.name}</h4>
-                  <p className="text-pink-300 text-sm">
-                    {testimonial.role}
-                  </p>
+                  <p className="text-pink-300 text-sm">{testimonial.role}</p>
                 </div>
               </div>
             </motion.div>
@@ -422,13 +367,9 @@ export default function ConfettiBurst() {
 
       {/* CONTACT */}
       <footer className="relative z-10 py-20 text-center border-t border-white/10">
-        <h2 className="text-4xl font-bold text-pink-300 mb-6">
-          Let’s Connect 
-        </h2>
+        <h2 className="text-4xl font-bold text-pink-300 mb-6">Let’s Connect</h2>
 
-        <p className="text-gray-300 mb-10">
-          Ready to create something exciting together?
-        </p>
+        <p className="text-gray-300 mb-10">Ready to create something exciting together?</p>
 
         <div className="flex justify-center gap-6">
           <a
@@ -466,14 +407,11 @@ export default function ConfettiBurst() {
           whileTap={{ scale: 0.95 }}
           className="mt-10 px-8 py-4 rounded-full bg-gradient-to-r from-cyan-400 to-pink-500 text-black font-bold shadow-xl"
         >
-          Launch Celebration 
+          Launch Celebration
         </motion.button>
 
-        <p className="text-gray-500 mt-10 text-sm">
-          © 2026 {data.personal.name}
-        </p>
+        <p className="text-gray-500 mt-10 text-sm">© 2026 {data.personal.name}</p>
       </footer>
     </div>
   );
 }
-    

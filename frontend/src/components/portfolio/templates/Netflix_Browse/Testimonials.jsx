@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { Quote } from "lucide-react";
+import { motion } from 'framer-motion';
+import { Quote } from 'lucide-react';
 
 export default function Testimonials({ testimonials }) {
   return (
@@ -17,7 +17,7 @@ export default function Testimonials({ testimonials }) {
       {/* Horizontal scroll */}
       <div
         className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {testimonials.map((t, i) => (
           <motion.div
@@ -37,14 +37,14 @@ export default function Testimonials({ testimonials }) {
             {/* Stars */}
             <div className="flex gap-1 mb-4">
               {[...Array(5)].map((_, j) => (
-                <span key={j} className="text-[#E50914] text-sm">★</span>
+                <span key={j} className="text-[#E50914] text-sm">
+                  ★
+                </span>
               ))}
             </div>
 
             {/* Quote text */}
-            <p className="text-[#e5e5e5] text-sm leading-relaxed mb-6 italic">
-              "{t.text}"
-            </p>
+            <p className="text-[#e5e5e5] text-sm leading-relaxed mb-6 italic">"{t.text}"</p>
 
             {/* Author */}
             <div className="flex items-center gap-3 pt-4 border-t border-white/5">

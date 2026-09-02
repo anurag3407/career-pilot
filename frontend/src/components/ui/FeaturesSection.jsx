@@ -1,68 +1,68 @@
-import { useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { Sparkles, Bell, Globe, ArrowRight } from "lucide-react";
+import { useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { Sparkles, Bell, Globe, ArrowRight } from 'lucide-react';
 
 const features = [
   {
-    id: "resume",
-    number: "A",
-    title: "AI-Powered Resume Enhancement",
+    id: 'resume',
+    number: 'A',
+    title: 'AI-Powered Resume Enhancement',
     description:
-      "Transform your resume with cutting-edge AI. Get ATS-optimized formatting, keyword suggestions, and industry-specific improvements.",
-    tags: ["React", "TypeScript", "Node.js"],
-    accent: "from-sky-500 to-blue-600",
-    accentText: "text-sky-400",
-    accentBg: "bg-sky-500/10",
-    accentBorder: "border-sky-500/30",
+      'Transform your resume with cutting-edge AI. Get ATS-optimized formatting, keyword suggestions, and industry-specific improvements.',
+    tags: ['React', 'TypeScript', 'Node.js'],
+    accent: 'from-sky-500 to-blue-600',
+    accentText: 'text-sky-400',
+    accentBg: 'bg-sky-500/10',
+    accentBorder: 'border-sky-500/30',
   },
   {
-    id: "matching",
-    number: "B",
-    title: "Smart Job Matching",
+    id: 'matching',
+    number: 'B',
+    title: 'Smart Job Matching',
     description:
-      "Find opportunities that truly match your skills. Our AI analyzes thousands of listings to surface your perfect roles.",
+      'Find opportunities that truly match your skills. Our AI analyzes thousands of listings to surface your perfect roles.',
     jobs: [
-      { title: "Senior Frontend Dev", company: "Google", match: 95 },
-      { title: "Full Stack Engineer", company: "Meta", match: 92 },
-      { title: "React Developer", company: "Stripe", match: 89 },
+      { title: 'Senior Frontend Dev', company: 'Google', match: 95 },
+      { title: 'Full Stack Engineer', company: 'Meta', match: 92 },
+      { title: 'React Developer', company: 'Stripe', match: 89 },
     ],
-    accent: "from-emerald-500 to-teal-600",
-    accentText: "text-emerald-400",
-    accentBg: "bg-emerald-500/10",
-    accentBorder: "border-emerald-500/30",
+    accent: 'from-emerald-500 to-teal-600',
+    accentText: 'text-emerald-400',
+    accentBg: 'bg-emerald-500/10',
+    accentBorder: 'border-emerald-500/30',
   },
   {
-    id: "alerts",
-    number: "C",
-    title: "Real-time Job Alerts",
+    id: 'alerts',
+    number: 'C',
+    title: 'Real-time Job Alerts',
     description:
-      "Never miss an opportunity. Get instant notifications when jobs matching your criteria are posted.",
+      'Never miss an opportunity. Get instant notifications when jobs matching your criteria are posted.',
     alerts: [
-      { message: "5 new Frontend jobs in San Francisco", time: "2m ago" },
-      { message: "Perfect match: Senior React Dev at Stripe", time: "15m ago" },
-      { message: "Your saved job updated requirements", time: "1h ago" },
+      { message: '5 new Frontend jobs in San Francisco', time: '2m ago' },
+      { message: 'Perfect match: Senior React Dev at Stripe', time: '15m ago' },
+      { message: 'Your saved job updated requirements', time: '1h ago' },
     ],
-    accent: "from-amber-500 to-orange-600",
-    accentText: "text-amber-400",
-    accentBg: "bg-amber-500/10",
-    accentBorder: "border-amber-500/30",
+    accent: 'from-amber-500 to-orange-600',
+    accentText: 'text-amber-400',
+    accentBg: 'bg-amber-500/10',
+    accentBorder: 'border-amber-500/30',
   },
   {
-    id: "global",
-    number: "D",
-    title: "Global Opportunities",
+    id: 'global',
+    number: 'D',
+    title: 'Global Opportunities',
     description:
-      "Access job markets worldwide. Whether remote or on-site, find opportunities across continents.",
-    accent: "from-violet-500 to-purple-600",
-    accentText: "text-violet-400",
-    accentBg: "bg-violet-500/10",
-    accentBorder: "border-violet-500/30",
+      'Access job markets worldwide. Whether remote or on-site, find opportunities across continents.',
+    accent: 'from-violet-500 to-purple-600',
+    accentText: 'text-violet-400',
+    accentBg: 'bg-violet-500/10',
+    accentBorder: 'border-violet-500/30',
   },
 ];
 
 function FeatureVisual({ feature }) {
-  if (feature.id === "resume") {
+  if (feature.id === 'resume') {
     return (
       <div className="relative rounded-2xl border border-border bg-card/60 p-6 backdrop-blur-sm">
         <div className="flex items-center gap-3 mb-5">
@@ -83,7 +83,10 @@ function FeatureVisual({ feature }) {
         </div>
         <div className="flex gap-2 mt-4">
           {feature.tags.map((tag) => (
-            <span key={tag} className="rounded-md bg-sky-500/10 border border-sky-500/20 px-2 py-1 text-[10px] font-bold text-sky-400">
+            <span
+              key={tag}
+              className="rounded-md bg-sky-500/10 border border-sky-500/20 px-2 py-1 text-[10px] font-bold text-sky-400"
+            >
               {tag}
             </span>
           ))}
@@ -92,7 +95,7 @@ function FeatureVisual({ feature }) {
     );
   }
 
-  if (feature.id === "matching") {
+  if (feature.id === 'matching') {
     return (
       <div className="space-y-3">
         {feature.jobs.map((job, i) => (
@@ -117,7 +120,7 @@ function FeatureVisual({ feature }) {
     );
   }
 
-  if (feature.id === "alerts") {
+  if (feature.id === 'alerts') {
     return (
       <div className="space-y-3">
         {feature.alerts.map((alert, i) => (
@@ -169,9 +172,9 @@ export default function FeaturesSection() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"],
+    offset: ['start end', 'end start'],
   });
-  const progressHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const progressHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   return (
     <div ref={containerRef} className="relative mx-auto max-w-7xl py-24 lg:py-36">
@@ -201,10 +204,7 @@ export default function FeaturesSection() {
       <div className="relative">
         {/* Progress rail */}
         <div className="absolute left-4 top-0 bottom-0 hidden w-px bg-border lg:left-8 lg:block">
-          <motion.div
-            style={{ height: progressHeight }}
-            className="w-px bg-primary"
-          />
+          <motion.div style={{ height: progressHeight }} className="w-px bg-primary" />
         </div>
 
         <div className="space-y-24 lg:space-y-32">
@@ -213,32 +213,40 @@ export default function FeaturesSection() {
               key={feature.id}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: '-100px' }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="relative"
             >
               {/* Node on rail */}
               <div className="absolute -left-4 top-2 z-10 hidden lg:-left-8 lg:block">
-                <div className={cn(
-                  "flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full border-2 bg-background",
-                  feature.accentBorder
-                )}>
-                  <div className={cn("h-1.5 w-1.5 rounded-full bg-gradient-to-r", feature.accent)} />
+                <div
+                  className={cn(
+                    'flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full border-2 bg-background',
+                    feature.accentBorder
+                  )}
+                >
+                  <div
+                    className={cn('h-1.5 w-1.5 rounded-full bg-gradient-to-r', feature.accent)}
+                  />
                 </div>
               </div>
 
-              <div className={cn(
-                "grid items-center gap-10 lg:grid-cols-2 lg:gap-20",
-                index % 2 === 1 && "lg:direction-rtl"
-              )}>
+              <div
+                className={cn(
+                  'grid items-center gap-10 lg:grid-cols-2 lg:gap-20',
+                  index % 2 === 1 && 'lg:direction-rtl'
+                )}
+              >
                 {/* Text side */}
-                <div className={cn(index % 2 === 1 && "lg:order-2")}>
-                  <span className={cn(
-                    "inline-flex h-12 w-12 items-center justify-center rounded-xl border text-lg font-black",
-                    feature.accentText,
-                    feature.accentBg,
-                    feature.accentBorder
-                  )}>
+                <div className={cn(index % 2 === 1 && 'lg:order-2')}>
+                  <span
+                    className={cn(
+                      'inline-flex h-12 w-12 items-center justify-center rounded-xl border text-lg font-black',
+                      feature.accentText,
+                      feature.accentBg,
+                      feature.accentBorder
+                    )}
+                  >
                     {feature.number}
                   </span>
                   <h3 className="mt-5 text-2xl font-black tracking-tight text-foreground md:text-4xl">
@@ -250,7 +258,7 @@ export default function FeaturesSection() {
                 </div>
 
                 {/* Visual side */}
-                <div className={cn(index % 2 === 1 && "lg:order-1")}>
+                <div className={cn(index % 2 === 1 && 'lg:order-1')}>
                   <FeatureVisual feature={feature} />
                 </div>
               </div>
@@ -275,4 +283,4 @@ function FeatureDescription({ children }) {
 }
 
 // Re-export the new DarkGridFeatures component as AdditionalFeatures
-export { default as AdditionalFeatures } from "./dark-grid-features";
+export { default as AdditionalFeatures } from './dark-grid-features';

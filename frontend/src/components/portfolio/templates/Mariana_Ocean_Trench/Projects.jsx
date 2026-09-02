@@ -6,14 +6,20 @@ export default function Projects({ projects }) {
   if (!projects || projects.length === 0) return null;
 
   return (
-    <section 
+    <section
       id="midnight-zone"
       className="relative w-full min-h-screen flex flex-col justify-center bg-gradient-to-b from-[#0f172a] via-[#090d16] to-[#020617] p-6 md:p-12 text-white overflow-hidden select-none"
     >
       {/* Midnight zone backgrounds: Pitch dark with submarine spotlights */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-1/4 left-[-10%] w-[50%] h-[300px] bg-gradient-to-r from-cyan-500/10 to-transparent skew-y-12 animate-spotlight" style={{ transformOrigin: 'top left' }} />
-        <div className="absolute bottom-1/4 right-[-10%] w-[55%] h-[250px] bg-gradient-to-l from-blue-500/10 to-transparent -skew-y-12 animate-spotlight" style={{ transformOrigin: 'bottom right', animationDelay: '4s' }} />
+        <div
+          className="absolute top-1/4 left-[-10%] w-[50%] h-[300px] bg-gradient-to-r from-cyan-500/10 to-transparent skew-y-12 animate-spotlight"
+          style={{ transformOrigin: 'top left' }}
+        />
+        <div
+          className="absolute bottom-1/4 right-[-10%] w-[55%] h-[250px] bg-gradient-to-l from-blue-500/10 to-transparent -skew-y-12 animate-spotlight"
+          style={{ transformOrigin: 'bottom right', animationDelay: '4s' }}
+        />
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto w-full flex flex-col gap-8 md:gap-12">
@@ -24,7 +30,9 @@ export default function Projects({ projects }) {
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-wider font-mono">
               03 // MIDNIGHT_ZONE: MISSION_ARCHIVES
             </h2>
-            <p className="text-xs text-blue-500/80 font-mono mt-1">Status: Ambient Light Level 1% | Pressure Level 340 atm | Submarine Headlights ON</p>
+            <p className="text-xs text-blue-500/80 font-mono mt-1">
+              Status: Ambient Light Level 1% | Pressure Level 340 atm | Submarine Headlights ON
+            </p>
           </div>
         </div>
 
@@ -34,9 +42,12 @@ export default function Projects({ projects }) {
             const rawTech = project.techStack || project.technologies || project.tech || [];
             const tech = Array.isArray(rawTech)
               ? rawTech
-              : (typeof rawTech === 'string'
-                  ? rawTech.split(',').map(s => s.trim()).filter(Boolean)
-                  : []);
+              : typeof rawTech === 'string'
+                ? rawTech
+                    .split(',')
+                    .map((s) => s.trim())
+                    .filter(Boolean)
+                : [];
 
             const getSafeUrl = (url) => {
               if (!url || typeof url !== 'string') return '#';
@@ -50,7 +61,7 @@ export default function Projects({ projects }) {
             const safeRepoUrl = getSafeUrl(repositoryUrl);
 
             return (
-              <motion.div 
+              <motion.div
                 key={idx}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -79,10 +90,10 @@ export default function Projects({ projects }) {
                   {project.image ? (
                     <>
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent z-10 pointer-events-none" />
-                      <img 
-                        src={project.image} 
-                        alt={project.title} 
-                        className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-90 group-hover:scale-105 transition-all duration-700" 
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-90 group-hover:scale-105 transition-all duration-700"
                       />
                     </>
                   ) : (
@@ -93,7 +104,9 @@ export default function Projects({ projects }) {
                         <div className="absolute w-8 h-8 border border-cyan-500/10 rounded-full" />
                         <Radio className="w-6 h-6 text-cyan-500/20" />
                       </div>
-                      <span className="text-[10px] font-mono tracking-widest mt-28 uppercase text-slate-600">NO_IMG_SONAR_SCANNING</span>
+                      <span className="text-[10px] font-mono tracking-widest mt-28 uppercase text-slate-600">
+                        NO_IMG_SONAR_SCANNING
+                      </span>
                     </div>
                   )}
                   {/* Depth overlay tag inside image */}
@@ -108,7 +121,8 @@ export default function Projects({ projects }) {
                     {project.title}
                   </h3>
                   <p className="text-sm text-slate-300 leading-relaxed font-sans line-clamp-3">
-                    {project.description || "The expedition log has no descriptive content. Exploration data streams remain classified."}
+                    {project.description ||
+                      'The expedition log has no descriptive content. Exploration data streams remain classified.'}
                   </p>
                 </div>
 
@@ -116,8 +130,8 @@ export default function Projects({ projects }) {
                 {tech.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-6">
                     {tech.map((t, i) => (
-                      <span 
-                        key={i} 
+                      <span
+                        key={i}
                         className="text-[9px] font-mono text-cyan-400 bg-cyan-950/20 border border-cyan-950 hover:border-cyan-800/50 px-2.5 py-0.5 rounded-md uppercase"
                       >
                         {t}
@@ -128,22 +142,22 @@ export default function Projects({ projects }) {
 
                 {/* Action Buttons */}
                 <div className="flex gap-4 mt-auto w-full font-mono text-xs">
-                  {safeLiveUrl && safeLiveUrl !== "#" && (
-                    <a 
-                      href={safeLiveUrl} 
-                      target="_blank" 
-                      rel="noreferrer" 
+                  {safeLiveUrl && safeLiveUrl !== '#' && (
+                    <a
+                      href={safeLiveUrl}
+                      target="_blank"
+                      rel="noreferrer"
                       className="flex-1 py-2.5 px-4 bg-cyan-950/30 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 text-center font-bold border border-cyan-500/40 hover:border-transparent rounded-lg shadow-sm hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all flex items-center justify-center gap-1.5"
                     >
                       <span>🚀 Launch Expedition</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   )}
-                  {safeRepoUrl && safeRepoUrl !== "#" && (
-                    <a 
-                      href={safeRepoUrl} 
-                      target="_blank" 
-                      rel="noreferrer" 
+                  {safeRepoUrl && safeRepoUrl !== '#' && (
+                    <a
+                      href={safeRepoUrl}
+                      target="_blank"
+                      rel="noreferrer"
                       className="flex-1 py-2.5 px-4 bg-slate-950/80 hover:bg-slate-800 text-slate-200 text-center font-bold border border-slate-700 hover:border-slate-500 rounded-lg transition-all flex items-center justify-center gap-1.5"
                     >
                       <span>📂 Research Files</span>

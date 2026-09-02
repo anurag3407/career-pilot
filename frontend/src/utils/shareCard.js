@@ -19,7 +19,7 @@ export const captureCardToBlob = async (node, opts = {}) => {
     scale: 2,
     useCORS: true,
     logging: false,
-    ...opts
+    ...opts,
   });
   return await new Promise((resolve) => canvas.toBlob((b) => resolve(b), 'image/png'));
 };
@@ -60,7 +60,11 @@ export const shareImage = async ({ blob, text, url, fileName = 'careerpilot-scor
   // Twitter fallback
   const tweetText = encodeURIComponent(text);
   const tweetUrl = encodeURIComponent(url || 'https://careerpilot.app');
-  window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`, '_blank', 'noopener');
+  window.open(
+    `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`,
+    '_blank',
+    'noopener'
+  );
   return { method: 'twitter' };
 };
 

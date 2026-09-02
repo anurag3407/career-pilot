@@ -20,7 +20,9 @@ function MatrixRain() {
     const FS = 13;
     let drops = [];
     const initDrops = () => {
-      drops = Array(Math.floor(canvas.width / FS)).fill(0).map(() => Math.random() * -60);
+      drops = Array(Math.floor(canvas.width / FS))
+        .fill(0)
+        .map(() => Math.random() * -60);
     };
     initDrops();
     window.addEventListener('resize', initDrops);
@@ -32,7 +34,9 @@ function MatrixRain() {
       for (let i = 0; i < Math.min(drops.length, cols); i++) {
         const ch = CHARS[Math.floor(Math.random() * CHARS.length)];
         const bright = Math.random() > 0.93;
-        ctx.fillStyle = bright ? 'rgba(180,255,180,0.95)' : `rgba(0,${Math.floor(180 + Math.random() * 75)},65,${Math.random() * 0.3 + 0.04})`;
+        ctx.fillStyle = bright
+          ? 'rgba(180,255,180,0.95)'
+          : `rgba(0,${Math.floor(180 + Math.random() * 75)},65,${Math.random() * 0.3 + 0.04})`;
         ctx.font = `${FS}px 'Courier New', monospace`;
         ctx.fillText(ch, i * FS, drops[i] * FS);
         if (drops[i] * FS > canvas.height && Math.random() > 0.975) drops[i] = 0;
@@ -66,7 +70,10 @@ function useTyping(text, speed = 45, delay = 0) {
       const iv = setInterval(() => {
         i++;
         setDisplayed(text.slice(0, i));
-        if (i >= text.length) { clearInterval(iv); setDone(true); }
+        if (i >= text.length) {
+          clearInterval(iv);
+          setDone(true);
+        }
       }, speed);
       return () => clearInterval(iv);
     }, delay);
@@ -108,14 +115,20 @@ const ASCII_CHARS = {
 
 function ASCIIName({ name }) {
   const upper = name.toUpperCase();
-  const chars = upper.split('').map(c => ASCII_CHARS[c] || ASCII_CHARS[' ']);
+  const chars = upper.split('').map((c) => ASCII_CHARS[c] || ASCII_CHARS[' ']);
   const rows = 5;
   return (
     <div className="font-mono leading-none overflow-x-auto" aria-label={name}>
       {Array.from({ length: rows }).map((_, r) => (
-        <div key={r} className="flex flex-wrap justify-center gap-x-1 text-green-400 text-xs sm:text-sm md:text-base" style={{ lineHeight: '1.15' }}>
+        <div
+          key={r}
+          className="flex flex-wrap justify-center gap-x-1 text-green-400 text-xs sm:text-sm md:text-base"
+          style={{ lineHeight: '1.15' }}
+        >
           {chars.map((ch, ci) => (
-            <span key={ci} className="whitespace-pre">{ch[r]}</span>
+            <span key={ci} className="whitespace-pre">
+              {ch[r]}
+            </span>
           ))}
         </div>
       ))}
@@ -139,7 +152,9 @@ function Cursor({ color = 'text-green-400' }) {
 /* ─── Terminal Window Frame ───────────────────────────────────────── */
 function TermWindow({ title = 'bash', children, className = '' }) {
   return (
-    <div className={`border border-green-900/60 bg-black/90 rounded-sm overflow-hidden ${className}`}>
+    <div
+      className={`border border-green-900/60 bg-black/90 rounded-sm overflow-hidden ${className}`}
+    >
       {/* Title bar */}
       <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-900/80 border-b border-green-900/40">
         <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
@@ -161,7 +176,9 @@ function Prompt({ cmd, output, showOutput = true, className = '' }) {
         <span className="text-white"> {cmd}</span>
       </div>
       {showOutput && output && (
-        <div className="mt-1 pl-0 text-green-300/80 whitespace-pre-wrap leading-relaxed">{output}</div>
+        <div className="mt-1 pl-0 text-green-300/80 whitespace-pre-wrap leading-relaxed">
+          {output}
+        </div>
       )}
     </div>
   );
@@ -185,9 +202,12 @@ function BootSequence({ onDone }) {
   useEffect(() => {
     const timers = BOOT_LINES.map((line, i) =>
       setTimeout(() => {
-        setVisible(v => [...v, i]);
+        setVisible((v) => [...v, i]);
         if (i === BOOT_LINES.length - 1) {
-          setTimeout(() => { setFinished(true); setTimeout(onDone, 500); }, 600);
+          setTimeout(() => {
+            setFinished(true);
+            setTimeout(onDone, 500);
+          }, 600);
         }
       }, line.delay + 200)
     );
@@ -263,19 +283,33 @@ export default function Hero() {
         {/* Scanlines */}
         <div
           className="absolute inset-0 pointer-events-none z-[2]"
-          style={{ background: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.015) 2px,rgba(0,255,65,0.015) 4px)' }}
+          style={{
+            background:
+              'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.015) 2px,rgba(0,255,65,0.015) 4px)',
+          }}
           aria-hidden="true"
         />
         {/* Vignette */}
         <div
           className="absolute inset-0 pointer-events-none z-[3]"
-          style={{ background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.9) 100%)' }}
+          style={{
+            background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.9) 100%)',
+          }}
           aria-hidden="true"
         />
 
         {/* Corner brackets */}
-        {['top-2 left-2 border-t border-l', 'top-2 right-2 border-t border-r', 'bottom-2 left-2 border-b border-l', 'bottom-2 right-2 border-b border-r'].map((c, i) => (
-          <div key={i} className={`absolute w-5 h-5 border-green-500/40 z-10 ${c}`} aria-hidden="true" />
+        {[
+          'top-2 left-2 border-t border-l',
+          'top-2 right-2 border-t border-r',
+          'bottom-2 left-2 border-b border-l',
+          'bottom-2 right-2 border-b border-r',
+        ].map((c, i) => (
+          <div
+            key={i}
+            className={`absolute w-5 h-5 border-green-500/40 z-10 ${c}`}
+            aria-hidden="true"
+          />
         ))}
 
         {/* Top Bar */}
@@ -296,7 +330,6 @@ export default function Hero() {
 
         {/* Main Content */}
         <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-6 px-4 py-12">
-
           {/* ASCII Name */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -349,12 +382,23 @@ export default function Hero() {
 
                 {/* contact --status */}
                 {bioTyping.done && (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4 }}
+                  >
                     <Prompt cmd="contact --status" showOutput={false} />
                     <div className="font-mono text-xs mt-1 space-y-0.5">
-                      <div className="text-green-400">status: <span className="text-white">OPEN TO OPPORTUNITIES</span></div>
-                      <div className="text-green-400">email: <span className="text-cyan-400">{data.socials.email}</span></div>
-                      <div className="text-green-400">location: <span className="text-white">{data.personal.location || 'Remote'}</span></div>
+                      <div className="text-green-400">
+                        status: <span className="text-white">OPEN TO OPPORTUNITIES</span>
+                      </div>
+                      <div className="text-green-400">
+                        email: <span className="text-cyan-400">{data.socials.email}</span>
+                      </div>
+                      <div className="text-green-400">
+                        location:{' '}
+                        <span className="text-white">{data.personal.location || 'Remote'}</span>
+                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -409,11 +453,22 @@ export default function Hero() {
               className="flex flex-wrap gap-4 justify-center font-mono text-xs"
             >
               {[
-                { label: 'YEARS_EXP', value: `${data.stats.yearsExperience}+`, color: 'text-green-400' },
-                { label: 'PROJECTS', value: `${data.stats.projectsCompleted}`, color: 'text-cyan-400' },
+                {
+                  label: 'YEARS_EXP',
+                  value: `${data.stats.yearsExperience}+`,
+                  color: 'text-green-400',
+                },
+                {
+                  label: 'PROJECTS',
+                  value: `${data.stats.projectsCompleted}`,
+                  color: 'text-cyan-400',
+                },
                 { label: 'CLIENTS', value: `${data.stats.happyClients}`, color: 'text-amber-400' },
-              ].map(s => (
-                <div key={s.label} className="border border-green-900/50 bg-black/60 px-4 py-2 text-center">
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className="border border-green-900/50 bg-black/60 px-4 py-2 text-center"
+                >
                   <div className={`text-xl font-bold ${s.color}`}>{s.value}</div>
                   <div className="text-green-800 mt-0.5">{s.label}</div>
                 </div>

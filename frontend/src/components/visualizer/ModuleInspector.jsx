@@ -6,14 +6,14 @@ import { cn } from '../../lib/utils';
 import EnhancedFileViewer from './EnhancedFileViewer';
 
 const ModuleInspector = () => {
-  const { 
-    selectedModule, 
+  const {
+    selectedModule,
     selectedFile,
-    inspectorOpen, 
+    inspectorOpen,
     setInspectorOpen,
     setSelectedFile,
     setChatExpanded,
-    setChatMode
+    setChatMode,
   } = useProjectVisualizerStore();
 
   const handleAskAI = () => {
@@ -25,7 +25,7 @@ const ModuleInspector = () => {
   const renderModuleDetails = () => {
     if (!selectedModule) return null;
     const { name, type, fileCount, loc, path, dependencies, files } = selectedModule;
-    
+
     return (
       <div className="p-5 flex flex-col h-full">
         <div className="flex items-start justify-between mb-6">
@@ -35,12 +35,14 @@ const ModuleInspector = () => {
               <h3 className="text-xl font-bold text-white">{name}</h3>
             </div>
             <div className="flex items-center gap-3 text-xs">
-              <span className="px-2 py-1 rounded bg-slate-800 text-slate-300 uppercase tracking-wider">{type}</span>
+              <span className="px-2 py-1 rounded bg-slate-800 text-slate-300 uppercase tracking-wider">
+                {type}
+              </span>
               <span className="text-slate-400">{fileCount} files</span>
               <span className="text-slate-400">{loc?.toLocaleString()} LOC</span>
             </div>
           </div>
-          <button 
+          <button
             onClick={() => setInspectorOpen(false)}
             className="p-1.5 rounded-md hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
           >
@@ -60,8 +62,11 @@ const ModuleInspector = () => {
                 <ArrowRight className="w-4 h-4" /> Dependencies
               </h4>
               <div className="flex flex-wrap gap-2">
-                {dependencies.map(dep => (
-                  <span key={dep} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-sm text-slate-300">
+                {dependencies.map((dep) => (
+                  <span
+                    key={dep}
+                    className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-sm text-slate-300"
+                  >
                     {dep}
                   </span>
                 ))}
@@ -76,7 +81,7 @@ const ModuleInspector = () => {
                 <FileCode className="w-4 h-4" /> Files in Module
               </h4>
               <div className="flex flex-col gap-1.5">
-                {files.map(file => {
+                {files.map((file) => {
                   // extract relative path or filename
                   const fileName = file.split('/').pop();
                   return (
@@ -118,11 +123,7 @@ const ModuleInspector = () => {
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           className="absolute top-0 right-0 bottom-0 w-[400px] max-w-full bg-[#0f172a]/95 backdrop-blur-xl border-l border-white/10 shadow-2xl z-40 flex flex-col"
         >
-          {selectedFile ? (
-            <EnhancedFileViewer />
-          ) : (
-            renderModuleDetails()
-          )}
+          {selectedFile ? <EnhancedFileViewer /> : renderModuleDetails()}
         </motion.div>
       )}
     </AnimatePresence>

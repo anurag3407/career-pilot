@@ -46,7 +46,8 @@ export const subscribeSpeechAmplitude = (onTick, opts = {}) => {
     // When active, produce a varied envelope so the avatar mouth moves.
     // When idle, hold at 0 so the avatar mouth closes.
     const amp = active
-      ? 0.45 + 0.45 * (Math.sin(phase) * 0.5 + Math.sin(phase * 2.7) * 0.25 + Math.sin(phase * 5.1) * 0.15)
+      ? 0.45 +
+        0.45 * (Math.sin(phase) * 0.5 + Math.sin(phase * 2.7) * 0.25 + Math.sin(phase * 5.1) * 0.15)
       : 0;
     onTick(Math.max(0, Math.min(1, amp)));
     raf = requestAnimationFrame(tick);
@@ -58,8 +59,12 @@ export const subscribeSpeechAmplitude = (onTick, opts = {}) => {
 
   // Watch for start/end events on the global synth. Each new utterance will
   // briefly flip `active` to true via a separate listener installed below.
-  const handleStart = () => { active = true; };
-  const handleEnd = () => { active = false; };
+  const handleStart = () => {
+    active = true;
+  };
+  const handleEnd = () => {
+    active = false;
+  };
 
   // Install listeners lazily per call — SpeechSynthesis doesn't emit events
   // for utterances we didn't create, so we hook our own utterances.
@@ -70,9 +75,15 @@ export const subscribeSpeechAmplitude = (onTick, opts = {}) => {
   return () => {
     cancelAnimationFrame(raf);
     boundaryHandlers.forEach((fn) => {
-      try { synth.removeEventListener?.('boundary', fn); } catch {}
-      try { synth.removeEventListener?.('start', handleStart); } catch {}
-      try { synth.removeEventListener?.('end', handleEnd); } catch {}
+      try {
+        synth.removeEventListener?.('boundary', fn);
+      } catch {}
+      try {
+        synth.removeEventListener?.('start', handleStart);
+      } catch {}
+      try {
+        synth.removeEventListener?.('end', handleEnd);
+      } catch {}
     });
   };
 };
@@ -85,7 +96,10 @@ export const subscribeSpeechAmplitude = (onTick, opts = {}) => {
  *   ... later ...
  *   stop?.();
  */
-export const speakWithAmplitude = (text, { lang, voice, onAmplitude, rate = 0.95, pitch = 1 } = {}) => {
+export const speakWithAmplitude = (
+  text,
+  { lang, voice, onAmplitude, rate = 0.95, pitch = 1 } = {}
+) => {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const synth = window.speechSynthesis;
   const utter = new SpeechSynthesisUtterance(text);
@@ -100,15 +114,22 @@ export const speakWithAmplitude = (text, { lang, voice, onAmplitude, rate = 0.95
   const loop = () => {
     phase += 0.18;
     const amp = active
-      ? 0.45 + 0.45 * (Math.sin(phase) * 0.5 + Math.sin(phase * 2.7) * 0.25 + Math.sin(phase * 5.1) * 0.15)
+      ? 0.45 +
+        0.45 * (Math.sin(phase) * 0.5 + Math.sin(phase * 2.7) * 0.25 + Math.sin(phase * 5.1) * 0.15)
       : 0;
     onAmplitude?.(Math.max(0, Math.min(1, amp)));
     if (active) raf = requestAnimationFrame(loop);
   };
   raf = requestAnimationFrame(loop);
 
-  utter.onend = () => { active = false; onAmplitude?.(0); };
-  utter.onerror = () => { active = false; onAmplitude?.(0); };
+  utter.onend = () => {
+    active = false;
+    onAmplitude?.(0);
+  };
+  utter.onerror = () => {
+    active = false;
+    onAmplitude?.(0);
+  };
 
   try {
     synth.cancel();
@@ -120,6 +141,8 @@ export const speakWithAmplitude = (text, { lang, voice, onAmplitude, rate = 0.95
   return () => {
     active = false;
     cancelAnimationFrame(raf);
-    try { synth.cancel(); } catch {}
+    try {
+      synth.cancel();
+    } catch {}
   };
 };

@@ -1,7 +1,7 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { MapPin, User, Sparkles } from "lucide-react";
-import CanvasCard from "./CanvasCard";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { MapPin, User, Sparkles } from 'lucide-react';
+import CanvasCard from './CanvasCard';
 
 export default function About({ data }) {
   const { personal = {}, stats = {} } = data || {};
@@ -22,22 +22,15 @@ export default function About({ data }) {
           className="flex flex-col sm:flex-row items-center sm:items-start gap-5"
         >
           <img
-            src={
-              personal.avatar ||
-              "https://placehold.co/400x400?text=Profile"
-            }
-            alt={personal.name || "Profile"}
+            src={personal.avatar || 'https://placehold.co/400x400?text=Profile'}
+            alt={personal.name || 'Profile'}
             className="w-24 h-24 rounded-2xl object-cover border border-white/10"
           />
 
           <div className="text-center sm:text-left">
-            <h3 className="text-2xl font-bold">
-              {personal.name || "Portfolio Owner"}
-            </h3>
+            <h3 className="text-2xl font-bold">{personal.name || 'Portfolio Owner'}</h3>
 
-            <p className="text-cyan-300 mt-1">
-              {personal.title || "Professional"}
-            </p>
+            <p className="text-cyan-300 mt-1">{personal.title || 'Professional'}</p>
 
             {personal.location && (
               <div className="flex items-center justify-center sm:justify-start gap-2 mt-3 text-gray-400">
@@ -56,7 +49,7 @@ export default function About({ data }) {
           className="text-gray-300 leading-8"
         >
           {personal.bio ||
-            "Passionate professional focused on building impactful digital products and meaningful user experiences."}
+            'Passionate professional focused on building impactful digital products and meaningful user experiences.'}
         </motion.p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -66,13 +59,9 @@ export default function About({ data }) {
               <h4 className="font-semibold">Experience</h4>
             </div>
 
-            <p className="text-3xl font-bold">
-              {stats.yearsExperience ?? 0}
-            </p>
+            <p className="text-3xl font-bold">{stats.yearsExperience ?? 0}</p>
 
-            <p className="text-gray-400 text-sm mt-1">
-              Years of industry experience
-            </p>
+            <p className="text-gray-400 text-sm mt-1">Years of industry experience</p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
@@ -81,13 +70,9 @@ export default function About({ data }) {
               <h4 className="font-semibold">Projects</h4>
             </div>
 
-            <p className="text-3xl font-bold">
-              {stats.projectsCompleted ?? 0}
-            </p>
+            <p className="text-3xl font-bold">{stats.projectsCompleted ?? 0}</p>
 
-            <p className="text-gray-400 text-sm mt-1">
-              Successful projects delivered
-            </p>
+            <p className="text-gray-400 text-sm mt-1">Successful projects delivered</p>
           </div>
         </div>
       </div>

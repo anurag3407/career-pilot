@@ -25,7 +25,7 @@ export default function AbstractArtPortfolio() {
         <Hero data={data} />
         <About data={data} />
         <Projects data={data} />
-        
+
         {/* Render new sections smoothly integrated below existing ones */}
         <Experience data={data} />
         <Skills data={data} />

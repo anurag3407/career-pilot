@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function PaperTexture() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Paper Texture Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Paper/parchment texture backgrounds with subtle grain. Handwritten font accents, sketch-style dividers, and a warm, analog feel.
+            Paper/parchment texture backgrounds with subtle grain. Handwritten font accents,
+            sketch-style dividers, and a warm, analog feel.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function ShadowLayers() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Shadow Layers Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Heavy shadow play with multiple layered dark cards creating depth illusion. Shadows stack to create a 3D paper-cut effect in dark tones.
+            Heavy shadow play with multiple layered dark cards creating depth illusion. Shadows
+            stack to create a 3D paper-cut effect in dark tones.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

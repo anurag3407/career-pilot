@@ -10,14 +10,7 @@ const sizeClasses = {
   xl: 'max-w-4xl',
 };
 
-const Modal = ({
-  isOpen,
-  onClose,
-  title,
-  description,
-  children,
-  size = 'md',
-}) => {
+const Modal = ({ isOpen, onClose, title, description, children, size = 'md' }) => {
   const modalRef = useRef(null);
   const previousFocusedElement = useRef(null);
 
@@ -60,14 +53,12 @@ const Modal = ({
   useEffect(() => {
     if (!isOpen || !modalRef.current) return;
 
-    const focusableElements =
-      modalRef.current.querySelectorAll(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
+    const focusableElements = modalRef.current.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
 
     const firstElement = focusableElements[0];
-    const lastElement =
-      focusableElements[focusableElements.length - 1];
+    const lastElement = focusableElements[focusableElements.length - 1];
 
     firstElement?.focus();
 
@@ -130,18 +121,12 @@ const Modal = ({
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
               <div>
                 {title && (
-                  <h2
-                    id={titleId}
-                    className="text-xl font-semibold text-gray-900 dark:text-white"
-                  >
+                  <h2 id={titleId} className="text-xl font-semibold text-gray-900 dark:text-white">
                     {title}
                   </h2>
                 )}
                 {description && (
-                  <p
-                    id={descriptionId}
-                    className="text-sm text-gray-500 dark:text-gray-400 mt-1"
-                  >
+                  <p id={descriptionId} className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                     {description}
                   </p>
                 )}
@@ -156,9 +141,7 @@ const Modal = ({
             </div>
 
             {/* Body */}
-            <div className="px-6 py-4 overflow-y-auto max-h-[calc(100vh-160px)]">
-              {children}
-            </div>
+            <div className="px-6 py-4 overflow-y-auto max-h-[calc(100vh-160px)]">{children}</div>
           </motion.div>
         </div>
       )}

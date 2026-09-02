@@ -18,80 +18,86 @@ import {
   Activity,
   Layers,
   ChevronRight,
-  Send
+  Send,
 } from 'lucide-react';
 
 export default function Commercial_Pilot_Cockpit({ data: localData, portfolioData }) {
   // 🔒 Fallback default data matching aviation creative direction
   const localDefault = {
     personal: {
-      name: "Sarah Lindbergh",
-      title: "Senior Avionics Architect & Lead Engineer",
-      email: "sarah.lindbergh@airline.com",
-      phone: "+1 (425) 555-0190",
-      location: "Seattle, WA",
-      bio: "Avionics software engineer with 10+ years of experience designing safety-critical HUD displays, real-time flight telemetry systems, and glass cockpit simulation dashboards. Specializing in high-performance web systems and embedded avionics controllers.",
-      avatar: "",
-      website: "https://sarahlindbergh.dev",
-      tagline: "Engineering high-integrity flight software and modern flight decks for the next generation of aerospace."
+      name: 'Sarah Lindbergh',
+      title: 'Senior Avionics Architect & Lead Engineer',
+      email: 'sarah.lindbergh@airline.com',
+      phone: '+1 (425) 555-0190',
+      location: 'Seattle, WA',
+      bio: 'Avionics software engineer with 10+ years of experience designing safety-critical HUD displays, real-time flight telemetry systems, and glass cockpit simulation dashboards. Specializing in high-performance web systems and embedded avionics controllers.',
+      avatar: '',
+      website: 'https://sarahlindbergh.dev',
+      tagline:
+        'Engineering high-integrity flight software and modern flight decks for the next generation of aerospace.',
     },
     skills: [
-      { name: "C++ / Rust", level: 98 },
-      { name: "React / Next.js", level: 95 },
-      { name: "WebGL / Three.js", level: 92 },
-      { name: "Real-time Telemetry", level: 96 },
-      { name: "Embedded systems", level: 90 },
-      { name: "Tailwind CSS", level: 95 }
+      { name: 'C++ / Rust', level: 98 },
+      { name: 'React / Next.js', level: 95 },
+      { name: 'WebGL / Three.js', level: 92 },
+      { name: 'Real-time Telemetry', level: 96 },
+      { name: 'Embedded systems', level: 90 },
+      { name: 'Tailwind CSS', level: 95 },
     ],
     experience: [
       {
-        role: "Lead Avionics Engineer",
-        company: "Boeing Commercial Airplanes",
-        period: "2022 - Present",
-        description: "Leading development of next-generation primary flight displays and autopilot mode control panel web dashboards. Spearheaded a WebGL telemetry viewer reducing simulation lag by 45%."
+        role: 'Lead Avionics Engineer',
+        company: 'Boeing Commercial Airplanes',
+        period: '2022 - Present',
+        description:
+          'Leading development of next-generation primary flight displays and autopilot mode control panel web dashboards. Spearheaded a WebGL telemetry viewer reducing simulation lag by 45%.',
       },
       {
-        role: "Flight Controls Systems Developer",
-        company: "Airbus Group",
-        period: "2019 - 2022",
-        description: "Implemented safety-critical embedded flight system diagnostics. Developed visual test simulation tools for flight deck instrument clusters."
-      }
+        role: 'Flight Controls Systems Developer',
+        company: 'Airbus Group',
+        period: '2019 - 2022',
+        description:
+          'Implemented safety-critical embedded flight system diagnostics. Developed visual test simulation tools for flight deck instrument clusters.',
+      },
     ],
     projects: [
       {
-        title: "Flight deck HUD HUD telemetry viewer",
-        description: "A real-time WebGL rendering tool displaying artificial horizon pitch and roll ladders, altitude/airspeed indicators, and flight path telemetry.",
-        techStack: ["React", "WebGL", "Rust"],
-        liveUrl: "#",
-        githubUrl: "#"
+        title: 'Flight deck HUD HUD telemetry viewer',
+        description:
+          'A real-time WebGL rendering tool displaying artificial horizon pitch and roll ladders, altitude/airspeed indicators, and flight path telemetry.',
+        techStack: ['React', 'WebGL', 'Rust'],
+        liveUrl: '#',
+        githubUrl: '#',
       },
       {
-        title: "Autopilot MCP Dashboard Interface",
-        description: "A simulation dashboard replicas of Mode Control Panels used for pilot flight guidance test beds.",
-        techStack: ["Next.js", "Zustand", "Tailwind CSS"],
-        liveUrl: "#",
-        githubUrl: "#"
+        title: 'Autopilot MCP Dashboard Interface',
+        description:
+          'A simulation dashboard replicas of Mode Control Panels used for pilot flight guidance test beds.',
+        techStack: ['Next.js', 'Zustand', 'Tailwind CSS'],
+        liveUrl: '#',
+        githubUrl: '#',
       },
       {
-        title: "AR Aeronautical Charts System",
-        description: "Augmented reality overlay dashboard rendering visual flight rules (VFR) charts and landing waypoint indicators.",
-        techStack: ["Three.js", "WebXR", "TypeScript"],
-        liveUrl: "#",
-        githubUrl: "#"
-      }
+        title: 'AR Aeronautical Charts System',
+        description:
+          'Augmented reality overlay dashboard rendering visual flight rules (VFR) charts and landing waypoint indicators.',
+        techStack: ['Three.js', 'WebXR', 'TypeScript'],
+        liveUrl: '#',
+        githubUrl: '#',
+      },
     ],
     testimonials: [
       {
-        name: "Capt. Marcus Vance",
-        role: "Chief Technical Pilot at Horizon Jetways",
-        text: "Sarah's interface designs feel natural and clean, mirroring the high levels of ergonomic safety required in real flight decks."
-      }
+        name: 'Capt. Marcus Vance',
+        role: 'Chief Technical Pilot at Horizon Jetways',
+        text: "Sarah's interface designs feel natural and clean, mirroring the high levels of ergonomic safety required in real flight decks.",
+      },
     ],
     socials: {
-      github: "https://github.com",
-      linkedin: "https://linkedin.com",
-      twitter: "https://twitter.com"
-    }
+      github: 'https://github.com',
+      linkedin: 'https://linkedin.com',
+      twitter: 'https://twitter.com',
+    },
   };
 
   // Resolve data source
@@ -99,10 +105,19 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
   const incoming = portfolioData || localData || context?.portfolioData || {};
 
   // Safe merging helper
-  const personal = { ...localDefault.personal, ...incoming.personal, ...(incoming.personalInfo || {}) };
-  const experience = incoming.experience && incoming.experience.length > 0 ? incoming.experience : localDefault.experience;
-  const projects = incoming.projects && incoming.projects.length > 0 ? incoming.projects : localDefault.projects;
-  const skills = incoming.skills && incoming.skills.length > 0 ? incoming.skills : localDefault.skills;
+  const personal = {
+    ...localDefault.personal,
+    ...incoming.personal,
+    ...(incoming.personalInfo || {}),
+  };
+  const experience =
+    incoming.experience && incoming.experience.length > 0
+      ? incoming.experience
+      : localDefault.experience;
+  const projects =
+    incoming.projects && incoming.projects.length > 0 ? incoming.projects : localDefault.projects;
+  const skills =
+    incoming.skills && incoming.skills.length > 0 ? incoming.skills : localDefault.skills;
   const socials = { ...localDefault.socials, ...incoming.socials };
 
   // Timeline State: 'approach' -> 'window-lock' -> 'cabin-entry' -> 'cabin-walk' -> 'door-approach' -> 'cockpit-reveal' -> 'portfolio'
@@ -153,17 +168,17 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
   useEffect(() => {
     if (stage === 'cockpit-reveal') {
       const logs = [
-        "INITIALIZING FLIGHT INSTRUMENT BOOT...",
-        "CHECKING SENSORS (ADIRS) ... OK",
-        "CONNECTING FLIGHT CONTROL COMPUTERS ... OK",
-        "SYNCING WAYPOINTS & CO-ORDINATES ... OK",
-        "CALIBRATING PRIMARY HORIZON DIAL ... OK",
-        "ALL SYSTEMS GO. CAPTAIN SEAT ASSIGNED."
+        'INITIALIZING FLIGHT INSTRUMENT BOOT...',
+        'CHECKING SENSORS (ADIRS) ... OK',
+        'CONNECTING FLIGHT CONTROL COMPUTERS ... OK',
+        'SYNCING WAYPOINTS & CO-ORDINATES ... OK',
+        'CALIBRATING PRIMARY HORIZON DIAL ... OK',
+        'ALL SYSTEMS GO. CAPTAIN SEAT ASSIGNED.',
       ];
 
       logs.forEach((log, index) => {
         setTimeout(() => {
-          setSystemLogs(prev => [...prev, log]);
+          setSystemLogs((prev) => [...prev, log]);
           setCalibrationProgress(((index + 1) / logs.length) * 100);
         }, index * 300);
       });
@@ -190,23 +205,54 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
   const airplaneSvg = (
     <svg viewBox="0 0 600 200" className="w-full h-full drop-shadow-[0_15px_20px_rgba(0,0,0,0.3)]">
       {/* Fuselage main body */}
-      <path d="M 120 110 Q 250 85 450 110 Q 520 115 540 120 Q 560 125 540 130 C 500 135 250 135 120 110 Z" fill="#ffffff" />
+      <path
+        d="M 120 110 Q 250 85 450 110 Q 520 115 540 120 Q 560 125 540 130 C 500 135 250 135 120 110 Z"
+        fill="#ffffff"
+      />
       {/* Nose Cone */}
       <path d="M 540 120 Q 555 122 550 125 Q 540 130 538 126 Z" fill="#1e293b" />
       {/* Aviation Blue Stripe */}
-      <path d="M 130 112 Q 250 95 440 115 Q 500 120 540 123 L 538 126 Q 500 124 440 120 Q 250 102 130 114 Z" fill="#003366" />
+      <path
+        d="M 130 112 Q 250 95 440 115 Q 500 120 540 123 L 538 126 Q 500 124 440 120 Q 250 102 130 114 Z"
+        fill="#003366"
+      />
       {/* Airline Red Stripe */}
-      <path d="M 140 115 Q 250 100 430 118 Q 480 122 520 125 L 519 127 Q 480 125 430 121 Q 250 106 140 117 Z" fill="#cc0000" />
+      <path
+        d="M 140 115 Q 250 100 430 118 Q 480 122 520 125 L 519 127 Q 480 125 430 121 Q 250 106 140 117 Z"
+        fill="#cc0000"
+      />
       {/* Cabin Windows */}
       {Array.from({ length: 14 }).map((_, i) => (
-        <rect key={i} x={180 + i * 20} y={111 - (i * 0.2)} width="6" height="4" rx="2" fill="#1e293b" opacity="0.85" />
+        <rect
+          key={i}
+          x={180 + i * 20}
+          y={111 - i * 0.2}
+          width="6"
+          height="4"
+          rx="2"
+          fill="#1e293b"
+          opacity="0.85"
+        />
       ))}
       {/* Zoom Highlight focal passenger window */}
-      <rect x={320} y={109.5} width="6" height="4" rx="2" fill="#38bdf8" className="animate-pulse" />
+      <rect
+        x={320}
+        y={109.5}
+        width="6"
+        height="4"
+        rx="2"
+        fill="#38bdf8"
+        className="animate-pulse"
+      />
       {/* Front Cockpit Glass */}
       <path d="M 522 115 Q 532 116 536 122 L 528 122 Z" fill="#155e75" />
       {/* Main Wing (Side view overlay) */}
-      <path d="M 280 120 L 220 180 L 260 185 L 340 124 Z" fill="#cbd5e1" stroke="#94a3b8" strokeWidth="1" />
+      <path
+        d="M 280 120 L 220 180 L 260 185 L 340 124 Z"
+        fill="#cbd5e1"
+        stroke="#94a3b8"
+        strokeWidth="1"
+      />
       {/* Wing Engine */}
       <path d="M 270 145 C 270 140 310 140 310 145 C 310 152 270 152 270 145 Z" fill="#64748b" />
       <circle cx="272" cy="145" r="4" fill="#cc0000" />
@@ -251,9 +297,27 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
           {/* Outer shadow/bezel border */}
           <rect x="-2" y="-2" width="44" height="74" rx="22" fill="#080a0f" />
           {/* Main plastic bezel */}
-          <rect x="0" y="0" width="40" height="70" rx="20" fill="#2d3345" stroke="#48526d" strokeWidth="1.2" />
+          <rect
+            x="0"
+            y="0"
+            width="40"
+            height="70"
+            rx="20"
+            fill="#2d3345"
+            stroke="#48526d"
+            strokeWidth="1.2"
+          />
           {/* Dark inner cavity */}
-          <rect x="4" y="4" width="32" height="62" rx="16" fill="#11141c" stroke="#1c2130" strokeWidth="1" />
+          <rect
+            x="4"
+            y="4"
+            width="32"
+            height="62"
+            rx="16"
+            fill="#11141c"
+            stroke="#1c2130"
+            strokeWidth="1"
+          />
 
           <mask id={`win-mask-${i}-${side}`}>
             <rect x="6" y="6" width="28" height="58" rx="14" fill="#ffffff" />
@@ -264,27 +328,75 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
             <rect x="6" y="6" width="28" height="58" fill={`url(#sky-grad-${i}-${side})`} />
 
             {/* Animated clouds drifting */}
-            <g className={i % 2 === 0 ? "animate-cloud-slow" : "animate-cloud-fast"}>
-              <path d="M -20 30 Q -5 20 10 30 Q 25 20 40 30 Q 45 40 30 50 Q 10 50 -10 50 Z" fill="#fef08a" opacity="0.3" />
-              <path d="M 20 20 Q 35 10 50 20 Q 65 10 80 20 Q 85 30 70 40 Q 50 40 30 40 Z" fill="#ffffff" opacity="0.2" />
+            <g className={i % 2 === 0 ? 'animate-cloud-slow' : 'animate-cloud-fast'}>
+              <path
+                d="M -20 30 Q -5 20 10 30 Q 25 20 40 30 Q 45 40 30 50 Q 10 50 -10 50 Z"
+                fill="#fef08a"
+                opacity="0.3"
+              />
+              <path
+                d="M 20 20 Q 35 10 50 20 Q 65 10 80 20 Q 85 30 70 40 Q 50 40 30 40 Z"
+                fill="#ffffff"
+                opacity="0.2"
+              />
             </g>
           </g>
 
           {/* Glass Glare reflection overlay */}
-          <path d="M 8 18 Q 20 8 32 18" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" opacity="0.18" fill="none" mask={`url(#win-mask-${i}-${side})`} />
+          <path
+            d="M 8 18 Q 20 8 32 18"
+            stroke="#ffffff"
+            strokeWidth="1"
+            strokeLinecap="round"
+            opacity="0.18"
+            fill="none"
+            mask={`url(#win-mask-${i}-${side})`}
+          />
 
           {/* Window shade */}
           {i === 4 ? (
-            <rect x="6" y="6" width="28" height="28" rx="2" fill="#242936" opacity="0.95" stroke="#131720" strokeWidth="0.8" mask={`url(#win-mask-${i}-${side})`} />
+            <rect
+              x="6"
+              y="6"
+              width="28"
+              height="28"
+              rx="2"
+              fill="#242936"
+              opacity="0.95"
+              stroke="#131720"
+              strokeWidth="0.8"
+              mask={`url(#win-mask-${i}-${side})`}
+            />
           ) : i === 6 ? (
-            <rect x="6" y="6" width="28" height="56" rx="2" fill="#242936" opacity="0.95" stroke="#131720" strokeWidth="0.8" mask={`url(#win-mask-${i}-${side})`} />
+            <rect
+              x="6"
+              y="6"
+              width="28"
+              height="56"
+              rx="2"
+              fill="#242936"
+              opacity="0.95"
+              stroke="#131720"
+              strokeWidth="0.8"
+              mask={`url(#win-mask-${i}-${side})`}
+            />
           ) : null}
         </g>
 
         {/* Seat Row label backlights */}
         <rect x={isLeft ? 15 : 161} y="15" width="24" height="10" rx="2" fill="#090b10" />
-        <text x={isLeft ? 27 : 173} y="22" fill="#38bdf8" fontSize="6" fontFamily="monospace" textAnchor="middle" fontWeight="bold" opacity="0.7">
-          {12 - i}{isLeft ? 'A' : 'F'}
+        <text
+          x={isLeft ? 27 : 173}
+          y="22"
+          fill="#38bdf8"
+          fontSize="6"
+          fontFamily="monospace"
+          textAnchor="middle"
+          fontWeight="bold"
+          opacity="0.7"
+        >
+          {12 - i}
+          {isLeft ? 'A' : 'F'}
         </text>
       </svg>
     );
@@ -304,7 +416,12 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
           </filter>
 
           <pattern id="quilt-pattern" width="10" height="10" patternUnits="userSpaceOnUse">
-            <path d="M 0 10 L 10 0 M 0 0 L 10 10" stroke="#0a0f1d" strokeWidth="0.5" opacity="0.4" />
+            <path
+              d="M 0 10 L 10 0 M 0 0 L 10 10"
+              stroke="#0a0f1d"
+              strokeWidth="0.5"
+              opacity="0.4"
+            />
           </pattern>
 
           <radialGradient id="tablet-light-reflection" cx="35%" cy="65%" r="60%">
@@ -322,7 +439,16 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
 
         {/* SEAT C (Aisle) */}
         <g transform="translate(6, 100)">
-          <rect x="0" y="0" width="46" height="120" rx="8" fill="#0c1017" stroke="#1d2636" strokeWidth="1.5" />
+          <rect
+            x="0"
+            y="0"
+            width="46"
+            height="120"
+            rx="8"
+            fill="#0c1017"
+            stroke="#1d2636"
+            strokeWidth="1.5"
+          />
           <rect x="3" y="10" width="40" height="105" rx="5" fill="#1b2234" />
           <rect x="3" y="10" width="40" height="105" rx="5" fill="url(#quilt-pattern)" />
 
@@ -331,15 +457,38 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
           <rect x="9" y="-15" width="28" height="14" rx="2" fill="#f1f5f9" />
           <path d="M 18 -8 L 28 -8" stroke="#cbd5e1" strokeWidth="1" />
 
-          <rect x="4" y="70" width="38" height="40" rx="3" fill="#101520" stroke="#222c42" strokeWidth="1" />
+          <rect
+            x="4"
+            y="70"
+            width="38"
+            height="40"
+            rx="3"
+            fill="#101520"
+            stroke="#222c42"
+            strokeWidth="1"
+          />
           <path d="M 7 64 L 18 64 L 18 72 L 7 72 Z" fill="#ef4444" opacity="0.9" />
           <path d="M 20 62 L 38 62 L 38 72 L 20 72 Z" fill="#38bdf8" opacity="0.8" />
-          <path d="M 4 80 L 42 80 M 4 90 L 42 90 M 13 70 L 13 110 M 26 70 L 26 110" stroke="#151d2b" strokeWidth="0.5" opacity="0.4" />
+          <path
+            d="M 4 80 L 42 80 M 4 90 L 42 90 M 13 70 L 13 110 M 26 70 L 26 110"
+            stroke="#151d2b"
+            strokeWidth="0.5"
+            opacity="0.4"
+          />
         </g>
 
         {/* SEAT B (Middle) */}
         <g transform="translate(64, 100)">
-          <rect x="0" y="0" width="46" height="120" rx="8" fill="#0c1017" stroke="#1d2636" strokeWidth="1.5" />
+          <rect
+            x="0"
+            y="0"
+            width="46"
+            height="120"
+            rx="8"
+            fill="#0c1017"
+            stroke="#1d2636"
+            strokeWidth="1.5"
+          />
           <rect x="3" y="10" width="40" height="105" rx="5" fill="#1b2234" />
           <rect x="3" y="10" width="40" height="105" rx="5" fill="url(#quilt-pattern)" />
 
@@ -348,15 +497,38 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
           <rect x="9" y="-15" width="28" height="14" rx="2" fill="#f1f5f9" />
           <path d="M 18 -8 L 28 -8" stroke="#cbd5e1" strokeWidth="1" />
 
-          <rect x="4" y="70" width="38" height="40" rx="3" fill="#101520" stroke="#222c42" strokeWidth="1" />
+          <rect
+            x="4"
+            y="70"
+            width="38"
+            height="40"
+            rx="3"
+            fill="#101520"
+            stroke="#222c42"
+            strokeWidth="1"
+          />
           <path d="M 7 64 L 18 64 L 18 72 L 7 72 Z" fill="#ef4444" opacity="0.9" />
           <path d="M 20 62 L 38 62 L 38 72 L 20 72 Z" fill="#38bdf8" opacity="0.8" />
-          <path d="M 4 80 L 42 80 M 4 90 L 42 90 M 13 70 L 13 110 M 26 70 L 26 110" stroke="#151d2b" strokeWidth="0.5" opacity="0.4" />
+          <path
+            d="M 4 80 L 42 80 M 4 90 L 42 90 M 13 70 L 13 110 M 26 70 L 26 110"
+            stroke="#151d2b"
+            strokeWidth="0.5"
+            opacity="0.4"
+          />
         </g>
 
         {/* SEAT A (Window) */}
         <g transform="translate(122, 100)">
-          <rect x="0" y="0" width="46" height="120" rx="8" fill="#0c1017" stroke="#1d2636" strokeWidth="1.5" />
+          <rect
+            x="0"
+            y="0"
+            width="46"
+            height="120"
+            rx="8"
+            fill="#0c1017"
+            stroke="#1d2636"
+            strokeWidth="1.5"
+          />
           <rect x="3" y="10" width="40" height="105" rx="5" fill="#1b2234" />
           <rect x="3" y="10" width="40" height="105" rx="5" fill="url(#quilt-pattern)" />
 
@@ -365,10 +537,24 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
           <rect x="9" y="-15" width="28" height="14" rx="2" fill="#f1f5f9" />
           <path d="M 18 -8 L 28 -8" stroke="#cbd5e1" strokeWidth="1" />
 
-          <rect x="4" y="70" width="38" height="40" rx="3" fill="#101520" stroke="#222c42" strokeWidth="1" />
+          <rect
+            x="4"
+            y="70"
+            width="38"
+            height="40"
+            rx="3"
+            fill="#101520"
+            stroke="#222c42"
+            strokeWidth="1"
+          />
           <path d="M 7 64 L 18 64 L 18 72 L 7 72 Z" fill="#ef4444" opacity="0.9" />
           <path d="M 20 62 L 38 62 L 38 72 L 20 72 Z" fill="#38bdf8" opacity="0.8" />
-          <path d="M 4 80 L 42 80 M 4 90 L 42 90 M 13 70 L 13 110 M 26 70 L 26 110" stroke="#151d2b" strokeWidth="0.5" opacity="0.4" />
+          <path
+            d="M 4 80 L 42 80 M 4 90 L 42 90 M 13 70 L 13 110 M 26 70 L 26 110"
+            stroke="#151d2b"
+            strokeWidth="0.5"
+            opacity="0.4"
+          />
         </g>
 
         {/* Passenger in Seat A (Row 10 Window Seat, i === 2) */}
@@ -379,8 +565,20 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
             <circle cx="2" cy="12" r="11" fill="#ffdbac" />
             <path d="M -8 12 Q -12 -5 2 -4 Q 8 2 2 12 Z" fill="#3d2a20" />
             <path d="M -8 8 C -14 10 -15 18 -10 20 C -7 18 -6 12 -8 8" fill="#3d2a20" />
-            <path d="M -5 55 Q 15 50 18 58" stroke="#ffdbac" strokeWidth="4.5" strokeLinecap="round" fill="none" />
-            <path d="M 12 58 Q 20 60 25 56" stroke="#ffdbac" strokeWidth="4" strokeLinecap="round" fill="none" />
+            <path
+              d="M -5 55 Q 15 50 18 58"
+              stroke="#ffdbac"
+              strokeWidth="4.5"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <path
+              d="M 12 58 Q 20 60 25 56"
+              stroke="#ffdbac"
+              strokeWidth="4"
+              strokeLinecap="round"
+              fill="none"
+            />
 
             {/* Glowing Tablet */}
             <rect
@@ -394,18 +592,68 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
               className="animate-tablet-glow"
               style={{ filter: 'url(#tablet-glow-filter)' }}
             />
-            <path d="M 15 46 L 25 49 M 14 50 L 28 54 M 16 53 L 24 55" stroke="#ffffff" strokeWidth="0.8" opacity="0.7" transform="rotate(15 20 48)" />
+            <path
+              d="M 15 46 L 25 49 M 14 50 L 28 54 M 16 53 L 24 55"
+              stroke="#ffffff"
+              strokeWidth="0.8"
+              opacity="0.7"
+              transform="rotate(15 20 48)"
+            />
 
-            <path d="M 12 42 L -8 18 L 8 8 L 22 42 Z" fill="url(#tablet-light-reflection)" style={{ mixBlendMode: 'screen' }} />
-            <path d="M 12 42 L -12 45 L -8 65 L 18 55 Z" fill="url(#tablet-light-reflection)" style={{ mixBlendMode: 'screen' }} />
+            <path
+              d="M 12 42 L -8 18 L 8 8 L 22 42 Z"
+              fill="url(#tablet-light-reflection)"
+              style={{ mixBlendMode: 'screen' }}
+            />
+            <path
+              d="M 12 42 L -12 45 L -8 65 L 18 55 Z"
+              fill="url(#tablet-light-reflection)"
+              style={{ mixBlendMode: 'screen' }}
+            />
           </g>
         )}
 
         {/* Armrests */}
-        <rect x="0" y="160" width="6" height="40" rx="3" fill="#334155" stroke="#1d2636" strokeWidth="1" />
-        <rect x="52" y="160" width="12" height="40" rx="3" fill="#334155" stroke="#1d2636" strokeWidth="1" />
-        <rect x="110" y="160" width="12" height="40" rx="3" fill="#334155" stroke="#1d2636" strokeWidth="1" />
-        <rect x="168" y="160" width="6" height="40" rx="3" fill="#334155" stroke="#1d2636" strokeWidth="1" />
+        <rect
+          x="0"
+          y="160"
+          width="6"
+          height="40"
+          rx="3"
+          fill="#334155"
+          stroke="#1d2636"
+          strokeWidth="1"
+        />
+        <rect
+          x="52"
+          y="160"
+          width="12"
+          height="40"
+          rx="3"
+          fill="#334155"
+          stroke="#1d2636"
+          strokeWidth="1"
+        />
+        <rect
+          x="110"
+          y="160"
+          width="12"
+          height="40"
+          rx="3"
+          fill="#334155"
+          stroke="#1d2636"
+          strokeWidth="1"
+        />
+        <rect
+          x="168"
+          y="160"
+          width="6"
+          height="40"
+          rx="3"
+          fill="#334155"
+          stroke="#1d2636"
+          strokeWidth="1"
+        />
 
         <circle cx="3" cy="168" r="1" fill="#38bdf8" />
         <circle cx="58" cy="168" r="1" fill="#38bdf8" />
@@ -417,7 +665,6 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
 
   return (
     <div className="relative w-full h-screen bg-[#090b0d] text-white font-sans overflow-hidden select-none">
-
       {/* 🛠️ SVG Gradients definitions */}
       <svg className="absolute w-0 h-0" width="0" height="0">
         <defs>
@@ -438,12 +685,11 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
             linear-gradient(rgba(0, 210, 255, 0.2) 1px, transparent 1px),
             linear-gradient(90deg, rgba(0, 210, 255, 0.2) 1px, transparent 1px)
           `,
-          backgroundSize: '30px 30px'
+          backgroundSize: '30px 30px',
         }}
       />
 
       <AnimatePresence mode="wait">
-
         {/* ========================================================================= */}
         {/* STAGE 1 & 2: AIRCRAFT APPROACH & WINDOW LOCK */}
         {/* ========================================================================= */}
@@ -476,19 +722,23 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
             <motion.div
               className="relative w-[500px] md:w-[700px] aspect-[3/1]"
               initial={{ x: '-100vw', y: '-30vh', scale: 0.5, rotate: -4 }}
-              animate={stage === 'approach' ? {
-                x: '10vw',
-                y: '5vh',
-                scale: 1,
-                rotate: 0,
-                transition: { duration: 2.2, ease: 'easeOut' }
-              } : {
-                // Focus/zoom target window lock
-                x: '-45%',
-                y: '-2%',
-                scale: 8.5,
-                transition: { duration: 2.0, ease: 'easeInOut' }
-              }}
+              animate={
+                stage === 'approach'
+                  ? {
+                      x: '10vw',
+                      y: '5vh',
+                      scale: 1,
+                      rotate: 0,
+                      transition: { duration: 2.2, ease: 'easeOut' },
+                    }
+                  : {
+                      // Focus/zoom target window lock
+                      x: '-45%',
+                      y: '-2%',
+                      scale: 8.5,
+                      transition: { duration: 2.0, ease: 'easeInOut' },
+                    }
+              }
             >
               {airplaneSvg}
 
@@ -543,7 +793,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
             transition={{ duration: 0.8 }}
             style={{
               perspective: '1500px',
-              perspectiveOrigin: '50% 40%'
+              perspectiveOrigin: '50% 40%',
             }}
           >
             {/* Inline CSS styling for animations */}
@@ -574,40 +824,44 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
               style={{ transformStyle: 'preserve-3d' }}
               initial={{ translateZ: '-300px', rotateY: 90, x: -160, y: 0, scale: 1.35 }}
               animate={
-                stage === 'cabin-entry' ? {
-                  translateZ: '-300px',
-                  rotateY: 90,
-                  x: -160,
-                  y: 0,
-                  scale: 1.35,
-                  transition: { duration: 2.0, ease: 'easeOut' }
-                } : stage === 'cabin-walk' ? {
-                  translateZ: '500px',
-                  rotateY: 0,
-                  x: 0,
-                  scale: 1.45,
-                  y: [0, -6, 0, -6, 0], // Walking bobbing effect
-                  transition: {
-                    translateZ: { duration: 3.0, ease: 'easeInOut' },
-                    rotateY: { duration: 1.8, ease: 'easeInOut' },
-                    x: { duration: 1.8, ease: 'easeInOut' },
-                    scale: { duration: 2.2, ease: 'easeInOut' },
-                    y: { duration: 3.0, ease: 'linear', repeat: 0 }
-                  }
-                } : {
-                  // door-approach: smooth cinematic dolly straight towards cockpit door
-                  translateZ: '1320px',
-                  rotateY: 0,
-                  x: 0,
-                  y: [0, -2, 0, -2, 0], // Smooth dolly vertical bob
-                  scale: 1.45,
-                  transition: {
-                    translateZ: { duration: 3.8, ease: 'easeInOut' },
-                    x: { duration: 3.8, ease: 'easeInOut' },
-                    y: { duration: 3.8, ease: 'linear' },
-                    scale: { duration: 3.8, ease: 'easeInOut' }
-                  }
-                }
+                stage === 'cabin-entry'
+                  ? {
+                      translateZ: '-300px',
+                      rotateY: 90,
+                      x: -160,
+                      y: 0,
+                      scale: 1.35,
+                      transition: { duration: 2.0, ease: 'easeOut' },
+                    }
+                  : stage === 'cabin-walk'
+                    ? {
+                        translateZ: '500px',
+                        rotateY: 0,
+                        x: 0,
+                        scale: 1.45,
+                        y: [0, -6, 0, -6, 0], // Walking bobbing effect
+                        transition: {
+                          translateZ: { duration: 3.0, ease: 'easeInOut' },
+                          rotateY: { duration: 1.8, ease: 'easeInOut' },
+                          x: { duration: 1.8, ease: 'easeInOut' },
+                          scale: { duration: 2.2, ease: 'easeInOut' },
+                          y: { duration: 3.0, ease: 'linear', repeat: 0 },
+                        },
+                      }
+                    : {
+                        // door-approach: smooth cinematic dolly straight towards cockpit door
+                        translateZ: '1320px',
+                        rotateY: 0,
+                        x: 0,
+                        y: [0, -2, 0, -2, 0], // Smooth dolly vertical bob
+                        scale: 1.45,
+                        transition: {
+                          translateZ: { duration: 3.8, ease: 'easeInOut' },
+                          x: { duration: 3.8, ease: 'easeInOut' },
+                          y: { duration: 3.8, ease: 'linear' },
+                          scale: { duration: 3.8, ease: 'easeInOut' },
+                        },
+                      }
               }
             >
               {/* Ceiling Panel Vaulted Structure */}
@@ -616,7 +870,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                 style={{
                   left: '50%',
                   transform: 'translateX(-50%) rotateX(90deg) translateZ(160px)',
-                  transformStyle: 'preserve-3d'
+                  transformStyle: 'preserve-3d',
                 }}
               >
                 {/* Recessed LED running light strips */}
@@ -637,7 +891,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                     left: '50%',
                     marginLeft: '-100px',
                     transform: `translateX(-250px) translateZ(${-i * 200}px) rotateY(90deg)`,
-                    transformStyle: 'preserve-3d'
+                    transformStyle: 'preserve-3d',
                   }}
                 >
                   {renderWallPanel(i, 'left')}
@@ -652,7 +906,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   style={{
                     left: '50%',
                     transform: `translateX(-100%) translateX(-60px) translateZ(${-i * 200}px) scaleX(-1)`,
-                    transformStyle: 'preserve-3d'
+                    transformStyle: 'preserve-3d',
                   }}
                 >
                   {renderSeatPanel(i, 'left')}
@@ -668,7 +922,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                     left: '50%',
                     marginLeft: '-100px',
                     transform: `translateX(250px) translateZ(${-i * 200}px) rotateY(-90deg)`,
-                    transformStyle: 'preserve-3d'
+                    transformStyle: 'preserve-3d',
                   }}
                 >
                   {renderWallPanel(i, 'right')}
@@ -683,7 +937,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   style={{
                     left: '50%',
                     transform: `translateX(60px) translateZ(${-i * 200}px)`,
-                    transformStyle: 'preserve-3d'
+                    transformStyle: 'preserve-3d',
                   }}
                 >
                   {renderSeatPanel(i, 'right')}
@@ -700,7 +954,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                     top: '5%',
                     transform: `translateX(-100%) translateX(-250px) translateZ(${-i * 200}px) rotateY(-18deg)`,
                     transformStyle: 'preserve-3d',
-                    boxShadow: '0 8px 16px rgba(0,0,0,0.5)'
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.5)',
                   }}
                 >
                   <div className="absolute bottom-2 left-6 right-6 h-8 border border-[#242933]/40 rounded flex items-center justify-center bg-black/30">
@@ -727,7 +981,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                     top: '5%',
                     transform: `translateX(250px) translateZ(${-i * 200}px) rotateY(18deg)`,
                     transformStyle: 'preserve-3d',
-                    boxShadow: '0 8px 16px rgba(0,0,0,0.5)'
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.5)',
                   }}
                 >
                   <div className="absolute bottom-2 left-6 right-6 h-8 border border-[#242933]/40 rounded flex items-center justify-center bg-black/30">
@@ -750,7 +1004,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                 style={{
                   left: '50%',
                   transform: 'translateX(-50%) rotateX(90deg) translateZ(-160px)',
-                  transformStyle: 'preserve-3d'
+                  transformStyle: 'preserve-3d',
                 }}
               >
                 <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#fff_1px,transparent_1px)] bg-[size:10px_10px]" />
@@ -776,21 +1030,23 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   className="absolute w-44 h-72 flex flex-col items-center justify-end"
                   style={{
                     transform: 'translateX(50px) translateZ(-1150px) translateY(40px)',
-                    transformStyle: 'preserve-3d'
+                    transformStyle: 'preserve-3d',
                   }}
                   animate={{
                     opacity: stage === 'door-approach' ? [1, 1, 0] : 1,
-                    scale: stage === 'door-approach' ? [1, 1.2, 1.4] : 1
+                    scale: stage === 'door-approach' ? [1, 1.2, 1.4] : 1,
                   }}
                   transition={{
                     duration: 3.8,
-                    times: [0, 0.6, 0.8]
+                    times: [0, 0.6, 0.8],
                   }}
                   initial={{ opacity: 0, scale: 0.8 }}
                 >
-
                   {/* Flight Attendant Vector SVG */}
-                  <svg viewBox="0 0 100 200" className="w-32 h-60 drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]">
+                  <svg
+                    viewBox="0 0 100 200"
+                    className="w-32 h-60 drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]"
+                  >
                     <defs>
                       <linearGradient id="uniform-grad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#1e293b" />
@@ -804,7 +1060,10 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                     </defs>
 
                     <circle cx="50" cy="32" r="11" fill="url(#skin-grad)" />
-                    <path d="M 38 30 C 36 20 44 14 54 15 C 62 16 64 24 62 30 C 66 22 66 18 58 17 C 50 16 42 20 40 30" fill="#2d1e18" />
+                    <path
+                      d="M 38 30 C 36 20 44 14 54 15 C 62 16 64 24 62 30 C 66 22 66 18 58 17 C 50 16 42 20 40 30"
+                      fill="#2d1e18"
+                    />
                     <circle cx="58" cy="22" r="4" fill="#2d1e18" />
 
                     <path d="M 59 32 Q 62 33 60 35 Q 58 36 58 38 Z" fill="#e0a980" opacity="0.5" />
@@ -816,9 +1075,15 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                     <path d="M 48 50 L 45 62 L 50 68 L 52 50 Z" fill="#ef4444" />
                     <path d="M 36 62 L 44 62 Q 40 68 36 62 Z" fill="#d4af37" />
                     <circle cx="40" cy="62" r="1" fill="#ffffff" />
-                    <path d="M 30 50 Q 14 62 8 85 L 14 88 Q 20 68 34 58 Z" fill="url(#uniform-grad)" />
+                    <path
+                      d="M 30 50 Q 14 62 8 85 L 14 88 Q 20 68 34 58 Z"
+                      fill="url(#uniform-grad)"
+                    />
                     <circle cx="7.5" cy="87" r="3.5" fill="url(#skin-grad)" />
-                    <path d="M 70 50 Q 76 72 73 98 L 67 98 Q 70 74 64 58 Z" fill="url(#uniform-grad)" />
+                    <path
+                      d="M 70 50 Q 76 72 73 98 L 67 98 Q 70 74 64 58 Z"
+                      fill="url(#uniform-grad)"
+                    />
                     <circle cx="71" cy="100" r="3.5" fill="url(#skin-grad)" />
                     <path d="M 35 120 L 65 120 L 68 165 L 32 165 Z" fill="url(#uniform-grad)" />
                     <rect x="41" y="165" width="5.5" height="30" fill="url(#skin-grad)" />
@@ -837,7 +1102,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                 style={{
                   transform: 'translateZ(-1400px) translateY(-20px)',
                   transformStyle: 'preserve-3d',
-                  boxShadow: '0 0 50px rgba(0, 0, 0, 0.95)'
+                  boxShadow: '0 0 50px rgba(0, 0, 0, 0.95)',
                 }}
               >
                 {/* Cockpit Control Section Preview (Behind sliding door panels) */}
@@ -889,7 +1154,9 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                           <div className="w-3/4 h-full bg-emerald-500" />
                         </div>
                       </div>
-                      <div className="text-[3px] font-mono text-emerald-400 text-center">EGT NORMAL</div>
+                      <div className="text-[3px] font-mono text-emerald-400 text-center">
+                        EGT NORMAL
+                      </div>
                     </div>
 
                     {/* Right Screen (ND / Map Display) */}
@@ -964,11 +1231,15 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   <div className="w-12 h-20 bg-[#030712] border border-slate-800/80 rounded p-1.5 self-start flex flex-col justify-between mt-6">
                     <div className="grid grid-cols-3 gap-0.5 font-mono text-[4px] text-sky-400 font-bold text-center">
                       {Array.from({ length: 9 }).map((_, idx) => (
-                        <div key={idx} className="border border-slate-900 py-0.5 bg-slate-900/60">{idx + 1}</div>
+                        <div key={idx} className="border border-slate-900 py-0.5 bg-slate-900/60">
+                          {idx + 1}
+                        </div>
                       ))}
                     </div>
                     {/* Status LED display */}
-                    <div className={`h-2.5 rounded-sm font-mono text-[4px] text-center font-bold flex items-center justify-center ${isDoorUnlocked ? 'bg-[#064e3b] text-emerald-400' : 'bg-[#881337] text-rose-400'}`}>
+                    <div
+                      className={`h-2.5 rounded-sm font-mono text-[4px] text-center font-bold flex items-center justify-center ${isDoorUnlocked ? 'bg-[#064e3b] text-emerald-400' : 'bg-[#881337] text-rose-400'}`}
+                    >
                       {isDoorUnlocked ? 'OPEN' : 'LOCK'}
                     </div>
                   </div>
@@ -981,7 +1252,9 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                       transition={{ duration: 1.8, repeat: Infinity }}
                     />
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#090b0e_90%)]" />
-                    <div className="font-mono text-[5px] text-emerald-500/60 font-bold rotate-6 tracking-widest">COCKPIT</div>
+                    <div className="font-mono text-[5px] text-emerald-500/60 font-bold rotate-6 tracking-widest">
+                      COCKPIT
+                    </div>
                   </div>
 
                   <div className="w-full h-px bg-slate-800" />
@@ -1059,14 +1332,18 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
               {/* Left Windshield Pane */}
               <div className="w-[45%] h-full bg-[#0b0c0e] rounded-t-3xl border-t border-x border-[#2b3038]/40 relative overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#00aaff]/2 to-transparent pointer-events-none" />
-                <span className="font-mono text-[8px] text-slate-500 uppercase tracking-widest">WINDSHIELD REFLECTION LAYER</span>
+                <span className="font-mono text-[8px] text-slate-500 uppercase tracking-widest">
+                  WINDSHIELD REFLECTION LAYER
+                </span>
               </div>
 
               {/* Center Autopilot MCP Control Panel (Header & Nav Menu) */}
               <div className="w-[50%] h-[85%] bg-[#121417] border-t-2 border-x-2 border-[#2b3038] rounded-t-xl px-4 flex items-center justify-between shadow-[inset_0_2px_8px_rgba(0,0,0,0.9)]">
                 <div className="flex items-center gap-1.5">
                   <Gauge size={14} className="text-[#ff3333]" />
-                  <span className="font-mono text-[9px] font-bold text-slate-300">A/P MODE CONTROL</span>
+                  <span className="font-mono text-[9px] font-bold text-slate-300">
+                    A/P MODE CONTROL
+                  </span>
                 </div>
 
                 {/* Autopilot MCP Selector Keys */}
@@ -1075,15 +1352,17 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                     { id: 'pfd', label: 'PFD / BIO' },
                     { id: 'mfd', label: 'MFD / PROJ' },
                     { id: 'nd', label: 'ND / WORK' },
-                    { id: 'cdu', label: 'CDU / COMMS' }
+                    { id: 'cdu', label: 'CDU / COMMS' },
                   ].map((tab) => (
-                    <button type="button"
+                    <button
+                      type="button"
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`font-mono text-[9px] font-bold px-2.5 py-1 rounded transition-all cursor-pointer ${activeTab === tab.id
-                        ? 'bg-[#00d2ff] text-[#090b0d] shadow-[0_0_8px_#00d2ff]'
-                        : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
-                        }`}
+                      className={`font-mono text-[9px] font-bold px-2.5 py-1 rounded transition-all cursor-pointer ${
+                        activeTab === tab.id
+                          ? 'bg-[#00d2ff] text-[#090b0d] shadow-[0_0_8px_#00d2ff]'
+                          : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
+                      }`}
                     >
                       {tab.label}
                     </button>
@@ -1091,7 +1370,8 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button type="button"
+                  <button
+                    type="button"
                     onClick={handleReplay}
                     className="flex items-center justify-center w-6 h-6 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
                     title="Replay Flight Intro"
@@ -1105,22 +1385,24 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
               {/* Right Windshield Pane */}
               <div className="w-[45%] h-full bg-[#0b0c0e] rounded-t-3xl border-t border-x border-[#2b3038]/40 relative overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#00aaff]/2 to-transparent pointer-events-none" />
-                <span className="font-mono text-[8px] text-slate-500 uppercase tracking-widest">HEADING LOCK COMPASS</span>
+                <span className="font-mono text-[8px] text-slate-500 uppercase tracking-widest">
+                  HEADING LOCK COMPASS
+                </span>
               </div>
             </div>
 
             {/* Main Instrument Dashboard Cluster */}
             <div className="flex-1 w-full bg-[#16191c] p-4 flex gap-4 overflow-hidden relative">
-
               {/* ========================================================================= */}
               {/* SCREEN 1: PRIMARY FLIGHT DISPLAY (PFD) - ABOUT & BIO */}
               {/* ========================================================================= */}
               <div
                 onClick={() => setActiveTab('pfd')}
-                className={`w-[28%] h-full rounded border-2 p-3 transition-all flex flex-col justify-between overflow-hidden relative cursor-pointer ${activeTab === 'pfd'
-                  ? 'border-[#00d2ff] bg-[#0b0d10] shadow-[0_0_15px_rgba(0,210,255,0.1)]'
-                  : 'border-slate-800 bg-[#090b0d] opacity-50 hover:opacity-80'
-                  }`}
+                className={`w-[28%] h-full rounded border-2 p-3 transition-all flex flex-col justify-between overflow-hidden relative cursor-pointer ${
+                  activeTab === 'pfd'
+                    ? 'border-[#00d2ff] bg-[#0b0d10] shadow-[0_0_15px_rgba(0,210,255,0.1)]'
+                    : 'border-slate-800 bg-[#090b0d] opacity-50 hover:opacity-80'
+                }`}
               >
                 {/* Horizontal Attitude Gyro Grid */}
                 <div className="absolute inset-0 pointer-events-none opacity-20 flex flex-col justify-between py-12">
@@ -1150,7 +1432,9 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
 
                 {/* Glass Cockpit HUD header */}
                 <div className="flex justify-between items-center font-mono text-[8px] text-[#00d2ff] border-b border-sky-500/20 pb-1.5 z-10">
-                  <span className="flex items-center gap-1"><Activity size={10} /> PFD v1.2</span>
+                  <span className="flex items-center gap-1">
+                    <Activity size={10} /> PFD v1.2
+                  </span>
                   <span className="text-[#ff3333] font-bold">SPD 100KT</span>
                 </div>
 
@@ -1166,13 +1450,9 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   </div>
 
                   <div className="text-left bg-black/40 border border-slate-800/80 p-3 rounded space-y-2.5">
-                    <p className="text-[10px] text-slate-300 leading-relaxed">
-                      {personal.bio}
-                    </p>
+                    <p className="text-[10px] text-slate-300 leading-relaxed">{personal.bio}</p>
                     {personal.tagline && (
-                      <p className="text-[9px] italic text-[#00d2ff]">
-                        "{personal.tagline}"
-                      </p>
+                      <p className="text-[9px] italic text-[#00d2ff]">"{personal.tagline}"</p>
                     )}
                   </div>
 
@@ -1199,14 +1479,17 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
               {/* ========================================================================= */}
               <div
                 onClick={() => setActiveTab('mfd')}
-                className={`w-[44%] h-full rounded border-2 p-3 transition-all flex flex-col justify-between overflow-hidden relative cursor-pointer ${activeTab === 'mfd'
-                  ? 'border-[#00d2ff] bg-[#0b0d10] shadow-[0_0_15px_rgba(0,210,255,0.1)]'
-                  : 'border-slate-800 bg-[#090b0d] opacity-50 hover:opacity-80'
-                  }`}
+                className={`w-[44%] h-full rounded border-2 p-3 transition-all flex flex-col justify-between overflow-hidden relative cursor-pointer ${
+                  activeTab === 'mfd'
+                    ? 'border-[#00d2ff] bg-[#0b0d10] shadow-[0_0_15px_rgba(0,210,255,0.1)]'
+                    : 'border-slate-800 bg-[#090b0d] opacity-50 hover:opacity-80'
+                }`}
               >
                 {/* HUD Header */}
                 <div className="flex justify-between items-center font-mono text-[8px] text-[#00d2ff] border-b border-sky-500/20 pb-1.5 z-10">
-                  <span className="flex items-center gap-1"><Layers size={10} /> MFD // MULTIFUNCTION DISPLAY</span>
+                  <span className="flex items-center gap-1">
+                    <Layers size={10} /> MFD // MULTIFUNCTION DISPLAY
+                  </span>
                   <span className="text-[#00d2ff]">RADAR SWEEP ONLINE</span>
                 </div>
 
@@ -1221,24 +1504,29 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
 
                 {/* Main Interactive Radar Projects Panel */}
                 <div className="flex-1 grid grid-cols-12 gap-3 my-3 z-10 overflow-hidden">
-
                   {/* Radial flight targets selector (Left Col) */}
                   <div className="col-span-4 flex flex-col justify-center gap-2 border-r border-slate-800/80 pr-2">
-                    <span className="font-mono text-[8px] text-slate-500 uppercase tracking-widest mb-1">Radar Targets</span>
+                    <span className="font-mono text-[8px] text-slate-500 uppercase tracking-widest mb-1">
+                      Radar Targets
+                    </span>
                     {projects.map((proj, idx) => (
-                      <button type="button"
+                      <button
+                        type="button"
                         key={idx}
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedProject(idx);
                           setActiveTab('mfd');
                         }}
-                        className={`font-mono text-[9px] text-left p-2 rounded border flex items-center justify-between transition-all cursor-pointer ${selectedProject === idx
-                          ? 'bg-[#00d2ff]/10 border-[#00d2ff] text-[#00d2ff] font-bold'
-                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-white'
-                          }`}
+                        className={`font-mono text-[9px] text-left p-2 rounded border flex items-center justify-between transition-all cursor-pointer ${
+                          selectedProject === idx
+                            ? 'bg-[#00d2ff]/10 border-[#00d2ff] text-[#00d2ff] font-bold'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-white'
+                        }`}
                       >
-                        <span className="truncate">TGT_{idx + 1}: {proj.title || proj.name}</span>
+                        <span className="truncate">
+                          TGT_{idx + 1}: {proj.title || proj.name}
+                        </span>
                         <ChevronRight size={10} />
                       </button>
                     ))}
@@ -1263,8 +1551,15 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
 
                     <div>
                       <div className="flex flex-wrap gap-1 mb-4">
-                        {((projects[selectedProject]?.techStack || projects[selectedProject]?.technologies) || []).map((tech, tIdx) => (
-                          <span key={tIdx} className="text-[8px] font-mono border border-[#00d2ff]/20 px-1.5 py-0.5 rounded bg-slate-950 text-[#00d2ff]">
+                        {(
+                          projects[selectedProject]?.techStack ||
+                          projects[selectedProject]?.technologies ||
+                          []
+                        ).map((tech, tIdx) => (
+                          <span
+                            key={tIdx}
+                            className="text-[8px] font-mono border border-[#00d2ff]/20 px-1.5 py-0.5 rounded bg-slate-950 text-[#00d2ff]"
+                          >
                             {tech}
                           </span>
                         ))}
@@ -1309,14 +1604,17 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
               {/* ========================================================================= */}
               <div
                 onClick={() => setActiveTab('nd')}
-                className={`w-[28%] h-full rounded border-2 p-3 transition-all flex flex-col justify-between overflow-hidden relative cursor-pointer ${activeTab === 'nd'
-                  ? 'border-[#00d2ff] bg-[#0b0d10] shadow-[0_0_15px_rgba(0,210,255,0.1)]'
-                  : 'border-slate-800 bg-[#090b0d] opacity-50 hover:opacity-80'
-                  }`}
+                className={`w-[28%] h-full rounded border-2 p-3 transition-all flex flex-col justify-between overflow-hidden relative cursor-pointer ${
+                  activeTab === 'nd'
+                    ? 'border-[#00d2ff] bg-[#0b0d10] shadow-[0_0_15px_rgba(0,210,255,0.1)]'
+                    : 'border-slate-800 bg-[#090b0d] opacity-50 hover:opacity-80'
+                }`}
               >
                 {/* HUD Header */}
                 <div className="flex justify-between items-center font-mono text-[8px] text-[#00d2ff] border-b border-sky-500/20 pb-1.5 z-10">
-                  <span className="flex items-center gap-1"><Navigation size={10} /> ND // NAV FLIGHT PLAN MAP</span>
+                  <span className="flex items-center gap-1">
+                    <Navigation size={10} /> ND // NAV FLIGHT PLAN MAP
+                  </span>
                   <span className="text-[#00d2ff]">GPS AUTOSTEER</span>
                 </div>
 
@@ -1326,19 +1624,25 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   <div className="h-[22%] bg-black/40 border border-slate-800/80 rounded p-2 flex items-center justify-around relative overflow-hidden">
                     <div className="absolute w-[80%] h-0.5 bg-dashed border-t border-sky-500/30 top-1/2 left-10 -translate-y-1/2 pointer-events-none" />
                     {experience.map((exp, idx) => (
-                      <button type="button"
+                      <button
+                        type="button"
                         key={idx}
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedWaypoint(idx);
                           setActiveTab('nd');
                         }}
-                        className={`relative z-10 px-2 py-1 rounded border font-mono text-[8px] flex flex-col items-center cursor-pointer ${selectedWaypoint === idx
-                          ? 'bg-[#00d2ff] text-slate-950 font-bold border-[#00d2ff]'
-                          : 'bg-slate-950 border-slate-800 text-[#00d2ff]'
-                          }`}
+                        className={`relative z-10 px-2 py-1 rounded border font-mono text-[8px] flex flex-col items-center cursor-pointer ${
+                          selectedWaypoint === idx
+                            ? 'bg-[#00d2ff] text-slate-950 font-bold border-[#00d2ff]'
+                            : 'bg-slate-950 border-slate-800 text-[#00d2ff]'
+                        }`}
                       >
-                        <Compass size={8} className="mb-0.5 animate-spin" style={{ animationDuration: selectedWaypoint === idx ? '6s' : '15s' }} />
+                        <Compass
+                          size={8}
+                          className="mb-0.5 animate-spin"
+                          style={{ animationDuration: selectedWaypoint === idx ? '6s' : '15s' }}
+                        />
                         <span>WP_0{idx + 1}</span>
                       </button>
                     ))}
@@ -1353,7 +1657,8 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                       </div>
 
                       <h3 className="text-xs font-bold text-white uppercase mb-1">
-                        {experience[selectedWaypoint]?.role || experience[selectedWaypoint]?.position}
+                        {experience[selectedWaypoint]?.role ||
+                          experience[selectedWaypoint]?.position}
                       </h3>
                       <h4 className="text-[9px] font-mono font-bold text-[#00d2ff] uppercase mb-2">
                         @{experience[selectedWaypoint]?.company}
@@ -1364,7 +1669,9 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                     </div>
 
                     <div className="font-mono text-[9px] text-[#ff3333] border border-[#ff3333]/20 py-0.5 px-2 bg-[#ff3333]/5 rounded mt-2 text-right">
-                      ACTIVE TIME: {experience[selectedWaypoint]?.period || experience[selectedWaypoint]?.startDate}
+                      ACTIVE TIME:{' '}
+                      {experience[selectedWaypoint]?.period ||
+                        experience[selectedWaypoint]?.startDate}
                     </div>
                   </div>
                 </div>
@@ -1376,12 +1683,10 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   <span>WPT NAV COMPLETED</span>
                 </div>
               </div>
-
             </div>
 
             {/* Bottom Console Panel with Control Display Unit (CDU / Contact Comms) */}
             <div className="w-full h-[32%] bg-[#121417] border-t-4 border-[#1c1f24] p-4 flex gap-6 z-20 shadow-[0_-4px_15px_rgba(0,0,0,0.6)]">
-
               {/* CDU (Control Display Unit) CRT Screen */}
               <div className="w-[45%] h-full bg-slate-950 border border-slate-800 rounded p-4 font-mono text-emerald-400 flex flex-col justify-between shadow-[inset_0_2px_10px_rgba(0,0,0,0.95)] relative overflow-hidden">
                 {/* CRT screen raster lines overlay */}
@@ -1397,18 +1702,35 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   <div className="col-span-7 space-y-1.5 py-1">
                     <div className="text-slate-500 text-[8px]">ACTIVE CO-ORDINATES // CONTACT</div>
                     {socials.github && (
-                      <a href={socials.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-emerald-400 hover:text-white transition-colors">
+                      <a
+                        href={socials.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-emerald-400 hover:text-white transition-colors"
+                      >
                         <Github size={12} className="text-[#00d2ff]" /> <span>GITHUB // LINK</span>
                       </a>
                     )}
                     {socials.linkedin && (
-                      <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-emerald-400 hover:text-white transition-colors">
-                        <Linkedin size={12} className="text-[#00d2ff]" /> <span>LINKEDIN // PROFILE</span>
+                      <a
+                        href={socials.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-emerald-400 hover:text-white transition-colors"
+                      >
+                        <Linkedin size={12} className="text-[#00d2ff]" />{' '}
+                        <span>LINKEDIN // PROFILE</span>
                       </a>
                     )}
                     {socials.twitter && (
-                      <a href={socials.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-emerald-400 hover:text-white transition-colors">
-                        <Twitter size={12} className="text-[#00d2ff]" /> <span>TWITTER // LOGS</span>
+                      <a
+                        href={socials.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-emerald-400 hover:text-white transition-colors"
+                      >
+                        <Twitter size={12} className="text-[#00d2ff]" />{' '}
+                        <span>TWITTER // LOGS</span>
                       </a>
                     )}
                   </div>
@@ -1421,7 +1743,10 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                         {skills.slice(0, 4).map((skill, idx) => {
                           const skillName = typeof skill === 'string' ? skill : skill.name;
                           return (
-                            <span key={idx} className="bg-emerald-950/40 border border-emerald-800 text-emerald-400 px-1 py-0.5 rounded text-[8px] font-bold uppercase truncate max-w-full">
+                            <span
+                              key={idx}
+                              className="bg-emerald-950/40 border border-emerald-800 text-emerald-400 px-1 py-0.5 rounded text-[8px] font-bold uppercase truncate max-w-full"
+                            >
                               {skillName}
                             </span>
                           );
@@ -1443,13 +1768,15 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
 
               {/* CDU Tactile alphanumeric button layout */}
               <div className="flex-1 h-full bg-[#1e2229] border border-slate-700/50 rounded p-3 grid grid-cols-12 gap-2 items-center shadow-[inset_0_2px_8px_rgba(255,255,255,0.05)]">
-
                 {/* FMC Left side line select keys */}
                 <div className="col-span-2 flex flex-col gap-1.5 justify-around h-full py-1">
                   {[1, 2, 3, 4].map((i) => (
-                    <button type="button"
+                    <button
+                      type="button"
                       key={i}
-                      onClick={() => setActiveTab(i === 1 ? 'pfd' : i === 2 ? 'mfd' : i === 3 ? 'nd' : 'cdu')}
+                      onClick={() =>
+                        setActiveTab(i === 1 ? 'pfd' : i === 2 ? 'mfd' : i === 3 ? 'nd' : 'cdu')
+                      }
                       className="w-8 h-4 bg-slate-900 border border-slate-700 rounded-sm hover:bg-[#00d2ff]/20 transition-all cursor-pointer"
                     />
                   ))}
@@ -1457,8 +1784,34 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
 
                 {/* Main letter pad buttons */}
                 <div className="col-span-8 h-full grid grid-cols-6 gap-1.5 p-1 bg-slate-950 border border-slate-800 rounded">
-                  {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'].map((char) => (
-                    <button type="button"
+                  {[
+                    'A',
+                    'B',
+                    'C',
+                    'D',
+                    'E',
+                    'F',
+                    'G',
+                    'H',
+                    'I',
+                    'J',
+                    'K',
+                    'L',
+                    'M',
+                    'N',
+                    'O',
+                    'P',
+                    'Q',
+                    'R',
+                    'S',
+                    'T',
+                    'U',
+                    'V',
+                    'W',
+                    'X',
+                  ].map((char) => (
+                    <button
+                      type="button"
                       key={char}
                       onClick={() => {
                         if (char === 'B') setActiveTab('pfd');
@@ -1476,23 +1829,24 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                 {/* FMC Right side function select keys */}
                 <div className="col-span-2 flex flex-col gap-1.5 justify-around h-full py-1">
                   {['INIT', 'RTE', 'DEP', 'ARR'].map((fn, idx) => (
-                    <button type="button"
+                    <button
+                      type="button"
                       key={fn}
-                      onClick={() => setActiveTab(idx === 0 ? 'pfd' : idx === 1 ? 'mfd' : idx === 2 ? 'nd' : 'cdu')}
+                      onClick={() =>
+                        setActiveTab(
+                          idx === 0 ? 'pfd' : idx === 1 ? 'mfd' : idx === 2 ? 'nd' : 'cdu'
+                        )
+                      }
                       className="h-4 bg-[#2a303a] border border-slate-700 rounded-sm text-[7px] font-bold font-mono text-slate-400 hover:text-white flex items-center justify-center active:scale-95 transition-transform cursor-pointer"
                     >
                       {fn}
                     </button>
                   ))}
                 </div>
-
               </div>
-
             </div>
-
           </motion.div>
         )}
-
       </AnimatePresence>
 
       {/* 2D HUD Speech Dialogue Overlay (Centred at the bottom to prevent clipping, rendered at root level) */}
@@ -1504,10 +1858,12 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
           transition={{
             duration: 5.5,
             times: [0, 0.08, 0.9, 1.0],
-            ease: 'easeInOut'
+            ease: 'easeInOut',
           }}
         >
-          <div className="font-bold text-[#00d2ff] mb-1.5 tracking-wider text-sm">PURSER // FLIGHT CREW</div>
+          <div className="font-bold text-[#00d2ff] mb-1.5 tracking-wider text-sm">
+            PURSER // FLIGHT CREW
+          </div>
           "Welcome aboard, Captain. Flight deck systems are fully calibrated for departure."
         </motion.div>
       )}

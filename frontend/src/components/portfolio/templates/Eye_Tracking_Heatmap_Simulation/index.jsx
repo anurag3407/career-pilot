@@ -1,7 +1,17 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import { useContext, useEffect, useRef, useState, useCallback } from "react";
-import { motion, useMotionValue, useSpring, animate } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Eye, Zap, Star } from "lucide-react";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import { useContext, useEffect, useRef, useState, useCallback } from 'react';
+import { motion, useMotionValue, useSpring, animate } from 'framer-motion';
+import {
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  MapPin,
+  ExternalLink,
+  Eye,
+  Zap,
+  Star,
+} from 'lucide-react';
 
 // ---------------------------------------------------------------------------
 // Heatmap blob engine
@@ -20,14 +30,14 @@ function useHeatmap(canvasRef) {
     let raf;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
 
     const resize = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
     };
     resize();
-    window.addEventListener("resize", resize);
+    window.addEventListener('resize', resize);
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -39,7 +49,7 @@ function useHeatmap(canvasRef) {
         grad.addColorStop(0, `rgba(255, 80, 120, ${0.55 * alpha})`);
         grad.addColorStop(0.35, `rgba(255, 160, 40, ${0.35 * alpha})`);
         grad.addColorStop(0.7, `rgba(80, 200, 255, ${0.18 * alpha})`);
-        grad.addColorStop(1, "rgba(0,0,0,0)");
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fillStyle = grad;
@@ -52,7 +62,7 @@ function useHeatmap(canvasRef) {
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener('resize', resize);
     };
   }, [canvasRef]);
 
@@ -118,7 +128,7 @@ function SkillBar({ name, level, delay }) {
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${level}%` }}
-          transition={{ delay: delay + 0.2, duration: 1, ease: "easeOut" }}
+          transition={{ delay: delay + 0.2, duration: 1, ease: 'easeOut' }}
           viewport={{ once: true }}
           className="h-full rounded-full bg-gradient-to-r from-rose-500 via-orange-400 to-amber-300"
         />
@@ -163,11 +173,16 @@ function ProjectCard({ project, index }) {
 
       <div className="p-5">
         <h3 className="text-white font-semibold text-base mb-1.5">{project.title}</h3>
-        <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">{project.description}</p>
+        <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">
+          {project.description}
+        </p>
 
         <div className="flex flex-wrap gap-1.5 mb-4">
           {project.techStack?.map((t) => (
-            <span key={t} className="px-2 py-0.5 text-xs rounded-md bg-rose-500/10 text-rose-300 border border-rose-500/20 font-mono">
+            <span
+              key={t}
+              className="px-2 py-0.5 text-xs rounded-md bg-rose-500/10 text-rose-300 border border-rose-500/20 font-mono"
+            >
               {t}
             </span>
           ))}
@@ -175,12 +190,22 @@ function ProjectCard({ project, index }) {
 
         <div className="flex gap-3">
           {project.liveUrl && (
-            <a href={project.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+            >
               <ExternalLink size={12} /> Live
             </a>
           )}
           {project.githubUrl && (
-            <a href={project.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+            >
               <Github size={12} /> Source
             </a>
           )}
@@ -205,11 +230,17 @@ function TestimonialCard({ item, index }) {
       className="rounded-2xl p-5 bg-white/3 border border-white/8"
     >
       <div className="flex gap-0.5 mb-3">
-        {[...Array(5)].map((_, i) => <Star key={i} size={12} className="text-amber-400 fill-amber-400" />)}
+        {[...Array(5)].map((_, i) => (
+          <Star key={i} size={12} className="text-amber-400 fill-amber-400" />
+        ))}
       </div>
       <p className="text-slate-300 text-sm leading-relaxed mb-4 italic">"{item.text}"</p>
       <div className="flex items-center gap-3">
-        <img src={item.avatar} alt={item.name} className="w-9 h-9 rounded-full object-cover border border-white/10" />
+        <img
+          src={item.avatar}
+          alt={item.name}
+          className="w-9 h-9 rounded-full object-cover border border-white/10"
+        />
         <div>
           <div className="text-white text-sm font-medium">{item.name}</div>
           <div className="text-slate-500 text-xs">{item.role}</div>
@@ -232,26 +263,37 @@ export default function EyeTrackingHeatmapSimulation() {
   const cursorY = useMotionValue(-200);
   const [showCursor, setShowCursor] = useState(false);
 
-  const handleMouseMove = useCallback((e) => {
-    cursorX.set(e.clientX);
-    cursorY.set(e.clientY);
-    setShowCursor(true);
+  const handleMouseMove = useCallback(
+    (e) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+      setShowCursor(true);
 
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (rect) addPoint(e.clientX - rect.left, e.clientY - rect.top);
-  }, [addPoint, cursorX, cursorY]);
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) addPoint(e.clientX - rect.left, e.clientY - rect.top);
+    },
+    [addPoint, cursorX, cursorY]
+  );
 
   const handleMouseLeave = () => setShowCursor(false);
 
   // Simulate auto scanpath on mount
   useEffect(() => {
     const points = [
-      [200, 120], [400, 80], [650, 200], [300, 350],
-      [700, 400], [150, 500], [500, 300], [250, 450],
+      [200, 120],
+      [400, 80],
+      [650, 200],
+      [300, 350],
+      [700, 400],
+      [150, 500],
+      [500, 300],
+      [250, 450],
     ];
     let i = 0;
     const interval = setInterval(() => {
-      if (i >= points.length) { i = 0; }
+      if (i >= points.length) {
+        i = 0;
+      }
       addPoint(points[i][0], points[i][1]);
       i++;
     }, 500);
@@ -269,13 +311,13 @@ export default function EyeTrackingHeatmapSimulation() {
       className="relative min-h-screen bg-[#0b0d14] text-white overflow-x-hidden font-sans"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ cursor: "none" }}
+      style={{ cursor: 'none' }}
     >
       {/* Heatmap canvas — fixed, full-screen */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 w-full h-full pointer-events-none z-10"
-        style={{ mixBlendMode: "screen" }}
+        style={{ mixBlendMode: 'screen' }}
       />
 
       {/* Custom cursor */}
@@ -285,8 +327,9 @@ export default function EyeTrackingHeatmapSimulation() {
       <div
         className="fixed inset-0 opacity-[0.04]"
         style={{
-          backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)",
-          backgroundSize: "60px 60px",
+          backgroundImage:
+            'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)',
+          backgroundSize: '60px 60px',
         }}
       />
 
@@ -313,9 +356,9 @@ export default function EyeTrackingHeatmapSimulation() {
               className="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
-              {personal.name.split(" ").map((w, i) => (
-                <span key={i} className={i % 2 === 0 ? "text-white" : "text-rose-400"}>
-                  {w}{" "}
+              {personal.name.split(' ').map((w, i) => (
+                <span key={i} className={i % 2 === 0 ? 'text-white' : 'text-rose-400'}>
+                  {w}{' '}
                 </span>
               ))}
             </motion.h1>
@@ -356,10 +399,10 @@ export default function EyeTrackingHeatmapSimulation() {
               className="flex gap-4"
             >
               {[
-                { icon: Github, href: socials.github, label: "GitHub" },
-                { icon: Linkedin, href: socials.linkedin, label: "LinkedIn" },
-                { icon: Twitter, href: socials.twitter, label: "Twitter" },
-                { icon: Mail, href: `mailto:${socials.email}`, label: "Email" },
+                { icon: Github, href: socials.github, label: 'GitHub' },
+                { icon: Linkedin, href: socials.linkedin, label: 'LinkedIn' },
+                { icon: Twitter, href: socials.twitter, label: 'Twitter' },
+                { icon: Mail, href: `mailto:${socials.email}`, label: 'Email' },
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
@@ -384,12 +427,12 @@ export default function EyeTrackingHeatmapSimulation() {
             {/* Rotating dashed ring */}
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
               className="absolute inset-0 m-auto w-72 h-72 rounded-full border border-dashed border-rose-500/20"
             />
             <motion.div
               animate={{ rotate: -360 }}
-              transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
               className="absolute inset-0 m-auto w-56 h-56 rounded-full border border-dashed border-orange-400/15"
             />
 
@@ -408,7 +451,10 @@ export default function EyeTrackingHeatmapSimulation() {
             </div>
 
             {/* Scanpath connector lines */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20" viewBox="0 0 400 400">
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
+              viewBox="0 0 400 400"
+            >
               <motion.path
                 d="M 200 50 Q 350 100 300 200 Q 250 300 150 350 Q 80 380 60 280"
                 fill="none"
@@ -417,7 +463,7 @@ export default function EyeTrackingHeatmapSimulation() {
                 strokeDasharray="6 4"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
               />
             </svg>
           </motion.div>
@@ -431,11 +477,14 @@ export default function EyeTrackingHeatmapSimulation() {
           className="mt-16 grid grid-cols-3 gap-6 max-w-xl"
         >
           {[
-            { label: "Years Exp.", value: stats.yearsExperience },
-            { label: "Projects", value: stats.projectsCompleted },
-            { label: "Clients", value: stats.happyClients },
+            { label: 'Years Exp.', value: stats.yearsExperience },
+            { label: 'Projects', value: stats.projectsCompleted },
+            { label: 'Clients', value: stats.happyClients },
           ].map(({ label, value }) => (
-            <div key={label} className="text-center p-4 rounded-xl bg-white/3 border border-white/8">
+            <div
+              key={label}
+              className="text-center p-4 rounded-xl bg-white/3 border border-white/8"
+            >
               <div className="text-3xl font-bold text-white font-mono">{value}+</div>
               <div className="text-xs text-slate-500 mt-1 tracking-wider uppercase">{label}</div>
             </div>
@@ -464,7 +513,9 @@ export default function EyeTrackingHeatmapSimulation() {
             <div key={category} className="rounded-2xl p-6 bg-white/3 border border-white/8">
               <div className="flex items-center gap-2 mb-5">
                 <Zap size={14} className="text-rose-400" />
-                <span className="text-sm font-mono text-slate-400 uppercase tracking-widest">{category}</span>
+                <span className="text-sm font-mono text-slate-400 uppercase tracking-widest">
+                  {category}
+                </span>
               </div>
               <div className="space-y-4">
                 {items.map((s, i) => (
@@ -580,7 +631,10 @@ export default function EyeTrackingHeatmapSimulation() {
             viewport={{ once: true }}
           >
             <Chip>Let's Connect</Chip>
-            <h2 className="text-4xl font-bold mt-5 mb-4" style={{ fontFamily: "'Syne', sans-serif" }}>
+            <h2
+              className="text-4xl font-bold mt-5 mb-4"
+              style={{ fontFamily: "'Syne', sans-serif" }}
+            >
               Ready to <span className="text-rose-400">Collaborate?</span>
             </h2>
             <p className="text-slate-400 mb-8">Move your cursor. Every glance leaves a trace.</p>

@@ -1,22 +1,21 @@
-import React from 'react'
-import { Github, Linkedin, Mail, motion, safePersonal, safeSocials } from './shared'
-import { Twitter } from 'lucide-react'
+import React from 'react';
+import { Github, Linkedin, Mail, motion, safePersonal, safeSocials } from './shared';
+import { Twitter } from 'lucide-react';
 
 const HeroPage = React.forwardRef(function HeroPage(_, ref) {
-  const { name = 'Your Name', title = 'Creative Professional' } = safePersonal
+  const { name = 'Your Name', title = 'Creative Professional' } = safePersonal;
 
   const socials = [
     { href: safeSocials.github, icon: Github, label: 'GitHub' },
     { href: safeSocials.linkedin, icon: Linkedin, label: 'LinkedIn' },
     { href: safeSocials.twitter, icon: Twitter, label: 'Twitter' },
     { href: safeSocials.email ? `mailto:${safeSocials.email}` : null, icon: Mail, label: 'Email' },
-  ].filter((item) => item.href)
+  ].filter((item) => item.href);
 
   return (
     <div ref={ref} className="h-full w-full overflow-hidden">
       {/* Root dark background */}
       <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-[#03050c] text-white">
-
         {/* Ambient glow blobs */}
         <div className="pointer-events-none absolute top-[-10%] left-[-10%] h-[50vw] w-[50vw] rounded-full bg-cyan-500/10 blur-[120px] mix-blend-screen" />
         <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[50vw] w-[50vw] rounded-full bg-violet-500/10 blur-[120px] mix-blend-screen" />
@@ -26,7 +25,6 @@ const HeroPage = React.forwardRef(function HeroPage(_, ref) {
 
         {/* Content */}
         <div className="relative z-10 flex w-full max-w-4xl flex-col items-center px-6 text-center">
-
           {/* Status badge */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -76,7 +74,7 @@ const HeroPage = React.forwardRef(function HeroPage(_, ref) {
             className="flex w-full max-w-md flex-wrap items-center justify-center gap-4"
           >
             {socials.map((item, idx) => {
-              const Icon = item.icon
+              const Icon = item.icon;
               return (
                 <motion.a
                   key={item.label}
@@ -88,25 +86,24 @@ const HeroPage = React.forwardRef(function HeroPage(_, ref) {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ type: 'spring', stiffness: 200, delay: 0.6 + idx * 0.08 }}
                   // COOL & UNIQUE HOVER ANIMATION (include color change here)
-                  whileHover={{ 
-                    scale: 1.15, 
-                    rotate: -10, 
-                    boxShadow: "0px 0px 20px rgba(34, 211, 238, 0.4)",
-                    borderColor: "#22d3ee",
-                    color: "#22d3ee"
+                  whileHover={{
+                    scale: 1.15,
+                    rotate: -10,
+                    boxShadow: '0px 0px 20px rgba(34, 211, 238, 0.4)',
+                    borderColor: '#22d3ee',
+                    color: '#22d3ee',
                   }}
                   className="rounded-lg border border-slate-800 bg-[#080c14] p-4 text-slate-400 shadow-inner transition-all duration-300"
                 >
                   <Icon size={20} />
                 </motion.a>
-              )
+              );
             })}
           </motion.div>
-
         </div>
       </div>
     </div>
-  )
-})
+  );
+});
 
-export default HeroPage
+export default HeroPage;

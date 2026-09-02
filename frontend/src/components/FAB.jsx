@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, FileText, Briefcase, Search, Mic } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, FileText, Briefcase, Search, Mic } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function FAB({ scrollContainerRef }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,24 +10,24 @@ export default function FAB({ scrollContainerRef }) {
 
   const actions = [
     {
-      label: "Create Portfolio",
+      label: 'Create Portfolio',
       icon: <FileText size={18} />,
-      onClick: () => navigate("/portfolio"),
+      onClick: () => navigate('/portfolio'),
     },
     {
-      label: "Upload Resume",
+      label: 'Upload Resume',
       icon: <Briefcase size={18} />,
-      onClick: () => navigate("/upload"),
+      onClick: () => navigate('/upload'),
     },
     {
-      label: "Search Jobs",
+      label: 'Search Jobs',
       icon: <Search size={18} />,
-      onClick: () => navigate("/jobs"),
+      onClick: () => navigate('/jobs'),
     },
     {
-      label: "Start Interview",
+      label: 'Start Interview',
       icon: <Mic size={18} />,
-      onClick: () => navigate("/interview"),
+      onClick: () => navigate('/interview'),
     },
   ];
 
@@ -40,17 +40,15 @@ export default function FAB({ scrollContainerRef }) {
 
       const currentScrollY = mainContainer.scrollTop;
 
-      setIsVisible(
-        currentScrollY < lastScrollY || currentScrollY < 100
-      );
+      setIsVisible(currentScrollY < lastScrollY || currentScrollY < 100);
 
       lastScrollY = currentScrollY;
     };
 
-    mainContainer?.addEventListener("scroll", handleScroll);
+    mainContainer?.addEventListener('scroll', handleScroll);
 
     return () => {
-      mainContainer?.removeEventListener("scroll", handleScroll);
+      mainContainer?.removeEventListener('scroll', handleScroll);
     };
   }, [scrollContainerRef]);
 
@@ -64,15 +62,15 @@ export default function FAB({ scrollContainerRef }) {
   // Escape key closes menu
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape" && isOpen) {
+      if (e.key === 'Escape' && isOpen) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen]);
 
@@ -87,9 +85,7 @@ export default function FAB({ scrollContainerRef }) {
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
               onClick={() => setIsOpen(!isOpen)}
-              aria-label={
-                isOpen ? "Close quick actions" : "Open quick actions"
-              }
+              aria-label={isOpen ? 'Close quick actions' : 'Open quick actions'}
               aria-expanded={isOpen}
               className="p-4 bg-primary text-primary-foreground rounded-full shadow-xl hover:scale-110 transition-transform glow"
             >
@@ -117,9 +113,7 @@ export default function FAB({ scrollContainerRef }) {
                     className="flex items-center gap-3 px-4 py-2 glass border-border rounded-full shadow-lg hover:bg-primary/10 hover:text-primary transition-all-300 hover:-translate-y-1 whitespace-nowrap"
                   >
                     {action.icon}
-                    <span className="text-sm font-medium">
-                      {action.label}
-                    </span>
+                    <span className="text-sm font-medium">{action.label}</span>
                   </button>
                 ))}
               </motion.div>

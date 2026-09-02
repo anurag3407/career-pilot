@@ -1,11 +1,13 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
+import js from '@eslint/js';
+import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
   { ignores: ['dist'] },
   js.configs.recommended,
+  eslintConfigPrettier,
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -31,7 +33,7 @@ export default [
       'react-hooks/exhaustive-deps': 'warn',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-undef': 'warn',
-      'react-compiler/react-compiler': 'off'
+      'react-compiler/react-compiler': 'off',
     },
   },
-]
+];

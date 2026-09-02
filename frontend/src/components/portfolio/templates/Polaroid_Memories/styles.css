@@ -1,5 +1,7 @@
 @import 'https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap';
-.font-handwriting { font-family: Caveat, cursive; }
+.font-handwriting {
+  font-family: Caveat, cursive;
+}
 
 .corkboard-pattern {
   background-color: #dcb382;
@@ -7,11 +9,27 @@
 }
 
 .cork-texture {
-   background: radial-gradient(circle, transparent 20%, #dcb382 20%, #dcb382 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #dcb382 20%, #dcb382 80%, transparent 80%, transparent) 25px 25px, linear-gradient(#b98c56 2px, transparent 2px) 0 -1px, linear-gradient(90deg, #b98c56 2px, #dcb382 2px) -1px 0;
-   background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;
-   opacity: 0.05;
-   position: fixed;
-   inset: 0;
-   pointer-events: none;
-   z-index: 0;
+  background:
+    radial-gradient(
+      circle,
+      transparent 20%,
+      #dcb382 20%,
+      #dcb382 80%,
+      transparent 80%,
+      transparent
+    ),
+    radial-gradient(circle, transparent 20%, #dcb382 20%, #dcb382 80%, transparent 80%, transparent)
+      25px 25px,
+    linear-gradient(#b98c56 2px, transparent 2px) 0 -1px,
+    linear-gradient(90deg, #b98c56 2px, #dcb382 2px) -1px 0;
+  background-size:
+    50px 50px,
+    50px 50px,
+    25px 25px,
+    25px 25px;
+  opacity: 0.05;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
 }

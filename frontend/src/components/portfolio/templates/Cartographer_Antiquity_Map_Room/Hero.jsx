@@ -14,8 +14,8 @@ export default function Hero({ data }) {
           <span className="text-[#5d4037] text-xl">S</span>
         </div>
       </div>
-      
-      <motion.div 
+
+      <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2 }}
@@ -25,13 +25,14 @@ export default function Hero({ data }) {
           <div className="w-full max-w-[200px] h-1 bg-[#5d4037] rounded"></div>
         </div>
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-widest text-[#2e1d16] mb-6 font-serif drop-shadow-sm">
-          {name || "Explorer Name"}
+          {name || 'Explorer Name'}
         </h1>
         <h2 className="text-2xl md:text-3xl text-[#5d4037] tracking-[0.2em] uppercase italic mb-8 border-y border-[#8d6e63] py-4 inline-block">
-          {title || "Master Cartographer"}
+          {title || 'Master Cartographer'}
         </h2>
         <p className="text-lg md:text-xl text-[#3e2723] max-w-2xl mx-auto leading-relaxed">
-          {bio || "Charting the unknown territories of the digital realm, mapping complex systems into beautiful experiences."}
+          {bio ||
+            'Charting the unknown territories of the digital realm, mapping complex systems into beautiful experiences.'}
         </p>
         <div className="mt-12 flex justify-center">
           <div className="w-8 h-8 border-2 border-[#5d4037] rounded-full animate-bounce flex items-center justify-center">

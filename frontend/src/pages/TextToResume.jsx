@@ -1,32 +1,32 @@
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
-import { FileText, Sparkles, ArrowRight, Loader2 } from 'lucide-react'
-import { resumeApi } from '../services/api'
-import { toast } from 'react-hot-toast'
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { FileText, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
+import { resumeApi } from '../services/api';
+import { toast } from 'react-hot-toast';
 
 export default function TextToResume() {
-  const navigate = useNavigate()
-  const [text, setText] = useState('')
-  const [jobRole, setJobRole] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate();
+  const [text, setText] = useState('');
+  const [jobRole, setJobRole] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleConvert = async () => {
     if (!text.trim()) {
-      toast.error('Please enter some text to convert')
-      return
+      toast.error('Please enter some text to convert');
+      return;
     }
 
     try {
-      setIsLoading(true)
-      const response = await resumeApi.createFromText(text, jobRole)
-      toast.success('Resume created successfully!')
-      navigate(`/enhance/${response.data.id}`)
+      setIsLoading(true);
+      const response = await resumeApi.createFromText(text, jobRole);
+      toast.success('Resume created successfully!');
+      navigate(`/enhance/${response.data.id}`);
     } catch (error) {
-      toast.error(error.message || 'Failed to convert text to resume')
-      setIsLoading(false)
+      toast.error(error.message || 'Failed to convert text to resume');
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen pt-20 pb-12 bg-background relative overflow-hidden">
@@ -35,7 +35,6 @@ export default function TextToResume() {
       <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none translate-x-1/2"></div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -48,7 +47,8 @@ export default function TextToResume() {
             Text to Resume
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Paste any unformatted text—from an old resume, a LinkedIn profile, or a list of accomplishments—and let our AI structure it into a professional resume.
+            Paste any unformatted text—from an old resume, a LinkedIn profile, or a list of
+            accomplishments—and let our AI structure it into a professional resume.
           </p>
         </motion.div>
 
@@ -62,12 +62,12 @@ export default function TextToResume() {
               <label className="block text-sm font-medium mb-2 text-foreground/80">
                 Target Job Role (Optional)
               </label>
-              <input 
-                type="text" 
-                className="w-full bg-muted border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/50 transition-all outline-none text-foreground" 
-                value={jobRole} 
-                onChange={e => setJobRole(e.target.value)} 
-                placeholder="e.g. Senior Frontend Developer" 
+              <input
+                type="text"
+                className="w-full bg-muted border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/50 transition-all outline-none text-foreground"
+                value={jobRole}
+                onChange={(e) => setJobRole(e.target.value)}
+                placeholder="e.g. Senior Frontend Developer"
               />
               <p className="text-xs text-muted-foreground mt-2">
                 Providing a target role helps the AI highlight the most relevant experience.
@@ -77,13 +77,15 @@ export default function TextToResume() {
             <div>
               <label className="block text-sm font-medium mb-2 text-foreground/80 flex items-center justify-between">
                 <span>Raw Text Content</span>
-                <span className="text-xs font-normal text-muted-foreground">{text.length} characters</span>
+                <span className="text-xs font-normal text-muted-foreground">
+                  {text.length} characters
+                </span>
               </label>
-              <textarea 
-                className="w-full bg-muted border border-border rounded-xl px-4 py-4 min-h-[300px] focus:ring-2 focus:ring-primary/50 transition-all outline-none font-mono text-sm resize-y text-foreground" 
-                value={text} 
-                onChange={e => setText(e.target.value)} 
-                placeholder="Paste your unformatted resume content, LinkedIn about section, or job history here..." 
+              <textarea
+                className="w-full bg-muted border border-border rounded-xl px-4 py-4 min-h-[300px] focus:ring-2 focus:ring-primary/50 transition-all outline-none font-mono text-sm resize-y text-foreground"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Paste your unformatted resume content, LinkedIn about section, or job history here..."
               />
             </div>
 
@@ -110,5 +112,5 @@ export default function TextToResume() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

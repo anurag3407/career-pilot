@@ -35,8 +35,8 @@ export default function Skills({ skills }) {
 
         <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
           {skills.map((skill, i) => (
-            <div 
-              key={i} 
+            <div
+              key={i}
               className="group relative px-6 py-3 border border-[#222222] bg-[#111111] hover:border-[#c5a880]/50 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#c5a880]/5 to-transparent -translate-x-full group-hover:translate-x-full duration-1000 transition-transform" />

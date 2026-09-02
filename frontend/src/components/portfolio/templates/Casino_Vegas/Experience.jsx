@@ -1,5 +1,5 @@
-import React from "react";
-import { Briefcase, Star } from "lucide-react";
+import React from 'react';
+import { Briefcase, Star } from 'lucide-react';
 
 export default function Experience({ data }) {
   if (!data?.experience || data.experience.length === 0) return null;
@@ -36,19 +36,13 @@ export default function Experience({ data }) {
 
               <div>
                 <div className="mb-2 flex flex-col md:flex-row md:items-center md:justify-between">
-                  <h3 className="text-2xl font-bold text-yellow-300">
-                    {exp.role || exp.title}
-                  </h3>
+                  <h3 className="text-2xl font-bold text-yellow-300">{exp.role || exp.title}</h3>
                   <span className="mt-2 inline-block rounded-full border border-red-500/40 bg-red-500/10 px-4 py-1 text-sm font-semibold tracking-wider text-red-400 md:mt-0">
                     {exp.period || exp.duration}
                   </span>
                 </div>
-                <h4 className="mb-4 text-xl font-medium text-gray-400">
-                  {exp.company}
-                </h4>
-                <p className="text-gray-300 leading-relaxed">
-                  {exp.description}
-                </p>
+                <h4 className="mb-4 text-xl font-medium text-gray-400">{exp.company}</h4>
+                <p className="text-gray-300 leading-relaxed">{exp.description}</p>
               </div>
 
               {/* Casino chip accent */}

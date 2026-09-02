@@ -31,12 +31,12 @@ import Contact from './Contact';
 
 /* ─── Repository loading animation ──────────────────────────── */
 const LOAD_STEPS = [
-  { text: 'Initializing repository…',   delay: 0,   color: 'text-[#8B949E]' },
-  { text: 'Fetching commit history…',   delay: 400, color: 'text-[#58A6FF]' },
-  { text: 'Resolving branch trees…',    delay: 750, color: 'text-[#58A6FF]' },
-  { text: 'Checking out main branch…',  delay: 1050, color: 'text-[#3FB950]' },
-  { text: 'Hydrating portfolio data…',  delay: 1300, color: 'text-[#3FB950]' },
-  { text: '✓ Repository ready.',         delay: 1600, color: 'text-[#3FB950] font-semibold' },
+  { text: 'Initializing repository…', delay: 0, color: 'text-[#8B949E]' },
+  { text: 'Fetching commit history…', delay: 400, color: 'text-[#58A6FF]' },
+  { text: 'Resolving branch trees…', delay: 750, color: 'text-[#58A6FF]' },
+  { text: 'Checking out main branch…', delay: 1050, color: 'text-[#3FB950]' },
+  { text: 'Hydrating portfolio data…', delay: 1300, color: 'text-[#3FB950]' },
+  { text: '✓ Repository ready.', delay: 1600, color: 'text-[#3FB950] font-semibold' },
 ];
 
 function RepoLoader({ onDone }) {
@@ -46,9 +46,12 @@ function RepoLoader({ onDone }) {
   useEffect(() => {
     const timers = LOAD_STEPS.map((step, i) =>
       setTimeout(() => {
-        setVisible(v => [...v, i]);
+        setVisible((v) => [...v, i]);
         if (i === LOAD_STEPS.length - 1) {
-          setTimeout(() => { setFinished(true); setTimeout(onDone, 400); }, 500);
+          setTimeout(() => {
+            setFinished(true);
+            setTimeout(onDone, 400);
+          }, 500);
         }
       }, step.delay + 100)
     );

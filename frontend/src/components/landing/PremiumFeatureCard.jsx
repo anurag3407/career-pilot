@@ -50,8 +50,7 @@ export default function PremiumFeatureCard({
           padding: '1px',
           background:
             'linear-gradient(130deg, rgba(var(--primary-rgb),0.6), transparent 40%, rgba(var(--primary-rgb),0.25))',
-          WebkitMask:
-            'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
         }}
@@ -83,9 +82,7 @@ export default function PremiumFeatureCard({
         <h3 className="mb-2.5 text-xl font-black tracking-tight text-foreground md:text-2xl">
           {title}
         </h3>
-        <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
-          {description}
-        </p>
+        <p className="text-sm leading-relaxed text-muted-foreground md:text-base">{description}</p>
       </div>
 
       {/* Illustration */}

@@ -15,7 +15,10 @@ const fadeUp = {
 
 function Label({ children }) {
   return (
-    <span className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase" style={{ color: ACCENT }}>
+    <span
+      className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase"
+      style={{ color: ACCENT }}
+    >
       {children}
     </span>
   );
@@ -29,7 +32,7 @@ export default function Contact({ data }) {
     { label: 'GitHub', href: github, Icon: Github },
     { label: 'LinkedIn', href: linkedin, Icon: Linkedin },
     { label: 'Twitter', href: twitter, Icon: Twitter },
-  ].filter(link => link.href);
+  ].filter((link) => link.href);
 
   return (
     <section className="text-left">

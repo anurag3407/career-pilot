@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import TileSnappingText from './TileSnappingText';
 
 const Experience = ({ experience = [] }) => {
-  const [viewportWidth, setViewportWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  const [viewportWidth, setViewportWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
 
   useEffect(() => {
     const onResize = () => setViewportWidth(window.innerWidth);
@@ -11,13 +13,23 @@ const Experience = ({ experience = [] }) => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  const headingWidth = useMemo(() => Math.max(240, Math.min(420, viewportWidth - 80)), [viewportWidth]);
+  const headingWidth = useMemo(
+    () => Math.max(240, Math.min(420, viewportWidth - 80)),
+    [viewportWidth]
+  );
 
   return (
     <section className="py-32 px-6 max-w-5xl mx-auto border-t border-slate-950 relative z-20">
       <div className="mb-24 flex flex-col items-center text-center">
-        <TileSnappingText text="// Historical Track" className="text-xs font-mono uppercase tracking-[0.5em] text-indigo-400 mb-3" baseDelay={0.1} />
-        <h2 className="text-4xl font-black text-center text-white tracking-tight" style={{ width: `${headingWidth}px` }}>
+        <TileSnappingText
+          text="// Historical Track"
+          className="text-xs font-mono uppercase tracking-[0.5em] text-indigo-400 mb-3"
+          baseDelay={0.1}
+        />
+        <h2
+          className="text-4xl font-black text-center text-white tracking-tight"
+          style={{ width: `${headingWidth}px` }}
+        >
           <TileSnappingText text="Journey" baseDelay={0.2} />
         </h2>
       </div>
@@ -29,7 +41,10 @@ const Experience = ({ experience = [] }) => {
           {experience.map((exp, i) => {
             const isEven = i % 2 === 0;
             return (
-              <div key={i} className="relative md:grid md:grid-cols-12 items-center w-full md:mb-12">
+              <div
+                key={i}
+                className="relative md:grid md:grid-cols-12 items-center w-full md:mb-12"
+              >
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -47,7 +62,12 @@ const Experience = ({ experience = [] }) => {
                     <h4 className="text-sm font-medium text-slate-400">{exp.company}</h4>
                   </div>
                   <div className="text-sm text-slate-500 leading-relaxed">
-                    <TileSnappingText text={exp.description} variant="subtle" stagger={0.004} baseDelay={0.3} />
+                    <TileSnappingText
+                      text={exp.description}
+                      variant="subtle"
+                      stagger={0.004}
+                      baseDelay={0.3}
+                    />
                   </div>
                 </motion.div>
 

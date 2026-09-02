@@ -8,13 +8,31 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/ui/Footer';
 import { ImageComparisonDemo } from '../../components/ui/image-comparison-demo';
 import {
-  FileText, Type, Github, Sparkles, BarChart3,
-  Layout, Linkedin, Download, ArrowRight, Check,
-  Star, Zap, Target, Shield
+  FileText,
+  Type,
+  Github,
+  Sparkles,
+  BarChart3,
+  Layout,
+  Linkedin,
+  Download,
+  ArrowRight,
+  Check,
+  Star,
+  Zap,
+  Target,
+  Shield,
 } from 'lucide-react';
 
 const iconMap = {
-  FileText, Type, Github, Sparkles, BarChart: BarChart3, Layout, Linkedin, Download
+  FileText,
+  Type,
+  Github,
+  Sparkles,
+  BarChart: BarChart3,
+  Layout,
+  Linkedin,
+  Download,
 };
 
 /* ─── Hero Mockup: fake resume builder UI ─────────────────── */
@@ -34,8 +52,13 @@ function ResumeBuilderMockup() {
         <div className="hidden w-44 shrink-0 border-r border-border bg-muted/20 p-4 md:block">
           <div className="space-y-3">
             {['Personal', 'Experience', 'Education', 'Skills', 'Projects'].map((s, i) => (
-              <div key={s} className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold ${i === 1 ? 'bg-primary/10 text-primary' : 'text-muted-foreground'}`}>
-                <div className={`h-1.5 w-1.5 rounded-full ${i === 1 ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
+              <div
+                key={s}
+                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold ${i === 1 ? 'bg-primary/10 text-primary' : 'text-muted-foreground'}`}
+              >
+                <div
+                  className={`h-1.5 w-1.5 rounded-full ${i === 1 ? 'bg-primary' : 'bg-muted-foreground/30'}`}
+                />
                 {s}
               </div>
             ))}
@@ -77,8 +100,13 @@ function ResumeBuilderMockup() {
             </div>
             {/* Skill tags */}
             <div className="flex gap-2 pt-2">
-              {['React', 'Node.js', 'TypeScript'].map(tag => (
-                <span key={tag} className="rounded-md bg-primary/10 border border-primary/20 px-2 py-0.5 text-[10px] font-bold text-primary">{tag}</span>
+              {['React', 'Node.js', 'TypeScript'].map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-md bg-primary/10 border border-primary/20 px-2 py-0.5 text-[10px] font-bold text-primary"
+                >
+                  {tag}
+                </span>
               ))}
             </div>
           </div>
@@ -99,7 +127,9 @@ function AIEnhanceVisual() {
       {/* Before */}
       <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3 mb-3">
         <p className="text-[10px] font-bold uppercase text-red-400 mb-1">Before</p>
-        <p className="text-xs text-muted-foreground line-through decoration-red-400/50">Worked on the frontend team doing stuff with React</p>
+        <p className="text-xs text-muted-foreground line-through decoration-red-400/50">
+          Worked on the frontend team doing stuff with React
+        </p>
       </div>
       {/* Arrow */}
       <div className="flex justify-center my-2">
@@ -110,7 +140,10 @@ function AIEnhanceVisual() {
       {/* After */}
       <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3">
         <p className="text-[10px] font-bold uppercase text-emerald-400 mb-1">After</p>
-        <p className="text-xs text-foreground font-medium">Led migration of 40+ components to React 18, reducing bundle size by 34% and improving LCP by 1.2s</p>
+        <p className="text-xs text-foreground font-medium">
+          Led migration of 40+ components to React 18, reducing bundle size by 34% and improving LCP
+          by 1.2s
+        </p>
       </div>
     </div>
   );
@@ -122,15 +155,22 @@ function ATSScoreVisual() {
     <div className="rounded-2xl border border-border bg-card/60 p-6 backdrop-blur-sm">
       <div className="flex items-center gap-2 mb-5">
         <BarChart3 className="h-4 w-4 text-primary" />
-        <span className="text-xs font-black uppercase tracking-wider text-primary">ATS Analysis</span>
+        <span className="text-xs font-black uppercase tracking-wider text-primary">
+          ATS Analysis
+        </span>
       </div>
       {/* Score ring */}
       <div className="flex items-center justify-center mb-5">
         <div className="relative flex h-28 w-28 items-center justify-center rounded-full border-4 border-emerald-500/30">
-          <div className="absolute inset-1 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin-slow" style={{ animationDuration: '3s' }} />
+          <div
+            className="absolute inset-1 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin-slow"
+            style={{ animationDuration: '3s' }}
+          />
           <div className="text-center">
             <span className="text-2xl font-black text-foreground">95</span>
-            <span className="block text-[9px] font-bold uppercase text-muted-foreground">/ 100</span>
+            <span className="block text-[9px] font-bold uppercase text-muted-foreground">
+              / 100
+            </span>
           </div>
         </div>
       </div>
@@ -141,7 +181,7 @@ function ATSScoreVisual() {
           { label: 'Formatting ATS-safe', ok: true },
           { label: 'Section headings', ok: true },
           { label: 'Contact info placement', ok: true },
-        ].map(item => (
+        ].map((item) => (
           <div key={item.label} className="flex items-center gap-2">
             <Check className="h-3.5 w-3.5 text-emerald-400" />
             <span className="text-xs font-medium text-muted-foreground">{item.label}</span>
@@ -256,8 +296,12 @@ export default function ResumeBuilderLanding() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4 + i * 0.1 }}
                     >
-                      <span className="text-2xl font-black tracking-tight text-foreground md:text-3xl">{stat.value}</span>
-                      <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{stat.label}</span>
+                      <span className="text-2xl font-black tracking-tight text-foreground md:text-3xl">
+                        {stat.value}
+                      </span>
+                      <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                        {stat.label}
+                      </span>
                     </motion.div>
                   ))}
                 </div>
@@ -280,9 +324,16 @@ export default function ResumeBuilderLanding() {
         {/* ═══ SOCIAL PROOF STRIP ═════════════════════════════ */}
         <section className="border-y border-border py-8">
           <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-10 gap-y-4 px-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground/40">Trusted by professionals at</span>
-            {['Google', 'Meta', 'Stripe', 'Netflix', 'Vercel'].map(company => (
-              <span key={company} className="text-sm font-black tracking-tight text-muted-foreground/30">{company}</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground/40">
+              Trusted by professionals at
+            </span>
+            {['Google', 'Meta', 'Stripe', 'Netflix', 'Vercel'].map((company) => (
+              <span
+                key={company}
+                className="text-sm font-black tracking-tight text-muted-foreground/30"
+              >
+                {company}
+              </span>
             ))}
           </div>
         </section>
@@ -296,7 +347,9 @@ export default function ResumeBuilderLanding() {
               viewport={{ once: true }}
               className="mb-20"
             >
-              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">Features</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">
+                Features
+              </span>
               <h2 className="mt-4 max-w-2xl text-4xl font-black tracking-tighter text-foreground md:text-6xl">
                 {config.showcase.heading}
               </h2>
@@ -317,11 +370,17 @@ export default function ResumeBuilderLanding() {
                   AI that writes like you — but better
                 </h3>
                 <p className="mt-4 max-w-md text-base font-medium leading-relaxed text-muted-foreground">
-                  Paste a rough bullet point and watch AI transform it into a measurable, impact-driven achievement. Tailored to your industry and seniority level.
+                  Paste a rough bullet point and watch AI transform it into a measurable,
+                  impact-driven achievement. Tailored to your industry and seniority level.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  {['Action verbs', 'Quantified impact', 'Industry-tuned'].map(tag => (
-                    <span key={tag} className="rounded-lg bg-muted/60 border border-border px-3 py-1.5 text-xs font-bold text-muted-foreground">{tag}</span>
+                  {['Action verbs', 'Quantified impact', 'Industry-tuned'].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-lg bg-muted/60 border border-border px-3 py-1.5 text-xs font-bold text-muted-foreground"
+                    >
+                      {tag}
+                    </span>
                   ))}
                 </div>
               </motion.div>
@@ -351,11 +410,17 @@ export default function ResumeBuilderLanding() {
                   Beat the bots with ATS scoring
                 </h3>
                 <p className="mt-4 max-w-md text-base font-medium leading-relaxed text-muted-foreground">
-                  75% of resumes are rejected by ATS before a human sees them. Our real-time scanner checks keywords, formatting, and structure against any job description.
+                  75% of resumes are rejected by ATS before a human sees them. Our real-time scanner
+                  checks keywords, formatting, and structure against any job description.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  {['Real-time scan', 'Job matching', 'Fix suggestions'].map(tag => (
-                    <span key={tag} className="rounded-lg bg-muted/60 border border-border px-3 py-1.5 text-xs font-bold text-muted-foreground">{tag}</span>
+                  {['Real-time scan', 'Job matching', 'Fix suggestions'].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-lg bg-muted/60 border border-border px-3 py-1.5 text-xs font-bold text-muted-foreground"
+                    >
+                      {tag}
+                    </span>
                   ))}
                 </div>
               </motion.div>
@@ -385,11 +450,17 @@ export default function ResumeBuilderLanding() {
                   60+ templates recruiters actually like
                 </h3>
                 <p className="mt-4 max-w-md text-base font-medium leading-relaxed text-muted-foreground">
-                  Every template is ATS-tested and recruiter-approved. From minimalist to executive — pick a design that matches your industry and personality.
+                  Every template is ATS-tested and recruiter-approved. From minimalist to executive
+                  — pick a design that matches your industry and personality.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  {['ATS-safe', 'Custom colors', 'Multi-page'].map(tag => (
-                    <span key={tag} className="rounded-lg bg-muted/60 border border-border px-3 py-1.5 text-xs font-bold text-muted-foreground">{tag}</span>
+                  {['ATS-safe', 'Custom colors', 'Multi-page'].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-lg bg-muted/60 border border-border px-3 py-1.5 text-xs font-bold text-muted-foreground"
+                    >
+                      {tag}
+                    </span>
                   ))}
                 </div>
               </motion.div>
@@ -414,7 +485,9 @@ export default function ResumeBuilderLanding() {
               viewport={{ once: true }}
               className="mb-10 text-center"
             >
-              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">See the difference</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">
+                See the difference
+              </span>
               <h2 className="mt-4 text-3xl font-black tracking-tighter text-foreground md:text-5xl">
                 Before & after AI optimization
               </h2>
@@ -439,7 +512,9 @@ export default function ResumeBuilderLanding() {
               viewport={{ once: true }}
               className="mb-14"
             >
-              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">Everything included</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">
+                Everything included
+              </span>
               <h2 className="mt-4 text-3xl font-black tracking-tighter text-foreground md:text-5xl">
                 One builder. Every tool.
               </h2>
@@ -457,9 +532,16 @@ export default function ResumeBuilderLanding() {
                     transition={{ delay: i * 0.05 }}
                     className="group rounded-2xl border border-border bg-card/40 p-6 transition-all duration-300 hover:border-primary/40 hover:-translate-y-1"
                   >
-                    <Icon className="h-6 w-6 text-muted-foreground transition-colors duration-300 group-hover:text-primary" strokeWidth={1.5} />
-                    <h3 className="mt-4 text-sm font-black tracking-tight text-foreground">{feature.title}</h3>
-                    <p className="mt-1.5 text-xs font-medium leading-relaxed text-muted-foreground">{feature.description}</p>
+                    <Icon
+                      className="h-6 w-6 text-muted-foreground transition-colors duration-300 group-hover:text-primary"
+                      strokeWidth={1.5}
+                    />
+                    <h3 className="mt-4 text-sm font-black tracking-tight text-foreground">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-1.5 text-xs font-medium leading-relaxed text-muted-foreground">
+                      {feature.description}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -476,7 +558,9 @@ export default function ResumeBuilderLanding() {
               viewport={{ once: true }}
               className="mb-16 text-center"
             >
-              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">How it works</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">
+                How it works
+              </span>
               <h2 className="mt-4 text-4xl font-black tracking-tighter text-foreground md:text-6xl">
                 {config.howItWorks.title}
               </h2>
@@ -498,8 +582,12 @@ export default function ResumeBuilderLanding() {
                       {step.number}
                     </div>
                     <div className="pt-2">
-                      <h3 className="text-xl font-black tracking-tight text-foreground md:text-2xl">{step.title}</h3>
-                      <p className="mt-2 max-w-md text-base font-medium leading-relaxed text-muted-foreground">{step.description}</p>
+                      <h3 className="text-xl font-black tracking-tight text-foreground md:text-2xl">
+                        {step.title}
+                      </h3>
+                      <p className="mt-2 max-w-md text-base font-medium leading-relaxed text-muted-foreground">
+                        {step.description}
+                      </p>
                     </div>
                   </motion.div>
                 ))}
@@ -517,7 +605,9 @@ export default function ResumeBuilderLanding() {
               viewport={{ once: true }}
               className="mb-14 text-center"
             >
-              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">Testimonials</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">
+                Testimonials
+              </span>
               <h2 className="mt-4 text-4xl font-black tracking-tighter text-foreground md:text-5xl">
                 {config.testimonials.heading}
               </h2>
@@ -545,9 +635,12 @@ export default function ResumeBuilderLanding() {
                   className="h-12 w-12 rounded-full border-2 border-border object-cover"
                 />
                 <div className="text-left">
-                  <p className="text-sm font-black text-foreground">{config.testimonials.items[0]?.name}</p>
+                  <p className="text-sm font-black text-foreground">
+                    {config.testimonials.items[0]?.name}
+                  </p>
                   <p className="text-xs font-medium text-muted-foreground">
-                    {config.testimonials.items[0]?.role} at {config.testimonials.items[0]?.company} · {config.testimonials.items[0]?.metric}
+                    {config.testimonials.items[0]?.role} at {config.testimonials.items[0]?.company}{' '}
+                    · {config.testimonials.items[0]?.metric}
                   </p>
                 </div>
               </div>
@@ -564,7 +657,9 @@ export default function ResumeBuilderLanding() {
               {config.hero.stats.map((s, i) => (
                 <div key={i} className="bg-background/80 px-6 py-5 text-center">
                   <div className="text-2xl font-black text-foreground">{s.value}</div>
-                  <div className="mt-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{s.label}</div>
+                  <div className="mt-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    {s.label}
+                  </div>
                 </div>
               ))}
             </motion.div>
@@ -574,7 +669,9 @@ export default function ResumeBuilderLanding() {
         {/* ═══ CTA ════════════════════════════════════════════ */}
         <section className="relative overflow-hidden py-28 md:py-40">
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-            <span className="select-none whitespace-nowrap text-[18vw] font-black leading-none text-foreground/[0.02]">RESUME</span>
+            <span className="select-none whitespace-nowrap text-[18vw] font-black leading-none text-foreground/[0.02]">
+              RESUME
+            </span>
           </div>
 
           <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6">
@@ -600,8 +697,11 @@ export default function ResumeBuilderLanding() {
                 </Link>
               </div>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-                {['Free forever plan', 'No credit card', 'Export anytime'].map(p => (
-                  <span key={p} className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground/60">
+                {['Free forever plan', 'No credit card', 'Export anytime'].map((p) => (
+                  <span
+                    key={p}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground/60"
+                  >
                     <Check className="h-3.5 w-3.5 text-primary/60" />
                     {p}
                   </span>

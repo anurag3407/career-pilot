@@ -23,7 +23,8 @@ export function diffLines(one, two) {
   }
 
   const result = [];
-  let i = n, j = m;
+  let i = n,
+    j = m;
 
   while (i > 0 || j > 0) {
     if (i > 0 && j > 0 && lineArray1[i - 1] === lineArray2[j - 1]) {

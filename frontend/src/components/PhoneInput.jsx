@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { ChevronDown, Search } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { COUNTRY_CODES } from '../constants/countryCodes'
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { ChevronDown, Search } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { COUNTRY_CODES } from '../constants/countryCodes';
 
 /**
  * PhoneInput
@@ -22,69 +22,65 @@ export default function PhoneInput({
   onDigitsChange,
   error,
 }) {
-  const [isOpen, setIsOpen]   = useState(false)
-  const [query,  setQuery]    = useState('')
-  const containerRef          = useRef(null)
-  const searchRef             = useRef(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const containerRef = useRef(null);
+  const searchRef = useRef(null);
 
   // Derive selected country object
   const selected = useMemo(
-    () => COUNTRY_CODES.find(c => c.code === countryCode) ?? COUNTRY_CODES[0],
+    () => COUNTRY_CODES.find((c) => c.code === countryCode) ?? COUNTRY_CODES[0],
     [countryCode]
-  )
+  );
 
   // Filter list by query
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return COUNTRY_CODES
+    const q = query.trim().toLowerCase();
+    if (!q) return COUNTRY_CODES;
     return COUNTRY_CODES.filter(
-      c =>
-        c.country.toLowerCase().includes(q) ||
-        c.code.includes(q) ||
-        c.flag.includes(q)
-    )
-  }, [query])
+      (c) => c.country.toLowerCase().includes(q) || c.code.includes(q) || c.flag.includes(q)
+    );
+  }, [query]);
 
   // Close on outside click
   useEffect(() => {
     function handleClick(e) {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setIsOpen(false)
-        setQuery('')
+        setIsOpen(false);
+        setQuery('');
       }
     }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   // Focus search when dropdown opens
   useEffect(() => {
     if (isOpen) {
-      window.requestAnimationFrame(() => searchRef.current?.focus())
+      window.requestAnimationFrame(() => searchRef.current?.focus());
     } else {
-      setQuery('')
+      setQuery('');
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   function selectCountry(code) {
-    onCountryChange?.(code)
-    setIsOpen(false)
+    onCountryChange?.(code);
+    setIsOpen(false);
   }
 
   function handleDigitsChange(e) {
-    const cleaned = e.target.value.replace(/\D/g, '')
-    onDigitsChange?.(cleaned)
+    const cleaned = e.target.value.replace(/\D/g, '');
+    onDigitsChange?.(cleaned);
   }
 
   return (
     <div>
       <div className="flex gap-2">
-
         {/* ── Country code trigger ── */}
         <div ref={containerRef} className="relative shrink-0">
           <button
             type="button"
-            onClick={() => setIsOpen(o => !o)}
+            onClick={() => setIsOpen((o) => !o)}
             aria-haspopup="listbox"
             aria-expanded={isOpen}
             aria-label="Select country code"
@@ -95,8 +91,8 @@ export default function PhoneInput({
               error
                 ? 'border-red-500 focus:ring-red-400/30'
                 : isOpen
-                ? 'border-primary ring-2 ring-primary/20'
-                : 'border-border hover:border-primary/50'
+                  ? 'border-primary ring-2 ring-primary/20'
+                  : 'border-border hover:border-primary/50'
             )}
           >
             {/* Short form: flag + code only */}
@@ -104,10 +100,7 @@ export default function PhoneInput({
             <span>{selected.code}</span>
             <ChevronDown
               size={14}
-              className={cn(
-                'text-muted-foreground transition-transform',
-                isOpen && 'rotate-180'
-              )}
+              className={cn('text-muted-foreground transition-transform', isOpen && 'rotate-180')}
             />
           </button>
 
@@ -128,7 +121,7 @@ export default function PhoneInput({
                   ref={searchRef}
                   type="text"
                   value={query}
-                  onChange={e => setQuery(e.target.value)}
+                  onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search country..."
                   className="w-full bg-transparent py-2.5 pl-8 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
                 />
@@ -137,7 +130,7 @@ export default function PhoneInput({
               {/* Options list */}
               <div className="max-h-56 overflow-y-auto p-1">
                 {filtered.length > 0 ? (
-                  filtered.map(c => (
+                  filtered.map((c) => (
                     <button
                       key={`${c.code}-${c.country}`}
                       type="button"
@@ -180,9 +173,7 @@ export default function PhoneInput({
           className={cn(
             'flex-1 bg-background/50 border rounded-xl px-4 py-2 transition-colors',
             'focus:outline-none focus:ring-2 focus:ring-primary/30',
-            error
-              ? 'border-red-500 focus:ring-red-400/30'
-              : 'border-border hover:border-primary/50'
+            error ? 'border-red-500 focus:ring-red-400/30' : 'border-border hover:border-primary/50'
           )}
         />
       </div>
@@ -193,5 +184,5 @@ export default function PhoneInput({
         </p>
       )}
     </div>
-  )
+  );
 }

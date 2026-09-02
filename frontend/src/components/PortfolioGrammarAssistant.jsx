@@ -1,35 +1,26 @@
-import React from "react";
-import {
-  SpellCheck,
-  MessageSquareWarning,
-  BadgeCheck,
-  PenTool,
-  TrendingUp,
-} from "lucide-react";
+import React from 'react';
+import { SpellCheck, MessageSquareWarning, BadgeCheck, PenTool, TrendingUp } from 'lucide-react';
 
 const grammarData = {
   score: 88,
   grammar: [
     "Replace 'I done many projects' with 'I have completed many projects'.",
-    "Avoid repeated words and improve sentence structure.",
+    'Avoid repeated words and improve sentence structure.',
   ],
   clarity: [
-    "Add measurable achievements in project descriptions.",
-    "Use concise and impactful sentences.",
+    'Add measurable achievements in project descriptions.',
+    'Use concise and impactful sentences.',
   ],
   tone: [
-    "Maintain a professional and confident writing style.",
-    "Avoid casual phrases and use industry-specific terminology.",
+    'Maintain a professional and confident writing style.',
+    'Avoid casual phrases and use industry-specific terminology.',
   ],
-  spelling: [
-    "No major spelling mistakes detected.",
-  ],
+  spelling: ['No major spelling mistakes detected.'],
 };
 
 const PortfolioGrammarAssistant = () => {
   return (
     <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
-      
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <PenTool className="w-6 h-6 text-primary" />
@@ -40,17 +31,12 @@ const PortfolioGrammarAssistant = () => {
 
       {/* Quality Score */}
       <div className="mb-6 p-4 rounded-xl border border-border">
-        <p className="text-sm text-muted-foreground">
-          Content Quality Score
-        </p>
-        <p className="text-4xl font-black text-emerald-500">
-          {grammarData.score}%
-        </p>
+        <p className="text-sm text-muted-foreground">Content Quality Score</p>
+        <p className="text-4xl font-black text-emerald-500">{grammarData.score}%</p>
       </div>
 
       {/* Suggestions */}
       <div className="grid md:grid-cols-2 gap-4">
-
         <div className="p-4 rounded-xl border border-border">
           <div className="flex items-center gap-2 mb-3">
             <SpellCheck className="w-5 h-5 text-primary" />
@@ -63,7 +49,6 @@ const PortfolioGrammarAssistant = () => {
             ))}
           </ul>
         </div>
-
 
         <div className="p-4 rounded-xl border border-border">
           <div className="flex items-center gap-2 mb-3">
@@ -78,7 +63,6 @@ const PortfolioGrammarAssistant = () => {
           </ul>
         </div>
 
-
         <div className="p-4 rounded-xl border border-border">
           <div className="flex items-center gap-2 mb-3">
             <BadgeCheck className="w-5 h-5 text-emerald-500" />
@@ -92,7 +76,6 @@ const PortfolioGrammarAssistant = () => {
           </ul>
         </div>
 
-
         <div className="p-4 rounded-xl border border-border">
           <div className="flex items-center gap-2 mb-3">
             <TrendingUp className="w-5 h-5 text-purple-500" />
@@ -105,9 +88,7 @@ const PortfolioGrammarAssistant = () => {
             ))}
           </ul>
         </div>
-
       </div>
-
     </div>
   );
 };

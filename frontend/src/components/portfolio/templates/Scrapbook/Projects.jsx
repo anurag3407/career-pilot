@@ -47,7 +47,6 @@ export default function Projects() {
 
   return (
     <section className="relative w-full py-20 px-6 md:px-12 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
-      
       {/* Background doodles */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-16 left-10 text-6xl">✦</div>
@@ -57,7 +56,6 @@ export default function Projects() {
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        
         {/* Heading */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-200/10 border border-amber-300/20 text-amber-200 text-sm font-medium mb-5">
@@ -70,8 +68,8 @@ export default function Projects() {
           </h2>
 
           <p className="max-w-2xl mx-auto text-slate-300 text-lg leading-relaxed">
-            A curated scrapbook of ideas, experiments, and creations that reflect
-            my passion for building meaningful digital experiences.
+            A curated scrapbook of ideas, experiments, and creations that reflect my passion for
+            building meaningful digital experiences.
           </p>
         </div>
 
@@ -82,7 +80,6 @@ export default function Projects() {
               key={index}
               className={`relative ${project.rotation} hover:rotate-0 transition-all duration-500 hover:scale-105`}
             >
-              
               {/* Tape */}
               <div
                 className={`absolute -top-4 ${project.tape} w-16 h-6 bg-yellow-200/70 backdrop-blur-sm rotate-2 shadow-md z-20`}
@@ -90,13 +87,10 @@ export default function Projects() {
 
               {/* Card */}
               <div className="bg-stone-100 text-slate-900 rounded-lg shadow-2xl border border-stone-300 p-6 min-h-[420px] flex flex-col justify-between hover:shadow-amber-100/20">
-                
                 <div>
                   <div className="text-5xl mb-5">{project.emoji}</div>
 
-                  <h3 className="text-2xl font-extrabold mb-4 leading-tight">
-                    {project.title}
-                  </h3>
+                  <h3 className="text-2xl font-extrabold mb-4 leading-tight">{project.title}</h3>
 
                   <p className="text-slate-700 leading-relaxed text-sm md:text-base mb-6">
                     {project.description}

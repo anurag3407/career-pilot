@@ -4,7 +4,7 @@ import { Github, Linkedin, Twitter, Mail, Download, Sparkles } from 'lucide-reac
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
 };
 
 const staggerContainer = {
@@ -12,9 +12,9 @@ const staggerContainer = {
 };
 
 export default function Hero({ data }) {
-  const nameParts = data.personal.name.split(" ");
+  const nameParts = data.personal.name.split(' ');
   const firstName = nameParts[0];
-  const lastName = nameParts.slice(1).join(" ");
+  const lastName = nameParts.slice(1).join(' ');
 
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 py-24 overflow-hidden text-left">
@@ -29,7 +29,7 @@ export default function Hero({ data }) {
           transition={{
             duration: 22,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: 'easeInOut',
           }}
           className="absolute top-[-10%] left-[-5%] w-[450px] h-[450px] rounded-full bg-cyan-600/15 blur-[120px]"
         />
@@ -42,7 +42,7 @@ export default function Hero({ data }) {
           transition={{
             duration: 26,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: 'easeInOut',
           }}
           className="absolute bottom-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full bg-indigo-600/15 blur-[130px]"
         />
@@ -55,7 +55,7 @@ export default function Hero({ data }) {
           transition={{
             duration: 18,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: 'easeInOut',
           }}
           className="absolute top-1/3 left-1/3 w-[350px] h-[350px] rounded-full bg-purple-600/10 blur-[110px]"
         />
@@ -94,9 +94,7 @@ export default function Hero({ data }) {
           {/* Title */}
           <div className="flex items-center gap-2 mb-5">
             <Sparkles size={16} className="text-cyan-400 animate-pulse" />
-            <p className="text-gray-300 text-xl font-medium tracking-wide">
-              {data.personal.title}
-            </p>
+            <p className="text-gray-300 text-xl font-medium tracking-wide">{data.personal.title}</p>
           </div>
 
           {/* Tagline */}
@@ -127,21 +125,41 @@ export default function Hero({ data }) {
           {/* Social Icons */}
           <div className="flex items-center gap-4">
             {[
-              { icon: <Github size={19} />, href: data.socials.github, label: "GitHub", hover: "hover:text-white hover:border-white hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]" },
-              { icon: <Linkedin size={19} />, href: data.socials.linkedin, label: "LinkedIn", hover: "hover:text-blue-400 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]" },
-              { icon: <Twitter size={19} />, href: data.socials.twitter, label: "Twitter", hover: "hover:text-cyan-400 hover:border-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]" },
-            ].filter(s => s.href).map(({ icon, href, label, hover }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className={`w-11 h-11 flex items-center justify-center rounded-xl bg-[#090b20]/80 border border-gray-800 text-gray-400 transition-all duration-300 ${hover}`}
-              >
-                {icon}
-              </a>
-            ))}
+              {
+                icon: <Github size={19} />,
+                href: data.socials.github,
+                label: 'GitHub',
+                hover:
+                  'hover:text-white hover:border-white hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]',
+              },
+              {
+                icon: <Linkedin size={19} />,
+                href: data.socials.linkedin,
+                label: 'LinkedIn',
+                hover:
+                  'hover:text-blue-400 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]',
+              },
+              {
+                icon: <Twitter size={19} />,
+                href: data.socials.twitter,
+                label: 'Twitter',
+                hover:
+                  'hover:text-cyan-400 hover:border-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]',
+              },
+            ]
+              .filter((s) => s.href)
+              .map(({ icon, href, label, hover }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className={`w-11 h-11 flex items-center justify-center rounded-xl bg-[#090b20]/80 border border-gray-800 text-gray-400 transition-all duration-300 ${hover}`}
+                >
+                  {icon}
+                </a>
+              ))}
           </div>
         </motion.div>
 
@@ -149,7 +167,10 @@ export default function Hero({ data }) {
         <motion.div variants={fadeUp} className="lg:col-span-5 flex flex-col items-center">
           <div className="relative group mb-10">
             {/* Spinning/pulsing neon border */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-500 to-purple-600 animate-spin blur-md opacity-60 group-hover:opacity-80 transition-all duration-500" style={{ animationDuration: '9s' }} />
+            <div
+              className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-500 to-purple-600 animate-spin blur-md opacity-60 group-hover:opacity-80 transition-all duration-500"
+              style={{ animationDuration: '9s' }}
+            />
             <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 blur-lg opacity-40 group-hover:opacity-60 transition-all duration-500" />
             <img
               src={data.personal.avatar}
@@ -161,18 +182,34 @@ export default function Hero({ data }) {
           {/* Stats Bento Box Grid */}
           <div className="grid grid-cols-3 gap-4 w-full max-w-md">
             {[
-              { value: `${data.stats.yearsExperience}+`, label: "Years Exp", gradient: "from-cyan-400 to-blue-400" },
-              { value: `${data.stats.projectsCompleted}+`, label: "Completed", gradient: "from-blue-400 to-indigo-400" },
-              { value: `${data.stats.happyClients}+`, label: "Clients", gradient: "from-indigo-400 to-purple-400" },
+              {
+                value: `${data.stats.yearsExperience}+`,
+                label: 'Years Exp',
+                gradient: 'from-cyan-400 to-blue-400',
+              },
+              {
+                value: `${data.stats.projectsCompleted}+`,
+                label: 'Completed',
+                gradient: 'from-blue-400 to-indigo-400',
+              },
+              {
+                value: `${data.stats.happyClients}+`,
+                label: 'Clients',
+                gradient: 'from-indigo-400 to-purple-400',
+              },
             ].map(({ value, label, gradient }) => (
               <div
                 key={label}
                 className="p-3.5 rounded-2xl bg-[#0a0d24]/75 border border-indigo-500/10 text-center hover:border-cyan-500/30 transition-all duration-300 shadow-lg"
               >
-                <div className={`text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r ${gradient}`}>
+                <div
+                  className={`text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r ${gradient}`}
+                >
                   {value}
                 </div>
-                <div className="text-gray-400 text-xs mt-1 font-semibold tracking-wider uppercase">{label}</div>
+                <div className="text-gray-400 text-xs mt-1 font-semibold tracking-wider uppercase">
+                  {label}
+                </div>
               </div>
             ))}
           </div>

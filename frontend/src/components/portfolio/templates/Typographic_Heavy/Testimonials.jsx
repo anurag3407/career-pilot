@@ -9,7 +9,9 @@ export default function Testimonials({ testimonials }) {
           {testimonials.map((t, i) => (
             <div key={i} className="p-6 rounded-xl border border-white/10 bg-white/5">
               <p className="italic mb-4">"{t.content}"</p>
-              <p className="font-bold">— {t.author}, <span className="opacity-70">{t.role}</span></p>
+              <p className="font-bold">
+                — {t.author}, <span className="opacity-70">{t.role}</span>
+              </p>
             </div>
           ))}
         </div>

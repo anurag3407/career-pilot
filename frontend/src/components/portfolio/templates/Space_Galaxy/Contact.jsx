@@ -24,7 +24,8 @@ export default function Contact({ personal, socials }) {
             Initiate Contact
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Ready to start a new mission? Send a transmission across the galaxy and let's explore new possibilities together.
+            Ready to start a new mission? Send a transmission across the galaxy and let's explore
+            new possibilities together.
           </p>
         </motion.div>
 
@@ -40,7 +41,7 @@ export default function Contact({ personal, socials }) {
               <span className="w-8 h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full" />
               Comms Channels
             </h3>
-            
+
             <div className="space-y-6">
               {personal?.email && (
                 <div className="flex items-start gap-4">
@@ -49,21 +50,29 @@ export default function Contact({ personal, socials }) {
                   </div>
                   <div>
                     <p className="text-sm text-gray-400 uppercase tracking-wider mb-1">Email</p>
-                    <a href={`mailto:${personal.email}`} className="text-white hover:text-cyan-400 transition-colors text-lg">
+                    <a
+                      href={`mailto:${personal.email}`}
+                      className="text-white hover:text-cyan-400 transition-colors text-lg"
+                    >
                       {personal.email}
                     </a>
                   </div>
                 </div>
               )}
-              
+
               {personal?.phone && (
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400">
                     <Phone className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 uppercase tracking-wider mb-1">Secure Line</p>
-                    <a href={`tel:${personal.phone}`} className="text-white hover:text-cyan-400 transition-colors text-lg">
+                    <p className="text-sm text-gray-400 uppercase tracking-wider mb-1">
+                      Secure Line
+                    </p>
+                    <a
+                      href={`tel:${personal.phone}`}
+                      className="text-white hover:text-cyan-400 transition-colors text-lg"
+                    >
                       {personal.phone}
                     </a>
                   </div>
@@ -76,7 +85,9 @@ export default function Contact({ personal, socials }) {
                     <MapPin className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 uppercase tracking-wider mb-1">Coordinates</p>
+                    <p className="text-sm text-gray-400 uppercase tracking-wider mb-1">
+                      Coordinates
+                    </p>
                     <p className="text-white text-lg">{personal.location}</p>
                   </div>
                 </div>
@@ -85,7 +96,9 @@ export default function Contact({ personal, socials }) {
 
             {socials && socials.length > 0 && (
               <div className="mt-10 pt-8 border-t border-white/10">
-                <p className="text-sm text-gray-400 uppercase tracking-wider mb-4">Social Network</p>
+                <p className="text-sm text-gray-400 uppercase tracking-wider mb-4">
+                  Social Network
+                </p>
                 <div className="flex gap-4">
                   {socials.map((social, i) => {
                     const Icon = iconMap[social.platform?.toLowerCase()] || ExternalLink;
@@ -118,33 +131,39 @@ export default function Contact({ personal, socials }) {
               <span className="w-8 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" />
               Send Transmission
             </h3>
-            
+
             <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
               <div className="space-y-2">
-                <label className="text-xs text-gray-400 uppercase tracking-widest pl-1">Identifier</label>
-                <input 
-                  type="text" 
-                  placeholder="Your Name" 
+                <label className="text-xs text-gray-400 uppercase tracking-widest pl-1">
+                  Identifier
+                </label>
+                <input
+                  type="text"
+                  placeholder="Your Name"
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs text-gray-400 uppercase tracking-widest pl-1">Return Frequency</label>
-                <input 
-                  type="email" 
-                  placeholder="Your Email" 
+                <label className="text-xs text-gray-400 uppercase tracking-widest pl-1">
+                  Return Frequency
+                </label>
+                <input
+                  type="email"
+                  placeholder="Your Email"
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs text-gray-400 uppercase tracking-widest pl-1">Message Payload</label>
-                <textarea 
+                <label className="text-xs text-gray-400 uppercase tracking-widest pl-1">
+                  Message Payload
+                </label>
+                <textarea
                   rows={4}
-                  placeholder="Your Message" 
+                  placeholder="Your Message"
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all resize-none"
                 ></textarea>
               </div>
-              <motion.button 
+              <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold tracking-widest uppercase text-sm shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] transition-shadow"

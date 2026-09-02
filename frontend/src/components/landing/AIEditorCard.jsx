@@ -1,6 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, MousePointerClick, Palette, MessageSquare, Wand2 } from 'lucide-react';
+import {
+  Sparkles,
+  ArrowRight,
+  MousePointerClick,
+  Palette,
+  MessageSquare,
+  Wand2,
+} from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 /**
@@ -56,9 +63,9 @@ export default function AIEditorCard({ onOpen }) {
               </h2>
 
               <p className="text-neutral-400 text-base md:text-lg max-w-xl leading-relaxed">
-                Open the F1 Racing template in a side-by-side editor. Click any element
-                to edit text or change colors. Chat with the AI to rewrite whole sections.
-                Save without deploying — your work stays in the browser.
+                Open the F1 Racing template in a side-by-side editor. Click any element to edit text
+                or change colors. Chat with the AI to rewrite whole sections. Save without deploying
+                — your work stays in the browser.
               </p>
 
               <div className="flex flex-wrap gap-3 pt-2">
@@ -120,9 +127,7 @@ export default function AIEditorCard({ onOpen }) {
                 <div className="grid grid-cols-2">
                   <div className="p-4 border-r border-neutral-800 bg-[#070709]">
                     <div className="aspect-[4/5] rounded-md bg-gradient-to-br from-[#121216] to-[#070709] border border-neutral-800 p-3 space-y-2">
-                      <div className="text-[8px] font-mono text-[#E10600] tracking-widest">
-                        #33
-                      </div>
+                      <div className="text-[8px] font-mono text-[#E10600] tracking-widest">#33</div>
                       <div className="text-xs font-bold text-white leading-tight">
                         ALEX VERSTAPPEN
                       </div>
@@ -171,9 +176,7 @@ export default function AIEditorCard({ onOpen }) {
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 rounded-md border border-neutral-800 bg-neutral-950 px-2 py-1.5">
-                      <div className="flex-1 text-[8px] text-neutral-600">
-                        Ask anything...
-                      </div>
+                      <div className="flex-1 text-[8px] text-neutral-600">Ask anything...</div>
                       <Sparkles className="h-3 w-3 text-[#E10600]" />
                     </div>
                   </div>

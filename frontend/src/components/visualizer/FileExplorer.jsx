@@ -2,14 +2,23 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
 import { projectVisualizerApi } from '../../services/api';
 import CodeViewer from './CodeViewer';
-import { Folder, FolderOpen, FileCode, ChevronRight, ChevronDown, Loader2, Search, FileJson } from 'lucide-react';
+import {
+  Folder,
+  FolderOpen,
+  FileCode,
+  ChevronRight,
+  ChevronDown,
+  Loader2,
+  Search,
+  FileJson,
+} from 'lucide-react';
 import { cn } from '../../lib/utils';
 import toast from 'react-hot-toast';
 
 const buildFileTree = (nodes) => {
   const root = { name: 'root', type: 'folder', children: {}, path: '' };
 
-  nodes.forEach(node => {
+  nodes.forEach((node) => {
     const parts = node.id.split('/');
     let current = root;
     let currentPath = '';
@@ -24,7 +33,7 @@ const buildFileTree = (nodes) => {
           type: isFile ? 'file' : 'folder',
           path: currentPath,
           children: isFile ? null : {},
-          data: isFile ? node.data : null
+          data: isFile ? node.data : null,
         };
       }
       current = current.children[part];
@@ -34,7 +43,14 @@ const buildFileTree = (nodes) => {
   return root;
 };
 
-const FileTreeNode = ({ node, level = 0, onSelect, selectedPath, expandedFolders, toggleFolder }) => {
+const FileTreeNode = ({
+  node,
+  level = 0,
+  onSelect,
+  selectedPath,
+  expandedFolders,
+  toggleFolder,
+}) => {
   const isFolder = node.type === 'folder';
   const isExpanded = expandedFolders.has(node.path);
   const isSelected = selectedPath === node.path;
@@ -47,11 +63,11 @@ const FileTreeNode = ({ node, level = 0, onSelect, selectedPath, expandedFolders
             if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
             return a.name.localeCompare(b.name);
           })
-          .map(child => (
-            <FileTreeNode 
-              key={child.path} 
-              node={child} 
-              level={0} 
+          .map((child) => (
+            <FileTreeNode
+              key={child.path}
+              node={child}
+              level={0}
               onSelect={onSelect}
               selectedPath={selectedPath}
               expandedFolders={expandedFolders}
@@ -64,26 +80,34 @@ const FileTreeNode = ({ node, level = 0, onSelect, selectedPath, expandedFolders
 
   return (
     <div className="flex flex-col w-full">
-      <div 
+      <div
         className={cn(
-          "flex items-center gap-1.5 py-1 px-2 cursor-pointer transition-colors whitespace-nowrap",
-          isSelected ? "bg-cyan-500/20 text-cyan-400" : "hover:bg-white/5 text-slate-300"
+          'flex items-center gap-1.5 py-1 px-2 cursor-pointer transition-colors whitespace-nowrap',
+          isSelected ? 'bg-cyan-500/20 text-cyan-400' : 'hover:bg-white/5 text-slate-300'
         )}
         style={{ paddingLeft: `${level * 12 + 8}px` }}
-        onClick={() => isFolder ? toggleFolder(node.path) : onSelect(node)}
+        onClick={() => (isFolder ? toggleFolder(node.path) : onSelect(node))}
       >
         {isFolder ? (
-          isExpanded ? <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          isExpanded ? (
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          ) : (
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          )
         ) : (
           <span className="w-3.5 h-3.5 shrink-0" /> // spacer
         )}
 
         {isFolder ? (
-          isExpanded ? <FolderOpen className="w-4 h-4 text-violet-400 shrink-0" /> : <Folder className="w-4 h-4 text-violet-400 shrink-0" />
+          isExpanded ? (
+            <FolderOpen className="w-4 h-4 text-violet-400 shrink-0" />
+          ) : (
+            <Folder className="w-4 h-4 text-violet-400 shrink-0" />
+          )
         ) : (
           <FileCode className="w-4 h-4 text-slate-400 shrink-0" />
         )}
-        
+
         <span className="text-sm truncate">{node.name}</span>
       </div>
 
@@ -94,11 +118,11 @@ const FileTreeNode = ({ node, level = 0, onSelect, selectedPath, expandedFolders
               if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
               return a.name.localeCompare(b.name);
             })
-            .map(child => (
-              <FileTreeNode 
-                key={child.path} 
-                node={child} 
-                level={level + 1} 
+            .map((child) => (
+              <FileTreeNode
+                key={child.path}
+                node={child}
+                level={level + 1}
                 onSelect={onSelect}
                 selectedPath={selectedPath}
                 expandedFolders={expandedFolders}
@@ -112,7 +136,8 @@ const FileTreeNode = ({ node, level = 0, onSelect, selectedPath, expandedFolders
 };
 
 const FileExplorer = () => {
-  const { fileGraph, sessionId, setChatExpanded, addMessage, setChatMode } = useProjectVisualizerStore();
+  const { fileGraph, sessionId, setChatExpanded, addMessage, setChatMode } =
+    useProjectVisualizerStore();
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [selectedNode, setSelectedNode] = useState(null);
   const [fileContent, setFileContent] = useState('');
@@ -125,7 +150,7 @@ const FileExplorer = () => {
     if (!fileGraph || !fileGraph.nodes) return null;
     let nodes = fileGraph.nodes;
     if (searchQuery) {
-      nodes = nodes.filter(n => n.id.toLowerCase().includes(searchQuery.toLowerCase()));
+      nodes = nodes.filter((n) => n.id.toLowerCase().includes(searchQuery.toLowerCase()));
     }
     return buildFileTree(nodes);
   }, [fileGraph, searchQuery]);
@@ -169,9 +194,9 @@ const FileExplorer = () => {
     if (!selectedNode) return;
     setChatExpanded(true);
     setChatMode('qa');
-    addMessage({ 
-      role: 'user', 
-      content: `[Context: I am looking at file '${selectedNode.path}']\nCan you explain this file in more detail?` 
+    addMessage({
+      role: 'user',
+      content: `[Context: I am looking at file '${selectedNode.path}']\nCan you explain this file in more detail?`,
     });
   };
 
@@ -184,9 +209,9 @@ const FileExplorer = () => {
         <div className="p-3 border-b border-white/10">
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-            <input 
-              type="text" 
-              placeholder="Search files..." 
+            <input
+              type="text"
+              placeholder="Search files..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-slate-200 outline-none focus:border-cyan-500/50"
@@ -194,9 +219,9 @@ const FileExplorer = () => {
           </div>
         </div>
         <div className="flex-1 overflow-auto custom-scrollbar p-2">
-          <FileTreeNode 
-            node={fileTree} 
-            onSelect={handleSelect} 
+          <FileTreeNode
+            node={fileTree}
+            onSelect={handleSelect}
             selectedPath={selectedNode?.path}
             expandedFolders={expandedFolders}
             toggleFolder={toggleFolder}
@@ -208,21 +233,26 @@ const FileExplorer = () => {
       <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden">
         {selectedNode ? (
           <>
-            <div className={cn("flex-1 h-full p-4 flex flex-col", explanation ? "md:w-2/3 border-r border-white/10" : "w-full")}>
+            <div
+              className={cn(
+                'flex-1 h-full p-4 flex flex-col',
+                explanation ? 'md:w-2/3 border-r border-white/10' : 'w-full'
+              )}
+            >
               {isLoading ? (
                 <div className="flex-1 flex items-center justify-center">
                   <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
                 </div>
               ) : (
-                <CodeViewer 
-                  code={fileContent} 
-                  language={selectedNode.data?.language} 
+                <CodeViewer
+                  code={fileContent}
+                  language={selectedNode.data?.language}
                   fileName={selectedNode.path}
                   onExplain={handleExplain}
                 />
               )}
             </div>
-            
+
             {explanation && (
               <div className="md:w-1/3 w-full h-full bg-[#0a0f1c] overflow-y-auto custom-scrollbar border-t md:border-t-0 border-white/10 flex flex-col">
                 <div className="p-4 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[#0a0f1c]/95 backdrop-blur z-10">
@@ -230,53 +260,65 @@ const FileExplorer = () => {
                     <FileJson className="w-4 h-4 text-violet-400" />
                     AI Explanation
                   </h3>
-                  <button 
+                  <button
                     onClick={() => setExplanation(null)}
                     className="text-xs text-slate-400 hover:text-white"
                   >
                     Close
                   </button>
                 </div>
-                
+
                 <div className="p-6 space-y-6">
                   {isExplaining ? (
-                     <div className="flex flex-col items-center justify-center py-12 text-slate-400">
-                       <Loader2 className="w-8 h-8 animate-spin text-violet-400 mb-4" />
-                       <p>Analyzing file structure...</p>
-                     </div>
+                    <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                      <Loader2 className="w-8 h-8 animate-spin text-violet-400 mb-4" />
+                      <p>Analyzing file structure...</p>
+                    </div>
                   ) : (
                     <>
                       <div>
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Purpose</h4>
-                        <p className="text-sm text-slate-300 leading-relaxed">{explanation.purpose}</p>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                          Purpose
+                        </h4>
+                        <p className="text-sm text-slate-300 leading-relaxed">
+                          {explanation.purpose}
+                        </p>
                       </div>
-                      
+
                       {explanation.keyFunctions && (
                         <div>
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Key Functions</h4>
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                            Key Functions
+                          </h4>
                           <ul className="space-y-2">
-                            {Array.isArray(explanation.keyFunctions) 
-                              ? explanation.keyFunctions.map((fn, i) => (
-                                  <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 mt-1.5 shrink-0" />
-                                    {fn}
-                                  </li>
-                                ))
-                              : <p className="text-sm text-slate-300">{explanation.keyFunctions}</p>
-                            }
+                            {Array.isArray(explanation.keyFunctions) ? (
+                              explanation.keyFunctions.map((fn, i) => (
+                                <li
+                                  key={i}
+                                  className="text-sm text-slate-300 flex items-start gap-2"
+                                >
+                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 mt-1.5 shrink-0" />
+                                  {fn}
+                                </li>
+                              ))
+                            ) : (
+                              <p className="text-sm text-slate-300">{explanation.keyFunctions}</p>
+                            )}
                           </ul>
                         </div>
                       )}
 
                       {explanation.dependencies && (
                         <div>
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Dependencies</h4>
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                            Dependencies
+                          </h4>
                           <p className="text-sm text-slate-300">{explanation.dependencies}</p>
                         </div>
                       )}
-                      
+
                       <div className="pt-4 border-t border-white/10">
-                        <button 
+                        <button
                           onClick={startFileChat}
                           className="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-white transition-colors"
                         >

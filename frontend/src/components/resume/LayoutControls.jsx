@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Sliders, Type, Maximize2 } from 'lucide-react'
+import { useState } from 'react';
+import { Sliders, Type, Maximize2 } from 'lucide-react';
 
 /**
  * LayoutControls — per-section layout controls panel.
@@ -16,15 +16,15 @@ import { Sliders, Type, Maximize2 } from 'lucide-react'
  * The user can also reset to defaults.
  */
 export default function LayoutControls({ layout, onChange, onReset }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
-  const update = (patch) => onChange({ ...layout, ...patch })
+  const update = (patch) => onChange({ ...layout, ...patch });
 
   return (
     <div className="rounded-xl bg-card border border-border p-3 mb-4">
       <button
         type="button"
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
         className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground"
       >
         <Sliders className="w-3 h-3" />
@@ -41,7 +41,7 @@ export default function LayoutControls({ layout, onChange, onReset }) {
           {/* Page size */}
           <Group label="Page Size" icon={Maximize2}>
             <div className="flex rounded-lg border border-border overflow-hidden">
-              {['A4', 'Letter'].map(size => (
+              {['A4', 'Letter'].map((size) => (
                 <button
                   key={size}
                   type="button"
@@ -62,10 +62,10 @@ export default function LayoutControls({ layout, onChange, onReset }) {
           <Group label="Font Size" icon={Type}>
             <div className="flex rounded-lg border border-border overflow-hidden">
               {[
-                { id: 'Small',    px: '12px' },
-                { id: 'Medium',   px: '14px' },
-                { id: 'Large',    px: '16px' },
-              ].map(opt => (
+                { id: 'Small', px: '12px' },
+                { id: 'Medium', px: '14px' },
+                { id: 'Large', px: '16px' },
+              ].map((opt) => (
                 <button
                   key={opt.id}
                   type="button"
@@ -85,7 +85,7 @@ export default function LayoutControls({ layout, onChange, onReset }) {
           {/* Section spacing */}
           <Group label="Spacing" icon={Sliders}>
             <div className="flex rounded-lg border border-border overflow-hidden">
-              {['Compact', 'Comfortable', 'Spacious'].map(opt => (
+              {['Compact', 'Comfortable', 'Spacious'].map((opt) => (
                 <button
                   key={opt}
                   type="button"
@@ -132,7 +132,7 @@ export default function LayoutControls({ layout, onChange, onReset }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 function Group({ label, icon: Icon, children }) {
@@ -144,7 +144,7 @@ function Group({ label, icon: Icon, children }) {
       </label>
       {children}
     </div>
-  )
+  );
 }
 
 export const DEFAULT_LAYOUT = {
@@ -153,4 +153,4 @@ export const DEFAULT_LAYOUT = {
   fontSizePx: '14px',
   spacing: 'Comfortable',
   lineHeight: 1.5,
-}
+};

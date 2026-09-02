@@ -28,7 +28,7 @@ export default function HUD({ depth, pressure, zone, scrollPercent }) {
       <div className="flex flex-col items-center gap-2 self-start bg-slate-950/80 border border-cyan-500/20 backdrop-blur-md p-3 rounded-lg pointer-events-auto shadow-[0_0_15px_rgba(6,182,212,0.15)]">
         <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full border border-cyan-500/30 overflow-hidden flex items-center justify-center bg-cyan-950/20">
           {/* Sonar sweep line */}
-          <div 
+          <div
             className="absolute inset-0 origin-center bg-gradient-to-tr from-cyan-400/20 to-transparent rounded-full"
             style={{
               animation: 'spin 4s linear infinite',
@@ -50,7 +50,10 @@ export default function HUD({ depth, pressure, zone, scrollPercent }) {
       {/* Bottom Right: Real-time Depth Gauge */}
       <div className="self-end ml-auto flex flex-col gap-2 bg-slate-950/85 border border-cyan-500/35 backdrop-blur-md p-4 rounded-lg pointer-events-auto shadow-[0_0_20px_rgba(6,182,212,0.2)] w-56 md:w-64">
         <div className="flex items-center gap-2 text-cyan-300 font-bold border-b border-cyan-500/30 pb-2">
-          <Compass className="w-4 h-4 animate-spin text-cyan-400" style={{ animationDuration: '8s' }} />
+          <Compass
+            className="w-4 h-4 animate-spin text-cyan-400"
+            style={{ animationDuration: '8s' }}
+          />
           <span className="tracking-widest uppercase text-xs md:text-sm">Expedition Log</span>
         </div>
 
@@ -77,7 +80,7 @@ export default function HUD({ depth, pressure, zone, scrollPercent }) {
 
         {/* Progress Bar resembling pressure level */}
         <div className="w-full h-1.5 bg-slate-900 border border-cyan-500/20 rounded overflow-hidden relative">
-          <div 
+          <div
             className="h-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] transition-all duration-300"
             style={{ width: `${scrollPercent * 100}%` }}
           />

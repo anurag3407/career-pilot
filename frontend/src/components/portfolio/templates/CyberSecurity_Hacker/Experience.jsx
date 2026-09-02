@@ -30,27 +30,40 @@ export default function Experience({ experience }) {
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         <div className="mb-16 border-b border-[#00ff41]/20 pb-4 flex items-end gap-4">
           <div>
-            <div className="text-[10px] text-[#00ff41]/60 mb-1 tracking-widest">// DECRYPTING CAREER TRAJECTORY</div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#00ff41] tracking-[0.2em] uppercase" style={{ textShadow: '0 0 20px rgba(0,255,65,0.4)' }}>
+            <div className="text-[10px] text-[#00ff41]/60 mb-1 tracking-widest">
+              // DECRYPTING CAREER TRAJECTORY
+            </div>
+            <h2
+              className="text-3xl md:text-4xl font-bold text-[#00ff41] tracking-[0.2em] uppercase"
+              style={{ textShadow: '0 0 20px rgba(0,255,65,0.4)' }}
+            >
               EXEC_LOG
             </h2>
           </div>
           <div className="ml-auto flex gap-1 mb-2 hidden sm:flex">
             <span className="w-2 h-2 bg-[#ff0040] rounded-sm animate-pulse" />
-            <span className="w-2 h-2 bg-[#ffcc00] rounded-sm animate-pulse" style={{ animationDelay: '200ms' }} />
-            <span className="w-2 h-2 bg-[#00ff41] rounded-sm animate-pulse" style={{ animationDelay: '400ms' }} />
+            <span
+              className="w-2 h-2 bg-[#ffcc00] rounded-sm animate-pulse"
+              style={{ animationDelay: '200ms' }}
+            />
+            <span
+              className="w-2 h-2 bg-[#00ff41] rounded-sm animate-pulse"
+              style={{ animationDelay: '400ms' }}
+            />
           </div>
         </div>
 
         <div className="relative">
           <div className="exp-path" />
-          
+
           <div className="space-y-12">
             {experience.map((exp, i) => {
               const isEven = i % 2 === 0;
               return (
-                <div key={i} className={`relative flex flex-col md:flex-row gap-8 md:gap-0 ${isEven ? 'md:flex-row-reverse' : ''}`}>
-                  
+                <div
+                  key={i}
+                  className={`relative flex flex-col md:flex-row gap-8 md:gap-0 ${isEven ? 'md:flex-row-reverse' : ''}`}
+                >
                   {/* Node */}
                   <div className="absolute left-[24px] md:left-1/2 transform -translate-x-1/2 top-0 mt-6 z-10 flex items-center justify-center">
                     <div className="w-4 h-4 bg-[#020804] border-2 border-[#00ff41] rotate-45 shadow-[0_0_10px_#00ff41]" />

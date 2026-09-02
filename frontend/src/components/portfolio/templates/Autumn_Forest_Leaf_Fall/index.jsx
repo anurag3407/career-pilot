@@ -16,7 +16,7 @@ export default function AutumnForestLeafFall() {
   return (
     <div className="min-h-screen bg-stone-900 text-stone-300 font-serif selection:bg-orange-900 selection:text-orange-100 relative overflow-hidden">
       <LeafAnimation />
-      
+
       {/* Background gradient overlay for deeper atmosphere */}
       <div className="fixed inset-0 pointer-events-none bg-gradient-to-br from-orange-900/10 via-stone-900/40 to-amber-900/20 z-0"></div>
 

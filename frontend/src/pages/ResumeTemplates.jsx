@@ -1,301 +1,340 @@
-import { useEffect, useMemo, useRef, useState, Suspense, lazy } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import toast from 'react-hot-toast'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ChevronLeft, Download, Loader2, FileText, Sparkles, RefreshCw, FileType2,
-  Search, Filter, X, Camera, Upload as UploadIcon, AlertTriangle,
-} from 'lucide-react'
+  ChevronLeft,
+  Download,
+  Loader2,
+  FileText,
+  Sparkles,
+  RefreshCw,
+  FileType2,
+  Search,
+  Filter,
+  X,
+  Camera,
+  Upload as UploadIcon,
+  AlertTriangle,
+} from 'lucide-react';
 
 import {
   resumeTemplates,
-  COLOR_SWATCHES, FONT_PAIRINGS,
-  CATEGORIES, INDUSTRIES, LAYOUTS,
-  ACCENT_PRESETS, GALLERY,
-} from '../data/resumeTemplates'
-import { useAuth } from '../hooks/useAuth'
-import { resumeApi } from '../services/api'
-import { buildResumeDocx, downloadDocxBlob } from '../utils/docxExport'
-import { exportAtsSafePdf } from '../services/atsPdfExport'
-import {
-  ResumeProvider,
-  normalizeResumeData,
-} from '../context/ResumeContext'
-import { ORDER_AWARE_TEMPLATE_IDS } from '../components/resume/shared/OrderedSections'
-import LayoutControls, { DEFAULT_LAYOUT } from '../components/resume/LayoutControls'
+  COLOR_SWATCHES,
+  FONT_PAIRINGS,
+  CATEGORIES,
+  INDUSTRIES,
+  LAYOUTS,
+  ACCENT_PRESETS,
+  GALLERY,
+} from '../data/resumeTemplates';
+import { useAuth } from '../hooks/useAuth';
+import { resumeApi } from '../services/api';
+import { buildResumeDocx, downloadDocxBlob } from '../utils/docxExport';
+import { exportAtsSafePdf } from '../services/atsPdfExport';
+import { ResumeProvider, normalizeResumeData } from '../context/ResumeContext';
+import { ORDER_AWARE_TEMPLATE_IDS } from '../components/resume/shared/OrderedSections';
+import LayoutControls, { DEFAULT_LAYOUT } from '../components/resume/LayoutControls';
 
 // ─── Lazy template loader (matches portfolio template gallery pattern) ────────
 // Only base templates have folder components; variants reuse their base's
 // component with overridden color/font props via accentColorId/fontFamilyId.
-const BASE_TEMPLATE_IDS = resumeTemplates.map((t) => t.id)
+const BASE_TEMPLATE_IDS = resumeTemplates.map((t) => t.id);
 
 const templateLoaders = Object.fromEntries(
   BASE_TEMPLATE_IDS.map((id) => [
     id,
     lazy(() => import(`../components/resume/templates/${id}/index.jsx`)),
   ])
-)
+);
 
 // A4 at 96 DPI: 210mm × 297mm = 793.7px × 1122.5px
-const A4_WIDTH_MM = 210
-const A4_HEIGHT_MM = 297
+const A4_WIDTH_MM = 210;
+const A4_HEIGHT_MM = 297;
 
 export default function ResumeTemplates() {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { user } = useAuth()
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { user } = useAuth();
 
-  const [selectedId, setSelectedId] = useState(null)
-  const [resumeData, setResumeData] = useState(null)     // raw incoming data
-  const [loadingData, setLoadingData] = useState(true)
-  const [exporting, setExporting] = useState(false)
-  const [layout, setLayout] = useState(DEFAULT_LAYOUT)
+  const [selectedId, setSelectedId] = useState(null);
+  const [resumeData, setResumeData] = useState(null); // raw incoming data
+  const [loadingData, setLoadingData] = useState(true);
+  const [exporting, setExporting] = useState(false);
+  const [layout, setLayout] = useState(DEFAULT_LAYOUT);
 
-  const previewRef = useRef(null)
+  const previewRef = useRef(null);
 
   // ─── Load resume data from one of three sources ───────────────────────────
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
     async function load() {
-      setLoadingData(true)
+      setLoadingData(true);
       try {
         // Priority 1: location.state from ResumeBuilder
-        const builderData = location.state?.builderData
+        const builderData = location.state?.builderData;
         if (builderData) {
           if (!cancelled) {
-            setResumeData(builderData)
-            setLoadingData(false)
+            setResumeData(builderData);
+            setLoadingData(false);
           }
-          return
+          return;
         }
 
         // Priority 2: ?resumeId= query param (from ResumeView / Enhance)
-        const resumeId = searchParams.get('resumeId')
+        const resumeId = searchParams.get('resumeId');
         if (resumeId) {
-          const res = await resumeApi.getById(resumeId)
+          const res = await resumeApi.getById(resumeId);
           // getById returns { success, data: {...resume} }. (Older code read
           // res.resume, which is undefined — keep a fallback for safety.)
-          const record = res.data || res.resume || {}
-          const text = record.enhancedText || record.originalText || ''
+          const record = res.data || res.resume || {};
+          const text = record.enhancedText || record.originalText || '';
           // sectionOrder + customSections live on the resume record, not in the
           // markdown — merge them in so the drag-and-drop order set in Enhance
           // is honored by order-aware templates.
-          const parsed = splitMarkdownIntoResume(text, record.title) || {}
+          const parsed = splitMarkdownIntoResume(text, record.title) || {};
           if (!cancelled) {
             setResumeData({
               ...parsed,
               sectionOrder: record.sectionOrder || parsed.sectionOrder,
               customSections: record.customSections || parsed.customSections,
-            })
-            setLoadingData(false)
+            });
+            setLoadingData(false);
           }
-          return
+          return;
         }
 
         // Priority 3: localStorage draft (AI-extracted portfolio)
         const draft =
-          localStorage.getItem('ai_resume_draft') ||
-          localStorage.getItem('ai_portfolio_draft')
+          localStorage.getItem('ai_resume_draft') || localStorage.getItem('ai_portfolio_draft');
         if (draft) {
           try {
-            const parsed = JSON.parse(draft)
+            const parsed = JSON.parse(draft);
             if (!cancelled) {
-              setResumeData(parsed)
-              setLoadingData(false)
+              setResumeData(parsed);
+              setLoadingData(false);
             }
-            return
-          } catch (_) { /* fallthrough to fallback */ }
+            return;
+          } catch (_) {
+            /* fallthrough to fallback */
+          }
         }
 
         // Fallback: null → context will use dummy_resume.json
         if (!cancelled) {
-          setResumeData(null)
-          setLoadingData(false)
+          setResumeData(null);
+          setLoadingData(false);
         }
       } catch (err) {
         if (!cancelled) {
-          toast.error('Failed to load resume data')
-          setResumeData(null)
-          setLoadingData(false)
+          toast.error('Failed to load resume data');
+          setResumeData(null);
+          setLoadingData(false);
         }
       }
     }
 
-    load()
-    return () => { cancelled = true }
-  }, [location.state, searchParams])
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [location.state, searchParams]);
 
   // Memoize the normalized data once — context already memoizes again internally
-  const normalized = useMemo(() => normalizeResumeData(resumeData), [resumeData])
+  const normalized = useMemo(() => normalizeResumeData(resumeData), [resumeData]);
   // Inject current layout into the data so every template can read it
-  const dataWithLayout = useMemo(() => ({ ...normalized, layout }), [normalized, layout])
+  const dataWithLayout = useMemo(() => ({ ...normalized, layout }), [normalized, layout]);
 
   // Resolve selected template (handles variants that share a base folder)
-  const selectedEntry = useMemo(() => GALLERY.find((t) => t.id === selectedId), [selectedId])
-  const selectedBaseId = selectedEntry?.baseId || selectedEntry?.id || null
+  const selectedEntry = useMemo(() => GALLERY.find((t) => t.id === selectedId), [selectedId]);
+  const selectedBaseId = selectedEntry?.baseId || selectedEntry?.id || null;
   const selectedTemplate = useMemo(
-    () => resumeTemplates.find((t) => t.id === selectedBaseId) || (selectedEntry?.baseId ? null : selectedEntry),
+    () =>
+      resumeTemplates.find((t) => t.id === selectedBaseId) ||
+      (selectedEntry?.baseId ? null : selectedEntry),
     [selectedEntry, selectedBaseId]
-  )
+  );
 
   const [accentColorId, setAccentColorId] = useState(() => {
-    if (!selectedEntry) return 'teal'
-    return selectedEntry.accentId || ACCENT_PRESETS[selectedEntry.id]?.defaultColor || ACCENT_PRESETS[selectedEntry.baseId]?.defaultColor || 'teal'
-  })
+    if (!selectedEntry) return 'teal';
+    return (
+      selectedEntry.accentId ||
+      ACCENT_PRESETS[selectedEntry.id]?.defaultColor ||
+      ACCENT_PRESETS[selectedEntry.baseId]?.defaultColor ||
+      'teal'
+    );
+  });
   const [fontFamilyId, setFontFamilyId] = useState(() => {
-    if (!selectedEntry) return 'sans'
-    return selectedEntry.fontId || ACCENT_PRESETS[selectedEntry.id]?.defaultFont || ACCENT_PRESETS[selectedEntry.baseId]?.defaultFont || 'sans'
-  })
+    if (!selectedEntry) return 'sans';
+    return (
+      selectedEntry.fontId ||
+      ACCENT_PRESETS[selectedEntry.id]?.defaultFont ||
+      ACCENT_PRESETS[selectedEntry.baseId]?.defaultFont ||
+      'sans'
+    );
+  });
 
   // When the selection changes, reset color/font picks to its defaults
   useEffect(() => {
-    if (!selectedEntry) return
-    const presets =
-      ACCENT_PRESETS[selectedEntry.id] || ACCENT_PRESETS[selectedEntry.baseId]
+    if (!selectedEntry) return;
+    const presets = ACCENT_PRESETS[selectedEntry.id] || ACCENT_PRESETS[selectedEntry.baseId];
     if (presets) {
-      setAccentColorId(selectedEntry.accentId || presets.defaultColor)
-      setFontFamilyId(selectedEntry.fontId || presets.defaultFont)
+      setAccentColorId(selectedEntry.accentId || presets.defaultColor);
+      setFontFamilyId(selectedEntry.fontId || presets.defaultFont);
     }
-  }, [selectedEntry?.id])
+  }, [selectedEntry?.id]);
 
-  const accentSwatch = COLOR_SWATCHES.find((s) => s.id === accentColorId) || COLOR_SWATCHES[0]
-  const fontPairing = FONT_PAIRINGS.find((f) => f.id === fontFamilyId) || FONT_PAIRINGS[0]
+  const accentSwatch = COLOR_SWATCHES.find((s) => s.id === accentColorId) || COLOR_SWATCHES[0];
+  const fontPairing = FONT_PAIRINGS.find((f) => f.id === fontFamilyId) || FONT_PAIRINGS[0];
 
-  const handleSelect = (id) => setSelectedId(id)
-  const handleBack = () => setSelectedId(null)
+  const handleSelect = (id) => setSelectedId(id);
+  const handleBack = () => setSelectedId(null);
   const handleResetData = () => {
-    setResumeData(null)
-    toast.success('Switched to sample data')
-  }
+    setResumeData(null);
+    toast.success('Switched to sample data');
+  };
 
   // ─── ATS-safe PDF export ─────────────────────────────────────────────────
   const handleDownloadPdf = async () => {
-    if (!previewRef.current || !selectedTemplate) return
-    setExporting(true)
-    const toastId = toast.loading('Generating ATS-safe PDF…')
+    if (!previewRef.current || !selectedTemplate) return;
+    setExporting(true);
+    const toastId = toast.loading('Generating ATS-safe PDF…');
 
     try {
-      const fileName = `${normalized.personal.name || 'resume'}_${selectedBaseId || 'template'}.pdf`
-        .replace(/\s+/g, '_')
+      const fileName =
+        `${normalized.personal.name || 'resume'}_${selectedBaseId || 'template'}.pdf`.replace(
+          /\s+/g,
+          '_'
+        );
       const result = await exportAtsSafePdf(previewRef.current, fileName, {
         orientation: 'portrait',
         format: layout.pageSize === 'Letter' ? 'letter' : 'a4',
         marginMm: 10,
-      })
+      });
       toast.success(
         result.method === 'text'
           ? 'PDF downloaded (text-layer preserved for ATS)'
           : 'PDF downloaded',
         { id: toastId }
-      )
+      );
     } catch (err) {
-      console.error(err)
-      toast.error('Failed to export PDF', { id: toastId })
+      console.error(err);
+      toast.error('Failed to export PDF', { id: toastId });
     } finally {
-      setExporting(false)
+      setExporting(false);
     }
-  }
+  };
 
   // Download the active template's resume data as a plain text file.
   const handleDownloadTxt = () => {
-    const lines = []
-    const p = normalized.personal
-    lines.push(`${p.name || 'Resume'}`)
-    if (p.title) lines.push(p.title)
+    const lines = [];
+    const p = normalized.personal;
+    lines.push(`${p.name || 'Resume'}`);
+    if (p.title) lines.push(p.title);
     const contact = [p.email, p.phone, p.location, p.website, p.linkedin, p.github]
-      .filter(Boolean).join(' | ')
-    if (contact) lines.push(contact)
+      .filter(Boolean)
+      .join(' | ');
+    if (contact) lines.push(contact);
     if (p.summary) {
-      lines.push('')
-      lines.push('SUMMARY')
-      lines.push(p.summary)
+      lines.push('');
+      lines.push('SUMMARY');
+      lines.push(p.summary);
     }
     if (normalized.experience.length) {
-      lines.push('')
-      lines.push('EXPERIENCE')
+      lines.push('');
+      lines.push('EXPERIENCE');
       normalized.experience.forEach((e) => {
-        lines.push('')
-        lines.push(`${e.role || ''}${e.company ? ` — ${e.company}` : ''}${e.period ? ` (${e.period})` : ''}`)
-        if (e.location) lines.push(e.location)
-        e.bullets.forEach((b) => lines.push(`- ${b}`))
-      })
+        lines.push('');
+        lines.push(
+          `${e.role || ''}${e.company ? ` — ${e.company}` : ''}${e.period ? ` (${e.period})` : ''}`
+        );
+        if (e.location) lines.push(e.location);
+        e.bullets.forEach((b) => lines.push(`- ${b}`));
+      });
     }
     if (normalized.education.length) {
-      lines.push('')
-      lines.push('EDUCATION')
+      lines.push('');
+      lines.push('EDUCATION');
       normalized.education.forEach((e) => {
-        lines.push('')
-        lines.push(`${e.degree || ''}${e.institution ? ` — ${e.institution}` : ''}${e.period ? ` (${e.period})` : ''}`)
-        if (e.description) lines.push(e.description)
-      })
+        lines.push('');
+        lines.push(
+          `${e.degree || ''}${e.institution ? ` — ${e.institution}` : ''}${e.period ? ` (${e.period})` : ''}`
+        );
+        if (e.description) lines.push(e.description);
+      });
     }
     if (normalized.projects.length) {
-      lines.push('')
-      lines.push('PROJECTS')
+      lines.push('');
+      lines.push('PROJECTS');
       normalized.projects.forEach((p) => {
-        lines.push('')
-        lines.push(p.title || '')
-        if (p.description) lines.push(p.description)
-        if (p.techStack.length) lines.push(`Tech: ${p.techStack.join(', ')}`)
-        if (p.link) lines.push(p.link)
-      })
+        lines.push('');
+        lines.push(p.title || '');
+        if (p.description) lines.push(p.description);
+        if (p.techStack.length) lines.push(`Tech: ${p.techStack.join(', ')}`);
+        if (p.link) lines.push(p.link);
+      });
     }
     if (normalized.skills.length) {
-      lines.push('')
-      lines.push('SKILLS')
-      lines.push(normalized.skills.map((s) => s.name).join(', '))
+      lines.push('');
+      lines.push('SKILLS');
+      lines.push(normalized.skills.map((s) => s.name).join(', '));
     }
     if (normalized.certifications.length) {
-      lines.push('')
-      lines.push('CERTIFICATIONS')
+      lines.push('');
+      lines.push('CERTIFICATIONS');
       normalized.certifications.forEach((c) => {
-        lines.push(`- ${c.name}${c.issuer ? ` — ${c.issuer}` : ''}${c.year ? ` (${c.year})` : ''}`)
-      })
+        lines.push(`- ${c.name}${c.issuer ? ` — ${c.issuer}` : ''}${c.year ? ` (${c.year})` : ''}`);
+      });
     }
 
-    const text = lines.join('\n')
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${(p.name || 'resume').replace(/\s+/g, '_')}_${selectedBaseId || 'template'}.txt`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
-    toast.success('Text file downloaded')
-  }
+    const text = lines.join('\n');
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(p.name || 'resume').replace(/\s+/g, '_')}_${selectedBaseId || 'template'}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast.success('Text file downloaded');
+  };
 
   // Build a Word (.docx) version of the active template's resume data.
-  const [docxBuilding, setDocxBuilding] = useState(false)
+  const [docxBuilding, setDocxBuilding] = useState(false);
   const handleDownloadDocx = async () => {
-    setDocxBuilding(true)
-    const toastId = toast.loading('Building .docx…')
+    setDocxBuilding(true);
+    const toastId = toast.loading('Building .docx…');
     try {
-      const blob = await buildResumeDocx(normalized)
-      downloadDocxBlob(blob, `${(normalized.personal.name || 'resume').replace(/\s+/g, '_')}_${selectedBaseId || 'template'}.docx`)
-      toast.success('Word file downloaded', { id: toastId })
+      const blob = await buildResumeDocx(normalized);
+      downloadDocxBlob(
+        blob,
+        `${(normalized.personal.name || 'resume').replace(/\s+/g, '_')}_${selectedBaseId || 'template'}.docx`
+      );
+      toast.success('Word file downloaded', { id: toastId });
     } catch (err) {
-      console.error(err)
-      toast.error('Failed to build .docx', { id: toastId })
+      console.error(err);
+      toast.error('Failed to build .docx', { id: toastId });
     } finally {
-      setDocxBuilding(false)
+      setDocxBuilding(false);
     }
-  }
+  };
 
   // Warn only when it matters: the user has a non-default section order (or
   // custom sections) AND the chosen template renders a fixed layout.
-  const KNOWN_KEYS = ['education', 'experience', 'projects', 'skills', 'certifications']
-  const projectedOrder = (normalized.sectionOrder || []).filter((k) => KNOWN_KEYS.includes(k)).join(',')
+  const KNOWN_KEYS = ['education', 'experience', 'projects', 'skills', 'certifications'];
+  const projectedOrder = (normalized.sectionOrder || [])
+    .filter((k) => KNOWN_KEYS.includes(k))
+    .join(',');
   const userReordered =
     (projectedOrder.length > 0 &&
       projectedOrder !== 'education,experience,projects,skills' &&
       projectedOrder !== 'education,experience,projects,skills,certifications') ||
-    (normalized.customSections?.length > 0)
+    normalized.customSections?.length > 0;
   const showOrderGuard =
-    Boolean(selectedId) && userReordered && !ORDER_AWARE_TEMPLATE_IDS.has(selectedBaseId)
+    Boolean(selectedId) && userReordered && !ORDER_AWARE_TEMPLATE_IDS.has(selectedBaseId);
 
   // ─── Render: gallery vs. preview ─────────────────────────────────────────
   return (
@@ -306,10 +345,11 @@ export default function ResumeTemplates() {
             <div className="mb-4 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
               <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
               <span>
-                <strong>{selectedEntry?.label || 'This template'}</strong> uses a fixed section layout, so your
-                custom section order{normalized.customSections?.length ? ' and custom sections' : ''} won&apos;t be
-                applied here. Choose an <strong>order-aware</strong> template (e.g. <strong>Ivy League</strong>) to
-                see them reflected.
+                <strong>{selectedEntry?.label || 'This template'}</strong> uses a fixed section
+                layout, so your custom section order
+                {normalized.customSections?.length ? ' and custom sections' : ''} won&apos;t be
+                applied here. Choose an <strong>order-aware</strong> template (e.g.{' '}
+                <strong>Ivy League</strong>) to see them reflected.
               </span>
             </div>
           )}
@@ -320,10 +360,14 @@ export default function ResumeTemplates() {
                 onSelect={handleSelect}
                 onReset={handleResetData}
                 dataSource={
-                  location.state?.builderData ? 'Resume Builder' :
-                  searchParams.get('resumeId') ? 'Saved Resume' :
-                  localStorage.getItem('ai_resume_draft') || localStorage.getItem('ai_portfolio_draft') ? 'AI Draft' :
-                  'Sample Data'
+                  location.state?.builderData
+                    ? 'Resume Builder'
+                    : searchParams.get('resumeId')
+                      ? 'Saved Resume'
+                      : localStorage.getItem('ai_resume_draft') ||
+                          localStorage.getItem('ai_portfolio_draft')
+                        ? 'AI Draft'
+                        : 'Sample Data'
                 }
                 loading={loadingData}
               />
@@ -355,40 +399,41 @@ export default function ResumeTemplates() {
         </div>
       </div>
     </ResumeProvider>
-  )
+  );
 }
 
 // ─── Gallery view ────────────────────────────────────────────────────────────
 function GalleryView({ onSelect, onReset, dataSource, loading }) {
-  const [category, setCategory] = useState('all')
-  const [industry, setIndustry] = useState('all')
-  const [layout, setLayout] = useState('all')
-  const [query, setQuery] = useState('')
-  const [sort, setSort] = useState('default')
+  const [category, setCategory] = useState('all');
+  const [industry, setIndustry] = useState('all');
+  const [layout, setLayout] = useState('all');
+  const [query, setQuery] = useState('');
+  const [sort, setSort] = useState('default');
 
   const filtered = useMemo(() => {
-    let arr = GALLERY
-    if (category !== 'all') arr = arr.filter((t) => t.category === category)
-    if (industry !== 'all') arr = arr.filter((t) => t.industry === industry)
-    if (layout !== 'all') arr = arr.filter((t) => t.layout === layout)
+    let arr = GALLERY;
+    if (category !== 'all') arr = arr.filter((t) => t.category === category);
+    if (industry !== 'all') arr = arr.filter((t) => t.industry === industry);
+    if (layout !== 'all') arr = arr.filter((t) => t.layout === layout);
     if (query.trim()) {
-      const q = query.trim().toLowerCase()
-      arr = arr.filter((t) =>
-        t.name.toLowerCase().includes(q) ||
-        (t.bestFor || '').toLowerCase().includes(q) ||
-        (t.description || '').toLowerCase().includes(q)
-      )
+      const q = query.trim().toLowerCase();
+      arr = arr.filter(
+        (t) =>
+          t.name.toLowerCase().includes(q) ||
+          (t.bestFor || '').toLowerCase().includes(q) ||
+          (t.description || '').toLowerCase().includes(q)
+      );
     }
     if (sort === 'az') {
-      arr = [...arr].sort((a, b) => a.name.localeCompare(b.name))
+      arr = [...arr].sort((a, b) => a.name.localeCompare(b.name));
     } else if (sort === 'variants') {
-      arr = [...arr].sort((a, b) => (b.isVariant ? 1 : 0) - (a.isVariant ? 1 : 0))
+      arr = [...arr].sort((a, b) => (b.isVariant ? 1 : 0) - (a.isVariant ? 1 : 0));
     }
-    return arr
-  }, [category, industry, layout, query, sort])
+    return arr;
+  }, [category, industry, layout, query, sort]);
 
-  const totalBase = resumeTemplates.length
-  const totalVariants = GALLERY.length - totalBase
+  const totalBase = resumeTemplates.length;
+  const totalVariants = GALLERY.length - totalBase;
 
   return (
     <motion.div
@@ -401,11 +446,11 @@ function GalleryView({ onSelect, onReset, dataSource, loading }) {
           <Sparkles className="w-3.5 h-3.5" />
           Resume Templates
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
-          Choose your resume style
-        </h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-foreground">Choose your resume style</h1>
         <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
-          <strong>{totalBase}</strong> unique designs + <strong>{totalVariants}</strong> curated color &amp; font variants = <strong>{GALLERY.length}</strong> templates. Live data, ATS-safe PDF export.
+          <strong>{totalBase}</strong> unique designs + <strong>{totalVariants}</strong> curated
+          color &amp; font variants = <strong>{GALLERY.length}</strong> templates. Live data,
+          ATS-safe PDF export.
         </p>
         <div className="mt-4 flex items-center justify-center gap-3 text-xs text-muted-foreground flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/60 border border-border">
@@ -450,7 +495,12 @@ function GalleryView({ onSelect, onReset, dataSource, loading }) {
           {(category !== 'all' || industry !== 'all' || layout !== 'all' || query) && (
             <button
               type="button"
-              onClick={() => { setCategory('all'); setIndustry('all'); setLayout('all'); setQuery('') }}
+              onClick={() => {
+                setCategory('all');
+                setIndustry('all');
+                setLayout('all');
+                setQuery('');
+              }}
               className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
             >
               <X className="w-3 h-3" /> Clear filters
@@ -475,7 +525,9 @@ function GalleryView({ onSelect, onReset, dataSource, loading }) {
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">Industry</span>
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">
+            Industry
+          </span>
           {INDUSTRIES.map((c) => (
             <button
               key={c.id}
@@ -492,7 +544,9 @@ function GalleryView({ onSelect, onReset, dataSource, loading }) {
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">Layout</span>
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">
+            Layout
+          </span>
           {LAYOUTS.map((c) => (
             <button
               key={c.id}
@@ -511,7 +565,8 @@ function GalleryView({ onSelect, onReset, dataSource, loading }) {
       </div>
 
       <div className="text-xs text-muted-foreground mb-3">
-        Showing <strong className="text-foreground">{filtered.length}</strong> of {GALLERY.length} templates
+        Showing <strong className="text-foreground">{filtered.length}</strong> of {GALLERY.length}{' '}
+        templates
       </div>
 
       {loading ? (
@@ -527,7 +582,7 @@ function GalleryView({ onSelect, onReset, dataSource, loading }) {
         </div>
       )}
     </motion.div>
-  )
+  );
 }
 
 function TemplateCard({ entry, onSelect }) {
@@ -549,10 +604,7 @@ function TemplateCard({ entry, onSelect }) {
             className="w-full h-full rounded-md bg-white shadow-sm border flex flex-col"
             style={{ borderColor: `${entry.accent}33` }}
           >
-            <div
-              className="h-2.5 w-full"
-              style={{ background: entry.accent }}
-            />
+            <div className="h-2.5 w-full" style={{ background: entry.accent }} />
             <div className="flex-1 p-2.5 space-y-1.5">
               <div
                 className="h-2.5 w-2/3 rounded"
@@ -585,7 +637,10 @@ function TemplateCard({ entry, onSelect }) {
         <div className="flex items-start justify-between gap-2 mb-1">
           <h3 className="font-semibold text-foreground text-sm leading-tight">{entry.name}</h3>
           {entry.isPhoto && (
-            <span title="Supports profile photo" className="inline-flex items-center text-[10px] text-violet-500">
+            <span
+              title="Supports profile photo"
+              className="inline-flex items-center text-[10px] text-violet-500"
+            >
               <Camera className="w-3 h-3" />
             </span>
           )}
@@ -607,20 +662,32 @@ function TemplateCard({ entry, onSelect }) {
         <p className="mt-auto text-xs text-muted-foreground line-clamp-2">{entry.description}</p>
       </div>
     </motion.button>
-  )
+  );
 }
 
 // ─── Preview view ────────────────────────────────────────────────────────────
 function PreviewView({
-  entry, template, baseId, data, previewRef,
-  accentColor, fontFamily,
-  accentColorId, fontFamilyId,
-  onAccentColorChange, onFontFamilyChange,
-  onBack, onDownload, onDownloadTxt, onDownloadDocx,
-  exporting, docxBuilding,
-  layout, onLayoutChange,
+  entry,
+  template,
+  baseId,
+  data,
+  previewRef,
+  accentColor,
+  fontFamily,
+  accentColorId,
+  fontFamilyId,
+  onAccentColorChange,
+  onFontFamilyChange,
+  onBack,
+  onDownload,
+  onDownloadTxt,
+  onDownloadDocx,
+  exporting,
+  docxBuilding,
+  layout,
+  onLayoutChange,
 }) {
-  const TemplateComp = baseId ? templateLoaders[baseId] : null
+  const TemplateComp = baseId ? templateLoaders[baseId] : null;
 
   return (
     <motion.div
@@ -684,7 +751,9 @@ function PreviewView({
       {/* ── Customize panel (color + font + layout + photo) ── */}
       <div className="rounded-xl bg-card border border-border p-3 mb-3 flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Accent</span>
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Accent
+          </span>
           <div className="flex items-center gap-1.5">
             {COLOR_SWATCHES.map((s) => (
               <button
@@ -703,20 +772,22 @@ function PreviewView({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Font</span>
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Font
+          </span>
           <select
             value={fontFamilyId}
             onChange={(e) => onFontFamilyChange(e.target.value)}
             className="px-2.5 py-1.5 rounded-lg border border-border bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-sky-500/50"
           >
             {FONT_PAIRINGS.map((f) => (
-              <option key={f.id} value={f.id}>{f.label}</option>
+              <option key={f.id} value={f.id}>
+                {f.label}
+              </option>
             ))}
           </select>
         </div>
-        {entry?.isPhoto && (
-          <PhotoUploader />
-        )}
+        {entry?.isPhoto && <PhotoUploader />}
       </div>
 
       <LayoutControls
@@ -752,35 +823,41 @@ function PreviewView({
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
 
 // ─── Photo uploader (inline component) ───────────────────────────────────────
 function PhotoUploader() {
-  const fileRef = useRef(null)
+  const fileRef = useRef(null);
   const handleFile = async (file) => {
-    if (!file) return
+    if (!file) return;
     if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file')
-      return
+      toast.error('Please select an image file');
+      return;
     }
     if (file.size > 2 * 1024 * 1024) {
-      toast.error('Image must be smaller than 2 MB')
-      return
+      toast.error('Image must be smaller than 2 MB');
+      return;
     }
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = () => {
-      const dataUrl = String(reader.result || '')
-      const draft = JSON.parse(localStorage.getItem('ai_resume_draft') || localStorage.getItem('ai_portfolio_draft') || '{}')
-      const next = { ...(draft || {}), personal: { ...(draft?.personal || {}), photo: dataUrl } }
-      localStorage.setItem('ai_resume_draft', JSON.stringify(next))
-      toast.success('Photo attached — refresh to see it')
-    }
-    reader.readAsDataURL(file)
-  }
+      const dataUrl = String(reader.result || '');
+      const draft = JSON.parse(
+        localStorage.getItem('ai_resume_draft') ||
+          localStorage.getItem('ai_portfolio_draft') ||
+          '{}'
+      );
+      const next = { ...(draft || {}), personal: { ...(draft?.personal || {}), photo: dataUrl } };
+      localStorage.setItem('ai_resume_draft', JSON.stringify(next));
+      toast.success('Photo attached — refresh to see it');
+    };
+    reader.readAsDataURL(file);
+  };
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Photo</span>
+      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        Photo
+      </span>
       <button
         type="button"
         onClick={() => fileRef.current?.click()}
@@ -797,7 +874,7 @@ function PhotoUploader() {
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
     </div>
-  )
+  );
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -807,57 +884,61 @@ function PhotoUploader() {
  * the normalize layer will fall back to dummy data for any missing field.
  */
 function splitMarkdownIntoResume(text, title) {
-  if (!text || typeof text !== 'string') return null
-  const sections = {}
-  const lines = text.split(/\r?\n/)
-  let currentKey = null
-  let buffer = []
+  if (!text || typeof text !== 'string') return null;
+  const sections = {};
+  const lines = text.split(/\r?\n/);
+  let currentKey = null;
+  let buffer = [];
 
   const HEADERS = {
-    'summary': 'summary',
+    summary: 'summary',
     'professional summary': 'summary',
-    'about': 'summary',
-    'experience': 'experience',
+    about: 'summary',
+    experience: 'experience',
     'work experience': 'experience',
     'professional experience': 'experience',
-    'education': 'education',
-    'projects': 'projects',
-    'skills': 'skills',
-    'certifications': 'certifications',
-  }
+    education: 'education',
+    projects: 'projects',
+    skills: 'skills',
+    certifications: 'certifications',
+  };
 
   const flush = () => {
-    if (!currentKey) return
-    const raw = buffer.join('\n').trim()
-    if (!raw) return
+    if (!currentKey) return;
+    const raw = buffer.join('\n').trim();
+    if (!raw) return;
     if (['summary'].includes(currentKey)) {
-      sections[currentKey] = raw
+      sections[currentKey] = raw;
     } else {
-      sections[currentKey] = sections[currentKey] || []
-      sections[currentKey].push(raw)
+      sections[currentKey] = sections[currentKey] || [];
+      sections[currentKey].push(raw);
     }
-    buffer = []
-  }
+    buffer = [];
+  };
 
   for (const line of lines) {
-    const trimmed = line.trim().replace(/^#+\s*/, '').replace(/:$/, '').toLowerCase()
+    const trimmed = line
+      .trim()
+      .replace(/^#+\s*/, '')
+      .replace(/:$/, '')
+      .toLowerCase();
     if (HEADERS[trimmed]) {
-      flush()
-      currentKey = HEADERS[trimmed]
-      continue
+      flush();
+      currentKey = HEADERS[trimmed];
+      continue;
     }
-    if (currentKey) buffer.push(line)
+    if (currentKey) buffer.push(line);
   }
-  flush()
+  flush();
 
   // Pull a name from the first markdown H1 if we have one
-  const nameMatch = text.match(/^#\s+(.+)$/m)
-  const name = nameMatch?.[1]?.trim()
+  const nameMatch = text.match(/^#\s+(.+)$/m);
+  const name = nameMatch?.[1]?.trim();
 
   return {
     personal: {
       name: name || title?.replace(/^Resume\s*[-–—:]\s*/i, ''),
     },
     ...sections,
-  }
+  };
 }

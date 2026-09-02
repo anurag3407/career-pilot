@@ -8,7 +8,10 @@ function ProjectCard({ project, isMobile }) {
   const Card = isMobile ? 'article' : motion.article;
 
   return (
-    <Card {...(isMobile ? {} : { variants: fadeUp })} className="flex flex-col overflow-hidden border border-zinc-800 bg-zinc-900/70">
+    <Card
+      {...(isMobile ? {} : { variants: fadeUp })}
+      className="flex flex-col overflow-hidden border border-zinc-800 bg-zinc-900/70"
+    >
       <div className="relative aspect-video overflow-hidden bg-zinc-950">
         <img
           src={project.image}
@@ -18,20 +21,35 @@ function ProjectCard({ project, isMobile }) {
         />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4 lg:p-6">
-        <h4 className="text-xl font-black leading-tight text-zinc-100 lg:text-3xl">{project.title}</h4>
+        <h4 className="text-xl font-black leading-tight text-zinc-100 lg:text-3xl">
+          {project.title}
+        </h4>
         <p className="text-xs leading-relaxed text-zinc-400 lg:text-base">{project.description}</p>
         <div className="flex flex-wrap gap-2">
           {project.techStack.map((tech, j) => (
-            <span key={j} className="border border-zinc-800 px-2 py-1 font-mono text-[9px] text-zinc-500 lg:px-3 lg:py-1.5 lg:text-sm">
+            <span
+              key={j}
+              className="border border-zinc-800 px-2 py-1 font-mono text-[9px] text-zinc-500 lg:px-3 lg:py-1.5 lg:text-sm"
+            >
               {tech}
             </span>
           ))}
         </div>
         <div className="mt-auto flex gap-4 pt-3 lg:gap-6 lg:pt-4">
-          <a href={project.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-100 transition-colors hover:text-zinc-400 lg:gap-2 lg:text-base">
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-100 transition-colors hover:text-zinc-400 lg:gap-2 lg:text-base"
+          >
             <ExternalLink size={14} className="lg:h-5 lg:w-5" /> Live
           </a>
-          <a href={project.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-100 transition-colors hover:text-zinc-400 lg:gap-2 lg:text-base">
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-100 transition-colors hover:text-zinc-400 lg:gap-2 lg:text-base"
+          >
             <Github size={14} className="lg:h-5 lg:w-5" /> Code
           </a>
         </div>
@@ -47,13 +65,30 @@ export default function ProjectsSection({ isMobile = false }) {
 
   return (
     <SectionWrapper title="Project" scrollable disableScroll={isMobile}>
-      <Container {...(isMobile ? {} : { variants: staggerContainer, initial: 'hidden', whileInView: 'show', viewport: { once: true } })} className="w-full">
+      <Container
+        {...(isMobile
+          ? {}
+          : {
+              variants: staggerContainer,
+              initial: 'hidden',
+              whileInView: 'show',
+              viewport: { once: true },
+            })}
+        className="w-full"
+      >
         <div className="mb-6 max-w-3xl lg:mb-10">
-          <Heading {...(isMobile ? {} : { variants: textReveal })} className="text-3xl font-black leading-none tracking-tight text-zinc-100 md:text-6xl">
-            Projects 
+          <Heading
+            {...(isMobile ? {} : { variants: textReveal })}
+            className="text-3xl font-black leading-none tracking-tight text-zinc-100 md:text-6xl"
+          >
+            Projects
           </Heading>
-          <Paragraph {...(isMobile ? {} : { variants: fadeUp })} className="mt-3 text-xs leading-relaxed text-zinc-400 lg:text-lg">
-            All featured work stays on the same page so the section reads as a single connected gallery on every device.
+          <Paragraph
+            {...(isMobile ? {} : { variants: fadeUp })}
+            className="mt-3 text-xs leading-relaxed text-zinc-400 lg:text-lg"
+          >
+            All featured work stays on the same page so the section reads as a single connected
+            gallery on every device.
           </Paragraph>
         </div>
 

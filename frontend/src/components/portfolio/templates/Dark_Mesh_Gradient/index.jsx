@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronUp } from 'lucide-react';
@@ -81,10 +81,8 @@ export default function DarkMeshGradient() {
 
   return (
     <div className="relative min-h-screen bg-gray-950 text-gray-100 font-sans selection:bg-purple-500/30 overflow-x-hidden scroll-smooth">
-
       {/* BACKGROUND BLOBS */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-
         <motion.div
           animate={{ x: [0, 60, -40, 0], y: [0, -80, 50, 0], scale: [1, 1.15, 0.9, 1] }}
           transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
@@ -107,8 +105,8 @@ export default function DarkMeshGradient() {
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/40 backdrop-blur-md border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-
-          <button type="button"
+          <button
+            type="button"
             onClick={() => scrollToSection('home')}
             className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent"
           >
@@ -118,7 +116,8 @@ export default function DarkMeshGradient() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
-              <button type="button"
+              <button
+                type="button"
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
@@ -133,7 +132,8 @@ export default function DarkMeshGradient() {
           </nav>
 
           {/* Mobile Button */}
-          <button type="button"
+          <button
+            type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
@@ -156,7 +156,8 @@ export default function DarkMeshGradient() {
             className="fixed top-20 left-0 right-0 z-40 bg-gray-950/95 border-b border-white/10 py-6 px-6 md:hidden flex flex-col gap-3"
           >
             {navItems.map((item) => (
-              <button type="button"
+              <button
+                type="button"
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
                 className="w-full text-left px-5 py-3 rounded-xl text-base font-semibold text-gray-300 hover:text-white hover:bg-white/5"
@@ -191,7 +192,6 @@ export default function DarkMeshGradient() {
           </motion.button>
         )}
       </AnimatePresence>
-
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion'
-import Button from './Button'
+import { motion } from 'framer-motion';
+import Button from './Button';
 
 export default function EmptyState({
   icon: Icon,
@@ -26,9 +26,7 @@ export default function EmptyState({
           </div>
         ) : null}
 
-        <h3 className="text-2xl font-semibold tracking-tight text-foreground">
-          {title}
-        </h3>
+        <h3 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h3>
 
         <p className="mt-3 max-w-lg text-sm leading-6 text-muted-foreground sm:text-base">
           {description}
@@ -51,5 +49,5 @@ export default function EmptyState({
         ) : null}
       </div>
     </motion.div>
-  )
+  );
 }

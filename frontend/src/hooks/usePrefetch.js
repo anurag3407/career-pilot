@@ -45,12 +45,13 @@ export function usePrefetch() {
     prefetchCache.set(cacheKey, IN_FLIGHT);
 
     // Initiate background fetch
-    const promise = jobsApi.search(query, filters)
-      .then(response => {
+    const promise = jobsApi
+      .search(query, filters)
+      .then((response) => {
         prefetchCache.set(cacheKey, { data: response.data, timestamp: Date.now() });
         return response.data;
       })
-      .catch(error => {
+      .catch((error) => {
         // Clear cache so it can be retried later
         prefetchCache.delete(cacheKey);
         console.warn('Prefetch failed for query:', query, error);
@@ -63,7 +64,7 @@ export function usePrefetch() {
   const getCachedJobSearch = useCallback((query, filters = {}) => {
     const cacheKey = JSON.stringify({ query, filters });
     const cached = prefetchCache.get(cacheKey);
-    
+
     if (cached && cached !== IN_FLIGHT) {
       const isExpired = Date.now() - cached.timestamp > TTL_MS;
       if (!isExpired) {

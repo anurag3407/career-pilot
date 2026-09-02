@@ -1,8 +1,8 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Code2 } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Code2 } from 'lucide-react';
 
-const GlassCard = ({ children, className = "" }) => (
+const GlassCard = ({ children, className = '' }) => (
   <div
     className={`rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${className}`}
   >
@@ -12,7 +12,7 @@ const GlassCard = ({ children, className = "" }) => (
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 };
 
 const stagger = {
@@ -37,7 +37,10 @@ export default function Skills({ data }) {
           <h2 className="text-3xl font-black text-white">Skills</h2>
         </motion.div>
 
-        <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <motion.div
+          variants={fadeUp}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
           {categories.map((cat) => (
             <GlassCard key={cat} className="p-5">
               <h3 className="text-white/50 text-xs uppercase tracking-widest mb-4">{cat}</h3>
@@ -55,7 +58,7 @@ export default function Skills({ data }) {
                           className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-purple-400"
                           initial={{ width: 0 }}
                           whileInView={{ width: `${skill.level}%` }}
-                          transition={{ duration: 0.8, ease: "easeOut" }}
+                          transition={{ duration: 0.8, ease: 'easeOut' }}
                           viewport={{ once: true }}
                         />
                       </div>

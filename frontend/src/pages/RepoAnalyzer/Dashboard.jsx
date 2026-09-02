@@ -11,14 +11,8 @@ export default function RepoAnalyzerDashboard() {
   const [history, setHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
   const navigate = useNavigate();
-  
-  const { 
-    setRepoUrl, 
-    setSessionId, 
-    setGraph, 
-    isLoading,
-    setIsLoading
-  } = useAnalyzerStore();
+
+  const { setRepoUrl, setSessionId, setGraph, isLoading, setIsLoading } = useAnalyzerStore();
 
   useEffect(() => {
     loadHistory();
@@ -49,11 +43,11 @@ export default function RepoAnalyzerDashboard() {
     try {
       setIsLoading(true);
       const res = await analyzerApi.ingest(targetUrl);
-      
+
       setSessionId(res.sessionId);
       setGraph(res.nodes, res.edges);
       setRepoUrl(targetUrl);
-      
+
       toast.success('Repository ingested successfully!');
       navigate('/repo-analyzer/workspace');
     } catch (error) {
@@ -79,7 +73,9 @@ export default function RepoAnalyzerDashboard() {
             </div>
             <div>
               <h1 className="text-2xl font-bold">Analyzer Dashboard</h1>
-              <p className="text-slate-400 text-sm mt-1">Ingest a new repository or open a previously analyzed one.</p>
+              <p className="text-slate-400 text-sm mt-1">
+                Ingest a new repository or open a previously analyzed one.
+              </p>
             </div>
           </div>
 
@@ -99,7 +95,11 @@ export default function RepoAnalyzerDashboard() {
                 disabled={isLoading || (!urlInput.trim() && !isLoading)}
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg disabled:opacity-50 transition-colors flex items-center gap-2 cursor-pointer"
               >
-                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <GitMerge className="w-4 h-4" />}
+                {isLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <GitMerge className="w-4 h-4" />
+                )}
                 Analyze Now
               </button>
             </div>
@@ -146,9 +146,7 @@ export default function RepoAnalyzerDashboard() {
                     <h3 className="font-semibold text-slate-200 truncate mb-1" title={repoName}>
                       {repoName}
                     </h3>
-                    <p className="text-xs text-slate-500 truncate mb-4">
-                      {item.repoUrl}
-                    </p>
+                    <p className="text-xs text-slate-500 truncate mb-4">{item.repoUrl}</p>
                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800/50">
                       <span className="text-sm font-medium text-slate-400 group-hover:text-blue-400 transition-colors">
                         Re-Analyze Workspace
@@ -165,4 +163,3 @@ export default function RepoAnalyzerDashboard() {
     </div>
   );
 }
-

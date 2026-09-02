@@ -1,15 +1,13 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Star } from 'lucide-react';
 
 export default function Testimonials({ data }) {
   const { testimonials } = data;
   return (
     <section className="relative z-10 px-6 py-20 bg-white/40 text-left">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-rose-800 mb-14">
-          Testimonials
-        </h2>
+        <h2 className="text-4xl font-bold text-center text-rose-800 mb-14">Testimonials</h2>
 
         <div className="grid md:grid-cols-2 gap-10">
           {testimonials.map((testimonial, index) => (
@@ -27,13 +25,9 @@ export default function Testimonials({ data }) {
                 />
 
                 <div>
-                  <h3 className="font-semibold text-lg">
-                    {testimonial.name}
-                  </h3>
+                  <h3 className="font-semibold text-lg">{testimonial.name}</h3>
 
-                  <p className="text-sm text-pink-600">
-                    {testimonial.role}
-                  </p>
+                  <p className="text-sm text-pink-600">{testimonial.role}</p>
                 </div>
               </div>
 

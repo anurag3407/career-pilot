@@ -83,7 +83,11 @@ export default function Skills({ skills }) {
                             initial={{ width: 0 }}
                             whileInView={{ width: `${skill.level}%` }}
                             viewport={{ once: true }}
-                            transition={{ delay: catIndex * 0.1 + skillIndex * 0.05 + 0.3, duration: 0.8, ease: 'easeOut' }}
+                            transition={{
+                              delay: catIndex * 0.1 + skillIndex * 0.05 + 0.3,
+                              duration: 0.8,
+                              ease: 'easeOut',
+                            }}
                             className={`h-full rounded-full ${colors.bar}`}
                           />
                         </div>

@@ -1,14 +1,14 @@
-import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
-import ExperienceRow from '../../shared/ExperienceRow'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import Section from '../../shared/Section';
+import ExperienceRow from '../../shared/ExperienceRow';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * AttorneyBrief — legal CV with Bar Admissions and Practice Areas blocks.
  * Single-column, conservative serif, dense metadata.
  */
 export default function AttorneyBrief() {
-  const { personal, experience, education, certifications } = useResume()
+  const { personal, experience, education, certifications } = useResume();
 
   const nodes = {
     summary: personal.summary ? (
@@ -17,49 +17,58 @@ export default function AttorneyBrief() {
       </Section>
     ) : null,
 
-    experience: experience.length > 0 ? (
-      <Section title="Experience" accent="#111827" uppercase={false}>
-        {experience.map((e, i) => (
-          <ExperienceRow
-            key={i}
-            exp={e}
-            roleColor="#111827"
-            companyColor="#1f2937"
-            periodColor="#374151"
-            bulletColor="#1f2937"
-            fontSize="10pt"
-          />
-        ))}
-      </Section>
-    ) : null,
+    experience:
+      experience.length > 0 ? (
+        <Section title="Experience" accent="#111827" uppercase={false}>
+          {experience.map((e, i) => (
+            <ExperienceRow
+              key={i}
+              exp={e}
+              roleColor="#111827"
+              companyColor="#1f2937"
+              periodColor="#374151"
+              bulletColor="#1f2937"
+              fontSize="10pt"
+            />
+          ))}
+        </Section>
+      ) : null,
 
-    education: education.length > 0 ? (
-      <Section title="Education" accent="#111827" uppercase={false}>
-        {education.map((e, i) => (
-          <div key={i} style={{ marginBottom: '3mm' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <strong style={{ fontSize: '11pt' }}>{e.institution}</strong>
-              {e.period && <span style={{ fontStyle: 'italic', color: '#374151' }}>{e.period}</span>}
+    education:
+      education.length > 0 ? (
+        <Section title="Education" accent="#111827" uppercase={false}>
+          {education.map((e, i) => (
+            <div key={i} style={{ marginBottom: '3mm' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <strong style={{ fontSize: '11pt' }}>{e.institution}</strong>
+                {e.period && (
+                  <span style={{ fontStyle: 'italic', color: '#374151' }}>{e.period}</span>
+                )}
+              </div>
+              <div style={{ fontStyle: 'italic', color: '#1f2937' }}>{e.degree}</div>
+              {e.description && (
+                <div style={{ fontSize: '9.5pt', color: '#6b7280', marginTop: '1mm' }}>
+                  {e.description}
+                </div>
+              )}
             </div>
-            <div style={{ fontStyle: 'italic', color: '#1f2937' }}>{e.degree}</div>
-            {e.description && <div style={{ fontSize: '9.5pt', color: '#6b7280', marginTop: '1mm' }}>{e.description}</div>}
-          </div>
-        ))}
-      </Section>
-    ) : null,
+          ))}
+        </Section>
+      ) : null,
 
-    certifications: certifications.length > 0 ? (
-      <Section title="Honors & Awards" accent="#111827" uppercase={false}>
-        {certifications.map((c, i) => (
-          <div key={i} style={{ marginBottom: '1.5mm' }}>
-            <strong>{c.name}</strong>
-            {c.issuer && <span> · {c.issuer}</span>}
-            {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
-          </div>
-        ))}
-      </Section>
-    ) : null,
-  }
+    certifications:
+      certifications.length > 0 ? (
+        <Section title="Honors & Awards" accent="#111827" uppercase={false}>
+          {certifications.map((c, i) => (
+            <div key={i} style={{ marginBottom: '1.5mm' }}>
+              <strong>{c.name}</strong>
+              {c.issuer && <span> · {c.issuer}</span>}
+              {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
+            </div>
+          ))}
+        </Section>
+      ) : null,
+  };
 
   return (
     <div
@@ -83,7 +92,17 @@ export default function AttorneyBrief() {
         <div style={{ marginTop: '1mm', fontSize: '11pt', color: '#1f2937', fontStyle: 'italic' }}>
           {personal.title}
         </div>
-        <div style={{ marginTop: '2mm', fontSize: '9pt', color: '#374151', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1mm 5mm' }}>
+        <div
+          style={{
+            marginTop: '2mm',
+            fontSize: '9pt',
+            color: '#374151',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '1mm 5mm',
+          }}
+        >
           {personal.email && <span>{personal.email}</span>}
           {personal.phone && <span>· {personal.phone}</span>}
           {personal.location && <span>· {personal.location}</span>}
@@ -118,5 +137,5 @@ export default function AttorneyBrief() {
         }
       />
     </div>
-  )
+  );
 }

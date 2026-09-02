@@ -57,8 +57,8 @@ export default function MissingApiKeyModal() {
 
               <div className="p-6">
                 <p className="text-muted-foreground mb-6">
-                  It looks like you haven't configured an AI Provider. 
-                  To use this feature, please configure your API key in the settings.
+                  It looks like you haven't configured an AI Provider. To use this feature, please
+                  configure your API key in the settings.
                 </p>
 
                 <div className="flex justify-end gap-3">

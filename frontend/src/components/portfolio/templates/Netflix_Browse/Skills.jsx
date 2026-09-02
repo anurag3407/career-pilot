@@ -1,10 +1,10 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 const CATEGORY_COLORS = {
-  Frontend: { bg: "bg-[#E50914]/15", border: "border-[#E50914]/40", text: "text-[#E50914]" },
-  Backend: { bg: "bg-blue-500/10", border: "border-blue-500/40", text: "text-blue-400" },
-  DevOps: { bg: "bg-emerald-500/10", border: "border-emerald-500/40", text: "text-emerald-400" },
-  Design: { bg: "bg-purple-500/10", border: "border-purple-500/40", text: "text-purple-400" },
+  Frontend: { bg: 'bg-[#E50914]/15', border: 'border-[#E50914]/40', text: 'text-[#E50914]' },
+  Backend: { bg: 'bg-blue-500/10', border: 'border-blue-500/40', text: 'text-blue-400' },
+  DevOps: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/40', text: 'text-emerald-400' },
+  Design: { bg: 'bg-purple-500/10', border: 'border-purple-500/40', text: 'text-purple-400' },
 };
 
 export default function Skills({ skills }) {
@@ -66,18 +66,22 @@ export default function Skills({ skills }) {
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${skill.level}%` }}
-                        transition={{ delay: ci * 0.1 + i * 0.06 + 0.2, duration: 0.7, ease: "easeOut" }}
+                        transition={{
+                          delay: ci * 0.1 + i * 0.06 + 0.2,
+                          duration: 0.7,
+                          ease: 'easeOut',
+                        }}
                         viewport={{ once: true }}
                         className="h-full rounded-full"
                         style={{
                           background:
-                            category === "Frontend"
-                              ? "linear-gradient(90deg, #E50914, #ff6b6b)"
-                              : category === "Backend"
-                              ? "linear-gradient(90deg, #3b82f6, #60a5fa)"
-                              : category === "DevOps"
-                              ? "linear-gradient(90deg, #10b981, #34d399)"
-                              : "linear-gradient(90deg, #8b5cf6, #a78bfa)",
+                            category === 'Frontend'
+                              ? 'linear-gradient(90deg, #E50914, #ff6b6b)'
+                              : category === 'Backend'
+                                ? 'linear-gradient(90deg, #3b82f6, #60a5fa)'
+                                : category === 'DevOps'
+                                  ? 'linear-gradient(90deg, #10b981, #34d399)'
+                                  : 'linear-gradient(90deg, #8b5cf6, #a78bfa)',
                         }}
                       />
                     </div>

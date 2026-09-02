@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 export default function Marquee({ texts }) {
   const items = [...texts, ...texts, ...texts, ...texts];
@@ -6,8 +6,8 @@ export default function Marquee({ texts }) {
     <div className="overflow-hidden border-y border-[#ea4c89]/12 py-3 my-0 bg-white/40 backdrop-blur-sm">
       <motion.div
         className="flex gap-10 whitespace-nowrap"
-        animate={{ x: ["0%", "-25%"] }}
-        transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+        animate={{ x: ['0%', '-25%'] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
       >
         {items.map((t, i) => (
           <span

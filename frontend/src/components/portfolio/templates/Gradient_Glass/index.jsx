@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function GradientGlass() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Gradient Glass Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Gradient colored shapes behind frosted glass cards. Colorful blurred circles/blobs visible through the glass. Premium, modern SaaS aesthetic.
+            Gradient colored shapes behind frosted glass cards. Colorful blurred circles/blobs
+            visible through the glass. Premium, modern SaaS aesthetic.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

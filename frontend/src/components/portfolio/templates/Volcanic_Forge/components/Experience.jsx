@@ -7,10 +7,15 @@ import SectionHeader from './SectionHeader';
 export default function Experience({ experience }) {
   return (
     <section className="py-24 w-full relative z-10">
-      <LavaAnimate className="flex! w-full flex-col" particleCount={70} formedDelay={1800} meltAmount={3}>
+      <LavaAnimate
+        className="flex! w-full flex-col"
+        particleCount={70}
+        formedDelay={1800}
+        meltAmount={3}
+      >
         <div className="w-full">
           <SectionHeader title="Experience" />
-          
+
           {/* Added mt-12 to pull content down from the header */}
           <div className="relative border-l border-stone-800 ml-4 md:ml-6 space-y-12 w-full mt-12">
             {experience.map((exp, idx) => (
@@ -36,9 +41,7 @@ export default function Experience({ experience }) {
                       {exp.period}
                     </span>
                   </div>
-                  <p className="text-stone-400 leading-relaxed">
-                    {exp.description}
-                  </p>
+                  <p className="text-stone-400 leading-relaxed">{exp.description}</p>
                 </div>
               </motion.div>
             ))}

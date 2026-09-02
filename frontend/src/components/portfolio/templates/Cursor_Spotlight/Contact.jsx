@@ -9,7 +9,7 @@ const Contact = ({ personal, socials }) => {
         <Mail className="text-blue-500" />
         <h2 className="text-3xl font-bold text-white">Contact</h2>
       </div>
-      
+
       <div className="grid gap-12 md:grid-cols-2">
         {/* Contact Information */}
         <motion.div
@@ -20,11 +20,12 @@ const Contact = ({ personal, socials }) => {
         >
           <h3 className="mb-4 text-2xl font-bold text-white">Let's build something.</h3>
           <p className="mb-8 text-zinc-400">
-            Whether you have a question, a project idea, or just want to say hi, I'll try my best to get back to you!
+            Whether you have a question, a project idea, or just want to say hi, I'll try my best to
+            get back to you!
           </p>
-          
+
           <div className="space-y-6">
-            <motion.a 
+            <motion.a
               href={`mailto:${socials.email}`}
               whileHover={{ x: 10, color: '#60a5fa' }}
               className="flex items-center gap-4 text-zinc-300 transition-colors"
@@ -36,7 +37,7 @@ const Contact = ({ personal, socials }) => {
             </motion.a>
 
             {personal.location && (
-              <motion.div 
+              <motion.div
                 whileHover={{ x: 10, color: '#60a5fa' }}
                 className="flex items-center gap-4 text-zinc-300 transition-colors"
               >
@@ -50,7 +51,7 @@ const Contact = ({ personal, socials }) => {
         </motion.div>
 
         {/* Contact Form */}
-        <motion.form 
+        <motion.form
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -58,34 +59,40 @@ const Contact = ({ personal, socials }) => {
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="flex flex-col gap-1">
-            <label htmlFor="name" className="text-sm font-medium text-zinc-400">Name</label>
-            <input 
-              type="text" 
-              id="name" 
+            <label htmlFor="name" className="text-sm font-medium text-zinc-400">
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
               placeholder="John Doe"
               className="cursor-none rounded-lg border border-zinc-800 bg-zinc-950/50 px-4 py-3 text-white placeholder-zinc-600 outline-none transition-colors focus:border-blue-500 focus:bg-zinc-950"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="email" className="text-sm font-medium text-zinc-400">Email</label>
-            <input 
-              type="email" 
-              id="email" 
+            <label htmlFor="email" className="text-sm font-medium text-zinc-400">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
               placeholder="john@example.com"
               className="cursor-none rounded-lg border border-zinc-800 bg-zinc-950/50 px-4 py-3 text-white placeholder-zinc-600 outline-none transition-colors focus:border-blue-500 focus:bg-zinc-950"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="message" className="text-sm font-medium text-zinc-400">Message</label>
-            <textarea 
-              id="message" 
+            <label htmlFor="message" className="text-sm font-medium text-zinc-400">
+              Message
+            </label>
+            <textarea
+              id="message"
               rows="4"
               placeholder="Hello..."
               className="cursor-none resize-none rounded-lg border border-zinc-800 bg-zinc-950/50 px-4 py-3 text-white placeholder-zinc-600 outline-none transition-colors focus:border-blue-500 focus:bg-zinc-950"
             ></textarea>
           </div>
-          
-          <motion.button 
+
+          <motion.button
             whileHover={{ scale: 1.02, backgroundColor: '#3b82f6' }}
             whileTap={{ scale: 0.98 }}
             className="cursor-none mt-4 flex items-center justify-center gap-2 rounded-lg bg-blue-600 py-3 font-bold text-white transition-colors"

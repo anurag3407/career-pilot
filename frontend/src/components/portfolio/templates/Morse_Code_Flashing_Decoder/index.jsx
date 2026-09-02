@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Github,
   Linkedin,
@@ -14,31 +14,61 @@ import {
   ChevronUp,
   Menu,
   X,
-} from "lucide-react";
-import dummyData from "../../../../data/dummy_data.json";
-import { usePortfolio } from "../../../../context/PortfolioContext";
+} from 'lucide-react';
+import dummyData from '../../../../data/dummy_data.json';
+import { usePortfolio } from '../../../../context/PortfolioContext';
 
 /* ─── Morse Code Map ─── */
 const MORSE = {
-  A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.",
-  G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..",
-  M: "--", N: "-.", O: "---", P: ".--.", Q: "--.-", R: ".-.",
-  S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-",
-  Y: "-.--", Z: "--..", "0": "-----", "1": ".----", "2": "..---",
-  "3": "...--", "4": "....-", "5": ".....", "6": "-....",
-  "7": "--...", "8": "---..", "9": "----.", " ": "/",
+  A: '.-',
+  B: '-...',
+  C: '-.-.',
+  D: '-..',
+  E: '.',
+  F: '..-.',
+  G: '--.',
+  H: '....',
+  I: '..',
+  J: '.---',
+  K: '-.-',
+  L: '.-..',
+  M: '--',
+  N: '-.',
+  O: '---',
+  P: '.--.',
+  Q: '--.-',
+  R: '.-.',
+  S: '...',
+  T: '-',
+  U: '..-',
+  V: '...-',
+  W: '.--',
+  X: '-..-',
+  Y: '-.--',
+  Z: '--..',
+  0: '-----',
+  1: '.----',
+  2: '..---',
+  3: '...--',
+  4: '....-',
+  5: '.....',
+  6: '-....',
+  7: '--...',
+  8: '---..',
+  9: '----.',
+  ' ': '/',
 };
 
 function toMorse(text) {
   return text
     .toUpperCase()
-    .split("")
-    .map((c) => MORSE[c] || "")
+    .split('')
+    .map((c) => MORSE[c] || '')
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
 }
 
-const SKILL_CATS = ["Frontend", "Backend", "Tools", "Design", "Database", "DevOps"];
+const SKILL_CATS = ['Frontend', 'Backend', 'Tools', 'Design', 'Database', 'DevOps'];
 
 /* ─── Global Styles ─── */
 function GlobalStyles() {
@@ -513,7 +543,9 @@ function SkillBar({ name, level, delay = 0 }) {
   const [inView, setInView] = useState(false);
   useEffect(() => {
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setInView(true); },
+      ([e]) => {
+        if (e.isIntersecting) setInView(true);
+      },
       { threshold: 0.1 }
     );
     if (ref.current) obs.observe(ref.current);
@@ -530,7 +562,7 @@ function SkillBar({ name, level, delay = 0 }) {
           className="mcd-skill-bar-fill"
           initial={{ width: 0 }}
           animate={inView ? { width: `${level}%` } : {}}
-          transition={{ duration: 1, delay, ease: "easeOut" }}
+          transition={{ duration: 1, delay, ease: 'easeOut' }}
         />
       </div>
     </div>
@@ -543,7 +575,9 @@ function Reveal({ children, delay = 0 }) {
   const [inView, setInView] = useState(false);
   useEffect(() => {
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setInView(true); },
+      ([e]) => {
+        if (e.isIntersecting) setInView(true);
+      },
       { threshold: 0.05 }
     );
     if (ref.current) obs.observe(ref.current);
@@ -575,19 +609,19 @@ function SectionHeader({ prefix, title }) {
 
 /* ─── Live Morse Decoder Widget ─── */
 function DecoderWidget() {
-  const [input, setInput] = useState(".... . .-.. .-.. ---");
+  const [input, setInput] = useState('.... . .-.. .-.. ---');
   const decoded = input
-    .split(" / ")
+    .split(' / ')
     .map((word) =>
       word
-        .split(" ")
+        .split(' ')
         .map((code) => {
           const entry = Object.entries(MORSE).find(([, v]) => v === code);
-          return entry ? entry[0] : "";
+          return entry ? entry[0] : '';
         })
-        .join("")
+        .join('')
     )
-    .join(" ")
+    .join(' ')
     .trim();
 
   return (
@@ -601,7 +635,7 @@ function DecoderWidget() {
         spellCheck={false}
       />
       <div className="mcd-decoder-output-label">&gt; DECODED OUTPUT</div>
-      <div className="mcd-decoder-output">{decoded || "—"}</div>
+      <div className="mcd-decoder-output">{decoded || '—'}</div>
     </div>
   );
 }
@@ -614,13 +648,17 @@ function FlashIndicator({ name }) {
   const timerRef = useRef(null);
 
   const buildSeq = useCallback((morse) => {
-    const DOT = 120, DASH = 360, GAP = 120, LETTER_GAP = 360, WORD_GAP = 840;
+    const DOT = 120,
+      DASH = 360,
+      GAP = 120,
+      LETTER_GAP = 360,
+      WORD_GAP = 840;
     const seq = [];
-    morse.split("").forEach((ch) => {
-      if (ch === ".") seq.push({ on: true, ms: DOT }, { on: false, ms: GAP });
-      else if (ch === "-") seq.push({ on: true, ms: DASH }, { on: false, ms: GAP });
-      else if (ch === " ") seq.push({ on: false, ms: LETTER_GAP });
-      else if (ch === "/") seq.push({ on: false, ms: WORD_GAP });
+    morse.split('').forEach((ch) => {
+      if (ch === '.') seq.push({ on: true, ms: DOT }, { on: false, ms: GAP });
+      else if (ch === '-') seq.push({ on: true, ms: DASH }, { on: false, ms: GAP });
+      else if (ch === ' ') seq.push({ on: false, ms: LETTER_GAP });
+      else if (ch === '/') seq.push({ on: false, ms: WORD_GAP });
     });
     seq.push({ on: false, ms: 1200 }); // pause before repeat
     return seq;
@@ -680,7 +718,7 @@ export default function MorseCodeFlashingDecoder() {
 
   let skills = dummyData.skills;
   if (portfolioData?.skills?.length > 0) {
-    if (typeof portfolioData.skills[0] === "string") {
+    if (typeof portfolioData.skills[0] === 'string') {
       skills = portfolioData.skills.map((s, i) => ({
         name: s,
         level: 75 + ((i * 13) % 20),
@@ -694,12 +732,12 @@ export default function MorseCodeFlashingDecoder() {
   let projects = dummyData.projects;
   if (portfolioData?.projects?.length > 0) {
     projects = portfolioData.projects.map((p, i) => ({
-      title: p.title || p.name || "Project",
-      description: p.description || "",
+      title: p.title || p.name || 'Project',
+      description: p.description || '',
       techStack: p.technologies || p.techStack || [],
       image: p.image || dummyData.projects[i % dummyData.projects.length]?.image,
-      liveUrl: p.liveUrl || p.link || "#",
-      githubUrl: p.githubUrl || "#",
+      liveUrl: p.liveUrl || p.link || '#',
+      githubUrl: p.githubUrl || '#',
     }));
   }
 
@@ -713,7 +751,7 @@ export default function MorseCodeFlashingDecoder() {
   const certifications = portfolioData?.certifications || [];
 
   const groupedSkills = skills.reduce((acc, skill) => {
-    const cat = skill.category || "Other";
+    const cat = skill.category || 'Other';
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(skill);
     return acc;
@@ -722,21 +760,21 @@ export default function MorseCodeFlashingDecoder() {
   /* ─── Scroll ─── */
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
   };
 
   const navLinks = [
-    { id: "about", label: "ABOUT" },
-    { id: "skills", label: "SKILLS" },
-    { id: "experience", label: "EXPERIENCE" },
-    { id: "projects", label: "PROJECTS" },
-    { id: "contact", label: "CONTACT" },
+    { id: 'about', label: 'ABOUT' },
+    { id: 'skills', label: 'SKILLS' },
+    { id: 'experience', label: 'EXPERIENCE' },
+    { id: 'projects', label: 'PROJECTS' },
+    { id: 'contact', label: 'CONTACT' },
   ];
 
   return (
@@ -747,9 +785,9 @@ export default function MorseCodeFlashingDecoder() {
       <FlashIndicator name={personal.name} />
 
       {/* ── Navigation ── */}
-      <nav className={`mcd-nav${scrollY > 60 ? " mcd-nav-scrolled" : ""}`}>
-        <button type="button" className="mcd-nav-brand" onClick={() => scrollTo("hero")}>
-          &gt; <span>{personal.name?.split(" ")[0] || "MORSE"}</span>.exe
+      <nav className={`mcd-nav${scrollY > 60 ? ' mcd-nav-scrolled' : ''}`}>
+        <button type="button" className="mcd-nav-brand" onClick={() => scrollTo('hero')}>
+          &gt; <span>{personal.name?.split(' ')[0] || 'MORSE'}</span>.exe
         </button>
         <ul className="mcd-nav-links">
           {navLinks.map((l) => (
@@ -760,7 +798,12 @@ export default function MorseCodeFlashingDecoder() {
             </li>
           ))}
         </ul>
-        <button type="button" className="mcd-nav-toggle" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+        <button
+          type="button"
+          className="mcd-nav-toggle"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
+        >
           <Menu size={22} />
         </button>
       </nav>
@@ -775,7 +818,12 @@ export default function MorseCodeFlashingDecoder() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <button type="button" className="mcd-mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close">
+            <button
+              type="button"
+              className="mcd-mobile-close"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close"
+            >
               <X size={26} />
             </button>
             {navLinks.map((l, i) => (
@@ -805,25 +853,29 @@ export default function MorseCodeFlashingDecoder() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
-          style={{ position: "relative", zIndex: 1 }}
+          style={{ position: 'relative', zIndex: 1 }}
         >
           <p className="mcd-hero-signal">
-            <Radio size={12} style={{ display: "inline", marginRight: 8 }} />
+            <Radio size={12} style={{ display: 'inline', marginRight: 8 }} />
             TRANSMISSION INCOMING · SIGNAL LOCKED
           </p>
           <h1 className="mcd-hero-name">{personal.name}</h1>
-          <p className="mcd-hero-morse">
-            {toMorse((personal.name || "").substring(0, 18))}
-          </p>
+          <p className="mcd-hero-morse">{toMorse((personal.name || '').substring(0, 18))}</p>
           <p className="mcd-hero-title">{personal.title}</p>
-          {personal.tagline && (
-            <p className="mcd-hero-tagline">{personal.tagline}</p>
-          )}
+          {personal.tagline && <p className="mcd-hero-tagline">{personal.tagline}</p>}
           <div className="mcd-hero-actions">
-            <button type="button" className="mcd-btn mcd-btn-primary" onClick={() => scrollTo("projects")}>
+            <button
+              type="button"
+              className="mcd-btn mcd-btn-primary"
+              onClick={() => scrollTo('projects')}
+            >
               VIEW PROJECTS
             </button>
-            <button type="button" className="mcd-btn mcd-btn-outline" onClick={() => scrollTo("contact")}>
+            <button
+              type="button"
+              className="mcd-btn mcd-btn-outline"
+              onClick={() => scrollTo('contact')}
+            >
               CONTACT
             </button>
           </div>
@@ -970,7 +1022,10 @@ export default function MorseCodeFlashingDecoder() {
       {/* ══════════════════════════════════════════════
           PROJECTS
          ══════════════════════════════════════════════ */}
-      <section className={`mcd-section${education.length > 0 ? "" : " mcd-section-alt"}`} id="projects">
+      <section
+        className={`mcd-section${education.length > 0 ? '' : ' mcd-section-alt'}`}
+        id="projects"
+      >
         <div className="mcd-container">
           <Reveal>
             <SectionHeader prefix="PROJECT.FILES" title="PROJECTS" />
@@ -979,28 +1034,38 @@ export default function MorseCodeFlashingDecoder() {
             {projects.map((p, i) => (
               <Reveal key={i} delay={i * 0.07}>
                 <div className="mcd-project-card">
-                  {p.image && (
-                    <img src={p.image} alt={p.title} className="mcd-project-img" />
-                  )}
+                  {p.image && <img src={p.image} alt={p.title} className="mcd-project-img" />}
                   <div className="mcd-project-body">
-                    <div className="mcd-project-id">FILE_{String(i + 1).padStart(3, "0")}</div>
+                    <div className="mcd-project-id">FILE_{String(i + 1).padStart(3, '0')}</div>
                     <h3 className="mcd-project-title">{p.title}</h3>
                     <p className="mcd-project-desc">{p.description}</p>
                     {p.techStack?.length > 0 && (
                       <div className="mcd-project-tags">
                         {p.techStack.map((t, ti) => (
-                          <span key={ti} className="mcd-project-tag">{t}</span>
+                          <span key={ti} className="mcd-project-tag">
+                            {t}
+                          </span>
                         ))}
                       </div>
                     )}
                     <div className="mcd-project-links">
-                      {p.liveUrl && p.liveUrl !== "#" && (
-                        <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className="mcd-project-link">
+                      {p.liveUrl && p.liveUrl !== '#' && (
+                        <a
+                          href={p.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mcd-project-link"
+                        >
                           <ExternalLink size={12} /> LIVE
                         </a>
                       )}
-                      {p.githubUrl && p.githubUrl !== "#" && (
-                        <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" className="mcd-project-link">
+                      {p.githubUrl && p.githubUrl !== '#' && (
+                        <a
+                          href={p.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mcd-project-link"
+                        >
                           <Github size={12} /> SOURCE
                         </a>
                       )}
@@ -1059,9 +1124,7 @@ export default function MorseCodeFlashingDecoder() {
                   <div className="mcd-test-quote">&ldquo;</div>
                   <p className="mcd-test-text">{t.text}</p>
                   <div className="mcd-test-author">
-                    {t.avatar && (
-                      <img src={t.avatar} alt={t.name} className="mcd-test-avatar" />
-                    )}
+                    {t.avatar && <img src={t.avatar} alt={t.name} className="mcd-test-avatar" />}
                     <div>
                       <div className="mcd-test-name">{t.name}</div>
                       <div className="mcd-test-role">{t.role}</div>
@@ -1085,7 +1148,8 @@ export default function MorseCodeFlashingDecoder() {
           <Reveal delay={0.1}>
             <div className="mcd-contact-inner">
               <p className="mcd-contact-subtitle">
-                Signal received. Ready to establish a connection — let&apos;s build something remarkable together.
+                Signal received. Ready to establish a connection — let&apos;s build something
+                remarkable together.
               </p>
               <div className="mcd-contact-details">
                 {socials.email && (
@@ -1103,22 +1167,44 @@ export default function MorseCodeFlashingDecoder() {
               </div>
               <div className="mcd-socials">
                 {socials.github && (
-                  <a href={socials.github} target="_blank" rel="noopener noreferrer" className="mcd-social-link" aria-label="GitHub">
+                  <a
+                    href={socials.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mcd-social-link"
+                    aria-label="GitHub"
+                  >
                     <Github size={18} />
                   </a>
                 )}
                 {socials.linkedin && (
-                  <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="mcd-social-link" aria-label="LinkedIn">
+                  <a
+                    href={socials.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mcd-social-link"
+                    aria-label="LinkedIn"
+                  >
                     <Linkedin size={18} />
                   </a>
                 )}
                 {socials.twitter && (
-                  <a href={socials.twitter} target="_blank" rel="noopener noreferrer" className="mcd-social-link" aria-label="Twitter">
+                  <a
+                    href={socials.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mcd-social-link"
+                    aria-label="Twitter"
+                  >
                     <Twitter size={18} />
                   </a>
                 )}
                 {socials.email && (
-                  <a href={`mailto:${socials.email}`} className="mcd-social-link" aria-label="Email">
+                  <a
+                    href={`mailto:${socials.email}`}
+                    className="mcd-social-link"
+                    aria-label="Email"
+                  >
                     <Mail size={18} />
                   </a>
                 )}
@@ -1141,7 +1227,7 @@ export default function MorseCodeFlashingDecoder() {
           <motion.button
             key="back-top"
             className="mcd-back-top"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}

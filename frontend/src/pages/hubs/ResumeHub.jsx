@@ -19,16 +19,15 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
-
 export default function ResumeHub() {
-  const [resumes, setResumes] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [fontFamily, setFontFamily] = useState("Poppins")
-  const [fontSize, setFontSize] = useState("Medium")
-  const [colorTheme, setColorTheme] = useState("Blue")
-  const [headerStyle, setHeaderStyle] = useState("Modern")
-  const [pageMargin, setPageMargin] = useState("Normal")
-  const [sectionSpacing, setSectionSpacing] = useState("Medium")
+  const [resumes, setResumes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [fontFamily, setFontFamily] = useState('Poppins');
+  const [fontSize, setFontSize] = useState('Medium');
+  const [colorTheme, setColorTheme] = useState('Blue');
+  const [headerStyle, setHeaderStyle] = useState('Modern');
+  const [pageMargin, setPageMargin] = useState('Normal');
+  const [sectionSpacing, setSectionSpacing] = useState('Medium');
 
   useEffect(() => {
     const fetchResumes = async () => {
@@ -191,11 +190,7 @@ export default function ResumeHub() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
-                    to={
-                      resume.enhancedText
-                        ? `/enhance/${resume._id}`
-                        : `/resume/${resume._id}`
-                    }
+                    to={resume.enhancedText ? `/enhance/${resume._id}` : `/resume/${resume._id}`}
                     className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                   >
                     <Eye className="w-3.5 h-3.5 inline mr-1" />

@@ -15,17 +15,52 @@ const ContactSection = () => {
             <Mail size={20} strokeWidth={1} className="-rotate-45 text-zinc-400" />
           </div>
 
-          <h3 className="text-4xl md:text-5xl font-extralight text-zinc-900 mb-8 mt-4">Start a project</h3>
-          <p className="text-zinc-400 font-light mb-12 max-w-md mx-auto leading-relaxed">Available for new opportunities. Send a message to discuss your next technical or creative endeavor.</p>
+          <h3 className="text-4xl md:text-5xl font-extralight text-zinc-900 mb-8 mt-4">
+            Start a project
+          </h3>
+          <p className="text-zinc-400 font-light mb-12 max-w-md mx-auto leading-relaxed">
+            Available for new opportunities. Send a message to discuss your next technical or
+            creative endeavor.
+          </p>
 
-          <a href={`mailto:${email}`} className="inline-flex items-center gap-3 border border-zinc-900 px-8 py-4 text-zinc-900 hover:bg-zinc-900 hover:text-white transition-all duration-300 text-xs tracking-[0.2em] uppercase">
+          <a
+            href={`mailto:${email}`}
+            className="inline-flex items-center gap-3 border border-zinc-900 px-8 py-4 text-zinc-900 hover:bg-zinc-900 hover:text-white transition-all duration-300 text-xs tracking-[0.2em] uppercase"
+          >
             Say Hello <ArrowUpRight size={14} strokeWidth={1} />
           </a>
 
           <div className="flex justify-center gap-8 mt-24">
-            {github && (<a href={github} target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-zinc-900 transition-colors"><Github size={20} strokeWidth={1} /></a>)}
-            {linkedin && (<a href={linkedin} target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-zinc-900 transition-colors"><Linkedin size={20} strokeWidth={1} /></a>)}
-            {twitter && (<a href={twitter} target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-zinc-900 transition-colors"><Twitter size={20} strokeWidth={1} /></a>)}
+            {github && (
+              <a
+                href={github}
+                target="_blank"
+                rel="noreferrer"
+                className="text-zinc-400 hover:text-zinc-900 transition-colors"
+              >
+                <Github size={20} strokeWidth={1} />
+              </a>
+            )}
+            {linkedin && (
+              <a
+                href={linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="text-zinc-400 hover:text-zinc-900 transition-colors"
+              >
+                <Linkedin size={20} strokeWidth={1} />
+              </a>
+            )}
+            {twitter && (
+              <a
+                href={twitter}
+                target="_blank"
+                rel="noreferrer"
+                className="text-zinc-400 hover:text-zinc-900 transition-colors"
+              >
+                <Twitter size={20} strokeWidth={1} />
+              </a>
+            )}
           </div>
         </div>
       </FadeIn>

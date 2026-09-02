@@ -12,14 +12,14 @@ const typeColors = {
   api: '#3b82f6',
   docs: '#64748b',
   assets: '#f97316',
-  other: '#6b7280'
+  other: '#6b7280',
 };
 
 const riskColors = {
   critical: '#ef4444',
   high: '#f97316',
   medium: '#eab308',
-  low: '#06b6d4'
+  low: '#06b6d4',
 };
 
 const ModuleNode = ({ data, selected }) => {
@@ -30,10 +30,10 @@ const ModuleNode = ({ data, selected }) => {
   return (
     <div
       className={cn(
-        "relative w-[220px] rounded-xl bg-[#0f172a] border transition-all duration-300",
-        selected 
-          ? "border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] scale-105 z-10" 
-          : "border-slate-800 hover:border-slate-600 hover:scale-[1.02]"
+        'relative w-[220px] rounded-xl bg-[#0f172a] border transition-all duration-300',
+        selected
+          ? 'border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] scale-105 z-10'
+          : 'border-slate-800 hover:border-slate-600 hover:scale-[1.02]'
       )}
     >
       {/* Target Handle (Top) */}
@@ -43,9 +43,9 @@ const ModuleNode = ({ data, selected }) => {
         className="w-3 h-3 border-2 bg-[#0f172a] transition-colors"
         style={{ borderColor: color }}
       />
-      
+
       {/* Top Border Indicator */}
-      <div 
+      <div
         className="absolute top-0 left-0 right-0 h-1.5 rounded-t-xl opacity-80"
         style={{ backgroundColor: color }}
       />
@@ -58,13 +58,13 @@ const ModuleNode = ({ data, selected }) => {
               {name}
             </span>
           </div>
-          
+
           {riskLevel && riskLevel !== 'low' && (
-             <div 
-               className="w-2.5 h-2.5 rounded-full shadow-sm"
-               style={{ backgroundColor: rColor, boxShadow: `0 0 5px ${rColor}` }}
-               title={`${riskLevel} risk detected`}
-             />
+            <div
+              className="w-2.5 h-2.5 rounded-full shadow-sm"
+              style={{ backgroundColor: rColor, boxShadow: `0 0 5px ${rColor}` }}
+              title={`${riskLevel} risk detected`}
+            />
           )}
         </div>
 
@@ -78,14 +78,14 @@ const ModuleNode = ({ data, selected }) => {
             </span>
           </div>
         </div>
-        
+
         <div className="mt-3 flex">
-           <span 
-             className="text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold"
-             style={{ color: color, backgroundColor: `${color}20` }}
-           >
-             {type}
-           </span>
+          <span
+            className="text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold"
+            style={{ color: color, backgroundColor: `${color}20` }}
+          >
+            {type}
+          </span>
         </div>
       </div>
 

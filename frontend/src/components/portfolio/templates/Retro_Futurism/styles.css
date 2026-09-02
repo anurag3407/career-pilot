@@ -1,14 +1,14 @@
 @property --shift {
-  syntax: "<number>";
+  syntax: '<number>';
   inherits: false;
   initial-value: 0;
 }
 
 :root {
-  --sun-1: #facc15; 
-  --sun-2: #ec4899; 
-  --grid-color: #f0abfc; 
-  --grid-glow: #c026d3; 
+  --sun-1: #facc15;
+  --sun-2: #ec4899;
+  --grid-color: #f0abfc;
+  --grid-glow: #c026d3;
 }
 
 /* --- THE MOON --- */
@@ -21,30 +21,74 @@
 }
 
 .synth-sun::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   background-image: linear-gradient(to bottom, var(--sun-1), var(--sun-2) 60%);
-  mask: linear-gradient(to top, 
-    #000 calc(1% + (3.5% * var(--shift))), 0%, #0000 calc(8% + (2.8% * var(--shift))), 0%, 
-    #000 calc(9% + (3.5% * var(--shift))), 0%, #0000 calc(15% + (2.8% * var(--shift))), 0%, 
-    #000 calc(16% + (3.5% * var(--shift))), 0%, #0000 calc(21% + (2.8% * var(--shift))), 0%, 
-    #000 calc(22% + (3.5% * var(--shift))), 0%, #0000 calc(26% + (2.8% * var(--shift))), 0%, 
-    #000 calc(27% + (3.5% * var(--shift))), 0%, #0000 calc(30% + (2.8% * var(--shift))), 0%, 
-    #000 calc(31% + (3.5% * var(--shift))), 0%, #0000 calc(33% + (2.8% * var(--shift))), 0%, 
-    #000 calc(34% + (3.5% * var(--shift))), 0%, #0000 calc(35% + (2.8% * var(--shift))), 0%, 
+  mask: linear-gradient(
+    to top,
+    #000 calc(1% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(8% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(9% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(15% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(16% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(21% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(22% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(26% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(27% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(30% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(31% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(33% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(34% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(35% + (2.8% * var(--shift))),
+    0%,
     #000 calc(56% + (2.5% * var(--shift)))
   );
   mask-size: 100% 120%;
-  -webkit-mask: linear-gradient(to top, 
-    #000 calc(1% + (3.5% * var(--shift))), 0%, #0000 calc(8% + (2.8% * var(--shift))), 0%, 
-    #000 calc(9% + (3.5% * var(--shift))), 0%, #0000 calc(15% + (2.8% * var(--shift))), 0%, 
-    #000 calc(16% + (3.5% * var(--shift))), 0%, #0000 calc(21% + (2.8% * var(--shift))), 0%, 
-    #000 calc(22% + (3.5% * var(--shift))), 0%, #0000 calc(26% + (2.8% * var(--shift))), 0%, 
-    #000 calc(27% + (3.5% * var(--shift))), 0%, #0000 calc(30% + (2.8% * var(--shift))), 0%, 
-    #000 calc(31% + (3.5% * var(--shift))), 0%, #0000 calc(33% + (2.8% * var(--shift))), 0%, 
-    #000 calc(34% + (3.5% * var(--shift))), 0%, #0000 calc(35% + (2.8% * var(--shift))), 0%, 
+  -webkit-mask: linear-gradient(
+    to top,
+    #000 calc(1% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(8% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(9% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(15% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(16% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(21% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(22% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(26% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(27% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(30% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(31% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(33% + (2.8% * var(--shift))),
+    0%,
+    #000 calc(34% + (3.5% * var(--shift))),
+    0%,
+    #0000 calc(35% + (2.8% * var(--shift))),
+    0%,
     #000 calc(56% + (2.5% * var(--shift)))
   );
   -webkit-mask-size: 100% 120%;
@@ -52,8 +96,12 @@
 }
 
 @keyframes sun-shift {
-  from { --shift: 1; }
-  to { --shift: 3.8; }
+  from {
+    --shift: 1;
+  }
+  to {
+    --shift: 3.8;
+  }
 }
 
 /* --- THE HERO ROAD (GRID) --- */
@@ -73,7 +121,7 @@
   inset: -100% -100% 0 -100%;
   transform-origin: bottom center;
   transform: rotateX(75deg);
-  background-image: 
+  background-image:
     linear-gradient(to right, var(--grid-color) 2px, transparent 2px),
     linear-gradient(to bottom, var(--grid-color) 2px, transparent 2px);
   background-size: 60px 60px;
@@ -82,8 +130,12 @@
 }
 
 @keyframes road-move {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 60px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 60px;
+  }
 }
 
 /* --- WIND SWAY TREES (GLOBAL) --- */
@@ -105,12 +157,20 @@
 }
 
 @keyframes sway-left {
-  0% { transform: translateX(-1px) rotate(-2deg); }
-  100% { transform: translateX(1px) rotate(4deg); }
+  0% {
+    transform: translateX(-1px) rotate(-2deg);
+  }
+  100% {
+    transform: translateX(1px) rotate(4deg);
+  }
 }
 @keyframes sway-right {
-  0% { transform: translateX(1px) scaleX(-1) rotate(3deg); }
-  100% { transform: translateX(-1px) scaleX(-1) rotate(-3deg); }
+  0% {
+    transform: translateX(1px) scaleX(-1) rotate(3deg);
+  }
+  100% {
+    transform: translateX(-1px) scaleX(-1) rotate(-3deg);
+  }
 }
 
 /* --- NIGHT TIME PURPLE PARTICLES --- */
@@ -134,16 +194,28 @@
 }
 
 @keyframes dust-drift-1 {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 -600px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 -600px;
+  }
 }
 @keyframes dust-drift-2 {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 -1000px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 -1000px;
+  }
 }
 @keyframes dust-drift-3 {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 -1500px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 -1500px;
+  }
 }
 
 @media (max-width: 640px) {

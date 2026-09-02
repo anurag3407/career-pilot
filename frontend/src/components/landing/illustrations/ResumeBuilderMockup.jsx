@@ -15,7 +15,7 @@ export default function ResumeBuilderMockup() {
       {/* Editor App UI */}
       <div className="flex-1 flex overflow-hidden p-4 gap-4 bg-background/30">
         {/* Sidebar / Form */}
-        <motion.div 
+        <motion.div
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -24,30 +24,30 @@ export default function ResumeBuilderMockup() {
           <div className="h-6 w-24 bg-muted rounded mb-2" />
           <div className="h-10 w-full bg-card border border-border rounded-lg" />
           <div className="h-10 w-full bg-card border border-border rounded-lg" />
-          
+
           <div className="h-6 w-32 bg-muted rounded mt-4 mb-2" />
           <div className="h-20 w-full bg-card border border-border rounded-lg p-2 flex flex-col gap-2">
             <div className="h-3 w-3/4 bg-muted rounded" />
             <div className="h-3 w-1/2 bg-muted rounded" />
           </div>
-          
+
           <div className="mt-auto h-10 w-full bg-primary rounded-lg flex items-center justify-center">
             <div className="h-4 w-16 bg-primary-foreground/50 rounded" />
           </div>
         </motion.div>
 
         {/* Live Preview */}
-        <motion.div 
+        <motion.div
           initial={{ x: 20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
           className="flex-1 bg-card border border-border rounded-xl shadow-lg p-6 flex flex-col gap-4 relative overflow-hidden"
         >
           {/* AI Score Badge overlay */}
-          <motion.div 
+          <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ type: "spring", delay: 0.8 }}
+            transition={{ type: 'spring', delay: 0.8 }}
             className="absolute top-4 right-4 h-12 w-12 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/20 text-primary-foreground font-bold text-sm ring-4 ring-background"
           >
             95
@@ -55,9 +55,9 @@ export default function ResumeBuilderMockup() {
 
           <div className="h-8 w-1/2 bg-foreground/20 rounded mb-2" />
           <div className="h-4 w-1/3 bg-muted-foreground/30 rounded" />
-          
+
           <div className="w-full h-px bg-border my-2" />
-          
+
           <div className="h-5 w-32 bg-muted rounded" />
           <div className="space-y-2 mt-2">
             <div className="flex justify-between items-center">

@@ -1,15 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function DraggableCard({ 
-  children, 
-  title, 
+export default function DraggableCard({
+  children,
+  title,
   icon: Icon,
-  className = "", 
-  style = {}, 
-  dragConstraints, 
+  className = '',
+  style = {},
+  dragConstraints,
   isMobile,
-  defaultPosition = { x: 0, y: 0 }
+  defaultPosition = { x: 0, y: 0 },
 }) {
   return (
     <motion.div
@@ -18,27 +18,32 @@ export default function DraggableCard({
       dragElastic={0.12}
       dragMomentum={true}
       dragTransition={{ bounceStiffness: 300, bounceDamping: 20 }}
-      whileDrag={{ 
-        scale: 1.04, 
+      whileDrag={{
+        scale: 1.04,
         zIndex: 50,
-        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px 4px rgba(56, 189, 248, 0.3)",
-        cursor: "grabbing"
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px 4px rgba(56, 189, 248, 0.3)',
+        cursor: 'grabbing',
       }}
-      whileHover={!isMobile ? { 
-        scale: 1.01,
-        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 0 15px 2px rgba(56, 189, 248, 0.15)"
-      } : {}}
-      initial={{ 
-        opacity: 0, 
-        scale: 0.9, 
-        x: defaultPosition.x, 
+      whileHover={
+        !isMobile
+          ? {
+              scale: 1.01,
+              boxShadow:
+                '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 0 15px 2px rgba(56, 189, 248, 0.15)',
+            }
+          : {}
+      }
+      initial={{
+        opacity: 0,
+        scale: 0.9,
+        x: defaultPosition.x,
         y: defaultPosition.y,
-        rotate: isMobile ? 0 : (Math.random() * 4 - 2) 
+        rotate: isMobile ? 0 : Math.random() * 4 - 2,
       }}
-      animate={{ 
-        opacity: 1, 
+      animate={{
+        opacity: 1,
         scale: 1,
-        transition: { type: "spring", stiffness: 100, damping: 15 }
+        transition: { type: 'spring', stiffness: 100, damping: 15 },
       }}
       style={style}
       className={`
@@ -78,9 +83,7 @@ export default function DraggableCard({
       </div>
 
       {/* Card Content */}
-      <div className="overflow-hidden">
-        {children}
-      </div>
+      <div className="overflow-hidden">{children}</div>
 
       {/* Card Footer Grab Indicator */}
       {!isMobile && (
@@ -96,7 +99,9 @@ export default function DraggableCard({
               <span className="w-1 h-1 rounded-full bg-muted-foreground" />
               <span className="w-1 h-1 rounded-full bg-muted-foreground" />
             </div>
-            <span className="text-[10px] uppercase font-bold tracking-wider mt-1 text-muted-foreground">DRAG OBJECT</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider mt-1 text-muted-foreground">
+              DRAG OBJECT
+            </span>
           </div>
         </div>
       )}

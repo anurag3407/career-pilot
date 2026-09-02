@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
-import { Heart, Bookmark, Eye, Github, ExternalLink } from "lucide-react";
-import SectionLabel from "./SectionLabel";
-import data from "../../../../data/dummy_data.json";
+import { useRef, useState } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { Heart, Bookmark, Eye, Github, ExternalLink } from 'lucide-react';
+import SectionLabel from './SectionLabel';
+import data from '../../../../data/dummy_data.json';
 
 export default function Projects() {
   const { projects } = data;
@@ -10,7 +10,7 @@ export default function Projects() {
   const [saved, setSaved] = useState({});
   const [hovered, setHovered] = useState(null);
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: '-60px' });
 
   return (
     <section id="projects" ref={ref} className="py-28 px-6 md:px-16 lg:px-24">
@@ -54,7 +54,7 @@ export default function Projects() {
                   alt={project.title}
                   className="w-full h-full object-cover"
                   animate={{ scale: hovered === i ? 1.07 : 1 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
 
@@ -77,7 +77,7 @@ export default function Projects() {
                           animate={{ scale: 1, opacity: 1 }}
                           transition={{ delay: 0.04 }}
                           whileHover={{ scale: 1.12 }}
-                          onClick={e => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
                           className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-[#ea4c89]"
                         >
                           <ExternalLink size={14} />
@@ -92,7 +92,7 @@ export default function Projects() {
                           animate={{ scale: 1, opacity: 1 }}
                           transition={{ delay: 0.09 }}
                           whileHover={{ scale: 1.12 }}
-                          onClick={e => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
                           className="w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[#555]"
                         >
                           <Github size={14} />
@@ -108,12 +108,17 @@ export default function Projects() {
                 <h3 className="text-[#1a1a1a] font-bold text-sm mb-1 group-hover:text-[#ea4c89] transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-[#aaa] text-xs leading-relaxed mb-4 line-clamp-2">{project.description}</p>
+                <p className="text-[#aaa] text-xs leading-relaxed mb-4 line-clamp-2">
+                  {project.description}
+                </p>
 
                 {/* Tech stack */}
                 <div className="flex flex-wrap gap-1.5 mb-4">
-                  {project.techStack?.slice(0, 3).map(tech => (
-                    <span key={tech} className="px-2.5 py-0.5 rounded-full bg-[#f7f7f7] text-[#999] text-[10px] border border-[#f0f0f0]">
+                  {project.techStack?.slice(0, 3).map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-2.5 py-0.5 rounded-full bg-[#f7f7f7] text-[#999] text-[10px] border border-[#f0f0f0]"
+                    >
                       {tech}
                     </span>
                   ))}
@@ -126,33 +131,52 @@ export default function Projects() {
 
                 {/* Like / save / views — Dribbble style */}
                 <div className="flex items-center gap-4 pt-3 border-t border-[#f5f5f5]">
-                  <button type="button"
-                    onClick={() => setLiked(p => ({ ...p, [i]: !p[i] }))}
+                  <button
+                    type="button"
+                    onClick={() => setLiked((p) => ({ ...p, [i]: !p[i] }))}
                     className="flex items-center gap-1.5"
                   >
-                    <motion.div animate={{ scale: liked[i] ? [1, 1.5, 1] : 1 }} transition={{ duration: 0.3 }}>
+                    <motion.div
+                      animate={{ scale: liked[i] ? [1, 1.5, 1] : 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
                       <Heart
                         size={13}
-                        className={liked[i] ? "fill-[#ea4c89] text-[#ea4c89]" : "text-[#ccc] hover:text-[#ea4c89] transition-colors"}
+                        className={
+                          liked[i]
+                            ? 'fill-[#ea4c89] text-[#ea4c89]'
+                            : 'text-[#ccc] hover:text-[#ea4c89] transition-colors'
+                        }
                       />
                     </motion.div>
-                    <span className="text-[#ccc] text-[10px]">{(42 + i * 11) + (liked[i] ? 1 : 0)}</span>
+                    <span className="text-[#ccc] text-[10px]">
+                      {42 + i * 11 + (liked[i] ? 1 : 0)}
+                    </span>
                   </button>
 
-                  <button type="button"
-                    onClick={() => setSaved(p => ({ ...p, [i]: !p[i] }))}
+                  <button
+                    type="button"
+                    onClick={() => setSaved((p) => ({ ...p, [i]: !p[i] }))}
                     className="flex items-center gap-1.5"
                   >
                     <Bookmark
                       size={13}
-                      className={saved[i] ? "fill-[#ea4c89] text-[#ea4c89]" : "text-[#ccc] hover:text-[#ea4c89] transition-colors"}
+                      className={
+                        saved[i]
+                          ? 'fill-[#ea4c89] text-[#ea4c89]'
+                          : 'text-[#ccc] hover:text-[#ea4c89] transition-colors'
+                      }
                     />
-                    <span className="text-[#ccc] text-[10px]">{(12 + i * 7) + (saved[i] ? 1 : 0)}</span>
+                    <span className="text-[#ccc] text-[10px]">
+                      {12 + i * 7 + (saved[i] ? 1 : 0)}
+                    </span>
                   </button>
 
                   <div className="flex items-center gap-1 ml-auto">
                     <Eye size={12} className="text-[#ddd]" />
-                    <span className="text-[#ddd] text-[10px]">{(900 + i * 350).toLocaleString()}</span>
+                    <span className="text-[#ddd] text-[10px]">
+                      {(900 + i * 350).toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </div>

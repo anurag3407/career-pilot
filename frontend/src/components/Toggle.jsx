@@ -12,7 +12,7 @@ export function Toggle({
   disabled = false,
   label,
   size = 'medium',
-  className
+  className,
 }) {
   const sizeClasses = {
     small: 'w-8 h-4',
@@ -46,7 +46,7 @@ export function Toggle({
   };
 
   return (
-    <div className={cn("inline-flex items-center gap-2", className)}>
+    <div className={cn('inline-flex items-center gap-2', className)}>
       <button
         type="button"
         role="switch"
@@ -55,19 +55,19 @@ export function Toggle({
         onClick={handleToggle}
         onKeyDown={handleKeyDown}
         className={cn(
-          "relative inline-flex items-center rounded-full shrink-0",
-          "transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-          checked ? "bg-primary" : "bg-muted",
-          disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
+          'relative inline-flex items-center rounded-full shrink-0',
+          'transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+          checked ? 'bg-primary' : 'bg-muted',
+          disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
           sizeClasses[size] || sizeClasses.medium
         )}
       >
         <span className="sr-only">{label || 'Toggle switch'}</span>
         <span
           className={cn(
-            "pointer-events-none inline-block rounded-full bg-white shadow-sm ring-0",
-            "transition-transform duration-200 ease-in-out",
-            "mx-0.5",
+            'pointer-events-none inline-block rounded-full bg-white shadow-sm ring-0',
+            'transition-transform duration-200 ease-in-out',
+            'mx-0.5',
             thumbSizeClasses[size] || thumbSizeClasses.medium,
             thumbTranslateClasses[size] || thumbTranslateClasses.medium
           )}
@@ -76,8 +76,8 @@ export function Toggle({
       {label && (
         <span
           className={cn(
-            "text-sm font-medium select-none text-foreground",
-            disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            'text-sm font-medium select-none text-foreground',
+            disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
           )}
           onClick={handleToggle}
         >

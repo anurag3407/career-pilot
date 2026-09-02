@@ -18,7 +18,10 @@ function Rule({ className = '' }) {
 
 function Label({ children }) {
   return (
-    <span className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase" style={{ color: ACCENT }}>
+    <span
+      className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase"
+      style={{ color: ACCENT }}
+    >
       {children}
     </span>
   );
@@ -59,7 +62,9 @@ export default function Testimonials({ data }) {
                 />
               )}
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-black">{t.name}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-black">
+                  {t.name}
+                </p>
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest">{t.role}</p>
               </div>
             </div>

@@ -17,18 +17,18 @@ export default function Testimonials({ testimonials }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials.map((t, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="bg-[#112240] p-8 rounded-2xl border border-[#233554] hover:border-[#64FFDA]/50 transition-all duration-300 relative group flex flex-col justify-between"
             >
               <Quote className="absolute top-6 right-6 w-10 h-10 text-[#233554] group-hover:text-[#64FFDA]/20 transition-colors" />
-              
+
               <div className="relative z-10 mb-8">
                 <p className="text-[#8892B0] leading-relaxed italic text-sm md:text-base">
                   "{t.content}"
                 </p>
               </div>
-              
+
               <div className="relative z-10 flex items-center gap-4 mt-auto">
                 <div className="w-12 h-12 rounded-full bg-[#0A192F] border border-[#233554] group-hover:border-[#64FFDA] flex items-center justify-center text-[#64FFDA] font-bold text-lg transition-colors">
                   {t.author.charAt(0).toUpperCase()}

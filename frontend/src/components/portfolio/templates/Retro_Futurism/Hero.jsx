@@ -10,15 +10,57 @@ const CyberCar = ({ className = '' }) => (
   >
     <div className="absolute bottom-[-10px] w-3/4 h-6 bg-black/80 blur-md rounded-[100%]" />
     <svg viewBox="0 0 300 120" className="w-full h-full drop-shadow-2xl">
-      <rect x="20" y="80" width="40" height="35" rx="5" fill="#111" stroke="#333" strokeWidth="2"/>
-      <rect x="240" y="80" width="40" height="35" rx="5" fill="#111" stroke="#333" strokeWidth="2"/>
-      <path d="M40 100 L260 100 L280 60 L20 60 Z" fill="#1e1b4b" stroke="#db2777" strokeWidth="2"/>
-      <path d="M60 60 L240 60 L200 20 L100 20 Z" fill="#0f172a" stroke="#06b6d4" strokeWidth="3"/>
-      <path d="M70 55 L230 55 L195 25 L105 25 Z" fill="#06b6d4" fillOpacity="0.2" stroke="#22d3ee" strokeWidth="2" filter="drop-shadow(0 0 10px #06b6d4)"/>
-      <rect x="45" y="65" width="70" height="15" rx="3" fill="#f43f5e" filter="drop-shadow(0 0 15px #f43f5e)"/>
-      <rect x="185" y="65" width="70" height="15" rx="3" fill="#f43f5e" filter="drop-shadow(0 0 15px #f43f5e)"/>
-      <rect x="130" y="70" width="40" height="20" fill="#facc15" stroke="#ca8a04"/>
-      <text x="150" y="85" fontSize="12" fill="#000" fontWeight="bold" textAnchor="middle" fontFamily="monospace">KODE</text>
+      <rect x="20" y="80" width="40" height="35" rx="5" fill="#111" stroke="#333" strokeWidth="2" />
+      <rect
+        x="240"
+        y="80"
+        width="40"
+        height="35"
+        rx="5"
+        fill="#111"
+        stroke="#333"
+        strokeWidth="2"
+      />
+      <path d="M40 100 L260 100 L280 60 L20 60 Z" fill="#1e1b4b" stroke="#db2777" strokeWidth="2" />
+      <path d="M60 60 L240 60 L200 20 L100 20 Z" fill="#0f172a" stroke="#06b6d4" strokeWidth="3" />
+      <path
+        d="M70 55 L230 55 L195 25 L105 25 Z"
+        fill="#06b6d4"
+        fillOpacity="0.2"
+        stroke="#22d3ee"
+        strokeWidth="2"
+        filter="drop-shadow(0 0 10px #06b6d4)"
+      />
+      <rect
+        x="45"
+        y="65"
+        width="70"
+        height="15"
+        rx="3"
+        fill="#f43f5e"
+        filter="drop-shadow(0 0 15px #f43f5e)"
+      />
+      <rect
+        x="185"
+        y="65"
+        width="70"
+        height="15"
+        rx="3"
+        fill="#f43f5e"
+        filter="drop-shadow(0 0 15px #f43f5e)"
+      />
+      <rect x="130" y="70" width="40" height="20" fill="#facc15" stroke="#ca8a04" />
+      <text
+        x="150"
+        y="85"
+        fontSize="12"
+        fill="#000"
+        fontWeight="bold"
+        textAnchor="middle"
+        fontFamily="monospace"
+      >
+        KODE
+      </text>
     </svg>
   </motion.div>
 );

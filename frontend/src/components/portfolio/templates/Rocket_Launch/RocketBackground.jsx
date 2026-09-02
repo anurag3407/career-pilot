@@ -167,7 +167,10 @@ export default function RocketBackground({ scrollYProgress }) {
       `}</style>
 
       {/* FIXED BACKGROUND LAYERS */}
-      <motion.div style={{ opacity: starOpacity }} className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <motion.div
+        style={{ opacity: starOpacity }}
+        className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
+      >
         <div className="absolute top-[-100%] left-0 right-0 h-[200%] w-full star-layer-1">
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-30" />
         </div>
@@ -178,7 +181,7 @@ export default function RocketBackground({ scrollYProgress }) {
           <div className="absolute inset-0 bg-[radial-gradient(#f97316_2px,transparent_2px)] [background-size:150px_150px] opacity-30" />
         </div>
       </motion.div>
-      
+
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden launch-towers">
         <div className="scene">
           <div className="rocket">

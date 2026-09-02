@@ -1,53 +1,53 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-import { X, Bug } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { X, Bug } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
-  const [reportBody, setReportBody] = useState('')
-  const dialogRef = useRef(null)
+  const [reportBody, setReportBody] = useState('');
+  const dialogRef = useRef(null);
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) return;
 
     setReportBody(
       `Invalid URL: ${invalidPath}\n\nPlease describe what you were expecting to find and any additional details that would help us fix this broken link.`
-    )
+    );
 
-    const dialog = dialogRef.current
+    const dialog = dialogRef.current;
     if (dialog) {
-      dialog.focus()
+      dialog.focus();
     }
-  }, [isOpen, invalidPath])
+  }, [isOpen, invalidPath]);
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) return;
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
-        event.preventDefault()
-        onClose()
+        event.preventDefault();
+        onClose();
       }
-    }
+    };
 
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onClose])
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
     try {
-      await navigator.clipboard.writeText(reportBody)
-      toast.success('Bug report copied to clipboard!')
-      onClose()
+      await navigator.clipboard.writeText(reportBody);
+      toast.success('Bug report copied to clipboard!');
+      onClose();
     } catch (error) {
-      toast.error('Unable to copy report to clipboard. Please try again.')
+      toast.error('Unable to copy report to clipboard. Please try again.');
     }
-  }
+  };
 
   if (!isOpen) {
-    return null
+    return null;
   }
 
   return (
@@ -78,8 +78,12 @@ export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
               <Bug className="h-5 w-5" />
             </div>
             <div>
-              <h2 id="report-bug-title" className="text-lg font-semibold text-white">Report broken link</h2>
-              <p id="report-bug-description" className="text-sm text-neutral-400">The invalid URL is prefilled so your report is ready to share.</p>
+              <h2 id="report-bug-title" className="text-lg font-semibold text-white">
+                Report broken link
+              </h2>
+              <p id="report-bug-description" className="text-sm text-neutral-400">
+                The invalid URL is prefilled so your report is ready to share.
+              </p>
             </div>
           </div>
           <button
@@ -101,7 +105,10 @@ export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
           </div>
 
           <div>
-            <label htmlFor="bug-report" className="mb-2 block text-sm font-semibold text-neutral-300">
+            <label
+              htmlFor="bug-report"
+              className="mb-2 block text-sm font-semibold text-neutral-300"
+            >
               Report details
             </label>
             <textarea
@@ -131,5 +138,5 @@ export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
         </form>
       </motion.div>
     </div>
-  )
+  );
 }

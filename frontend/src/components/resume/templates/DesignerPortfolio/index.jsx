@@ -1,13 +1,12 @@
-import { useResume } from '../../../../context/ResumeContext'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * DesignerPortfolio — visual-forward resume template for designers and
  * creative roles. Large accent band, project showcase, link-rich.
  */
 export default function DesignerPortfolio() {
-  const { personal, experience, education, projects, skills, certifications } =
-    useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   const nodes = {
     summary: personal.summary ? (
@@ -16,59 +15,65 @@ export default function DesignerPortfolio() {
       </p>
     ) : null,
 
-    experience: experience.length > 0 ? (
-      <section style={{ marginBottom: '7mm' }}>
-        <h2 style={sectionHeadingStyle}>Experience</h2>
-        {experience.map((e, i) => (
-          <article key={i} style={{ marginBottom: '5mm' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 700, color: '#831843' }}>
-                {e.role}
-              </h3>
-              {e.period && (
-                <span style={{ fontSize: '9pt', color: '#9ca3af' }}>{e.period}</span>
+    experience:
+      experience.length > 0 ? (
+        <section style={{ marginBottom: '7mm' }}>
+          <h2 style={sectionHeadingStyle}>Experience</h2>
+          {experience.map((e, i) => (
+            <article key={i} style={{ marginBottom: '5mm' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}
+              >
+                <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 700, color: '#831843' }}>
+                  {e.role}
+                </h3>
+                {e.period && <span style={{ fontSize: '9pt', color: '#9ca3af' }}>{e.period}</span>}
+              </div>
+              <div style={{ fontSize: '10pt', color: '#be185d', fontWeight: 500 }}>
+                {e.company}
+                {e.location ? ` · ${e.location}` : ''}
+              </div>
+              {e.bullets.length > 0 && (
+                <ul style={{ margin: '2mm 0 0', paddingLeft: '5mm', color: '#374151' }}>
+                  {e.bullets.map((b, j) => (
+                    <li key={j} style={{ marginBottom: '1mm' }}>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
               )}
-            </div>
-            <div style={{ fontSize: '10pt', color: '#be185d', fontWeight: 500 }}>
-              {e.company}{e.location ? ` · ${e.location}` : ''}
-            </div>
-            {e.bullets.length > 0 && (
-              <ul style={{ margin: '2mm 0 0', paddingLeft: '5mm', color: '#374151' }}>
-                {e.bullets.map((b, j) => (
-                  <li key={j} style={{ marginBottom: '1mm' }}>{b}</li>
-                ))}
-              </ul>
-            )}
-          </article>
-        ))}
-      </section>
-    ) : null,
+            </article>
+          ))}
+        </section>
+      ) : null,
 
-    education: education.length > 0 ? (
-      <section style={{ marginBottom: '7mm' }}>
-        <h2 style={sectionHeadingStyle}>Education</h2>
-        {education.map((e, i) => (
-          <div key={i} style={{ marginBottom: '2mm' }}>
-            <strong>{e.degree}</strong> — {e.institution}
-            {e.period && <span style={{ color: '#9ca3af' }}> · {e.period}</span>}
-          </div>
-        ))}
-      </section>
-    ) : null,
+    education:
+      education.length > 0 ? (
+        <section style={{ marginBottom: '7mm' }}>
+          <h2 style={sectionHeadingStyle}>Education</h2>
+          {education.map((e, i) => (
+            <div key={i} style={{ marginBottom: '2mm' }}>
+              <strong>{e.degree}</strong> — {e.institution}
+              {e.period && <span style={{ color: '#9ca3af' }}> · {e.period}</span>}
+            </div>
+          ))}
+        </section>
+      ) : null,
 
-    certifications: certifications.length > 0 ? (
-      <section>
-        <h2 style={sectionHeadingStyle}>Certifications</h2>
-        {certifications.map((c, i) => (
-          <div key={i} style={{ marginBottom: '2mm' }}>
-            <strong>{c.name}</strong>
-            {c.issuer && <span> · {c.issuer}</span>}
-            {c.year && <span style={{ color: '#9ca3af' }}> · {c.year}</span>}
-          </div>
-        ))}
-      </section>
-    ) : null,
-  }
+    certifications:
+      certifications.length > 0 ? (
+        <section>
+          <h2 style={sectionHeadingStyle}>Certifications</h2>
+          {certifications.map((c, i) => (
+            <div key={i} style={{ marginBottom: '2mm' }}>
+              <strong>{c.name}</strong>
+              {c.issuer && <span> · {c.issuer}</span>}
+              {c.year && <span style={{ color: '#9ca3af' }}> · {c.year}</span>}
+            </div>
+          ))}
+        </section>
+      ) : null,
+  };
 
   return (
     <div
@@ -91,7 +96,15 @@ export default function DesignerPortfolio() {
           padding: '18mm 18mm 14mm',
         }}
       >
-        <h1 style={{ margin: 0, fontSize: '36pt', fontWeight: 700, letterSpacing: '-1px', lineHeight: 1 }}>
+        <h1
+          style={{
+            margin: 0,
+            fontSize: '36pt',
+            fontWeight: 700,
+            letterSpacing: '-1px',
+            lineHeight: 1,
+          }}
+        >
           {personal.name || 'Your Name'}
         </h1>
         {personal.title && (
@@ -99,7 +112,16 @@ export default function DesignerPortfolio() {
             {personal.title}
           </p>
         )}
-        <div style={{ marginTop: '5mm', display: 'flex', flexWrap: 'wrap', gap: '1mm 6mm', fontSize: '9pt', color: '#fce7f3' }}>
+        <div
+          style={{
+            marginTop: '5mm',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '1mm 6mm',
+            fontSize: '9pt',
+            color: '#fce7f3',
+          }}
+        >
           {personal.email && <span>{personal.email}</span>}
           {personal.phone && <span style={{ opacity: 0.8 }}>·</span>}
           {personal.phone && <span>{personal.phone}</span>}
@@ -110,7 +132,14 @@ export default function DesignerPortfolio() {
         </div>
       </header>
 
-      <div style={{ padding: '8mm 18mm 10mm', display: 'grid', gridTemplateColumns: '1fr 70mm', gap: '8mm' }}>
+      <div
+        style={{
+          padding: '8mm 18mm 10mm',
+          display: 'grid',
+          gridTemplateColumns: '1fr 70mm',
+          gap: '8mm',
+        }}
+      >
         {/* ── Left: experience + skills (order-aware body) ── */}
         <main>
           <OrderedSections
@@ -164,7 +193,9 @@ export default function DesignerPortfolio() {
                     {p.title}
                   </h3>
                   {p.description && (
-                    <p style={{ margin: '1mm 0', fontSize: '9pt', color: '#374151' }}>{p.description}</p>
+                    <p style={{ margin: '1mm 0', fontSize: '9pt', color: '#374151' }}>
+                      {p.description}
+                    </p>
                   )}
                   {p.techStack.length > 0 && (
                     <div style={{ fontSize: '8pt', color: '#be185d', marginBottom: '1mm' }}>
@@ -191,7 +222,7 @@ export default function DesignerPortfolio() {
         </aside>
       </div>
     </div>
-  )
+  );
 }
 
 const sectionHeadingStyle = {
@@ -203,4 +234,4 @@ const sectionHeadingStyle = {
   margin: '0 0 3mm',
   paddingBottom: '1mm',
   borderBottom: '1pt solid #fbcfe8',
-}
+};

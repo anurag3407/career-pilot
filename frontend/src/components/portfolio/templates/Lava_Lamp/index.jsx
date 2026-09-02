@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 import { GooeyFilter } from './Shared';
 import LavaBackground from './LavaBackground';
@@ -19,7 +19,7 @@ const LavaLampPortfolio = () => {
       <GooeyFilter />
       <LavaBackground />
       <NavBar />
-      
+
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <Hero data={data} />
         <About data={data} />

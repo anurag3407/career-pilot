@@ -18,16 +18,22 @@ export default function Skills({ skills }) {
   };
 
   return (
-    <section 
+    <section
       id="twilight-zone"
       className="relative w-full min-h-screen flex flex-col justify-center bg-gradient-to-b from-[#0b3c5d] via-[#082f49] to-[#0f172a] p-6 md:p-12 text-white overflow-hidden select-none"
     >
       {/* Twilight Zone background: glowing jellyfish and fading light */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {/* Glow spots */}
-        <div className="absolute top-[10%] left-[20%] w-48 h-48 rounded-full bg-cyan-500/10 blur-3xl animate-pulse" style={{ animationDuration: '8s' }} />
-        <div className="absolute bottom-[20%] right-[25%] w-64 h-64 rounded-full bg-blue-500/5 blur-3xl animate-pulse" style={{ animationDuration: '12s' }} />
-        
+        <div
+          className="absolute top-[10%] left-[20%] w-48 h-48 rounded-full bg-cyan-500/10 blur-3xl animate-pulse"
+          style={{ animationDuration: '8s' }}
+        />
+        <div
+          className="absolute bottom-[20%] right-[25%] w-64 h-64 rounded-full bg-blue-500/5 blur-3xl animate-pulse"
+          style={{ animationDuration: '12s' }}
+        />
+
         {/* Floating Jellyfish 1 */}
         <div className="absolute top-[15%] right-[15%] w-24 h-36 opacity-30 animate-jelly-float-1">
           <svg className="w-full h-full text-cyan-300 fill-current" viewBox="0 0 100 150">
@@ -35,11 +41,35 @@ export default function Skills({ skills }) {
             <path d="M20,60 C20,20 80,20 80,60 C80,70 20,70 20,60 Z" opacity="0.8" />
             <path d="M30,60 C30,35 70,35 70,60 Z" fill="#38bdf8" />
             {/* Tentacles */}
-            <path d="M25,65 Q30,100 22,140" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.6" />
-            <path d="M38,65 Q35,110 40,145" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.8" />
+            <path
+              d="M25,65 Q30,100 22,140"
+              stroke="currentColor"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.6"
+            />
+            <path
+              d="M38,65 Q35,110 40,145"
+              stroke="currentColor"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.8"
+            />
             <path d="M50,65 Q55,100 50,135" stroke="#38bdf8" strokeWidth="2.5" fill="none" />
-            <path d="M62,65 Q60,110 65,145" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.8" />
-            <path d="M75,65 Q70,95 78,138" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.6" />
+            <path
+              d="M62,65 Q60,110 65,145"
+              stroke="currentColor"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.8"
+            />
+            <path
+              d="M75,65 Q70,95 78,138"
+              stroke="currentColor"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.6"
+            />
           </svg>
         </div>
 
@@ -63,7 +93,9 @@ export default function Skills({ skills }) {
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-wider font-mono">
               02 // TWILIGHT_ZONE: BIOLUMINESCENT_CAPABILITIES
             </h2>
-            <p className="text-xs text-cyan-400/80 font-mono mt-1">Status: Ambient Light Level 12% | Bioluminescent organisms detected</p>
+            <p className="text-xs text-cyan-400/80 font-mono mt-1">
+              Status: Ambient Light Level 12% | Bioluminescent organisms detected
+            </p>
           </div>
         </div>
 
@@ -72,7 +104,7 @@ export default function Skills({ skills }) {
           {skills.map((skill, idx) => {
             const val = getProgress(skill);
             return (
-              <motion.div 
+              <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -92,7 +124,7 @@ export default function Skills({ skills }) {
                       {skill.name}
                     </h3>
                     <span className="text-[10px] text-cyan-600 font-mono tracking-widest uppercase">
-                      CAT: {skill.category || skill.type || "GENERAL"}
+                      CAT: {skill.category || skill.type || 'GENERAL'}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
@@ -104,7 +136,7 @@ export default function Skills({ skills }) {
 
                 {/* Progress bar resembling glowing energy capsule */}
                 <div className="w-full h-3.5 bg-slate-900 border border-cyan-500/30 rounded-full p-0.5 overflow-hidden">
-                  <motion.div 
+                  <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: `${val}%` }}
                     viewport={{ once: true }}

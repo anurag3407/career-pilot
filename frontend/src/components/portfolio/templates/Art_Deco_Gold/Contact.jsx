@@ -1,11 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-  Mail,
-  Linkedin,
-  Github,
-  Twitter,
-} from 'lucide-react';
+import { Mail, Linkedin, Github, Twitter } from 'lucide-react';
 
 const isSafeUrl = (url) => {
   if (!url) {
@@ -15,10 +10,7 @@ const isSafeUrl = (url) => {
   try {
     const parsed = new URL(url);
 
-    return (
-      parsed.protocol === 'http:' ||
-      parsed.protocol === 'https:'
-    );
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
   } catch {
     return false;
   }
@@ -28,8 +20,7 @@ export default function Contact({ data }) {
   const socials = data?.socials || {};
   const personal = data?.personal || {};
 
-  const firstName =
-    personal?.name?.trim()?.split(' ')?.[0] || 'Me';
+  const firstName = personal?.name?.trim()?.split(' ')?.[0] || 'Me';
 
   const socialLinks = [
     {
@@ -50,10 +41,7 @@ export default function Contact({ data }) {
   ].filter((item) => isSafeUrl(item.url));
 
   return (
-    <section
-      id="contact"
-      className="relative bg-slate-950/95 px-6 py-20 md:py-24"
-    >
+    <section id="contact" className="relative bg-slate-950/95 px-6 py-20 md:py-24">
       <div className="mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
@@ -89,8 +77,8 @@ export default function Contact({ data }) {
               </h2>
 
               <p className="mt-6 text-base leading-relaxed text-amber-100/80">
-                Reach out via email or connect on social platforms.
-                Let&apos;s create something memorable together.
+                Reach out via email or connect on social platforms. Let&apos;s create something
+                memorable together.
               </p>
             </div>
 

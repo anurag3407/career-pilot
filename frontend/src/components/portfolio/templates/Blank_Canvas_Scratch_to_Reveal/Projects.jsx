@@ -39,7 +39,9 @@ export default function Projects() {
             viewport={{ once: true }}
             className="mb-4"
           >
-            <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">[[ 04 // Exhibition ]]</span>
+            <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">
+              [[ 04 // Exhibition ]]
+            </span>
           </motion.div>
 
           <motion.h2

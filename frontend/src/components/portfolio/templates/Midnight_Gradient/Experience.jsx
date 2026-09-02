@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Briefcase } from 'lucide-react';
 
-const GlowingCard = ({ children, className = "", delay = 0 }) => (
+const GlowingCard = ({ children, className = '', delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.6, ease: "easeOut", delay }}
+    viewport={{ once: true, margin: '-100px' }}
+    transition={{ duration: 0.6, ease: 'easeOut', delay }}
     whileHover={{ y: -6, transition: { duration: 0.2 } }}
     className={`relative group rounded-2xl border border-indigo-500/10 hover:border-cyan-400/40 bg-[#0a0d24]/60 backdrop-blur-md hover:shadow-[0_0_35px_rgba(34,211,238,0.12)] transition-all duration-300 ${className}`}
   >
@@ -26,7 +26,9 @@ export default function Experience({ data }) {
             <Briefcase size={20} />
           </div>
           <div className="text-left">
-            <span className="text-cyan-400 text-xs font-bold tracking-wider uppercase">Journey</span>
+            <span className="text-cyan-400 text-xs font-bold tracking-wider uppercase">
+              Journey
+            </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">Work History</h2>
           </div>
         </div>
@@ -44,21 +46,25 @@ export default function Experience({ data }) {
                 <div
                   key={idx}
                   className={`flex flex-col md:flex-row relative items-start md:items-center ${
-                    isEven ? "md:flex-row-reverse" : ""
+                    isEven ? 'md:flex-row-reverse' : ''
                   }`}
                 >
                   {/* Neon timeline bullet point */}
                   <div className="absolute left-[18px] md:left-1/2 -translate-x-[5px] md:-translate-x-[5px] z-10 w-3 h-3 rounded-full bg-cyan-400 border-2 border-gray-950 shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
 
                   {/* Card Container */}
-                  <div className={`w-full md:w-[46%] pl-12 md:pl-0 ${isEven ? "md:pr-10" : "md:pl-10"}`}>
+                  <div
+                    className={`w-full md:w-[46%] pl-12 md:pl-0 ${isEven ? 'md:pr-10' : 'md:pl-10'}`}
+                  >
                     <GlowingCard className="p-6">
                       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <div>
                           <h3 className="text-white font-bold text-lg group-hover:text-cyan-300 transition-colors duration-200">
                             {exp.role}
                           </h3>
-                          <p className="text-cyan-400 font-semibold text-sm mt-0.5">{exp.company}</p>
+                          <p className="text-cyan-400 font-semibold text-sm mt-0.5">
+                            {exp.company}
+                          </p>
                         </div>
                         <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-400/20 text-gray-400 text-2xs font-bold tracking-wide whitespace-nowrap">
                           {exp.period}
@@ -71,7 +77,10 @@ export default function Experience({ data }) {
                       {exp.techStack && exp.techStack.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 pt-2 border-t border-indigo-500/5">
                           {exp.techStack.map((tech) => (
-                            <span key={tech} className="px-2 py-0.5 rounded bg-indigo-500/5 text-cyan-300 text-[10px]">
+                            <span
+                              key={tech}
+                              className="px-2 py-0.5 rounded bg-indigo-500/5 text-cyan-300 text-[10px]"
+                            >
                               {tech}
                             </span>
                           ))}

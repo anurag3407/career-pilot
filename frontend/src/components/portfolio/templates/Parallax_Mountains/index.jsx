@@ -1,20 +1,8 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import React from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
-import {
-  Github,
-  Linkedin,
-  Mail,
-  ExternalLink,
-  Briefcase,
-  MapPin,
-} from "lucide-react";
-
+import { Github, Linkedin, Mail, ExternalLink, Briefcase, MapPin } from 'lucide-react';
 
 export default function ParallaxMountains() {
   const { portfolioData: data } = usePortfolio();
@@ -25,35 +13,19 @@ export default function ParallaxMountains() {
     scrollYProgress,
     [0, 0.5, 1],
     [
-      "linear-gradient(to bottom, #38bdf8, #1e3a8a)",
-      "linear-gradient(to bottom, #7c3aed, #312e81)",
-      "linear-gradient(to bottom, #020617, #000000)",
+      'linear-gradient(to bottom, #38bdf8, #1e3a8a)',
+      'linear-gradient(to bottom, #7c3aed, #312e81)',
+      'linear-gradient(to bottom, #020617, #000000)',
     ]
   );
 
-  const mountainBack = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, 180]
-  );
+  const mountainBack = useTransform(scrollYProgress, [0, 1], [0, 180]);
 
-  const mountainMiddle = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, 320]
-  );
+  const mountainMiddle = useTransform(scrollYProgress, [0, 1], [0, 320]);
 
-  const mountainFront = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, 480]
-  );
+  const mountainFront = useTransform(scrollYProgress, [0, 1], [0, 480]);
 
-  const starsOpacity = useTransform(
-    scrollYProgress,
-    [0.3, 1],
-    [0, 1]
-  );
+  const starsOpacity = useTransform(scrollYProgress, [0.3, 1], [0, 1]);
 
   return (
     <motion.div
@@ -61,19 +33,12 @@ export default function ParallaxMountains() {
       className="relative min-h-screen overflow-hidden text-white"
     >
       {/* SKY + PARALLAX */}
-      <motion.div
-        style={{ background: sky }}
-        className="fixed inset-0 -z-50 overflow-hidden"
-      >
+      <motion.div style={{ background: sky }} className="fixed inset-0 -z-50 overflow-hidden">
         {/* SUN */}
         <motion.div
           style={{
             y: useTransform(scrollYProgress, [0, 1], [0, 250]),
-            opacity: useTransform(
-              scrollYProgress,
-              [0, 0.6],
-              [1, 0]
-            ),
+            opacity: useTransform(scrollYProgress, [0, 0.6], [1, 0]),
           }}
           className="absolute top-20 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-yellow-300 blur-2xl opacity-80"
         />
@@ -82,11 +47,7 @@ export default function ParallaxMountains() {
         <motion.div
           style={{
             opacity: starsOpacity,
-            y: useTransform(
-              scrollYProgress,
-              [0, 1],
-              [100, -50]
-            ),
+            y: useTransform(scrollYProgress, [0, 1], [100, -50]),
           }}
           className="absolute top-24 right-24 w-28 h-28 rounded-full bg-slate-100 shadow-[0_0_80px_rgba(255,255,255,0.8)]"
         />
@@ -107,10 +68,7 @@ export default function ParallaxMountains() {
         />
 
         {/* STARS */}
-        <motion.div
-          style={{ opacity: starsOpacity }}
-          className="absolute inset-0"
-        >
+        <motion.div style={{ opacity: starsOpacity }} className="absolute inset-0">
           {[...Array(80)].map((_, i) => (
             <motion.div
               key={i}
@@ -139,7 +97,7 @@ export default function ParallaxMountains() {
             className="w-full h-full"
             style={{
               clipPath:
-                "polygon(0 100%,0 55%,15% 40%,30% 60%,50% 25%,70% 55%,85% 35%,100% 60%,100% 100%)",
+                'polygon(0 100%,0 55%,15% 40%,30% 60%,50% 25%,70% 55%,85% 35%,100% 60%,100% 100%)',
             }}
           />
         </motion.div>
@@ -153,7 +111,7 @@ export default function ParallaxMountains() {
             className="w-full h-full"
             style={{
               clipPath:
-                "polygon(0 100%,0 65%,20% 35%,40% 70%,55% 40%,75% 65%,90% 45%,100% 70%,100% 100%)",
+                'polygon(0 100%,0 65%,20% 35%,40% 70%,55% 40%,75% 65%,90% 45%,100% 70%,100% 100%)',
             }}
           />
         </motion.div>
@@ -167,7 +125,7 @@ export default function ParallaxMountains() {
             className="w-full h-full"
             style={{
               clipPath:
-                "polygon(0 100%,0 75%,10% 55%,25% 80%,45% 50%,65% 85%,80% 60%,100% 80%,100% 100%)",
+                'polygon(0 100%,0 75%,10% 55%,25% 80%,45% 50%,65% 85%,80% 60%,100% 80%,100% 100%)',
             }}
           />
         </motion.div>
@@ -175,11 +133,7 @@ export default function ParallaxMountains() {
         {/* FOG */}
         <motion.div
           style={{
-            opacity: useTransform(
-              scrollYProgress,
-              [0, 1],
-              [0.2, 0.6]
-            ),
+            opacity: useTransform(scrollYProgress, [0, 1], [0.2, 0.6]),
           }}
           className="absolute bottom-0 left-0 right-0 h-40 bg-white/10 blur-3xl"
         />
@@ -205,13 +159,9 @@ export default function ParallaxMountains() {
           {data.personal.name}
         </motion.h1>
 
-        <p className="mt-5 text-2xl text-cyan-100">
-          {data.personal.title}
-        </p>
+        <p className="mt-5 text-2xl text-cyan-100">{data.personal.title}</p>
 
-        <p className="max-w-2xl mt-6 text-slate-200 leading-relaxed">
-          {data.personal.bio}
-        </p>
+        <p className="max-w-2xl mt-6 text-slate-200 leading-relaxed">{data.personal.bio}</p>
 
         <div className="flex gap-5 mt-10 flex-wrap justify-center">
           <a
@@ -250,13 +200,9 @@ export default function ParallaxMountains() {
           viewport={{ once: true }}
           className="bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-white/10"
         >
-          <h2 className="text-4xl font-bold mb-8 text-cyan-300">
-            About
-          </h2>
+          <h2 className="text-4xl font-bold mb-8 text-cyan-300">About</h2>
 
-          <p className="text-slate-200 leading-relaxed mb-8">
-            {data.personal.bio}
-          </p>
+          <p className="text-slate-200 leading-relaxed mb-8">{data.personal.bio}</p>
 
           <div className="flex items-center gap-3 text-cyan-200">
             <MapPin />
@@ -265,23 +211,17 @@ export default function ParallaxMountains() {
 
           <div className="grid grid-cols-3 gap-6 mt-10">
             <div className="bg-cyan-500/20 rounded-2xl p-6 text-center">
-              <h3 className="text-3xl font-bold">
-                {data.stats.yearsExperience}
-              </h3>
+              <h3 className="text-3xl font-bold">{data.stats.yearsExperience}</h3>
               <p>Years</p>
             </div>
 
             <div className="bg-purple-500/20 rounded-2xl p-6 text-center">
-              <h3 className="text-3xl font-bold">
-                {data.stats.projectsCompleted}
-              </h3>
+              <h3 className="text-3xl font-bold">{data.stats.projectsCompleted}</h3>
               <p>Projects</p>
             </div>
 
             <div className="bg-pink-500/20 rounded-2xl p-6 text-center">
-              <h3 className="text-3xl font-bold">
-                {data.stats.happyClients}
-              </h3>
+              <h3 className="text-3xl font-bold">{data.stats.happyClients}</h3>
               <p>Clients</p>
             </div>
           </div>
@@ -290,9 +230,7 @@ export default function ParallaxMountains() {
 
       {/* SKILLS */}
       <section className="relative z-40 max-w-6xl mx-auto px-6 py-24">
-        <h2 className="text-4xl font-bold text-center mb-16 text-cyan-300">
-          Skills
-        </h2>
+        <h2 className="text-4xl font-bold text-center mb-16 text-cyan-300">Skills</h2>
 
         <div className="grid md:grid-cols-2 gap-8">
           {data.skills.map((skill, index) => (
@@ -303,9 +241,7 @@ export default function ParallaxMountains() {
             >
               <div className="flex justify-between mb-3">
                 <span>{skill.name}</span>
-                <span className="text-cyan-300">
-                  {skill.level}%
-                </span>
+                <span className="text-cyan-300">{skill.level}%</span>
               </div>
 
               <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
@@ -321,11 +257,9 @@ export default function ParallaxMountains() {
         </div>
       </section>
 
-            {/* PROJECTS */}
+      {/* PROJECTS */}
       <section className="relative z-40 max-w-7xl mx-auto px-6 py-24">
-        <h2 className="text-4xl font-bold text-center mb-16 text-cyan-300">
-          Projects
-        </h2>
+        <h2 className="text-4xl font-bold text-center mb-16 text-cyan-300">Projects</h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {data.projects.map((project, index) => (
@@ -349,13 +283,9 @@ export default function ParallaxMountains() {
               </div>
 
               <div className="p-6">
-                <h3 className="text-2xl font-bold text-cyan-300 mb-4">
-                  {project.title}
-                </h3>
+                <h3 className="text-2xl font-bold text-cyan-300 mb-4">{project.title}</h3>
 
-                <p className="text-slate-200 mb-5 leading-relaxed">
-                  {project.description}
-                </p>
+                <p className="text-slate-200 mb-5 leading-relaxed">{project.description}</p>
 
                 <div className="flex flex-wrap gap-2 mb-6">
                   {project.techStack.map((tech, i) => (
@@ -397,9 +327,7 @@ export default function ParallaxMountains() {
 
       {/* EXPERIENCE */}
       <section className="relative z-40 max-w-5xl mx-auto px-6 py-24">
-        <h2 className="text-4xl font-bold text-center mb-16 text-cyan-300">
-          Experience
-        </h2>
+        <h2 className="text-4xl font-bold text-center mb-16 text-cyan-300">Experience</h2>
 
         <div className="space-y-8 relative">
           <div className="absolute left-4 top-0 bottom-0 w-1 bg-cyan-500/30 rounded-full hidden md:block" />
@@ -418,18 +346,14 @@ export default function ParallaxMountains() {
 
               <div className="flex items-center gap-3 mb-4">
                 <Briefcase className="text-cyan-300" />
-                <h3 className="text-2xl font-bold">
-                  {exp.role}
-                </h3>
+                <h3 className="text-2xl font-bold">{exp.role}</h3>
               </div>
 
               <p className="text-purple-300 mb-3">
                 {exp.company} • {exp.period}
               </p>
 
-              <p className="text-slate-200 leading-relaxed">
-                {exp.description}
-              </p>
+              <p className="text-slate-200 leading-relaxed">{exp.description}</p>
             </motion.div>
           ))}
         </div>
@@ -437,9 +361,7 @@ export default function ParallaxMountains() {
 
       {/* TESTIMONIALS */}
       <section className="relative z-40 max-w-6xl mx-auto px-6 py-24">
-        <h2 className="text-4xl font-bold text-center mb-16 text-cyan-300">
-          Testimonials
-        </h2>
+        <h2 className="text-4xl font-bold text-center mb-16 text-cyan-300">Testimonials</h2>
 
         <div className="grid md:grid-cols-2 gap-8">
           {data.testimonials.map((testimonial, index) => (
@@ -455,9 +377,7 @@ export default function ParallaxMountains() {
               }}
               className="bg-white/10 rounded-3xl p-8 border border-white/10 backdrop-blur-lg shadow-lg shadow-purple-500/10"
             >
-              <p className="italic text-slate-200 mb-6 leading-relaxed">
-                "{testimonial.text}"
-              </p>
+              <p className="italic text-slate-200 mb-6 leading-relaxed">"{testimonial.text}"</p>
 
               <div className="flex items-center gap-4">
                 <img
@@ -467,13 +387,9 @@ export default function ParallaxMountains() {
                 />
 
                 <div>
-                  <h4 className="font-bold">
-                    {testimonial.name}
-                  </h4>
+                  <h4 className="font-bold">{testimonial.name}</h4>
 
-                  <p className="text-cyan-300 text-sm">
-                    {testimonial.role}
-                  </p>
+                  <p className="text-cyan-300 text-sm">{testimonial.role}</p>
                 </div>
               </div>
             </motion.div>
@@ -527,11 +443,8 @@ export default function ParallaxMountains() {
           </motion.a>
         </div>
 
-        <p className="text-slate-500 mt-10 text-sm">
-          © 2026 {data.personal.name}
-        </p>
+        <p className="text-slate-500 mt-10 text-sm">© 2026 {data.personal.name}</p>
       </footer>
     </motion.div>
   );
 }
-  

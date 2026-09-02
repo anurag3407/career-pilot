@@ -56,7 +56,9 @@ export default function Skills({ data }) {
               whileHover={{ y: -6 }}
               className="rounded-[1.5rem] border border-[#E7DED1] bg-[#FFFDF8] p-5 shadow-[0_18px_55px_rgba(70,56,39,0.07)]"
             >
-              <h3 className="text-sm font-bold uppercase tracking-[0.18em] text-[#C58A63]">{category}</h3>
+              <h3 className="text-sm font-bold uppercase tracking-[0.18em] text-[#C58A63]">
+                {category}
+              </h3>
               <div className="mt-5 space-y-4">
                 {(skills || []).map((skill) => {
                   const percent = getPercent(skill?.level);

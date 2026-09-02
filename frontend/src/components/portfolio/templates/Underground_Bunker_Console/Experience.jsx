@@ -14,15 +14,29 @@ export default function Experience({ data }) {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
-            <span style={{ color: '#ff6600', fontSize: '0.75rem' }}>&#x25B6; DEPLOYMENT_RECORD</span>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(51,255,51,0.3), transparent)' }} />
+            <span style={{ color: '#ff6600', fontSize: '0.75rem' }}>
+              &#x25B6; DEPLOYMENT_RECORD
+            </span>
+            <div
+              style={{
+                flex: 1,
+                height: 1,
+                background: 'linear-gradient(90deg, rgba(51,255,51,0.3), transparent)',
+              }}
+            />
           </div>
 
           <div style={{ position: 'relative' }}>
-            <div style={{
-              position: 'absolute', left: 15, top: 0, bottom: 0,
-              width: 1, background: 'rgba(51,255,51,0.15)',
-            }} />
+            <div
+              style={{
+                position: 'absolute',
+                left: 15,
+                top: 0,
+                bottom: 0,
+                width: 1,
+                background: 'rgba(51,255,51,0.15)',
+              }}
+            />
 
             {experience.map((exp, i) => (
               <motion.div
@@ -33,17 +47,35 @@ export default function Experience({ data }) {
                 transition={{ delay: i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 style={{ position: 'relative', paddingLeft: 44, paddingBottom: 32 }}
               >
-                <div style={{
-                  position: 'absolute', left: 10, top: 4,
-                  width: 11, height: 11, borderRadius: '50%',
-                  background: '#33ff33', border: '2px solid #0a0a0a',
-                }} />
-                <div style={{
-                  border: '1px solid rgba(51, 255, 51, 0.1)',
-                  background: 'rgba(51, 255, 51, 0.02)',
-                  padding: 20,
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap', marginBottom: 8 }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: 10,
+                    top: 4,
+                    width: 11,
+                    height: 11,
+                    borderRadius: '50%',
+                    background: '#33ff33',
+                    border: '2px solid #0a0a0a',
+                  }}
+                />
+                <div
+                  style={{
+                    border: '1px solid rgba(51, 255, 51, 0.1)',
+                    background: 'rgba(51, 255, 51, 0.02)',
+                    padding: 20,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                      gap: 12,
+                      flexWrap: 'wrap',
+                      marginBottom: 8,
+                    }}
+                  >
                     <div>
                       <h3 style={{ color: '#33ff33', fontSize: '0.9375rem', fontWeight: 600 }}>
                         {`> ${exp.role}`}
@@ -52,11 +84,15 @@ export default function Experience({ data }) {
                         {exp.company}
                       </p>
                     </div>
-                    <span style={{
-                      color: '#666', fontSize: '0.625rem',
-                      padding: '4px 8px', border: '1px solid rgba(51,255,51,0.15)',
-                      whiteSpace: 'nowrap',
-                    }}>
+                    <span
+                      style={{
+                        color: '#666',
+                        fontSize: '0.625rem',
+                        padding: '4px 8px',
+                        border: '1px solid rgba(51,255,51,0.15)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
                       {exp.period}
                     </span>
                   </div>

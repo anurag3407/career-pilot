@@ -40,11 +40,14 @@ export default function OutreachPanel({ companyName, companyUrl: initialCompanyU
       pollInterval = setInterval(async () => {
         try {
           const token = await getToken();
-          const res = await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/outreach/${outreachId}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
+          const res = await fetch(
+            `${import.meta.env.VITE_API_BASE || '/api'}/outreach/${outreachId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
-          });
+          );
           if (res.ok) {
             const data = await res.json();
             if (data?.data) {
@@ -95,9 +98,9 @@ export default function OutreachPanel({ companyName, companyUrl: initialCompanyU
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ companyUrl })
+        body: JSON.stringify({ companyUrl }),
       });
 
       const data = await res.json();
@@ -141,7 +144,9 @@ export default function OutreachPanel({ companyName, companyUrl: initialCompanyU
               </div>
               <div>
                 <h3 className="text-lg font-bold text-foreground line-clamp-1">AI Cold Outreach</h3>
-                <p className="text-xs text-muted-foreground">{companyName || 'Generate Outreach'}</p>
+                <p className="text-xs text-muted-foreground">
+                  {companyName || 'Generate Outreach'}
+                </p>
               </div>
             </div>
             <button
@@ -157,7 +162,8 @@ export default function OutreachPanel({ companyName, companyUrl: initialCompanyU
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="p-6">
                 <p className="text-sm text-gray-500 mb-4">
-                  Submit the company website. We'll research their mission and analyze your resume to craft personalized outreach messages.
+                  Submit the company website. We'll research their mission and analyze your resume
+                  to craft personalized outreach messages.
                 </p>
                 <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
                   <div className="flex-1 relative">
@@ -236,7 +242,9 @@ export default function OutreachPanel({ companyName, companyUrl: initialCompanyU
                 >
                   <div className="flex items-center justify-center gap-2 text-green-600 bg-green-50 py-3 rounded-lg border border-green-100 text-sm">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span className="font-medium">Successfully generated personalized outreach drafts!</span>
+                    <span className="font-medium">
+                      Successfully generated personalized outreach drafts!
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-1 gap-6">

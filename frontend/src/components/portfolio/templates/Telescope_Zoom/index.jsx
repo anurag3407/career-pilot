@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   motion,
@@ -9,9 +9,19 @@ import {
   animate,
 } from 'framer-motion';
 import {
-  Github, Linkedin, Twitter, Mail, MapPin,
-  Code2, ChevronDown, Send, Quote, Globe,
-  Eye, Crosshair, Circle,
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  MapPin,
+  Code2,
+  ChevronDown,
+  Send,
+  Quote,
+  Globe,
+  Eye,
+  Crosshair,
+  Circle,
 } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -81,8 +91,7 @@ function TelescopeCursorLens() {
         className="absolute rounded-full"
         style={{
           inset: '12%',
-          background:
-            'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 55%)',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 55%)',
           borderRadius: '50%',
         }}
       />
@@ -136,7 +145,11 @@ function TelescopeIntro({ onComplete }) {
       setPhase('done');
       onComplete?.();
     }, 2400);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
   }, []);
 
   if (phase === 'done') return null;
@@ -160,7 +173,11 @@ function TelescopeIntro({ onComplete }) {
             opacity: Math.random() * 0.5 + 0.1,
           }}
           animate={{ opacity: [0.1, 0.6, 0.1] }}
-          transition={{ duration: 2 + Math.random() * 3, repeat: Infinity, delay: Math.random() * 2 }}
+          transition={{
+            duration: 2 + Math.random() * 3,
+            repeat: Infinity,
+            delay: Math.random() * 2,
+          }}
         />
       ))}
 
@@ -174,8 +191,14 @@ function TelescopeIntro({ onComplete }) {
           className="absolute inset-0"
           animate={
             phase === 'closed'
-              ? { background: 'radial-gradient(circle 0px at 50% 50%, transparent 99%, #020617 100%)' }
-              : { background: 'radial-gradient(circle 120vmax at 50% 50%, transparent 99%, #020617 100%)' }
+              ? {
+                  background:
+                    'radial-gradient(circle 0px at 50% 50%, transparent 99%, #020617 100%)',
+                }
+              : {
+                  background:
+                    'radial-gradient(circle 120vmax at 50% 50%, transparent 99%, #020617 100%)',
+                }
           }
           transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
         />
@@ -202,9 +225,7 @@ function TelescopeIntro({ onComplete }) {
         className="absolute rounded-full"
         initial={{ width: 0, height: 0, opacity: 0 }}
         animate={
-          phase === 'closed'
-            ? {}
-            : { width: '82vmin', height: '82vmin', opacity: [0, 0.4, 0] }
+          phase === 'closed' ? {} : { width: '82vmin', height: '82vmin', opacity: [0, 0.4, 0] }
         }
         transition={{ duration: 1.3, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
         style={{ border: '1px solid rgba(139,92,246,0.35)' }}
@@ -238,7 +259,8 @@ function TelescopeIntro({ onComplete }) {
           style={{
             width: 120,
             height: 120,
-            background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(34,211,238,0.4) 40%, transparent 70%)',
+            background:
+              'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(34,211,238,0.4) 40%, transparent 70%)',
           }}
         />
       )}
@@ -425,7 +447,11 @@ function ProjectCard({ project, index }) {
         {/* Lens circle on hover */}
         <motion.div
           className="absolute top-3 right-3 rounded-full border border-cyan-400/40 flex items-center justify-center"
-          animate={{ width: hovered ? 36 : 28, height: hovered ? 36 : 28, opacity: hovered ? 1 : 0.4 }}
+          animate={{
+            width: hovered ? 36 : 28,
+            height: hovered ? 36 : 28,
+            opacity: hovered ? 1 : 0.4,
+          }}
           transition={{ duration: 0.3 }}
         >
           <Eye className="w-3.5 h-3.5 text-cyan-400" />
@@ -496,13 +522,22 @@ function ExperienceCard({ exp, index }) {
       <div className="absolute left-0 top-2 bottom-0 w-px">
         <div
           className="w-full h-full"
-          style={{ background: 'linear-gradient(to bottom, rgba(34,211,238,0.6), rgba(139,92,246,0.2), transparent)' }}
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(34,211,238,0.6), rgba(139,92,246,0.2), transparent)',
+          }}
         />
       </div>
       {/* dot with glow */}
       <div className="absolute -left-[5px] top-2">
-        <div className="w-2.5 h-2.5 rounded-full bg-cyan-400" style={{ boxShadow: '0 0 10px rgba(34,211,238,0.8)' }} />
-        <div className="absolute inset-0 rounded-full bg-cyan-400/30 animate-ping" style={{ animationDuration: '2s' }} />
+        <div
+          className="w-2.5 h-2.5 rounded-full bg-cyan-400"
+          style={{ boxShadow: '0 0 10px rgba(34,211,238,0.8)' }}
+        />
+        <div
+          className="absolute inset-0 rounded-full bg-cyan-400/30 animate-ping"
+          style={{ animationDuration: '2s' }}
+        />
       </div>
 
       <motion.div
@@ -550,10 +585,13 @@ function TestimonialCard({ t, index }) {
           className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-violet-500/30"
           style={{ boxShadow: '0 0 12px rgba(139,92,246,0.2)' }}
         >
-          {t.avatar
-            ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
-            : <div className="w-full h-full bg-gradient-to-br from-violet-600 to-cyan-600 flex items-center justify-center text-white text-sm font-bold">{t.name?.[0]}</div>
-          }
+          {t.avatar ? (
+            <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-violet-600 to-cyan-600 flex items-center justify-center text-white text-sm font-bold">
+              {t.name?.[0]}
+            </div>
+          )}
         </div>
         <div>
           <p className="text-white font-semibold text-sm">{t.name}</p>
@@ -641,7 +679,10 @@ function Hero() {
   };
 
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20 overflow-hidden">
+    <section
+      id="hero"
+      className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20 overflow-hidden"
+    >
       {/* Rings decorating the hero */}
       {[200, 380, 560, 740].map((size, i) => (
         <motion.div
@@ -675,17 +716,21 @@ function Hero() {
           <motion.div
             className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mx-auto"
             style={{
-              boxShadow: '0 0 0 3px rgba(34,211,238,0.35), 0 0 0 6px rgba(34,211,238,0.08), 0 0 50px rgba(34,211,238,0.2)',
+              boxShadow:
+                '0 0 0 3px rgba(34,211,238,0.35), 0 0 0 6px rgba(34,211,238,0.08), 0 0 50px rgba(34,211,238,0.2)',
             }}
           >
-            {personal.avatar
-              ? <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
-              : (
-                <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center text-5xl font-black text-white">
-                  {personal.name?.[0]}
-                </div>
-              )
-            }
+            {personal.avatar ? (
+              <img
+                src={personal.avatar}
+                alt={personal.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center text-5xl font-black text-white">
+                {personal.name?.[0]}
+              </div>
+            )}
           </motion.div>
           {/* Orbiting dot */}
           <motion.div
@@ -713,7 +758,10 @@ function Hero() {
           </motion.div>
         </motion.div>
 
-        <motion.p variants={itemVariants} className="text-cyan-400 text-xs font-bold tracking-[0.4em] uppercase mb-5">
+        <motion.p
+          variants={itemVariants}
+          className="text-cyan-400 text-xs font-bold tracking-[0.4em] uppercase mb-5"
+        >
           Viewing through the telescope
         </motion.p>
 
@@ -723,18 +771,26 @@ function Hero() {
         >
           <span
             className="bg-clip-text text-transparent"
-            style={{ backgroundImage: 'linear-gradient(135deg, #fff 0%, #a5f3fc 40%, #c4b5fd 100%)' }}
+            style={{
+              backgroundImage: 'linear-gradient(135deg, #fff 0%, #a5f3fc 40%, #c4b5fd 100%)',
+            }}
           >
             {personal.name}
           </span>
         </motion.h1>
 
-        <motion.p variants={itemVariants} className="text-lg md:text-xl text-gray-400 mb-2 font-light max-w-md">
+        <motion.p
+          variants={itemVariants}
+          className="text-lg md:text-xl text-gray-400 mb-2 font-light max-w-md"
+        >
           {personal.title}
         </motion.p>
 
         {personal.location && (
-          <motion.div variants={itemVariants} className="flex items-center justify-center gap-1.5 text-gray-500 text-sm mb-8">
+          <motion.div
+            variants={itemVariants}
+            className="flex items-center justify-center gap-1.5 text-gray-500 text-sm mb-8"
+          >
             <MapPin className="w-3.5 h-3.5 text-cyan-500" />
             {personal.location}
           </motion.div>
@@ -742,46 +798,62 @@ function Hero() {
 
         {/* Stats */}
         {Object.keys(stats).length > 0 && (
-          <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-10 mb-10">
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-wrap justify-center gap-10 mb-10"
+          >
             {[
               { label: 'Years Exp.', value: stats.yearsExperience },
               { label: 'Projects', value: stats.projectsCompleted },
               { label: 'Clients', value: stats.happyClients },
-            ].filter(s => s.value != null).map((s) => (
-              <div key={s.label} className="text-center">
-                <div className="text-3xl font-black text-white">
-                  {s.value}
-                  <span className="text-cyan-400 text-2xl">+</span>
+            ]
+              .filter((s) => s.value != null)
+              .map((s) => (
+                <div key={s.label} className="text-center">
+                  <div className="text-3xl font-black text-white">
+                    {s.value}
+                    <span className="text-cyan-400 text-2xl">+</span>
+                  </div>
+                  <div className="text-[10px] text-gray-500 tracking-widest uppercase mt-1">
+                    {s.label}
+                  </div>
                 </div>
-                <div className="text-[10px] text-gray-500 tracking-widest uppercase mt-1">{s.label}</div>
-              </div>
-            ))}
+              ))}
           </motion.div>
         )}
 
         {/* Socials */}
-        <motion.div variants={itemVariants} className="flex items-center justify-center gap-3 mb-12">
+        <motion.div
+          variants={itemVariants}
+          className="flex items-center justify-center gap-3 mb-12"
+        >
           {[
             { href: data.socials?.github, icon: Github, label: 'GitHub' },
             { href: data.socials?.linkedin, icon: Linkedin, label: 'LinkedIn' },
             { href: data.socials?.twitter, icon: Twitter, label: 'Twitter' },
-            { href: data.socials?.email ? `mailto:${data.socials.email}` : null, icon: Mail, label: 'Email' },
-          ].filter(s => s.href).map(({ href, icon: Icon, label }) => (
-            <motion.a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={label}
-              whileHover={{ scale: 1.15, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-11 h-11 rounded-full bg-gray-800/80 hover:bg-cyan-500 border border-gray-700 hover:border-cyan-500
+            {
+              href: data.socials?.email ? `mailto:${data.socials.email}` : null,
+              icon: Mail,
+              label: 'Email',
+            },
+          ]
+            .filter((s) => s.href)
+            .map(({ href, icon: Icon, label }) => (
+              <motion.a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                whileHover={{ scale: 1.15, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-11 h-11 rounded-full bg-gray-800/80 hover:bg-cyan-500 border border-gray-700 hover:border-cyan-500
                          flex items-center justify-center text-gray-400 hover:text-gray-950 transition-colors duration-200"
-              style={{ boxShadow: '0 0 0 0 rgba(34,211,238,0)' }}
-            >
-              <Icon className="w-4 h-4" />
-            </motion.a>
-          ))}
+                style={{ boxShadow: '0 0 0 0 rgba(34,211,238,0)' }}
+              >
+                <Icon className="w-4 h-4" />
+              </motion.a>
+            ))}
         </motion.div>
 
         {/* Scroll cue */}
@@ -825,8 +897,9 @@ export default function TelescopeZoom() {
   }, {});
 
   return (
-    <div className="relative bg-gray-950 text-white font-sans overflow-x-hidden"
-         style={{ cursor: 'none' }} // hide default cursor on desktop, lens replaces it
+    <div
+      className="relative bg-gray-950 text-white font-sans overflow-x-hidden"
+      style={{ cursor: 'none' }} // hide default cursor on desktop, lens replaces it
     >
       {/* Intro animation */}
       <TelescopeIntro onComplete={() => setIntroComplete(true)} />
@@ -873,12 +946,23 @@ export default function TelescopeZoom() {
                     transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
                     style={{ margin: '-10px' }}
                   />
-                  <div className="w-full h-full rounded-full overflow-hidden"
-                       style={{ boxShadow: '0 0 60px rgba(34,211,238,0.12), 0 0 0 1px rgba(34,211,238,0.15)' }}>
-                    {personal.avatar
-                      ? <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
-                      : <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-7xl font-black text-gray-600">{personal.name?.[0]}</div>
-                    }
+                  <div
+                    className="w-full h-full rounded-full overflow-hidden"
+                    style={{
+                      boxShadow: '0 0 60px rgba(34,211,238,0.12), 0 0 0 1px rgba(34,211,238,0.15)',
+                    }}
+                  >
+                    {personal.avatar ? (
+                      <img
+                        src={personal.avatar}
+                        alt={personal.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-7xl font-black text-gray-600">
+                        {personal.name?.[0]}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -889,12 +973,17 @@ export default function TelescopeZoom() {
                   {[
                     { icon: MapPin, label: personal.location, color: 'text-cyan-400' },
                     { icon: Mail, label: social.email, color: 'text-violet-400' },
-                  ].filter(i => i.label).map(({ icon: Icon, label, color }) => (
-                    <div key={label} className="flex items-center gap-2 text-sm text-gray-400 bg-gray-800/60 px-3 py-2 rounded-lg border border-gray-700/80">
-                      <Icon className={`w-3.5 h-3.5 ${color}`} />
-                      {label}
-                    </div>
-                  ))}
+                  ]
+                    .filter((i) => i.label)
+                    .map(({ icon: Icon, label, color }) => (
+                      <div
+                        key={label}
+                        className="flex items-center gap-2 text-sm text-gray-400 bg-gray-800/60 px-3 py-2 rounded-lg border border-gray-700/80"
+                      >
+                        <Icon className={`w-3.5 h-3.5 ${color}`} />
+                        {label}
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>
@@ -906,7 +995,8 @@ export default function TelescopeZoom() {
           <div
             className="max-w-5xl mx-auto rounded-3xl p-10 md:p-14 relative overflow-hidden"
             style={{
-              background: 'radial-gradient(ellipse at 30% 20%, rgba(34,211,238,0.04) 0%, transparent 60%), rgba(17,24,39,0.5)',
+              background:
+                'radial-gradient(ellipse at 30% 20%, rgba(34,211,238,0.04) 0%, transparent 60%), rgba(17,24,39,0.5)',
               border: '1px solid rgba(55,65,81,0.8)',
             }}
           >
@@ -939,7 +1029,9 @@ export default function TelescopeZoom() {
 
             {/* Tags */}
             <div className="mt-14 pt-10 border-t border-gray-800/60">
-              <p className="text-center text-[10px] text-gray-600 uppercase tracking-[0.3em] mb-6">Technologies</p>
+              <p className="text-center text-[10px] text-gray-600 uppercase tracking-[0.3em] mb-6">
+                Technologies
+              </p>
               <div className="flex flex-wrap justify-center gap-2">
                 {skills.map((s, i) => (
                   <motion.span
@@ -1008,7 +1100,10 @@ export default function TelescopeZoom() {
                     className="absolute rounded-full border border-cyan-500"
                     style={{ width: sz, height: sz, opacity: 0.07 + i * 0.04 }}
                     animate={{ rotate: i % 2 === 0 ? 360 : -360, scale: [1, 1.02, 1] }}
-                    transition={{ rotate: { duration: 20 + i * 8, repeat: Infinity, ease: 'linear' }, scale: { duration: 4, repeat: Infinity } }}
+                    transition={{
+                      rotate: { duration: 20 + i * 8, repeat: Infinity, ease: 'linear' },
+                      scale: { duration: 4, repeat: Infinity },
+                    }}
                   />
                 ))}
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center border border-cyan-500/30">
@@ -1018,39 +1113,52 @@ export default function TelescopeZoom() {
             </div>
 
             <p className="text-gray-400 leading-relaxed mb-10">
-              Whether you have a project in mind, a question, or just want to say hello — I'd love to hear from you.
+              Whether you have a project in mind, a question, or just want to say hello — I'd love
+              to hear from you.
             </p>
 
             <div className="flex flex-col gap-3 mb-10">
               {[
-                { href: social.email ? `mailto:${social.email}` : null, icon: Mail, label: social.email, color: 'cyan' },
-                { href: social.linkedin, icon: Linkedin, label: 'LinkedIn Profile', color: 'violet' },
+                {
+                  href: social.email ? `mailto:${social.email}` : null,
+                  icon: Mail,
+                  label: social.email,
+                  color: 'cyan',
+                },
+                {
+                  href: social.linkedin,
+                  icon: Linkedin,
+                  label: 'LinkedIn Profile',
+                  color: 'violet',
+                },
                 { href: social.github, icon: Github, label: 'GitHub Profile', color: 'gray' },
-              ].filter(i => i.href).map(({ href, icon: Icon, label, color }) => {
-                const colorMap = {
-                  cyan: 'hover:border-cyan-500/40 hover:bg-cyan-500/5',
-                  violet: 'hover:border-violet-500/40 hover:bg-violet-500/5',
-                  gray: 'hover:border-gray-600 hover:bg-gray-800',
-                };
-                const iconColorMap = {
-                  cyan: 'text-cyan-400',
-                  violet: 'text-violet-400',
-                  gray: 'text-gray-400',
-                };
-                return (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ x: 4 }}
-                    className={`flex items-center gap-4 p-4 rounded-xl bg-gray-900/60 border border-gray-800 ${colorMap[color]} transition-all duration-200 text-left`}
-                  >
-                    <Icon className={`w-5 h-5 ${iconColorMap[color]} flex-shrink-0`} />
-                    <span className="text-gray-300 text-sm font-medium">{label}</span>
-                  </motion.a>
-                );
-              })}
+              ]
+                .filter((i) => i.href)
+                .map(({ href, icon: Icon, label, color }) => {
+                  const colorMap = {
+                    cyan: 'hover:border-cyan-500/40 hover:bg-cyan-500/5',
+                    violet: 'hover:border-violet-500/40 hover:bg-violet-500/5',
+                    gray: 'hover:border-gray-600 hover:bg-gray-800',
+                  };
+                  const iconColorMap = {
+                    cyan: 'text-cyan-400',
+                    violet: 'text-violet-400',
+                    gray: 'text-gray-400',
+                  };
+                  return (
+                    <motion.a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ x: 4 }}
+                      className={`flex items-center gap-4 p-4 rounded-xl bg-gray-900/60 border border-gray-800 ${colorMap[color]} transition-all duration-200 text-left`}
+                    >
+                      <Icon className={`w-5 h-5 ${iconColorMap[color]} flex-shrink-0`} />
+                      <span className="text-gray-300 text-sm font-medium">{label}</span>
+                    </motion.a>
+                  );
+                })}
             </div>
 
             <motion.a
@@ -1080,8 +1188,9 @@ export default function TelescopeZoom() {
             <div className="w-px h-4 bg-gray-700" />
           </div>
           <p className="text-gray-600 text-sm">
-            © {new Date().getFullYear()} <span className="text-cyan-500 font-semibold">{personal.name}</span>
-            {' '}— Telescope Zoom Portfolio
+            © {new Date().getFullYear()}{' '}
+            <span className="text-cyan-500 font-semibold">{personal.name}</span> — Telescope Zoom
+            Portfolio
           </p>
         </footer>
       </div>

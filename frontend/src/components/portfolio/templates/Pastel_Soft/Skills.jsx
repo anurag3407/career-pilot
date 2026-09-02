@@ -16,11 +16,11 @@ export default function Skills() {
         <h2 className="text-4xl md:text-5xl font-extrabold text-slate-700 tracking-tight mb-12">
           Skills & Expertise
         </h2>
-        
+
         <div className="flex flex-wrap justify-center gap-4">
           {skills.map((skill, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="px-6 py-3 bg-white/50 backdrop-blur-md rounded-2xl border border-white/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-slate-600 font-medium"
             >
               {skill.name || skill}

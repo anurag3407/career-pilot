@@ -1,13 +1,13 @@
-import { useResume } from '../../../../context/ResumeContext'
-import ExperienceRow from '../../shared/ExperienceRow'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import ExperienceRow from '../../shared/ExperienceRow';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * Glassmorphism — frosted-glass card surfaces over a gradient background.
  * Two-column with translucent cards.
  */
 export default function Glassmorphism() {
-  const { personal, experience, education, projects, skills, certifications } = useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   const nodes = {
     summary: personal.summary ? (
@@ -16,69 +16,84 @@ export default function Glassmorphism() {
       </GlassCard>
     ) : null,
 
-    skills: skills.length > 0 ? (
-      <GlassCard title="Skills">
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
-          {skills.map((s, i) => (
-            <span key={i} style={{ fontSize: '9pt', padding: '0.5mm 2mm', background: 'rgba(255, 255, 255, 0.4)', color: '#1e1b4b', borderRadius: 12, fontWeight: 500 }}>
-              {s.name}
-            </span>
+    skills:
+      skills.length > 0 ? (
+        <GlassCard title="Skills">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
+            {skills.map((s, i) => (
+              <span
+                key={i}
+                style={{
+                  fontSize: '9pt',
+                  padding: '0.5mm 2mm',
+                  background: 'rgba(255, 255, 255, 0.4)',
+                  color: '#1e1b4b',
+                  borderRadius: 12,
+                  fontWeight: 500,
+                }}
+              >
+                {s.name}
+              </span>
+            ))}
+          </div>
+        </GlassCard>
+      ) : null,
+
+    experience:
+      experience.length > 0 ? (
+        <GlassCard title="Experience" wide>
+          {experience.map((e, i) => (
+            <ExperienceRow
+              key={i}
+              exp={e}
+              roleColor="#1e1b4b"
+              companyColor="#4338ca"
+              periodColor="#6b7280"
+              bulletColor="#1f2937"
+              fontSize="10pt"
+            />
           ))}
-        </div>
-      </GlassCard>
-    ) : null,
+        </GlassCard>
+      ) : null,
 
-    experience: experience.length > 0 ? (
-      <GlassCard title="Experience" wide>
-        {experience.map((e, i) => (
-          <ExperienceRow
-            key={i}
-            exp={e}
-            roleColor="#1e1b4b"
-            companyColor="#4338ca"
-            periodColor="#6b7280"
-            bulletColor="#1f2937"
-            fontSize="10pt"
-          />
-        ))}
-      </GlassCard>
-    ) : null,
+    education:
+      education.length > 0 ? (
+        <GlassCard title="Education">
+          {education.map((e, i) => (
+            <div key={i} style={{ marginBottom: '2mm' }}>
+              <strong>{e.degree}</strong>
+              <div style={{ color: '#4338ca', fontSize: '9pt' }}>{e.institution}</div>
+              <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{e.period}</div>
+            </div>
+          ))}
+        </GlassCard>
+      ) : null,
 
-    education: education.length > 0 ? (
-      <GlassCard title="Education">
-        {education.map((e, i) => (
-          <div key={i} style={{ marginBottom: '2mm' }}>
-            <strong>{e.degree}</strong>
-            <div style={{ color: '#4338ca', fontSize: '9pt' }}>{e.institution}</div>
-            <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{e.period}</div>
-          </div>
-        ))}
-      </GlassCard>
-    ) : null,
+    projects:
+      projects.length > 0 ? (
+        <GlassCard title="Projects">
+          {projects.map((p, i) => (
+            <div key={i} style={{ marginBottom: '2mm' }}>
+              <strong>{p.title}</strong>
+              {p.description && <div style={{ color: '#1f2937' }}>{p.description}</div>}
+            </div>
+          ))}
+        </GlassCard>
+      ) : null,
 
-    projects: projects.length > 0 ? (
-      <GlassCard title="Projects">
-        {projects.map((p, i) => (
-          <div key={i} style={{ marginBottom: '2mm' }}>
-            <strong>{p.title}</strong>
-            {p.description && <div style={{ color: '#1f2937' }}>{p.description}</div>}
-          </div>
-        ))}
-      </GlassCard>
-    ) : null,
-
-    certifications: certifications.length > 0 ? (
-      <GlassCard title="Certifications" wide>
-        {certifications.map((c, i) => (
-          <div key={i} style={{ marginBottom: '1.5mm' }}>
-            <strong>{c.name}</strong>
-            {c.issuer && <span> · {c.issuer}</span>}
-            {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
-          </div>
-        ))}
-      </GlassCard>
-    ) : null,
-  }
+    certifications:
+      certifications.length > 0 ? (
+        <GlassCard title="Certifications" wide>
+          {certifications.map((c, i) => (
+            <div key={i} style={{ marginBottom: '1.5mm' }}>
+              <strong>{c.name}</strong>
+              {c.issuer && <span> · {c.issuer}</span>}
+              {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
+            </div>
+          ))}
+        </GlassCard>
+      ) : null,
+  };
 
   return (
     <div
@@ -115,7 +130,16 @@ export default function Glassmorphism() {
               {personal.title}
             </div>
           )}
-          <div style={{ marginTop: '4mm', fontSize: '9.5pt', color: 'rgba(255, 255, 255, 0.85)', display: 'flex', flexWrap: 'wrap', gap: '1mm 6mm' }}>
+          <div
+            style={{
+              marginTop: '4mm',
+              fontSize: '9.5pt',
+              color: 'rgba(255, 255, 255, 0.85)',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '1mm 6mm',
+            }}
+          >
             {personal.email && <span>{personal.email}</span>}
             {personal.phone && <span>· {personal.phone}</span>}
             {personal.location && <span>· {personal.location}</span>}
@@ -131,7 +155,7 @@ export default function Glassmorphism() {
         customBodyStyle={{ color: '#1f2937' }}
       />
     </div>
-  )
+  );
 }
 
 function GlassCard({ title, children, wide }) {
@@ -149,10 +173,19 @@ function GlassCard({ title, children, wide }) {
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
       }}
     >
-      <h2 style={{ margin: '0 0 3mm', fontSize: '10pt', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', color: '#4338ca' }}>
+      <h2
+        style={{
+          margin: '0 0 3mm',
+          fontSize: '10pt',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          letterSpacing: '1.5px',
+          color: '#4338ca',
+        }}
+      >
         {title}
       </h2>
       {children}
     </section>
-  )
+  );
 }

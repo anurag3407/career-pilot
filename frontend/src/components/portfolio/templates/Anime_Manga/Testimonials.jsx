@@ -27,7 +27,9 @@ export default function Testimonials({ testimonials }) {
               {/* Author Info */}
               <div className="flex justify-end items-center pr-4">
                 <div className="text-right">
-                  <h4 className="font-black uppercase text-xl border-b-2 border-black inline-block">{test.name}</h4>
+                  <h4 className="font-black uppercase text-xl border-b-2 border-black inline-block">
+                    {test.name}
+                  </h4>
                   <p className="font-semibold text-sm">{test.role || test.position}</p>
                 </div>
               </div>

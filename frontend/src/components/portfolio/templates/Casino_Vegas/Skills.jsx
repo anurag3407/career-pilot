@@ -1,5 +1,5 @@
-import React from "react";
-import { Zap, Crown } from "lucide-react";
+import React from 'react';
+import { Zap, Crown } from 'lucide-react';
 
 export default function Skills({ data }) {
   if (!data?.skills || data.skills.length === 0) return null;
@@ -30,7 +30,10 @@ export default function Skills({ data }) {
                 className="group relative overflow-hidden rounded-[24px] border border-yellow-500/20 bg-white/5 p-6 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-yellow-400/50 hover:bg-white/10 hover:shadow-[0_0_30px_rgba(250,204,21,0.2)]"
               >
                 <div className="flex flex-col items-center justify-center text-center">
-                  <Crown className="mb-4 text-yellow-400 opacity-50 group-hover:opacity-100 transition-opacity" size={36} />
+                  <Crown
+                    className="mb-4 text-yellow-400 opacity-50 group-hover:opacity-100 transition-opacity"
+                    size={36}
+                  />
                   <h3 className="text-xl font-bold text-gray-200 group-hover:text-yellow-300 transition-colors">
                     {skillName}
                   </h3>

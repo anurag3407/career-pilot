@@ -28,7 +28,8 @@ export const SectionHeading = ({ title, icon: Icon }) => (
       <Icon size={24} />
     </div>
     <h2 className="text-3xl font-light tracking-tight text-white md:text-5xl">
-      {title}<span className="text-cyan-400">.</span>
+      {title}
+      <span className="text-cyan-400">.</span>
     </h2>
     <div className="ml-4 h-px flex-1 bg-gradient-to-r from-cyan-500/20 to-transparent" />
   </motion.div>

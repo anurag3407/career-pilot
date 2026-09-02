@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import {
@@ -80,11 +80,7 @@ function VHSTimestamp() {
     return `${month}.${day}.${year}  ${hours}:${mins}:${secs}`;
   };
 
-  return (
-    <span className="vhs-timestamp tracking-wider">
-      {formatDate(time)}
-    </span>
-  );
+  return <span className="vhs-timestamp tracking-wider">{formatDate(time)}</span>;
 }
 
 // ── VCR Controls Bar Component ───────────────────────────────
@@ -95,28 +91,32 @@ function VCRControls() {
 
   return (
     <div className="flex items-center gap-3 vhs-font">
-      <button type="button"
+      <button
+        type="button"
         onClick={() => setIsPlaying(false)}
         className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors"
         aria-label="Rewind"
       >
         <Rewind size={16} />
       </button>
-      <button type="button"
+      <button
+        type="button"
         onClick={() => setIsPlaying(!isPlaying)}
         className="text-[#00e5ff] hover:text-[#ff00aa] transition-colors"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <Pause size={18} /> : <Play size={18} />}
       </button>
-      <button type="button"
+      <button
+        type="button"
         onClick={() => setIsPlaying(false)}
         className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors"
         aria-label="Fast Forward"
       >
         <FastForward size={16} />
       </button>
-      <button type="button"
+      <button
+        type="button"
         className="text-[#f0e6d3]/40 hover:text-[#ff00aa] transition-colors"
         aria-label="Stop"
       >
@@ -135,9 +135,7 @@ function VCRControls() {
         </div>
       </div>
       {isPlaying && (
-        <span className="ml-auto text-xs text-[#00e5ff]/60 vhs-font tracking-widest">
-          ▶ PLAY
-        </span>
+        <span className="ml-auto text-xs text-[#00e5ff]/60 vhs-font tracking-widest">▶ PLAY</span>
       )}
     </div>
   );
@@ -150,9 +148,7 @@ function RECIndicator() {
   return (
     <div className="flex items-center gap-2">
       <div className="w-2 h-2 rounded-full bg-red-500 vhs-rec-dot" />
-      <span className="vhs-font text-red-500 text-sm tracking-widest font-bold">
-        REC
-      </span>
+      <span className="vhs-font text-red-500 text-sm tracking-widest font-bold">REC</span>
     </div>
   );
 }
@@ -165,9 +161,7 @@ function SectionLabel({ label, icon: Icon }) {
     <div className="flex items-center gap-3 mb-8">
       <div className="flex items-center gap-2 px-3 py-1.5 vhs-tape-label">
         {Icon && <Icon size={14} className="text-[#00e5ff]" />}
-        <span className="vhs-font text-[#00e5ff] text-sm tracking-[0.25em] uppercase">
-          {label}
-        </span>
+        <span className="vhs-font text-[#00e5ff] text-sm tracking-[0.25em] uppercase">{label}</span>
       </div>
       <div className="flex-1 vhs-hline" />
     </div>
@@ -224,7 +218,8 @@ function VHSNavbar() {
         {/* Desktop Nav Links — hidden on mobile */}
         <div className="hidden md:flex items-center gap-1 lg:gap-2">
           {sections.map((s) => (
-            <button type="button"
+            <button
+              type="button"
               key={s.id}
               onClick={() => handleNavClick(s.id)}
               className="px-2 py-1 text-xs vhs-font text-[#f0e6d3]/50 hover:text-[#00e5ff] hover:bg-[#00e5ff]/5 rounded transition-all tracking-widest"
@@ -242,7 +237,8 @@ function VHSNavbar() {
           </div>
 
           {/* Mobile hamburger button */}
-          <button type="button"
+          <button
+            type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
@@ -358,7 +354,8 @@ function HeroSection() {
           transition={{ delay: 0.3, duration: 0.7 }}
           className="vhs-font-mono text-sm sm:text-lg md:text-xl lg:text-2xl text-[#00e5ff] mb-8 tracking-wide break-words"
         >
-          {'> '}{data.personal.title}
+          {'> '}
+          {data.personal.title}
         </motion.p>
 
         {/* Tagline */}
@@ -441,7 +438,9 @@ function AboutSection() {
             <div className="vhs-monitor p-3 max-w-[280px] w-full">
               {/* Monitor top bar */}
               <div className="flex items-center justify-between mb-2 px-1">
-                <span className="vhs-font text-[10px] text-[#00e5ff]/40 tracking-widest">CH-01</span>
+                <span className="vhs-font text-[10px] text-[#00e5ff]/40 tracking-widest">
+                  CH-01
+                </span>
                 <span className="vhs-font text-[10px] text-[#f0e6d3]/30 tracking-widest">SP</span>
               </div>
               <div className="relative overflow-hidden rounded-lg">
@@ -515,26 +514,44 @@ function AboutSection() {
               {/* Social Links */}
               <div className="flex items-center gap-4 mt-6">
                 {data.socials.github && (
-                  <a href={data.socials.github} target="_blank" rel="noopener noreferrer"
-                    className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors" aria-label="GitHub">
+                  <a
+                    href={data.socials.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors"
+                    aria-label="GitHub"
+                  >
                     <Github size={18} />
                   </a>
                 )}
                 {data.socials.linkedin && (
-                  <a href={data.socials.linkedin} target="_blank" rel="noopener noreferrer"
-                    className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors" aria-label="LinkedIn">
+                  <a
+                    href={data.socials.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors"
+                    aria-label="LinkedIn"
+                  >
                     <Linkedin size={18} />
                   </a>
                 )}
                 {data.socials.twitter && (
-                  <a href={data.socials.twitter} target="_blank" rel="noopener noreferrer"
-                    className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors" aria-label="Twitter">
+                  <a
+                    href={data.socials.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors"
+                    aria-label="Twitter"
+                  >
                     <Twitter size={18} />
                   </a>
                 )}
                 {data.socials.email && (
-                  <a href={`mailto:${data.socials.email}`}
-                    className="text-[#f0e6d3]/40 hover:text-[#ff00aa] transition-colors" aria-label="Email">
+                  <a
+                    href={`mailto:${data.socials.email}`}
+                    className="text-[#f0e6d3]/40 hover:text-[#ff00aa] transition-colors"
+                    aria-label="Email"
+                  >
                     <Mail size={18} />
                   </a>
                 )}
@@ -573,11 +590,7 @@ function SkillsSection() {
           className="grid sm:grid-cols-2 gap-8"
         >
           {Object.entries(categories).map(([category, skills]) => (
-            <motion.div
-              key={category}
-              variants={fadeInUp}
-              className="vhs-monitor p-5 sm:p-6"
-            >
+            <motion.div key={category} variants={fadeInUp} className="vhs-monitor p-5 sm:p-6">
               {/* Category header */}
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
@@ -599,9 +612,7 @@ function SkillsSection() {
                       <span className="vhs-font-mono text-xs text-[#f0e6d3]/70 tracking-wide">
                         {skill.name}
                       </span>
-                      <span className="vhs-font text-xs text-[#00e5ff]/60">
-                        {skill.level}%
-                      </span>
+                      <span className="vhs-font text-xs text-[#00e5ff]/60">{skill.level}%</span>
                     </div>
                     <div className="h-2 bg-[#0a0a14] rounded-sm overflow-hidden border border-[#1a1a3e]/50">
                       <motion.div
@@ -776,7 +787,8 @@ function ExperienceSection() {
                     <div className="flex items-center gap-2">
                       <Play size={8} className="text-[#00e5ff]" />
                       <span className="vhs-font text-[10px] text-[#00e5ff]/50 tracking-[0.2em]">
-                        TAPE {String(idx + 1).padStart(2, '0')} / {String(data.experience.length).padStart(2, '0')}
+                        TAPE {String(idx + 1).padStart(2, '0')} /{' '}
+                        {String(data.experience.length).padStart(2, '0')}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 text-[#ff00aa]/60">
@@ -788,12 +800,8 @@ function ExperienceSection() {
                   <h3 className="vhs-font text-lg sm:text-xl text-[#f0e6d3] mb-1 group-hover:text-[#00e5ff] transition-colors tracking-wide">
                     {exp.role}
                   </h3>
-                  <p className="vhs-font-mono text-sm text-[#00e5ff]/80 mb-3">
-                    @ {exp.company}
-                  </p>
-                  <p className="text-[#f0e6d3]/50 text-sm leading-relaxed">
-                    {exp.description}
-                  </p>
+                  <p className="vhs-font-mono text-sm text-[#00e5ff]/80 mb-3">@ {exp.company}</p>
+                  <p className="text-[#f0e6d3]/50 text-sm leading-relaxed">{exp.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -881,7 +889,8 @@ function TestimonialsSection() {
         {/* Testimonial selector — tape thumbnails */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {data.testimonials.map((t, idx) => (
-            <button type="button"
+            <button
+              type="button"
               key={idx}
               onClick={() => setActiveIdx(idx)}
               className={`p-3 rounded-lg text-left transition-all duration-300 vhs-tape-border ${
@@ -1041,7 +1050,9 @@ function ContactSection() {
                       <Mail size={16} className="text-[#00e5ff]" />
                     </div>
                     <div>
-                      <span className="vhs-font text-[10px] text-[#f0e6d3]/30 tracking-widest block">EMAIL</span>
+                      <span className="vhs-font text-[10px] text-[#f0e6d3]/30 tracking-widest block">
+                        EMAIL
+                      </span>
                       <span className="vhs-font-mono text-sm">{data.socials.email}</span>
                     </div>
                   </a>
@@ -1052,7 +1063,9 @@ function ContactSection() {
                       <MapPin size={16} className="text-[#ff00aa]" />
                     </div>
                     <div>
-                      <span className="vhs-font text-[10px] text-[#f0e6d3]/30 tracking-widest block">LOCATION</span>
+                      <span className="vhs-font text-[10px] text-[#f0e6d3]/30 tracking-widest block">
+                        LOCATION
+                      </span>
                       <span className="vhs-font-mono text-sm">{data.personal.location}</span>
                     </div>
                   </div>
@@ -1072,23 +1085,39 @@ function ContactSection() {
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { icon: Github, label: 'GitHub', url: data.socials.github, color: '#00e5ff' },
-                  { icon: Linkedin, label: 'LinkedIn', url: data.socials.linkedin, color: '#00e5ff' },
+                  {
+                    icon: Linkedin,
+                    label: 'LinkedIn',
+                    url: data.socials.linkedin,
+                    color: '#00e5ff',
+                  },
                   { icon: Twitter, label: 'Twitter', url: data.socials.twitter, color: '#00e5ff' },
-                  { icon: Mail, label: 'Email', url: data.socials.email ? `mailto:${data.socials.email}` : null, color: '#ff00aa' },
-                ].filter(s => s.url).map((social, idx) => (
-                  <a
-                    key={idx}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 p-3 rounded-lg bg-[#0a0a14]/50 border border-[#1a1a3e]/50 hover:border-[#00e5ff]/30 hover:bg-[#00e5ff]/5 transition-all group"
-                  >
-                    <social.icon size={16} style={{ color: social.color }} className="opacity-60 group-hover:opacity-100 transition-opacity" />
-                    <span className="vhs-font text-xs text-[#f0e6d3]/50 tracking-wider group-hover:text-[#f0e6d3]/80 transition-colors">
-                      {social.label}
-                    </span>
-                  </a>
-                ))}
+                  {
+                    icon: Mail,
+                    label: 'Email',
+                    url: data.socials.email ? `mailto:${data.socials.email}` : null,
+                    color: '#ff00aa',
+                  },
+                ]
+                  .filter((s) => s.url)
+                  .map((social, idx) => (
+                    <a
+                      key={idx}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-3 rounded-lg bg-[#0a0a14]/50 border border-[#1a1a3e]/50 hover:border-[#00e5ff]/30 hover:bg-[#00e5ff]/5 transition-all group"
+                    >
+                      <social.icon
+                        size={16}
+                        style={{ color: social.color }}
+                        className="opacity-60 group-hover:opacity-100 transition-opacity"
+                      />
+                      <span className="vhs-font text-xs text-[#f0e6d3]/50 tracking-wider group-hover:text-[#f0e6d3]/80 transition-colors">
+                        {social.label}
+                      </span>
+                    </a>
+                  ))}
               </div>
             </div>
 
@@ -1122,9 +1151,7 @@ function VHSFooter() {
           </div>
 
           {/* Center — Tape counter */}
-          <div className="vhs-font text-xs text-[#f0e6d3]/20 tracking-[0.3em]">
-            ■ END OF TAPE ■
-          </div>
+          <div className="vhs-font text-xs text-[#f0e6d3]/20 tracking-[0.3em]">■ END OF TAPE ■</div>
 
           {/* Right */}
           <div className="flex items-center gap-3">

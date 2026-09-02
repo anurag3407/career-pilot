@@ -39,9 +39,7 @@ export default function Experience({ data }) {
             >
               <span
                 className={`absolute left-[0.85rem] top-7 h-3 w-3 rounded-full border-2 border-[#FFFDF8] bg-[#C58A63] ${
-                  index % 2 === 0
-                    ? 'md:left-auto md:right-[-0.4rem]'
-                    : 'md:left-[-0.35rem]'
+                  index % 2 === 0 ? 'md:left-auto md:right-[-0.4rem]' : 'md:left-[-0.35rem]'
                 }`}
               />
 

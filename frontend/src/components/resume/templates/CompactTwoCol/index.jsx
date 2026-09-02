@@ -1,7 +1,7 @@
-import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
-import ExperienceRow from '../../shared/ExperienceRow'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import Section from '../../shared/Section';
+import ExperienceRow from '../../shared/ExperienceRow';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * Compact Two-Column — dense, info-packed layout for experienced candidates.
@@ -12,8 +12,7 @@ import OrderedSections from '../../shared/OrderedSections'
  * Designed to fit experienced candidates (10+ years) on 2 pages max.
  */
 export default function CompactTwoCol() {
-  const { personal, experience, education, projects, skills, certifications } =
-    useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   const nodes = {
     summary: personal.summary ? (
@@ -22,36 +21,40 @@ export default function CompactTwoCol() {
       </Section>
     ) : null,
 
-    experience: experience.length > 0 ? (
-      <Section title="Experience" accent="#7c3aed" uppercase={false}>
-        {experience.map((e, i) => (
-          <ExperienceRow
-            key={i}
-            exp={e}
-            roleColor="#1e1b4b"
-            companyColor="#7c3aed"
-            periodColor="#6b7280"
-            bulletColor="#374151"
-            fontSize="9pt"
-          />
-        ))}
-      </Section>
-    ) : null,
+    experience:
+      experience.length > 0 ? (
+        <Section title="Experience" accent="#7c3aed" uppercase={false}>
+          {experience.map((e, i) => (
+            <ExperienceRow
+              key={i}
+              exp={e}
+              roleColor="#1e1b4b"
+              companyColor="#7c3aed"
+              periodColor="#6b7280"
+              bulletColor="#374151"
+              fontSize="9pt"
+            />
+          ))}
+        </Section>
+      ) : null,
 
-    projects: projects.length > 0 ? (
-      <Section title="Projects" accent="#7c3aed" uppercase={false}>
-        {projects.map((p, i) => (
-          <article key={i} style={{ marginBottom: '3mm' }}>
-            <h3 style={{ margin: 0, fontSize: '10pt', fontWeight: 700 }}>{p.title}</h3>
-            {p.description && <p style={{ margin: '0.8mm 0', color: '#374151' }}>{p.description}</p>}
-            {p.techStack.length > 0 && (
-              <div style={{ fontSize: '8pt', color: '#7c3aed' }}>{p.techStack.join(' · ')}</div>
-            )}
-          </article>
-        ))}
-      </Section>
-    ) : null,
-  }
+    projects:
+      projects.length > 0 ? (
+        <Section title="Projects" accent="#7c3aed" uppercase={false}>
+          {projects.map((p, i) => (
+            <article key={i} style={{ marginBottom: '3mm' }}>
+              <h3 style={{ margin: 0, fontSize: '10pt', fontWeight: 700 }}>{p.title}</h3>
+              {p.description && (
+                <p style={{ margin: '0.8mm 0', color: '#374151' }}>{p.description}</p>
+              )}
+              {p.techStack.length > 0 && (
+                <div style={{ fontSize: '8pt', color: '#7c3aed' }}>{p.techStack.join(' · ')}</div>
+              )}
+            </article>
+          ))}
+        </Section>
+      ) : null,
+  };
 
   return (
     <div
@@ -170,7 +173,7 @@ export default function CompactTwoCol() {
         />
       </main>
     </div>
-  )
+  );
 }
 
 function SideTitle({ children }) {
@@ -189,13 +192,11 @@ function SideTitle({ children }) {
     >
       {children}
     </h2>
-  )
+  );
 }
 
 function ContactItem({ label, value, short }) {
-  const display = short
-    ? value.replace(/^https?:\/\//, '').replace(/^www\./, '')
-    : value
+  const display = short ? value.replace(/^https?:\/\//, '').replace(/^www\./, '') : value;
   return (
     <li
       style={{
@@ -210,5 +211,5 @@ function ContactItem({ label, value, short }) {
       <span style={{ color: '#7c3aed', fontWeight: 700, textAlign: 'center' }}>{label}</span>
       <span style={{ wordBreak: 'break-word' }}>{display}</span>
     </li>
-  )
+  );
 }

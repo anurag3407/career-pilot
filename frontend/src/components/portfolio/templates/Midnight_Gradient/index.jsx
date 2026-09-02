@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 // Section imports
@@ -27,11 +27,11 @@ export default function MidnightGradient({ portfolioData }) {
   let skills = dummyData.skills;
   if (portfolioData?.skills?.length > 0) {
     if (typeof portfolioData.skills[0] === 'string') {
-      const categories = ["Core", "Technical", "Additional"];
+      const categories = ['Core', 'Technical', 'Additional'];
       skills = portfolioData.skills.map((s, i) => ({
         name: s,
         level: Math.floor(Math.random() * 20) + 75,
-        category: categories[i % categories.length]
+        category: categories[i % categories.length],
       }));
     } else {
       skills = portfolioData.skills;
@@ -45,13 +45,15 @@ export default function MidnightGradient({ portfolioData }) {
       description: p.description || '',
       techStack: p.technologies || p.techStack || [],
       image: p.image || dummyData.projects[i % dummyData.projects.length].image,
-      liveUrl: p.liveUrl || "#",
-      githubUrl: p.githubUrl || "#"
+      liveUrl: p.liveUrl || '#',
+      githubUrl: p.githubUrl || '#',
     }));
   }
 
-  const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
-  const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
+  const experience =
+    portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
+  const testimonials =
+    portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
   const stats = portfolioData?.stats || dummyData.stats;
 
   const data = { personal, socials, skills, projects, experience, testimonials, stats };

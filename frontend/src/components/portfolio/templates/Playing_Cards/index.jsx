@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useEffect } from 'react';
 import data from '../../../../data/dummy_data.json';
 import { motion } from 'framer-motion';
@@ -34,11 +34,11 @@ const PlayingCardsPortfolio = ({ portfolioData }) => {
   let skills = dummyData.skills;
   if (portfolioData?.skills?.length > 0) {
     if (typeof portfolioData.skills[0] === 'string') {
-      const categories = ["Core", "Technical", "Additional"];
+      const categories = ['Core', 'Technical', 'Additional'];
       skills = portfolioData.skills.map((s, i) => ({
         name: s,
         level: Math.floor(Math.random() * 20) + 75,
-        category: categories[i % categories.length]
+        category: categories[i % categories.length],
       }));
     } else {
       skills = portfolioData.skills;
@@ -52,13 +52,15 @@ const PlayingCardsPortfolio = ({ portfolioData }) => {
       description: p.description || '',
       techStack: p.technologies || p.techStack || [],
       image: p.image || dummyData.projects[i % dummyData.projects.length].image,
-      liveUrl: p.liveUrl || "#",
-      githubUrl: p.githubUrl || "#"
+      liveUrl: p.liveUrl || '#',
+      githubUrl: p.githubUrl || '#',
     }));
   }
 
-  const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
-  const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
+  const experience =
+    portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
+  const testimonials =
+    portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
   const stats = portfolioData?.stats || dummyData.stats;
 
   const data = { personal, socials, skills, projects, experience, testimonials, stats };
@@ -81,7 +83,7 @@ const PlayingCardsPortfolio = ({ portfolioData }) => {
     { id: 'projects', label: 'Projects', icon: '🃟' },
     { id: 'experience', label: 'Experience', icon: '♦️' },
     { id: 'testimonials', label: 'Testimonials', icon: '♥️' },
-    { id: 'contact', label: 'Contact', icon: '📧' }
+    { id: 'contact', label: 'Contact', icon: '📧' },
   ];
 
   return (
@@ -93,18 +95,25 @@ const PlayingCardsPortfolio = ({ portfolioData }) => {
 
       {/* Card Border Frame */}
       <div className="fixed inset-4 border-2 border-purple-500/30 rounded-3xl pointer-events-none"></div>
-      
+
       {/* Corner Decorations */}
       <div className="fixed top-6 left-6 text-7xl opacity-10 pointer-events-none">🃟</div>
-      <div className="fixed top-6 right-6 text-7xl opacity-10 pointer-events-none transform rotate-90">🃟</div>
-      <div className="fixed bottom-6 left-6 text-7xl opacity-10 pointer-events-none transform -rotate-90">🃟</div>
-      <div className="fixed bottom-6 right-6 text-7xl opacity-10 pointer-events-none transform rotate-180">🃟</div>
+      <div className="fixed top-6 right-6 text-7xl opacity-10 pointer-events-none transform rotate-90">
+        🃟
+      </div>
+      <div className="fixed bottom-6 left-6 text-7xl opacity-10 pointer-events-none transform -rotate-90">
+        🃟
+      </div>
+      <div className="fixed bottom-6 right-6 text-7xl opacity-10 pointer-events-none transform rotate-180">
+        🃟
+      </div>
 
       {/* Sticky Navigation */}
       <nav className="sticky top-4 z-50 max-w-7xl mx-auto px-4">
         <div className="bg-white/10 backdrop-blur-md rounded-full shadow-xl p-2 flex flex-wrap justify-center gap-1 md:gap-2 border border-white/20">
           {sections.map((section) => (
-            <button type="button"
+            <button
+              type="button"
               key={section.id}
               onClick={() => {
                 const element = document.getElementById(section.id);

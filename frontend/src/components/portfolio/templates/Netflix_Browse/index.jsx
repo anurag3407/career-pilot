@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function NetflixBrowse() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Netflix Browse Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Netflix browse UI with horizontal carousels of project cards, hover expansion with preview details, featured hero banner at top, dark background.
+            Netflix browse UI with horizontal carousels of project cards, hover expansion with
+            preview details, featured hero banner at top, dark background.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

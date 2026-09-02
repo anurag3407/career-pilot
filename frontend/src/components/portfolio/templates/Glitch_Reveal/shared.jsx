@@ -49,7 +49,10 @@ export const GlitchText = ({ text, as = 'h2', className = '' }) => {
 
 export const SectionWrapper = ({ children, id }) => (
   // Each section fades and distorts into view using the same reveal motion.
-  <section id={id} className="relative py-24 px-6 md:px-12 max-w-6xl mx-auto border-t border-zinc-800/50 overflow-hidden">
+  <section
+    id={id}
+    className="relative py-24 px-6 md:px-12 max-w-6xl mx-auto border-t border-zinc-800/50 overflow-hidden"
+  >
     <motion.div
       variants={glitchReveal}
       initial="hidden"

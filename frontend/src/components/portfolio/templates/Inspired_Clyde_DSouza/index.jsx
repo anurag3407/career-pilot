@@ -33,7 +33,7 @@ const InspiredClydeDSouza = ({ portfolioData }) => {
       {/* Chat Popover */}
       <AnimatePresence>
         {isChatOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
@@ -41,7 +41,8 @@ const InspiredClydeDSouza = ({ portfolioData }) => {
           >
             {/* Chat Header */}
             <div className="bg-[#008f7a] p-6 text-white text-center relative">
-              <button type="button" 
+              <button
+                type="button"
                 onClick={() => setIsChatOpen(false)}
                 className="absolute top-3 right-3 text-white/80 hover:text-white"
               >
@@ -59,16 +60,25 @@ const InspiredClydeDSouza = ({ portfolioData }) => {
                   <h4 className="font-bold text-gray-800 text-sm mb-1">New Conversation</h4>
                   <p className="text-xs text-gray-500">We typically reply in a few minutes</p>
                 </div>
-                <Send className="text-[#008f7a] opacity-70 group-hover:opacity-100 transition-opacity" size={20} />
+                <Send
+                  className="text-[#008f7a] opacity-70 group-hover:opacity-100 transition-opacity"
+                  size={20}
+                />
               </div>
             </div>
 
             {/* Chat Footer Tabs */}
             <div className="border-t border-gray-100 bg-white flex">
-              <button type="button" className="flex-1 py-3 flex items-center justify-center text-[#008f7a] hover:bg-gray-50">
+              <button
+                type="button"
+                className="flex-1 py-3 flex items-center justify-center text-[#008f7a] hover:bg-gray-50"
+              >
                 <Home size={20} />
               </button>
-              <button type="button" className="flex-1 py-3 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600">
+              <button
+                type="button"
+                className="flex-1 py-3 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+              >
                 <MessageSquare size={20} />
               </button>
             </div>
@@ -77,11 +87,11 @@ const InspiredClydeDSouza = ({ portfolioData }) => {
       </AnimatePresence>
 
       {/* Floating Chat Button */}
-      <motion.button 
+      <motion.button
         onClick={() => setIsChatOpen(!isChatOpen)}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ delay: 1, type: "spring" }}
+        transition={{ delay: 1, type: 'spring' }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         className="fixed bottom-6 right-6 w-14 h-14 bg-[#008f7a] text-white rounded-full flex items-center justify-center shadow-2xl z-50 cursor-pointer"

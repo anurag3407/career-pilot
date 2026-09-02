@@ -53,15 +53,15 @@ const startAudio = (volume) => {
     }
     return;
   }
-  
+
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if (!AudioContextClass) return;
   audioCtx = new AudioContextClass();
-  
+
   masterGain = audioCtx.createGain();
   masterGain.gain.setValueAtTime(volume, audioCtx.currentTime);
   masterGain.connect(audioCtx.destination);
-  
+
   // Create Brownian noise for low train rumble
   const bufferSize = 2 * audioCtx.sampleRate;
   const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -69,22 +69,22 @@ const startAudio = (volume) => {
   let lastOut = 0.0;
   for (let i = 0; i < bufferSize; i++) {
     const white = Math.random() * 2 - 1;
-    output[i] = (lastOut + (0.02 * white)) / 1.02;
+    output[i] = (lastOut + 0.02 * white) / 1.02;
     lastOut = output[i];
-    output[i] *= 3.5; 
+    output[i] *= 3.5;
   }
-  
+
   const noiseSource = audioCtx.createBufferSource();
   noiseSource.buffer = noiseBuffer;
   noiseSource.loop = true;
-  
+
   const lowpass = audioCtx.createBiquadFilter();
   lowpass.type = 'lowpass';
-  lowpass.frequency.value = 65; 
-  
+  lowpass.frequency.value = 65;
+
   const rumbleGain = audioCtx.createGain();
-  rumbleGain.gain.value = 0.65; 
-  
+  rumbleGain.gain.value = 0.65;
+
   noiseSource.connect(lowpass);
   lowpass.connect(rumbleGain);
   rumbleGain.connect(masterGain);
@@ -104,36 +104,36 @@ const playHorn = () => {
   if (!audioCtx) return;
   if (audioCtx.state === 'suspended') audioCtx.resume();
   const now = audioCtx.currentTime;
-  
+
   const hornGain = audioCtx.createGain();
   hornGain.connect(masterGain);
   hornGain.gain.setValueAtTime(0, now);
   hornGain.gain.linearRampToValueAtTime(0.35, now + 0.1);
   hornGain.gain.setValueAtTime(0.35, now + 0.65);
   hornGain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
-  
+
   // Nostalgic train horn minor triad (D4, F4, A4)
-  [293.66, 349.23, 440.00].forEach(f => {
+  [293.66, 349.23, 440.0].forEach((f) => {
     const osc = audioCtx.createOscillator();
     const filter = audioCtx.createBiquadFilter();
-    
+
     osc.type = 'sawtooth';
     osc.frequency.value = f;
-    
+
     // Low Frequency Oscillator for a realistic horn flutter / vibrato
     const lfo = audioCtx.createOscillator();
     const lfoGain = audioCtx.createGain();
-    lfo.frequency.value = 5.5; 
-    lfoGain.gain.value = 3.5; 
+    lfo.frequency.value = 5.5;
+    lfoGain.gain.value = 3.5;
     lfo.connect(lfoGain);
     lfoGain.connect(osc.frequency);
-    
+
     filter.type = 'lowpass';
-    filter.frequency.value = 650; 
-    
+    filter.frequency.value = 650;
+
     osc.connect(filter);
     filter.connect(hornGain);
-    
+
     lfo.start(now);
     osc.start(now);
     lfo.stop(now + 1.1);
@@ -145,29 +145,29 @@ const playStamp = () => {
   if (!audioCtx) return;
   if (audioCtx.state === 'suspended') audioCtx.resume();
   const now = audioCtx.currentTime;
-  
+
   // Low metallic strike/thud sound
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   const filter = audioCtx.createBiquadFilter();
-  
+
   osc.connect(filter);
   filter.connect(gain);
   gain.connect(masterGain);
-  
+
   osc.type = 'triangle';
   osc.frequency.setValueAtTime(140, now);
   osc.frequency.linearRampToValueAtTime(25, now + 0.16);
-  
+
   filter.type = 'lowpass';
   filter.frequency.value = 170;
-  
+
   gain.gain.setValueAtTime(0.85, now);
   gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
-  
+
   osc.start(now);
   osc.stop(now + 0.22);
-  
+
   // High-pitch stamp mechanism click
   const clickOsc = audioCtx.createOscillator();
   const clickGain = audioCtx.createGain();
@@ -183,25 +183,25 @@ const playStamp = () => {
 const playFlapClick = () => {
   if (!audioCtx || audioCtx.state === 'suspended') return;
   const now = audioCtx.currentTime;
-  
+
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   const filter = audioCtx.createBiquadFilter();
-  
+
   osc.connect(filter);
   filter.connect(gain);
   gain.connect(masterGain);
-  
+
   osc.type = 'sine';
   osc.frequency.setValueAtTime(2800, now);
   osc.frequency.linearRampToValueAtTime(600, now + 0.012);
-  
+
   filter.type = 'highpass';
   filter.frequency.value = 1100;
-  
+
   gain.gain.setValueAtTime(0.025, now);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.012);
-  
+
   osc.start(now);
   osc.stop(now + 0.015);
 };
@@ -258,7 +258,7 @@ const PRESETS = {
     stars: 0,
     aurora: false,
     cyber: true,
-  }
+  },
 };
 
 // Order the window sky travels through as the journey scrolls down the page
@@ -424,7 +424,7 @@ function SplitFlapCharacter({ char, playClick }) {
       <div className="absolute bottom-0 left-0 w-full h-1/2 bg-[#09090a] overflow-hidden flex items-center justify-center">
         <span className="-translate-y-1/2 leading-none">{displayChar}</span>
       </div>
-      
+
       {/* Flipping overlay */}
       <M.div
         className="absolute top-0 left-0 w-full h-1/2 bg-[#141416] border-b border-black/50 origin-bottom flex items-center justify-center overflow-hidden"
@@ -654,7 +654,8 @@ function BoardingIntro({ onDone, reduced }) {
         />
       </div>
 
-      <button type="button"
+      <button
+        type="button"
         onClick={skip}
         className="absolute bottom-8 right-8 rounded-full border border-white/15 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-slate-400 transition-colors hover:border-amber-400/50 hover:text-amber-200"
       >
@@ -683,12 +684,72 @@ function Box3D({ w, h, d, x = 0, y = 0, z = 0, top, side, front, radius = 4 }) {
         transform: `translate3d(${x}px, ${y}px, ${z}px)`,
       }}
     >
-      <div style={{ ...f, width: w, height: h, left: -w / 2, top: -h / 2, transform: `translateZ(${d / 2}px)`, background: front }} />
-      <div style={{ ...f, width: w, height: h, left: -w / 2, top: -h / 2, transform: `rotateY(180deg) translateZ(${d / 2}px)`, background: front }} />
-      <div style={{ ...f, width: d, height: h, left: -d / 2, top: -h / 2, transform: `rotateY(90deg) translateZ(${w / 2}px)`, background: side }} />
-      <div style={{ ...f, width: d, height: h, left: -d / 2, top: -h / 2, transform: `rotateY(-90deg) translateZ(${w / 2}px)`, background: side }} />
-      <div style={{ ...f, width: w, height: d, left: -w / 2, top: -d / 2, transform: `rotateX(90deg) translateZ(${h / 2}px)`, background: top }} />
-      <div style={{ ...f, width: w, height: d, left: -w / 2, top: -d / 2, transform: `rotateX(-90deg) translateZ(${h / 2}px)`, background: side }} />
+      <div
+        style={{
+          ...f,
+          width: w,
+          height: h,
+          left: -w / 2,
+          top: -h / 2,
+          transform: `translateZ(${d / 2}px)`,
+          background: front,
+        }}
+      />
+      <div
+        style={{
+          ...f,
+          width: w,
+          height: h,
+          left: -w / 2,
+          top: -h / 2,
+          transform: `rotateY(180deg) translateZ(${d / 2}px)`,
+          background: front,
+        }}
+      />
+      <div
+        style={{
+          ...f,
+          width: d,
+          height: h,
+          left: -d / 2,
+          top: -h / 2,
+          transform: `rotateY(90deg) translateZ(${w / 2}px)`,
+          background: side,
+        }}
+      />
+      <div
+        style={{
+          ...f,
+          width: d,
+          height: h,
+          left: -d / 2,
+          top: -h / 2,
+          transform: `rotateY(-90deg) translateZ(${w / 2}px)`,
+          background: side,
+        }}
+      />
+      <div
+        style={{
+          ...f,
+          width: w,
+          height: d,
+          left: -w / 2,
+          top: -d / 2,
+          transform: `rotateX(90deg) translateZ(${h / 2}px)`,
+          background: top,
+        }}
+      />
+      <div
+        style={{
+          ...f,
+          width: w,
+          height: d,
+          left: -w / 2,
+          top: -d / 2,
+          transform: `rotateX(-90deg) translateZ(${h / 2}px)`,
+          background: side,
+        }}
+      />
     </div>
   );
 }
@@ -715,7 +776,8 @@ function Wheel({ x, y, z, r, reduced, dur = 1.6 }) {
           marginLeft: -r,
           marginTop: -r,
           borderRadius: '50%',
-          background: 'radial-gradient(circle at 50% 45%, #2c2c35 0 36%, #101015 38% 72%, #1b1b22 74%)',
+          background:
+            'radial-gradient(circle at 50% 45%, #2c2c35 0 36%, #101015 38% 72%, #1b1b22 74%)',
           border: '2px solid rgba(251,191,36,0.7)',
           boxShadow: '0 0 10px rgba(0,0,0,0.6)',
         }}
@@ -762,7 +824,12 @@ function SteamPuff({ delay, drift }) {
       className="absolute rounded-full bg-white/60 blur-md"
       style={{ width: 24, height: 24, left: -12, top: -12 }}
       initial={{ opacity: 0, y: 0, x: 0, scale: 0.4 }}
-      animate={{ opacity: [0, 0.5, 0], y: -130, x: [0, drift, drift * 1.6], scale: [0.4, 1.3, 2.2] }}
+      animate={{
+        opacity: [0, 0.5, 0],
+        y: -130,
+        x: [0, drift, drift * 1.6],
+        scale: [0.4, 1.3, 2.2],
+      }}
       transition={{ duration: 3.4, repeat: Infinity, ease: 'easeOut', delay }}
     />
   );
@@ -805,7 +872,10 @@ function Locomotive3D({ reduced }) {
       <div className="pointer-events-none absolute bottom-[48px] left-1/2 h-[2px] w-[86%] -translate-x-1/2 bg-amber-200/10" />
       <div className="pointer-events-none absolute bottom-[54px] h-7 w-[56%] rounded-[50%] bg-black/55 blur-xl" />
 
-      <div className="scale-[0.6] sm:scale-90 md:scale-100" style={{ transformStyle: 'preserve-3d' }}>
+      <div
+        className="scale-[0.6] sm:scale-90 md:scale-100"
+        style={{ transformStyle: 'preserve-3d' }}
+      >
         <M.div style={{ transformStyle: 'preserve-3d', rotateX: srx, rotateY: sry }}>
           <M.div
             animate={reduced ? {} : { y: [0, -7, 0] }}
@@ -813,27 +883,144 @@ function Locomotive3D({ reduced }) {
             style={{ position: 'relative', transformStyle: 'preserve-3d' }}
           >
             {/* footplate / chassis */}
-            <Box3D w={300} h={16} d={116} x={0} y={54} top="#23232b" side="#0c0c11" front="#181820" />
+            <Box3D
+              w={300}
+              h={16}
+              d={116}
+              x={0}
+              y={54}
+              top="#23232b"
+              side="#0c0c11"
+              front="#181820"
+            />
             {/* boiler */}
-            <Box3D w={196} h={84} d={92} x={-34} y={-4} top={bodyTop} side={bodySide} front={bodyFront} radius={10} />
+            <Box3D
+              w={196}
+              h={84}
+              d={92}
+              x={-34}
+              y={-4}
+              top={bodyTop}
+              side={bodySide}
+              front={bodyFront}
+              radius={10}
+            />
             {/* brass boiler bands */}
-            <Box3D w={10} h={88} d={96} x={-90} y={-4} top={brassTop} side={brassSide} front={brassFront} radius={6} />
-            <Box3D w={10} h={88} d={96} x={10} y={-4} top={brassTop} side={brassSide} front={brassFront} radius={6} />
+            <Box3D
+              w={10}
+              h={88}
+              d={96}
+              x={-90}
+              y={-4}
+              top={brassTop}
+              side={brassSide}
+              front={brassFront}
+              radius={6}
+            />
+            <Box3D
+              w={10}
+              h={88}
+              d={96}
+              x={10}
+              y={-4}
+              top={brassTop}
+              side={brassSide}
+              front={brassFront}
+              radius={6}
+            />
             {/* smokebox (front) */}
-            <Box3D w={26} h={88} d={96} x={-134} y={-4} top="#1b1b22" side="#0e0e13" front="#15151c" radius={12} />
+            <Box3D
+              w={26}
+              h={88}
+              d={96}
+              x={-134}
+              y={-4}
+              top="#1b1b22"
+              side="#0e0e13"
+              front="#15151c"
+              radius={12}
+            />
             {/* cabin */}
-            <Box3D w={92} h={104} d={104} x={108} y={-14} top={bodyTop} side={bodySide} front={bodyFront} radius={8} />
+            <Box3D
+              w={92}
+              h={104}
+              d={104}
+              x={108}
+              y={-14}
+              top={bodyTop}
+              side={bodySide}
+              front={bodyFront}
+              radius={8}
+            />
             {/* cabin roof */}
-            <Box3D w={106} h={12} d={118} x={108} y={-70} top={brassTop} side={brassSide} front={brassFront} radius={6} />
+            <Box3D
+              w={106}
+              h={12}
+              d={118}
+              x={108}
+              y={-70}
+              top={brassTop}
+              side={brassSide}
+              front={brassFront}
+              radius={6}
+            />
             {/* chimney + cap */}
-            <Box3D w={30} h={46} d={30} x={-112} y={-72} top="#0c0c11" side="#08080b" front="#101016" radius={4} />
-            <Box3D w={40} h={10} d={40} x={-112} y={-96} top={brassTop} side={brassSide} front={brassFront} radius={4} />
+            <Box3D
+              w={30}
+              h={46}
+              d={30}
+              x={-112}
+              y={-72}
+              top="#0c0c11"
+              side="#08080b"
+              front="#101016"
+              radius={4}
+            />
+            <Box3D
+              w={40}
+              h={10}
+              d={40}
+              x={-112}
+              y={-96}
+              top={brassTop}
+              side={brassSide}
+              front={brassFront}
+              radius={4}
+            />
             {/* steam dome + sand dome */}
-            <Box3D w={32} h={26} d={32} x={-44} y={-58} top={brassTop} side={brassSide} front={brassFront} radius={10} />
-            <Box3D w={26} h={22} d={26} x={6} y={-56} top="#34343f" side={bodySide} front={bodyFront} radius={8} />
+            <Box3D
+              w={32}
+              h={26}
+              d={32}
+              x={-44}
+              y={-58}
+              top={brassTop}
+              side={brassSide}
+              front={brassFront}
+              radius={10}
+            />
+            <Box3D
+              w={26}
+              h={22}
+              d={26}
+              x={6}
+              y={-56}
+              top="#34343f"
+              side={bodySide}
+              front={bodyFront}
+              radius={8}
+            />
 
             {/* headlight on the smokebox front (-X end) */}
-            <div style={{ position: 'absolute', left: '50%', top: '50%', transformStyle: 'preserve-3d', transform: 'translate3d(-150px,-26px,0)' }}>
+            <div
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transformStyle: 'preserve-3d',
+                transform: 'translate3d(-150px,-26px,0)',
+              }}
+            >
               <div
                 style={{
                   width: 24,
@@ -849,7 +1036,15 @@ function Locomotive3D({ reduced }) {
             </div>
 
             {/* glowing cabin window (near +Z side) */}
-            <div style={{ position: 'absolute', left: '50%', top: '50%', transformStyle: 'preserve-3d', transform: 'translate3d(108px,-34px,53px)' }}>
+            <div
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transformStyle: 'preserve-3d',
+                transform: 'translate3d(108px,-34px,53px)',
+              }}
+            >
               <div
                 style={{
                   width: 54,
@@ -857,7 +1052,8 @@ function Locomotive3D({ reduced }) {
                   marginLeft: -27,
                   marginTop: -23,
                   borderRadius: 8,
-                  background: 'linear-gradient(160deg, rgba(251,191,36,0.92), rgba(244,114,22,0.5))',
+                  background:
+                    'linear-gradient(160deg, rgba(251,191,36,0.92), rgba(244,114,22,0.5))',
                   boxShadow: '0 0 18px rgba(251,191,36,0.6)',
                   border: '2px solid rgba(0,0,0,0.45)',
                 }}
@@ -865,8 +1061,25 @@ function Locomotive3D({ reduced }) {
             </div>
 
             {/* amber running stripe along the boiler (near +Z side) */}
-            <div style={{ position: 'absolute', left: '50%', top: '50%', transformStyle: 'preserve-3d', transform: 'translate3d(-34px,30px,47px)' }}>
-              <div style={{ width: 196, height: 8, marginLeft: -98, marginTop: -4, borderRadius: 4, background: 'linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b)' }} />
+            <div
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transformStyle: 'preserve-3d',
+                transform: 'translate3d(-34px,30px,47px)',
+              }}
+            >
+              <div
+                style={{
+                  width: 196,
+                  height: 8,
+                  marginLeft: -98,
+                  marginTop: -4,
+                  borderRadius: 4,
+                  background: 'linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b)',
+                }}
+              />
             </div>
 
             {/* drive wheels (near + far side) */}
@@ -880,7 +1093,15 @@ function Locomotive3D({ reduced }) {
 
             {/* steam from the chimney */}
             {!reduced && (
-              <div style={{ position: 'absolute', left: '50%', top: '50%', transformStyle: 'preserve-3d', transform: 'translate3d(-112px,-104px,0)' }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transformStyle: 'preserve-3d',
+                  transform: 'translate3d(-112px,-104px,0)',
+                }}
+              >
                 <SteamPuff delay={0} drift={-10} />
                 <SteamPuff delay={1.1} drift={8} />
                 <SteamPuff delay={2.2} drift={-4} />
@@ -971,16 +1192,24 @@ function Pole() {
 }
 
 const STARS = [
-  { t: '8%', l: '12%', d: 2.4, s: 2 }, { t: '14%', l: '34%', d: 3.1, s: 1 },
-  { t: '6%', l: '58%', d: 2.0, s: 2 }, { t: '18%', l: '74%', d: 3.6, s: 1 },
-  { t: '10%', l: '88%', d: 2.8, s: 2 }, { t: '22%', l: '22%', d: 3.3, s: 1 },
-  { t: '5%', l: '46%', d: 2.6, s: 1 }, { t: '20%', l: '64%', d: 2.2, s: 2 },
-  { t: '12%', l: '6%', d: 3.0, s: 1 }, { t: '24%', l: '92%', d: 2.5, s: 1 },
+  { t: '8%', l: '12%', d: 2.4, s: 2 },
+  { t: '14%', l: '34%', d: 3.1, s: 1 },
+  { t: '6%', l: '58%', d: 2.0, s: 2 },
+  { t: '18%', l: '74%', d: 3.6, s: 1 },
+  { t: '10%', l: '88%', d: 2.8, s: 2 },
+  { t: '22%', l: '22%', d: 3.3, s: 1 },
+  { t: '5%', l: '46%', d: 2.6, s: 1 },
+  { t: '20%', l: '64%', d: 2.2, s: 2 },
+  { t: '12%', l: '6%', d: 3.0, s: 1 },
+  { t: '24%', l: '92%', d: 2.5, s: 1 },
 ];
 
 function Starfield({ opacity = 1.0 }) {
   return (
-    <M.div style={{ opacity }} className="pointer-events-none absolute inset-0 transition-opacity duration-1000">
+    <M.div
+      style={{ opacity }}
+      className="pointer-events-none absolute inset-0 transition-opacity duration-1000"
+    >
       {STARS.map((st, i) => (
         <M.span
           key={i}
@@ -1021,7 +1250,12 @@ function Bird({ top, duration, delay }) {
       transition={{ duration, repeat: Infinity, ease: 'linear', delay }}
     >
       <svg width="22" height="10" viewBox="0 0 22 10" fill="none">
-        <path d="M1 8C4 2 7 2 11 6C15 2 18 2 21 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <path
+          d="M1 8C4 2 7 2 11 6C15 2 18 2 21 8"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
       </svg>
     </M.div>
   );
@@ -1030,16 +1264,22 @@ function Bird({ top, duration, delay }) {
 function AuroraRibbon() {
   return (
     <div className="absolute inset-x-0 top-[10%] h-[35%] pointer-events-none opacity-45 filter blur-2xl overflow-hidden">
-      <M.svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
+      <M.svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        className="h-full w-full"
+      >
         <M.path
           d="M0,45 Q25,25 50,48 T100,38 L100,100 L0,100 Z"
           fill="url(#aurora-glow-grad)"
           animate={{
             d: [
-              "M0,45 Q25,25 50,48 T100,38 L100,100 L0,100 Z",
-              "M0,42 Q25,55 50,38 T100,48 L100,100 L0,100 Z",
-              "M0,45 Q25,25 50,48 T100,38 L100,100 L0,100 Z"
-            ]
+              'M0,45 Q25,25 50,48 T100,38 L100,100 L0,100 Z',
+              'M0,42 Q25,55 50,38 T100,48 L100,100 L0,100 Z',
+              'M0,45 Q25,25 50,48 T100,38 L100,100 L0,100 Z',
+            ],
           }}
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -1059,7 +1299,7 @@ function AuroraRibbon() {
 function CyberGrid() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      <div 
+      <div
         className="w-full h-full opacity-20"
         style={{
           backgroundImage: `
@@ -1143,7 +1383,13 @@ function TrainWindow({ activePreset }) {
 
       {/* Cloud & Bird systems */}
       <Cloud top="16%" scale={1.0} duration={38} opacity={activePreset === 'night' ? 0.08 : 0.22} />
-      <Cloud top="30%" scale={0.75} duration={28} delay={8} opacity={activePreset === 'night' ? 0.05 : 0.18} />
+      <Cloud
+        top="30%"
+        scale={0.75}
+        duration={28}
+        delay={8}
+        opacity={activePreset === 'night' ? 0.05 : 0.18}
+      />
       <Bird top="22%" duration={16} delay={2} />
       <Bird top="27%" duration={18} delay={3.2} />
 
@@ -1156,10 +1402,10 @@ function TrainWindow({ activePreset }) {
       {/* Glowing solar body (Sun / Moon) */}
       <M.div
         className="absolute left-1/2 top-[44%] h-40 w-40 -translate-x-1/2 rounded-full transition-all duration-1000 ease-in-out"
-        style={{ 
+        style={{
           backgroundColor: p.sunColor,
-          filter: 'blur(3px)', 
-          boxShadow: p.sunGlow 
+          filter: 'blur(3px)',
+          boxShadow: p.sunGlow,
         }}
         animate={{ scale: [1, 1.05, 1], opacity: [0.85, 0.95, 0.85] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
@@ -1194,7 +1440,10 @@ function TrainWindow({ activePreset }) {
 
       {/* Foreground poles */}
       <ParallaxLayer duration={6.5} className="h-32">
-        <Pole /><Pole /><Pole /><Pole />
+        <Pole />
+        <Pole />
+        <Pole />
+        <Pole />
       </ParallaxLayer>
 
       {/* Rail Tracks */}
@@ -1206,7 +1455,10 @@ function TrainWindow({ activePreset }) {
           transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
         >
           {Array.from({ length: 40 }).map((_, i) => (
-            <span key={i} className="h-2 w-6 shrink-0 rounded-sm bg-amber-950/70 border-t border-amber-900/30" />
+            <span
+              key={i}
+              className="h-2 w-6 shrink-0 rounded-sm bg-amber-950/70 border-t border-amber-900/30"
+            />
           ))}
         </M.div>
       </div>
@@ -1232,7 +1484,10 @@ function TrainWindow({ activePreset }) {
 
       {/* Outer corner rivets */}
       {['left-3 top-3', 'right-3 top-3', 'left-3 bottom-3', 'right-3 bottom-3'].map((pos) => (
-        <span key={pos} className={`absolute ${pos} h-3 w-3 rounded-full bg-amber-950 shadow-inner ring-1 ring-amber-500/25`} />
+        <span
+          key={pos}
+          className={`absolute ${pos} h-3 w-3 rounded-full bg-amber-950 shadow-inner ring-1 ring-amber-500/25`}
+        />
       ))}
 
       {/* Window release mechanism latch */}
@@ -1242,12 +1497,18 @@ function TrainWindow({ activePreset }) {
 }
 
 const EMBERS = [
-  { l: '5%', s: 3, d: 9, delay: 0, x: 14 }, { l: '14%', s: 2, d: 11, delay: 1.5, x: -10 },
-  { l: '23%', s: 4, d: 8, delay: 0.6, x: 8 }, { l: '33%', s: 2, d: 12, delay: 2.2, x: -16 },
-  { l: '42%', s: 3, d: 10, delay: 1.0, x: 12 }, { l: '52%', s: 2, d: 13, delay: 3.0, x: -8 },
-  { l: '61%', s: 4, d: 9, delay: 0.3, x: 18 }, { l: '70%', s: 2, d: 11, delay: 2.6, x: -12 },
-  { l: '79%', s: 3, d: 8, delay: 1.8, x: 10 }, { l: '88%', s: 2, d: 12, delay: 0.9, x: -14 },
-  { l: '94%', s: 3, d: 10, delay: 3.4, x: 8 }, { l: '47%', s: 2, d: 14, delay: 4.0, x: -6 },
+  { l: '5%', s: 3, d: 9, delay: 0, x: 14 },
+  { l: '14%', s: 2, d: 11, delay: 1.5, x: -10 },
+  { l: '23%', s: 4, d: 8, delay: 0.6, x: 8 },
+  { l: '33%', s: 2, d: 12, delay: 2.2, x: -16 },
+  { l: '42%', s: 3, d: 10, delay: 1.0, x: 12 },
+  { l: '52%', s: 2, d: 13, delay: 3.0, x: -8 },
+  { l: '61%', s: 4, d: 9, delay: 0.3, x: 18 },
+  { l: '70%', s: 2, d: 11, delay: 2.6, x: -12 },
+  { l: '79%', s: 3, d: 8, delay: 1.8, x: 10 },
+  { l: '88%', s: 2, d: 12, delay: 0.9, x: -14 },
+  { l: '94%', s: 3, d: 10, delay: 3.4, x: 8 },
+  { l: '47%', s: 2, d: 14, delay: 4.0, x: -6 },
 ];
 
 function Embers() {
@@ -1328,7 +1589,9 @@ function TrainHUD({
           <TrainFront className="h-6 w-6" />
           <span className="absolute -top-1 -right-1 flex h-4 w-4">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 text-[8px] text-zinc-950 font-black items-center justify-center">HUD</span>
+            <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 text-[8px] text-zinc-950 font-black items-center justify-center">
+              HUD
+            </span>
           </span>
         </M.button>
       )}
@@ -1345,7 +1608,8 @@ function TrainHUD({
             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-amber-400">
               <Gauge className="h-4 w-4 animate-pulse" /> Cabin Instruments
             </div>
-            <button type="button"
+            <button
+              type="button"
               onClick={() => {
                 setIsOpen(false);
                 playFlapClick();
@@ -1362,7 +1626,14 @@ function TrainHUD({
               {/* Dial Gauge */}
               <div className="relative h-20 w-20 flex-shrink-0">
                 <svg className="h-full w-full -rotate-90" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="34" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="34"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.06)"
+                    strokeWidth="6"
+                  />
                   <circle
                     cx="50"
                     cy="50"
@@ -1385,15 +1656,23 @@ function TrainHUD({
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-lg font-black text-white">{speed}</span>
-                  <span className="text-[8px] font-bold text-slate-400 uppercase leading-none">km/h</span>
+                  <span className="text-[8px] font-bold text-slate-400 uppercase leading-none">
+                    km/h
+                  </span>
                 </div>
               </div>
 
               {/* Station Indicators */}
               <div className="space-y-1 overflow-hidden">
-                <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Current Stop</div>
-                <div className="text-sm font-black text-amber-300 truncate">{activeStation.title}</div>
-                <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Next Stop</div>
+                <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                  Current Stop
+                </div>
+                <div className="text-sm font-black text-amber-300 truncate">
+                  {activeStation.title}
+                </div>
+                <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                  Next Stop
+                </div>
                 <div className="text-xs font-semibold text-slate-400 truncate">
                   {nextStation ? nextStation.title : 'End of the Line'}
                 </div>
@@ -1403,8 +1682,11 @@ function TrainHUD({
             {/* Atmosphere Selectors */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Window Presets</div>
-                <button type="button"
+                <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                  Window Presets
+                </div>
+                <button
+                  type="button"
                   onClick={() => {
                     setAutoSky(true);
                     playFlapClick();
@@ -1420,7 +1702,8 @@ function TrainHUD({
               </div>
               <div className="grid grid-cols-4 gap-1">
                 {Object.keys(PRESETS).map((key) => (
-                  <button type="button"
+                  <button
+                    type="button"
                     key={key}
                     onClick={() => {
                       setPreset(key);
@@ -1444,7 +1727,8 @@ function TrainHUD({
             <div className="border-t border-white/5 pt-3 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <button type="button"
+                  <button
+                    type="button"
                     onClick={() => {
                       if (!audioCtx) {
                         startAudio(volume);
@@ -1462,15 +1746,20 @@ function TrainHUD({
                       playFlapClick();
                     }}
                     className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
-                      isPlaying ? 'bg-amber-400 text-zinc-950' : 'bg-white/10 text-slate-400 hover:bg-white/15'
+                      isPlaying
+                        ? 'bg-amber-400 text-zinc-950'
+                        : 'bg-white/10 text-slate-400 hover:bg-white/15'
                     }`}
                   >
                     {isPlaying ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
                   </button>
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Ambient Engine</span>
+                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                    Ambient Engine
+                  </span>
                 </div>
 
-                <button type="button"
+                <button
+                  type="button"
                   onClick={() => {
                     if (!audioCtx) startAudio(volume);
                     onPlayHorn();
@@ -1531,7 +1820,7 @@ function Hero({ activePreset }) {
         animate={{ opacity: [0.45, 0.7, 0.45] }}
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
       />
-      
+
       {/* Grid depth overlay */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.05]"
@@ -1558,7 +1847,11 @@ function Hero({ activePreset }) {
       />
 
       <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
-        <M.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.1 } } }}>
+        <M.div
+          initial="hidden"
+          animate="show"
+          variants={{ show: { transition: { staggerChildren: 0.1 } } }}
+        >
           <M.div
             variants={fadeUp}
             className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-amber-200"
@@ -1571,7 +1864,10 @@ function Hero({ activePreset }) {
             Now boarding · {data.personal.location}
           </M.div>
 
-          <M.h1 variants={fadeUp} className="mt-6 text-5xl font-black leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
+          <M.h1
+            variants={fadeUp}
+            className="mt-6 text-5xl font-black leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
+          >
             <AnimatedName name={data.personal.name} />
           </M.h1>
 
@@ -1585,7 +1881,10 @@ function Hero({ activePreset }) {
           <M.p variants={fadeUp} className="mt-5 text-xl font-semibold text-slate-100 sm:text-2xl">
             {data.personal.title}
           </M.p>
-          <M.p variants={fadeUp} className="mt-4 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
+          <M.p
+            variants={fadeUp}
+            className="mt-4 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg"
+          >
             {data.personal.tagline || data.personal.bio}
           </M.p>
 
@@ -1609,9 +1908,15 @@ function Hero({ activePreset }) {
               </a>
             </Magnetic>
             <div className="flex items-center gap-2">
-              <IconLink href={data.socials.github} label="GitHub"><Github className="h-4 w-4" /></IconLink>
-              <IconLink href={data.socials.linkedin} label="LinkedIn"><Linkedin className="h-4 w-4" /></IconLink>
-              <IconLink href={data.socials.twitter} label="Twitter"><Twitter className="h-4 w-4" /></IconLink>
+              <IconLink href={data.socials.github} label="GitHub">
+                <Github className="h-4 w-4" />
+              </IconLink>
+              <IconLink href={data.socials.linkedin} label="LinkedIn">
+                <Linkedin className="h-4 w-4" />
+              </IconLink>
+              <IconLink href={data.socials.twitter} label="Twitter">
+                <Twitter className="h-4 w-4" />
+              </IconLink>
             </div>
           </M.div>
 
@@ -1627,7 +1932,9 @@ function Hero({ activePreset }) {
                 <div className="text-3xl font-black text-amber-300 sm:text-4xl">
                   <CountUp to={s.to} suffix={s.suffix} />
                 </div>
-                <div className="mt-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400 sm:text-xs">{s.label}</div>
+                <div className="mt-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400 sm:text-xs">
+                  {s.label}
+                </div>
               </div>
             ))}
           </M.div>
@@ -1722,7 +2029,9 @@ function About() {
               </M.div>
               <div className="text-center">
                 <div className="text-xl font-bold text-white">{data.personal.name}</div>
-                <div className="text-xs uppercase tracking-widest text-amber-300/80 font-bold">Passenger</div>
+                <div className="text-xs uppercase tracking-widest text-amber-300/80 font-bold">
+                  Passenger
+                </div>
               </div>
               <div className="flex items-center gap-1.5 text-sm text-slate-300">
                 <MapPin className="h-4 w-4 text-amber-300" />
@@ -1743,15 +2052,22 @@ function About() {
                   ))}
                 </div>
               </div>
-              <p className="mt-6 text-lg leading-relaxed text-slate-200 sm:text-xl">{data.personal.bio}</p>
+              <p className="mt-6 text-lg leading-relaxed text-slate-200 sm:text-xl">
+                {data.personal.bio}
+              </p>
               <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
                 {[
                   { k: 'Ticket Category', v: 'First Class / Tech Stack', c: 'text-white' },
                   { k: 'Origin Platform', v: data.personal.location, c: 'text-white' },
                   { k: 'Journey Status', v: 'On Time ✓', c: 'text-emerald-400' },
                 ].map((row) => (
-                  <div key={row.k} className="rounded-xl border border-white/10 bg-white/5 p-4 transition-colors hover:border-amber-400/30">
-                    <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">{row.k}</div>
+                  <div
+                    key={row.k}
+                    className="rounded-xl border border-white/10 bg-white/5 p-4 transition-colors hover:border-amber-400/30"
+                  >
+                    <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
+                      {row.k}
+                    </div>
                     <div className={`mt-1.5 text-base font-bold ${row.c}`}>{row.v}</div>
                   </div>
                 ))}
@@ -1791,7 +2107,14 @@ function RadialGauge({ skill, index }) {
               <stop offset="100%" stopColor="#ec4899" />
             </linearGradient>
           </defs>
-          <circle cx="50" cy="50" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
+          <circle
+            cx="50"
+            cy="50"
+            r={r}
+            fill="none"
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="8"
+          />
           <M.circle
             cx="50"
             cy="50"
@@ -1815,7 +2138,9 @@ function RadialGauge({ skill, index }) {
       </div>
       <div className="text-center">
         <div className="text-sm font-bold text-slate-100">{skill.name}</div>
-        <div className="text-[11px] uppercase tracking-widest text-amber-300/70 font-semibold">{skill.category}</div>
+        <div className="text-[11px] uppercase tracking-widest text-amber-300/70 font-semibold">
+          {skill.category}
+        </div>
       </div>
     </M.div>
   );
@@ -1939,7 +2264,7 @@ function Station({ project, index, onActive }) {
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.02] shadow-xl backdrop-blur transition-all duration-500 hover:border-amber-400/40 hover:shadow-2xl hover:shadow-amber-500/15">
           {/* Neon hovering borders */}
           <div className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-amber-400/0 via-amber-400/0 to-amber-400/0 opacity-0 transition-opacity duration-500 group-hover:from-amber-400/10 group-hover:to-rose-400/10 group-hover:opacity-100" />
-          
+
           <div className="relative h-44 overflow-hidden">
             <img
               src={project.image}
@@ -1954,23 +2279,40 @@ function Station({ project, index, onActive }) {
           </div>
 
           <div className={`relative p-5 ${isLeft ? 'md:text-right' : ''}`}>
-            <h3 className="text-xl font-bold text-white transition-colors group-hover:text-amber-300 sm:text-2xl">{project.title}</h3>
-            <p className="mt-2.5 text-sm leading-relaxed text-slate-400 line-clamp-3 sm:text-base">{project.description}</p>
+            <h3 className="text-xl font-bold text-white transition-colors group-hover:text-amber-300 sm:text-2xl">
+              {project.title}
+            </h3>
+            <p className="mt-2.5 text-sm leading-relaxed text-slate-400 line-clamp-3 sm:text-base">
+              {project.description}
+            </p>
             <div className={`mt-4 flex flex-wrap gap-2 ${isLeft ? 'md:justify-end' : ''}`}>
               {project.techStack.map((tech) => (
-                <span key={tech} className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-200">
+                <span
+                  key={tech}
+                  className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-200"
+                >
                   {tech}
                 </span>
               ))}
             </div>
             <div className={`mt-5 flex items-center gap-3 ${isLeft ? 'md:justify-end' : ''}`}>
               {project.liveUrl && (
-                <a href={project.liveUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-300 hover:text-amber-200">
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-300 hover:text-amber-200"
+                >
                   Live <ArrowRight className="h-3.5 w-3.5" />
                 </a>
               )}
               {project.githubUrl && (
-                <a href={project.githubUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-white">
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-white"
+                >
                   <Github className="h-3.5 w-3.5" /> Code
                 </a>
               )}
@@ -2000,10 +2342,12 @@ function Projects({ onActiveStation }) {
           {/* Main Track lines */}
           <div className="absolute left-8 top-0 h-full w-1 -translate-x-1/2 bg-zinc-900 border-x border-white/5 md:left-1/2" />
           {/* Track wooden ties repeating pattern */}
-          <div className="absolute left-8 top-0 h-full w-2 -translate-x-1/2 md:left-1/2 opacity-30" 
-               style={{
-                 backgroundImage: 'repeating-linear-gradient(to bottom, #78350f 0px, #78350f 4px, transparent 4px, transparent 24px)',
-               }}
+          <div
+            className="absolute left-8 top-0 h-full w-2 -translate-x-1/2 md:left-1/2 opacity-30"
+            style={{
+              backgroundImage:
+                'repeating-linear-gradient(to bottom, #78350f 0px, #78350f 4px, transparent 4px, transparent 24px)',
+            }}
           />
           {/* Progress fill */}
           <M.div
@@ -2028,12 +2372,7 @@ function Projects({ onActiveStation }) {
 
           <div className="space-y-12">
             {data.projects.map((proj, idx) => (
-              <Station 
-                key={proj.title} 
-                project={proj} 
-                index={idx} 
-                onActive={onActiveStation} 
-              />
+              <Station key={proj.title} project={proj} index={idx} onActive={onActiveStation} />
             ))}
           </div>
         </div>
@@ -2102,9 +2441,15 @@ function Testimonials() {
                   <Star key={s} className="h-4 w-4 fill-current" />
                 ))}
               </div>
-              <blockquote className="relative text-base leading-relaxed text-slate-200 sm:text-lg">“{t.text}”</blockquote>
+              <blockquote className="relative text-base leading-relaxed text-slate-200 sm:text-lg">
+                “{t.text}”
+              </blockquote>
               <figcaption className="mt-6 flex items-center gap-3">
-                <img src={t.avatar} alt={t.name} className="h-12 w-12 rounded-full object-cover ring-2 ring-amber-400/25" />
+                <img
+                  src={t.avatar}
+                  alt={t.name}
+                  className="h-12 w-12 rounded-full object-cover ring-2 ring-amber-400/25"
+                />
                 <div>
                   <div className="text-base font-bold text-white">{t.name}</div>
                   <div className="text-sm text-slate-400">{t.role}</div>
@@ -2157,9 +2502,12 @@ function Contact({ activeStationIndex }) {
             <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-zinc-950/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-amber-200">
               <Ticket className="h-3.5 w-3.5 animate-bounce" /> Next Departure
             </span>
-            <h2 className="mt-6 text-4xl font-black tracking-tight text-white sm:text-5xl">Print Your Boarding Pass</h2>
+            <h2 className="mt-6 text-4xl font-black tracking-tight text-white sm:text-5xl">
+              Print Your Boarding Pass
+            </h2>
             <p className="mx-auto mt-3 max-w-md text-base text-slate-300">
-              Complete the cabin manifesto below to dispatch your message and print your official travel stub.
+              Complete the cabin manifesto below to dispatch your message and print your official
+              travel stub.
             </p>
           </div>
 
@@ -2168,7 +2516,9 @@ function Contact({ activeStationIndex }) {
             <form onSubmit={handleSubmit} className="space-y-4 text-left">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Passenger Name</label>
+                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    Passenger Name
+                  </label>
                   <input
                     type="text"
                     required
@@ -2182,7 +2532,9 @@ function Contact({ activeStationIndex }) {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Target Station</label>
+                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    Target Station
+                  </label>
                   <select
                     value={dest}
                     onChange={(e) => {
@@ -2193,7 +2545,9 @@ function Contact({ activeStationIndex }) {
                   >
                     <option value="">-- Choose Stop --</option>
                     {data.projects.map((p) => (
-                      <option key={p.title} value={p.title}>{p.title}</option>
+                      <option key={p.title} value={p.title}>
+                        {p.title}
+                      </option>
                     ))}
                     <option value="Custom route">Custom Destination</option>
                   </select>
@@ -2201,7 +2555,9 @@ function Contact({ activeStationIndex }) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">MANIFEST NOTES / MESSAGE</label>
+                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  MANIFEST NOTES / MESSAGE
+                </label>
                 <textarea
                   rows={3}
                   required
@@ -2240,22 +2596,30 @@ function Contact({ activeStationIndex }) {
                 className="w-full max-w-xs overflow-hidden rounded-b-xl border-x border-b border-white/10 bg-zinc-900 p-5 shadow-2xl relative z-0 origin-top text-left select-none"
               >
                 <div className="absolute top-0 left-0 w-full h-[6px] bg-gradient-to-r from-amber-400 to-rose-400" />
-                
+
                 <div className="flex items-center justify-between mt-2">
-                  <div className="text-[9px] font-black uppercase tracking-widest text-amber-400">Manifest Ticket</div>
-                  <div className="text-[9px] font-mono text-slate-500">No. {name ? `#${name.slice(0, 3).toUpperCase()}-CP` : '#TKT-782'}</div>
+                  <div className="text-[9px] font-black uppercase tracking-widest text-amber-400">
+                    Manifest Ticket
+                  </div>
+                  <div className="text-[9px] font-mono text-slate-500">
+                    No. {name ? `#${name.slice(0, 3).toUpperCase()}-CP` : '#TKT-782'}
+                  </div>
                 </div>
 
                 <div className="mt-4 border-t border-dashed border-white/10 pt-3 space-y-2.5 font-mono text-xs">
                   <div>
-                    <span className="text-[9px] uppercase text-slate-500 block leading-none">Passenger</span>
+                    <span className="text-[9px] uppercase text-slate-500 block leading-none">
+                      Passenger
+                    </span>
                     <span className="text-white font-bold text-sm tracking-wide uppercase truncate block">
                       {name || data.personal.name}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-[9px] uppercase text-slate-500 block leading-none">Destination Stop</span>
+                    <span className="text-[9px] uppercase text-slate-500 block leading-none">
+                      Destination Stop
+                    </span>
                     <span className="text-amber-200 font-bold tracking-wide uppercase truncate block">
                       {dest || activeProject.title}
                     </span>
@@ -2263,11 +2627,15 @@ function Contact({ activeStationIndex }) {
 
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <span className="text-[9px] uppercase text-slate-500 block leading-none">Gate</span>
+                      <span className="text-[9px] uppercase text-slate-500 block leading-none">
+                        Gate
+                      </span>
                       <span className="text-white font-bold">9¾</span>
                     </div>
                     <div>
-                      <span className="text-[9px] uppercase text-slate-500 block leading-none">Seat</span>
+                      <span className="text-[9px] uppercase text-slate-500 block leading-none">
+                        Seat
+                      </span>
                       <span className="text-white font-bold">CABIN-03</span>
                     </div>
                   </div>
@@ -2284,7 +2652,9 @@ function Contact({ activeStationIndex }) {
                       <span key={idx} className="bg-white shrink-0 h-full" style={{ width: w }} />
                     ))}
                   </div>
-                  <span className="text-[8px] font-mono tracking-[0.2em] text-slate-500 uppercase mt-1">Platform 9 3/4 validated</span>
+                  <span className="text-[8px] font-mono tracking-[0.2em] text-slate-500 uppercase mt-1">
+                    Platform 9 3/4 validated
+                  </span>
                 </div>
 
                 {/* Green Validated stamp */}
@@ -2304,13 +2674,22 @@ function Contact({ activeStationIndex }) {
 
           {/* Quick email links */}
           <div className="mt-10 flex flex-col items-center gap-4">
-            <a href={`mailto:${data.socials.email}`} className="inline-flex items-center gap-2 text-base font-semibold text-amber-200 hover:text-amber-100">
+            <a
+              href={`mailto:${data.socials.email}`}
+              className="inline-flex items-center gap-2 text-base font-semibold text-amber-200 hover:text-amber-100"
+            >
               <Mail className="h-4 w-4" /> {data.socials.email}
             </a>
             <div className="flex items-center gap-3">
-              <IconLink href={data.socials.github} label="GitHub"><Github className="h-4 w-4" /></IconLink>
-              <IconLink href={data.socials.linkedin} label="LinkedIn"><Linkedin className="h-4 w-4" /></IconLink>
-              <IconLink href={data.socials.twitter} label="Twitter"><Twitter className="h-4 w-4" /></IconLink>
+              <IconLink href={data.socials.github} label="GitHub">
+                <Github className="h-4 w-4" />
+              </IconLink>
+              <IconLink href={data.socials.linkedin} label="LinkedIn">
+                <Linkedin className="h-4 w-4" />
+              </IconLink>
+              <IconLink href={data.socials.twitter} label="Twitter">
+                <Twitter className="h-4 w-4" />
+              </IconLink>
             </div>
           </div>
         </div>
@@ -2325,7 +2704,9 @@ function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-center text-xs text-slate-500 sm:flex-row sm:text-left">
         <div className="flex items-center gap-2">
           <TrainFront className="h-4 w-4 text-amber-400" />
-          <span>© {new Date().getFullYear()} {data.personal.name} · End of the line</span>
+          <span>
+            © {new Date().getFullYear()} {data.personal.name} · End of the line
+          </span>
         </div>
         <span>Built with ♥ for Career Pilot</span>
       </div>
@@ -2345,7 +2726,10 @@ function JourneyProgress() {
 
   return (
     <div className="fixed inset-x-0 top-0 z-50 h-1.5 bg-[#03030b]/80 backdrop-blur">
-      <M.div className="h-full bg-gradient-to-r from-amber-400 via-orange-500 to-rose-400" style={{ width }} />
+      <M.div
+        className="h-full bg-gradient-to-r from-amber-400 via-orange-500 to-rose-400"
+        style={{ width }}
+      />
       <M.div className="absolute -top-1.5 -ml-3" style={{ left }}>
         <TrainFront className="h-4 w-4 text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
       </M.div>
@@ -2463,7 +2847,7 @@ export default function TrainJourney() {
 
   // Map velocity updates to dial speed
   useEffect(() => {
-    return scrollVelocity.on("change", (v) => {
+    return scrollVelocity.on('change', (v) => {
       const absVal = Math.abs(v);
       const targetSpeed = Math.min(absVal * 0.05, 180);
       smoothSpeed.set(targetSpeed);
@@ -2479,9 +2863,9 @@ export default function TrainJourney() {
     if (!isPlaying || !audioCtx || speed === 0) {
       return;
     }
-    
+
     // Interval rate dependent on speed: clicks happen more frequently at higher speed
-    const intervalMs = Math.max(300, 1600 - (speed * 7));
+    const intervalMs = Math.max(300, 1600 - speed * 7);
 
     const playClick = (time) => {
       if (!audioCtx) return;
@@ -2548,19 +2932,23 @@ export default function TrainJourney() {
         <span id="top" />
 
         <Hero activePreset={preset} />
-        
+
         {/* Interactive 3D locomotive + live destination board */}
-        <TrainShowcase reduced={reduced} boardText={activeProject.title} playClick={playFlapClick} />
+        <TrainShowcase
+          reduced={reduced}
+          boardText={activeProject.title}
+          playClick={playFlapClick}
+        />
 
         <About />
         <Skills />
         <SceneryStrip />
-        
+
         <Projects onActiveStation={setActiveStationIndex} />
-        
+
         <Experience />
         <SceneryStrip />
-        
+
         <Testimonials />
         <Contact activeStationIndex={activeStationIndex} />
         <Footer />

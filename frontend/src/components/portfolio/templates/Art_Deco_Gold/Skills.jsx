@@ -33,9 +33,7 @@ export default function Skills({ data }) {
           >
             {skills.map((skill, index) => {
               const level =
-                typeof skill?.level === 'number'
-                  ? Math.max(0, Math.min(100, skill.level))
-                  : null;
+                typeof skill?.level === 'number' ? Math.max(0, Math.min(100, skill.level)) : null;
 
               return (
                 <div
@@ -72,9 +70,7 @@ export default function Skills({ data }) {
           </motion.div>
         ) : (
           <div className="rounded-[2rem] border border-amber-200/20 bg-slate-900/70 p-8 text-center shadow-[0_30px_80px_rgba(15,23,42,0.3)]">
-            <p className="text-amber-100/80">
-              No skills available.
-            </p>
+            <p className="text-amber-100/80">No skills available.</p>
           </div>
         )}
       </div>

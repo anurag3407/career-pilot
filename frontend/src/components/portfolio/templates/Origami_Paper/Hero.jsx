@@ -1,5 +1,5 @@
-import React from "react";
-import { FoldHorizontal } from "lucide-react";
+import React from 'react';
+import { FoldHorizontal } from 'lucide-react';
 
 export default function Hero({ data }) {
   if (!data?.personal) return null;
@@ -13,21 +13,19 @@ export default function Hero({ data }) {
       <div className="relative z-10 mx-auto max-w-4xl text-center">
         <div className="inline-flex items-center gap-2 border-2 border-black bg-white px-5 py-2 shadow-[4px_4px_0px_#000] mb-8">
           <FoldHorizontal size={16} />
-          <span className="font-mono text-xs uppercase tracking-widest">
-            Origami Paper Theme
-          </span>
+          <span className="font-mono text-xs uppercase tracking-widest">Origami Paper Theme</span>
         </div>
 
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-black mb-6 drop-shadow-[4px_4px_0px_rgba(0,0,0,0.1)]">
-          {data.personal.name || "John Doe"}
+          {data.personal.name || 'John Doe'}
         </h1>
 
         <p className="text-xl md:text-3xl font-serif text-gray-700 max-w-2xl mx-auto leading-relaxed mb-12">
-          {data.personal.role || "Creative Developer & Designer"}
+          {data.personal.role || 'Creative Developer & Designer'}
         </p>
 
-        <a 
-          href="#projects" 
+        <a
+          href="#projects"
           className="inline-block bg-white border-2 border-black px-8 py-4 font-bold text-black shadow-[6px_6px_0px_#000] hover:-translate-y-1 hover:shadow-[8px_8px_0px_#000] transition-all"
         >
           Unfold My Work

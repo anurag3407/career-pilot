@@ -1,6 +1,6 @@
 import React from 'react';
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import { Briefcase, Calendar, Mountain } from "lucide-react";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import { Briefcase, Calendar, Mountain } from 'lucide-react';
 
 export default function Experience() {
   const { portfolioData: data } = usePortfolio();
@@ -18,7 +18,7 @@ export default function Experience() {
             <Mountain className="w-3 h-3" />
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Professional{" "}
+            Professional{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">
               Roots
             </span>
@@ -52,9 +52,7 @@ export default function Experience() {
                     <span>{exp.endDate}</span>
                   </div>
                 </div>
-                <p className="text-gray-300 leading-relaxed">
-                  {exp.description}
-                </p>
+                <p className="text-gray-300 leading-relaxed">{exp.description}</p>
               </div>
             </div>
           ))}

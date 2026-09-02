@@ -3,21 +3,20 @@ import remarkGfm from 'remark-gfm';
 import { useState } from 'react';
 import { useSocket } from '../../hooks/useSocket';
 import { useAuth } from '../../hooks/useAuth';
-import { 
-  MoreHorizontal, 
-  Reply, 
-  Smile, 
-  Edit2, 
-  Trash2, 
-  Pin,
-  Copy,
-  Check
-} from 'lucide-react';
+import { MoreHorizontal, Reply, Smile, Edit2, Trash2, Pin, Copy, Check } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 const QUICK_REACTIONS = ['👍', '❤️', '😂', '🎉', '🔥', '👏'];
 
-export default function MessageBubble({ message, isOwn, showAvatar, channelId, onOptimisticReaction, onOptimisticEdit, onOptimisticDelete }) {
+export default function MessageBubble({
+  message,
+  isOwn,
+  showAvatar,
+  channelId,
+  onOptimisticReaction,
+  onOptimisticEdit,
+  onOptimisticDelete,
+}) {
   const { addReaction, removeReaction, editMessage, deleteMessage } = useSocket();
   const { user } = useAuth();
   const [showActions, setShowActions] = useState(false);
@@ -30,7 +29,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
   const handleReaction = (emoji) => {
     const messageId = message.id || message._id;
     const hasReacted = message.reactions?.some(
-      r => r.emoji === emoji && r.users.some(u => u.uid === user?.uid)
+      (r) => r.emoji === emoji && r.users.some((u) => u.uid === user?.uid)
     );
 
     if (hasReacted) {
@@ -93,11 +92,18 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
   };
 
   const getInitials = (name) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '??';
+    return (
+      name
+        ?.split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2) || '??'
+    );
   };
 
-  const formattedTime = message.createdAt 
-    ? formatDistanceToNow(new Date(message.createdAt), { addSuffix: true }) 
+  const formattedTime = message.createdAt
+    ? formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })
     : '';
 
   if (message.isDeleted) {
@@ -112,7 +118,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
   }
 
   return (
-    <div 
+    <div
       className={`group flex gap-3 hover:bg-muted/50 -mx-2 px-2 py-1 rounded-lg ${
         isOwn ? 'flex-row-reverse' : ''
       }`}
@@ -126,8 +132,8 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
       {showAvatar ? (
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium shrink-0">
           {message.sender.avatar ? (
-            <img 
-              src={message.sender.avatar} 
+            <img
+              src={message.sender.avatar}
               alt={message.sender.name}
               className="w-full h-full rounded-full object-cover"
             />
@@ -143,9 +149,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
       <div className={`flex-1 min-w-0 ${isOwn ? 'text-right' : ''}`}>
         {showAvatar && (
           <div className={`flex items-baseline gap-2 mb-0.5 ${isOwn ? 'flex-row-reverse' : ''}`}>
-            <span className="font-medium text-sm text-foreground">
-              {message.sender.name}
-            </span>
+            <span className="font-medium text-sm text-foreground">{message.sender.name}</span>
             <span className="text-xs text-muted-foreground">{formattedTime}</span>
           </div>
         )}
@@ -188,25 +192,27 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
           ) : (
             <div
               className={`rounded-2xl px-4 py-2 max-w-lg ${
-                isOwn 
-                  ? 'bg-primary text-primary-foreground rounded-br-md' 
+                isOwn
+                  ? 'bg-primary text-primary-foreground rounded-br-md'
                   : 'bg-card border border-border text-foreground rounded-bl-md'
               }`}
             >
-           <ReactMarkdown
-  remarkPlugins={[remarkGfm]}
-  disallowedElements={['img']}
-  components={{
-    a: ({ node, ...props }) => (
-      <a {...props} target="_blank" rel="noopener noreferrer" />
-    ),
-  }}
-  className="prose prose-invert prose-sm max-w-none break-words text-sm"
->
-  {message.content}
-</ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                disallowedElements={['img']}
+                components={{
+                  a: ({ node, ...props }) => (
+                    <a {...props} target="_blank" rel="noopener noreferrer" />
+                  ),
+                }}
+                className="prose prose-invert prose-sm max-w-none break-words text-sm"
+              >
+                {message.content}
+              </ReactMarkdown>
               {message.isEdited && (
-                <span className={`text-xs ${isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                <span
+                  className={`text-xs ${isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}
+                >
                   (edited)
                 </span>
               )}
@@ -219,8 +225,8 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
               {message.attachments.map((attachment, index) => (
                 <div key={index} className="inline-block">
                   {attachment.type?.startsWith('image/') ? (
-                    <img 
-                      src={attachment.url} 
+                    <img
+                      src={attachment.url}
                       alt={attachment.name}
                       className="max-w-xs rounded-lg"
                     />
@@ -247,7 +253,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                   key={index}
                   onClick={() => handleReaction(reaction.emoji)}
                   className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-colors ${
-                    reaction.users.some(u => u.uid === user?.uid)
+                    reaction.users.some((u) => u.uid === user?.uid)
                       ? 'bg-primary/20 text-primary border border-primary/50'
                       : 'bg-muted text-muted-foreground hover:bg-muted/80'
                   }`}
@@ -261,7 +267,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
 
           {/* Action Buttons */}
           {showActions && !isEditing && (
-            <div 
+            <div
               className={`absolute ${isOwn ? 'left-0 -translate-x-full' : 'right-0 translate-x-full'} top-0 px-2`}
             >
               <div className="flex items-center gap-1 bg-card border border-border rounded-lg shadow-sm p-1">
@@ -276,7 +282,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
 
                   {showReactions && (
                     <div className="absolute bottom-full mb-1 left-0 bg-card border border-border rounded-lg shadow-lg p-1 flex gap-1">
-                      {QUICK_REACTIONS.map(emoji => (
+                      {QUICK_REACTIONS.map((emoji) => (
                         <button
                           key={emoji}
                           onClick={() => handleReaction(emoji)}
@@ -290,11 +296,15 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                 </div>
 
                 {/* Copy */}
-                <button 
+                <button
                   onClick={handleCopy}
                   className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded"
                 >
-                  {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                  {copied ? (
+                    <Check className="w-4 h-4 text-green-500" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                 </button>
 
                 {/* Edit & Delete (only for own messages) */}

@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import data from "../../../../../data/dummy_data.json";
-import { ArrowRight, Download } from "lucide-react";
+import { motion } from 'framer-motion';
+import data from '../../../../../data/dummy_data.json';
+import { ArrowRight, Download } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -50,9 +50,7 @@ export default function Hero() {
           {data.personal.name}
         </h1>
 
-        <p className="max-w-2xl mx-auto mt-6 text-slate-300 text-lg">
-          {data.personal.bio}
-        </p>
+        <p className="max-w-2xl mx-auto mt-6 text-slate-300 text-lg">{data.personal.bio}</p>
 
         <div className="flex flex-wrap justify-center gap-4 mt-10">
           <a
@@ -63,7 +61,10 @@ export default function Hero() {
             <ArrowRight size={18} />
           </a>
 
-          <button type="button" className="px-6 py-3 rounded-full border border-white/20 backdrop-blur-md flex items-center gap-2">
+          <button
+            type="button"
+            className="px-6 py-3 rounded-full border border-white/20 backdrop-blur-md flex items-center gap-2"
+          >
             Resume
             <Download size={18} />
           </button>

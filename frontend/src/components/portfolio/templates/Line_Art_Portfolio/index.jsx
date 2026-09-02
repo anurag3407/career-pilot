@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 import HeroSection from './Hero';
 import AboutSection from './About';
@@ -14,10 +14,13 @@ export default function LineArtPortfolio() {
 
   return (
     <div className="min-h-screen bg-[#fafafa] text-zinc-900 font-sans selection:bg-zinc-200 selection:text-zinc-900 relative">
-      <div className="fixed inset-0 z-0 pointer-events-none" style={{
-        backgroundImage: `linear-gradient(to right, #00000008 1px, transparent 1px), linear-gradient(to bottom, #00000008 1px, transparent 1px)`,
-        backgroundSize: '40px 40px'
-      }}></div>
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(to right, #00000008 1px, transparent 1px), linear-gradient(to bottom, #00000008 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
+        }}
+      ></div>
 
       <main className="max-w-5xl mx-auto px-6 md:px-12 relative z-10 pb-12 bg-[#fafafa]/80 backdrop-blur-sm border-x border-zinc-200/50 min-h-screen">
         <HeroSection />

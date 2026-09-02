@@ -47,9 +47,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
     if (expanded && providerData) {
       const decrypted = providerData.apiKey ? decryptKey(providerData.apiKey) : '';
       setApiKey(decrypted);
-      setSelectedModel(
-        providerData.model || meta.defaultModel || ''
-      );
+      setSelectedModel(providerData.model || meta.defaultModel || '');
       setBaseUrl(providerData.baseUrl || '');
     }
   }, [expanded, providerData, meta.defaultModel]);
@@ -66,7 +64,11 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
             ? fetched.map((m) => (typeof m === 'string' ? m : m.id || m.name))
             : [];
           if (fetchedNames.length > 0) {
-            const metaIds = new Set((meta.models || []).map((m) => (typeof m === 'object' && m !== null ? m.id : String(m))));
+            const metaIds = new Set(
+              (meta.models || []).map((m) =>
+                typeof m === 'object' && m !== null ? m.id : String(m)
+              )
+            );
             const newNames = fetchedNames.filter((id) => !metaIds.has(id));
             const merged = [...(meta.models || []), ...newNames];
             setDynamicModels(merged);
@@ -89,7 +91,8 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
 
   // Categorize models into Free and Paid with pricing metadata & ensure unique IDs
   const normalizedModels = useMemo(() => {
-    const rawList = providerId === 'openrouter' && dynamicModels.length > 0 ? dynamicModels : meta.models || [];
+    const rawList =
+      providerId === 'openrouter' && dynamicModels.length > 0 ? dynamicModels : meta.models || [];
     const modelMap = new Map();
 
     for (const item of rawList) {
@@ -98,15 +101,15 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
       const id = isObj ? item.id : String(item);
 
       if (!modelMap.has(id) || isObj) {
-        const isFree = isObj ? (item.isFree || id.endsWith(':free')) : id.endsWith(':free');
-        const name = isObj ? (item.name || id) : id;
-        const price = isObj ? (item.price || (isFree ? 'Free' : 'Paid')) : (isFree ? 'Free' : 'Paid');
+        const isFree = isObj ? item.isFree || id.endsWith(':free') : id.endsWith(':free');
+        const name = isObj ? item.name || id : id;
+        const price = isObj ? item.price || (isFree ? 'Free' : 'Paid') : isFree ? 'Free' : 'Paid';
 
         modelMap.set(id, {
           id,
           name,
           isFree,
-          price
+          price,
         });
       }
     }
@@ -146,7 +149,10 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
     setValidationResult(null);
 
     try {
-      const res = await aiApi.validateKey(providerId, apiKey.trim(), { baseUrl: baseUrl.trim(), model: selectedModel });
+      const res = await aiApi.validateKey(providerId, apiKey.trim(), {
+        baseUrl: baseUrl.trim(),
+        model: selectedModel,
+      });
       if (res && res.valid) {
         // Save to store
         setProviderKey(providerId, apiKey.trim());
@@ -180,7 +186,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
 
       const callbackUrl = `${window.location.origin}/auth/openrouter/callback`;
       const authUrl = `https://openrouter.ai/auth?callback_url=${encodeURIComponent(callbackUrl)}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-      
+
       window.location.href = authUrl;
     } catch (err) {
       toast.error('Failed to initiate OpenRouter OAuth connection');
@@ -204,8 +210,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
           <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
         </span>
       );
-    if (hasKey)
-      return <span className="inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500" />;
+    if (hasKey) return <span className="inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500" />;
     return null;
   };
 
@@ -227,8 +232,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
       className={cn(
         'group relative rounded-2xl border backdrop-blur-sm transition-all duration-300',
         'bg-card/80 border-border',
-        isActive &&
-          'border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.15)]',
+        isActive && 'border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.15)]',
         !isActive && 'hover:border-primary/30'
       )}
     >
@@ -251,9 +255,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
         {/* Name + Tagline + Status */}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="truncate text-base font-semibold text-foreground">
-              {meta.name}
-            </h3>
+            <h3 className="truncate text-base font-semibold text-foreground">{meta.name}</h3>
             <StatusDot />
             {isActive && (
               <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-400 border border-cyan-500/20">
@@ -262,9 +264,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
               </span>
             )}
           </div>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">
-            {meta.tagline}
-          </p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">{meta.tagline}</p>
         </div>
 
         {/* Expand toggle */}
@@ -273,10 +273,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           aria-label={expanded ? 'Collapse' : 'Expand'}
         >
-          <motion.div
-            animate={{ rotate: expanded ? 180 : 0 }}
-            transition={{ duration: 0.25 }}
-          >
+          <motion.div animate={{ rotate: expanded ? 180 : 0 }} transition={{ duration: 0.25 }}>
             <ChevronDown className="h-4 w-4" />
           </motion.div>
         </button>
@@ -299,8 +296,12 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-violet-600 dark:text-violet-300">Option 1: Quick OAuth Connect</span>
-                        <span className="rounded-full bg-violet-500/20 text-violet-700 dark:text-violet-300 text-[10px] font-bold px-2 py-0.5">Recommended</span>
+                        <span className="text-xs font-bold text-violet-600 dark:text-violet-300">
+                          Option 1: Quick OAuth Connect
+                        </span>
+                        <span className="rounded-full bg-violet-500/20 text-violet-700 dark:text-violet-300 text-[10px] font-bold px-2 py-0.5">
+                          Recommended
+                        </span>
                       </div>
                       <p className="text-xs text-muted-foreground">
                         Connect directly via OpenRouter OAuth PKCE without copying keys manually.
@@ -344,11 +345,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                     aria-label={showKey ? 'Hide key' : 'Show key'}
                   >
-                    {showKey ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
@@ -450,7 +447,9 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                 )}
                 {providerId === 'openrouter' && (
                   <p className="text-[11px] text-muted-foreground pt-0.5">
-                    Models are categorized into 🎁 <b>Free</b> models (e.g., Gemini 2.0 Flash Free, DeepSeek R1 Free) and 💳 <b>Paid</b> models with real-time pricing tags per 1M prompt tokens.
+                    Models are categorized into 🎁 <b>Free</b> models (e.g., Gemini 2.0 Flash Free,
+                    DeepSeek R1 Free) and 💳 <b>Paid</b> models with real-time pricing tags per 1M
+                    prompt tokens.
                   </p>
                 )}
               </div>

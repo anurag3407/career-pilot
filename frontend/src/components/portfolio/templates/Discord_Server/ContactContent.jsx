@@ -23,7 +23,10 @@ export function ContactContent({ data }) {
         isBot
         index={0}
       >
-        <p>📬 Want to connect with <span className="font-semibold text-white">{p.name}</span>? Here's how:</p>
+        <p>
+          📬 Want to connect with <span className="font-semibold text-white">{p.name}</span>? Here's
+          how:
+        </p>
       </Message>
 
       <Message avatar={p.avatar} name={p.name} timestamp="Today at 12:51 AM" index={1}>
@@ -59,7 +62,10 @@ export function ContactContent({ data }) {
         isBot
         index={2}
       >
-        <p>Feel free to reach out! {p.name.split(' ')[0]} is always open to new opportunities and collaborations. 🤝</p>
+        <p>
+          Feel free to reach out! {p.name.split(' ')[0]} is always open to new opportunities and
+          collaborations. 🤝
+        </p>
       </Message>
 
       {/* Fake message input */}
@@ -72,4 +78,3 @@ export function ContactContent({ data }) {
     </div>
   );
 }
-

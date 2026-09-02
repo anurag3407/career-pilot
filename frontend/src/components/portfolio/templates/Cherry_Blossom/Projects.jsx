@@ -1,15 +1,13 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { ExternalLink, Github } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ExternalLink, Github } from 'lucide-react';
 
 export default function Projects({ data }) {
   const { projects } = data;
   return (
     <section className="relative z-10 px-6 py-20 bg-white/40 text-left">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-rose-800 mb-14">
-          Projects
-        </h2>
+        <h2 className="text-4xl font-bold text-center text-rose-800 mb-14">Projects</h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {projects.map((project, index) => (
@@ -26,13 +24,9 @@ export default function Projects({ data }) {
               />
 
               <div className="p-6">
-                <h3 className="text-2xl font-semibold text-rose-700">
-                  {project.title}
-                </h3>
+                <h3 className="text-2xl font-semibold text-rose-700">{project.title}</h3>
 
-                <p className="mt-4 text-gray-600 text-sm leading-relaxed">
-                  {project.description}
-                </p>
+                <p className="mt-4 text-gray-600 text-sm leading-relaxed">{project.description}</p>
 
                 <div className="flex flex-wrap gap-2 mt-5">
                   {project.techStack.map((tech) => (

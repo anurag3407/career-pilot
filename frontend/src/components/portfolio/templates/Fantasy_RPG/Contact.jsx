@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { usePortfolio } from '../../../../context/PortfolioContext';
 import { Mail, Send, Github, Linkedin, Twitter, MapPin } from 'lucide-react';
-import "./ResumeCTA.css";
+import './ResumeCTA.css';
 
 export default function Contact() {
   const { portfolioData } = usePortfolio();
@@ -29,7 +29,7 @@ export default function Contact() {
     setSummoning(true);
     setTimeout(() => {
       setSummoning(false);
-      alert("A raven has been dispatched to the intended recipient.");
+      alert('A raven has been dispatched to the intended recipient.');
     }, 2000);
   };
 
@@ -44,7 +44,6 @@ export default function Contact() {
       <div className="absolute inset-0 bg-[radial-gradient(#201910_1px,transparent_1px)] [background-size:32px_32px] pointer-events-none opacity-45" />
 
       <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
-        
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-16 relative">
           <div className="flex items-center gap-4 mb-3">
@@ -84,9 +83,11 @@ export default function Contact() {
 
             <form onSubmit={handleSummon} className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
-                <label className="font-fantasy-game text-[10px] text-amber-500 tracking-widest uppercase">Your Name (Title Optional)</label>
-                <input 
-                  type="text" 
+                <label className="font-fantasy-game text-[10px] text-amber-500 tracking-widest uppercase">
+                  Your Name (Title Optional)
+                </label>
+                <input
+                  type="text"
                   required
                   className="bg-black/60 border border-amber-900/60 text-amber-100 px-4 py-2.5 rounded focus:outline-none focus:border-amber-500 font-fantasy-body text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]"
                   placeholder="Lord / Lady..."
@@ -94,9 +95,11 @@ export default function Contact() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-fantasy-game text-[10px] text-amber-500 tracking-widest uppercase">Magical Address (Email)</label>
-                <input 
-                  type="email" 
+                <label className="font-fantasy-game text-[10px] text-amber-500 tracking-widest uppercase">
+                  Magical Address (Email)
+                </label>
+                <input
+                  type="email"
                   required
                   className="bg-black/60 border border-amber-900/60 text-amber-100 px-4 py-2.5 rounded focus:outline-none focus:border-amber-500 font-fantasy-body text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]"
                   placeholder="name@realm.com"
@@ -104,8 +107,10 @@ export default function Contact() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-fantasy-game text-[10px] text-amber-500 tracking-widest uppercase">The Message</label>
-                <textarea 
+                <label className="font-fantasy-game text-[10px] text-amber-500 tracking-widest uppercase">
+                  The Message
+                </label>
+                <textarea
                   required
                   rows={4}
                   className="bg-black/60 border border-amber-900/60 text-amber-100 px-4 py-2.5 rounded focus:outline-none focus:border-amber-500 font-fantasy-body text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] resize-none"
@@ -113,7 +118,7 @@ export default function Contact() {
                 />
               </div>
 
-              <button 
+              <button
                 type="submit"
                 disabled={summoning}
                 className="mt-4 flex items-center justify-center gap-2 py-3 bg-gradient-to-b from-amber-800 to-amber-950 hover:from-amber-700 hover:to-amber-900 text-amber-100 font-fantasy-game text-xs font-bold border border-amber-500/60 rounded shadow-[inset_0_1px_4px_rgba(255,255,255,0.2)] hover:text-amber-200 transition-all cursor-pointer uppercase tracking-widest"
@@ -143,7 +148,10 @@ export default function Contact() {
 
               <div className="flex flex-col gap-4">
                 {data.email && (
-                  <a href={`mailto:${data.email}`} className="flex items-center gap-4 group cursor-pointer">
+                  <a
+                    href={`mailto:${data.email}`}
+                    className="flex items-center gap-4 group cursor-pointer"
+                  >
                     <div className="w-10 h-10 bg-amber-950/50 border border-amber-800/50 rounded flex items-center justify-center group-hover:border-amber-500 transition-colors">
                       <Mail className="w-5 h-5 text-amber-500 group-hover:text-amber-300" />
                     </div>
@@ -152,7 +160,7 @@ export default function Contact() {
                     </div>
                   </a>
                 )}
-                
+
                 {data.location && (
                   <div className="flex items-center gap-4 group">
                     <div className="w-10 h-10 bg-amber-950/50 border border-amber-800/50 rounded flex items-center justify-center">
@@ -173,17 +181,32 @@ export default function Contact() {
                 </span>
                 <div className="flex gap-4">
                   {data.social.github && (
-                    <a href={data.social.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-black/60 border border-amber-900/60 hover:border-amber-500 text-amber-400 hover:text-amber-200 rounded transition-all">
+                    <a
+                      href={data.social.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 bg-black/60 border border-amber-900/60 hover:border-amber-500 text-amber-400 hover:text-amber-200 rounded transition-all"
+                    >
                       <Github className="w-5 h-5" />
                     </a>
                   )}
                   {data.social.linkedin && (
-                    <a href={data.social.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-black/60 border border-amber-900/60 hover:border-amber-500 text-amber-400 hover:text-amber-200 rounded transition-all">
+                    <a
+                      href={data.social.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 bg-black/60 border border-amber-900/60 hover:border-amber-500 text-amber-400 hover:text-amber-200 rounded transition-all"
+                    >
                       <Linkedin className="w-5 h-5" />
                     </a>
                   )}
                   {data.social.twitter && (
-                    <a href={data.social.twitter} target="_blank" rel="noopener noreferrer" className="p-3 bg-black/60 border border-amber-900/60 hover:border-amber-500 text-amber-400 hover:text-amber-200 rounded transition-all">
+                    <a
+                      href={data.social.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 bg-black/60 border border-amber-900/60 hover:border-amber-500 text-amber-400 hover:text-amber-200 rounded transition-all"
+                    >
                       <Twitter className="w-5 h-5" />
                     </a>
                   )}
@@ -192,7 +215,6 @@ export default function Contact() {
             )}
           </div>
         </div>
-
       </div>
     </section>
   );
