@@ -29,8 +29,8 @@ export default function Skills({ data }) {
         <div className="flex flex-wrap justify-center gap-4 md:gap-6">
           {skills.map((skill, index) => {
             // Give them slightly different sizes/rotations for an artistic asymmetrical look
-            const rotation = index % 2 === 0 ? "rotate-[-2deg]" : "rotate-[2deg]";
-            const translateY = index % 3 === 0 ? "translate-y-2" : "translate-y-0";
+            const rotation = index % 2 === 0 ? 'rotate-[-2deg]' : 'rotate-[2deg]';
+            const translateY = index % 3 === 0 ? 'translate-y-2' : 'translate-y-0';
 
             return (
               <motion.div

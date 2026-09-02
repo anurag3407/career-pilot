@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { interviewApi } from "../services/api";
-import QuestionAnalysisCard from "../components/interview/QuestionAnalysisCard";
-import { format } from "date-fns";
+import React, { useEffect, useRef, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { interviewApi } from '../services/api';
+import QuestionAnalysisCard from '../components/interview/QuestionAnalysisCard';
+import { format } from 'date-fns';
 import {
   Calendar,
   Clock,
@@ -14,9 +14,9 @@ import {
   StickyNote,
   Save,
   Loader2,
-  CheckCircle2
-} from "lucide-react";
-import ReactMarkdown from "react-markdown";
+  CheckCircle2,
+} from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 export default function InterviewReplay() {
   const { id } = useParams();
@@ -43,7 +43,7 @@ export default function InterviewReplay() {
     } catch (err) {
       if (!signal.aborted) {
         console.error(err);
-        setError(err.message || "Failed to fetch interview details");
+        setError(err.message || 'Failed to fetch interview details');
         setInterview(null);
       }
     } finally {
@@ -113,8 +113,10 @@ export default function InterviewReplay() {
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
-              {interview.jobRole || "Mock Interview"}
-              <span className={`px-3 py-1 rounded-full text-sm font-bold border ${getScoreBadgeColor(interview.overallScore || 0)}`}>
+              {interview.jobRole || 'Mock Interview'}
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-bold border ${getScoreBadgeColor(interview.overallScore || 0)}`}
+              >
                 {interview.overallScore || 0}% Score
               </span>
             </h1>
@@ -122,7 +124,11 @@ export default function InterviewReplay() {
             <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <Calendar className="w-4 h-4" />
-                <span>{interview.completedAt || interview.createdAt ? format(new Date(interview.completedAt || interview.createdAt), "MMMM d, yyyy") : "Date unavailable"}</span>
+                <span>
+                  {interview.completedAt || interview.createdAt
+                    ? format(new Date(interview.completedAt || interview.createdAt), 'MMMM d, yyyy')
+                    : 'Date unavailable'}
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4" />
@@ -169,59 +175,64 @@ export default function InterviewReplay() {
             ) : (
               <div className="space-y-4">
                 {interview.overallFeedback.summary && (
-                  <p className="mb-4 text-foreground leading-relaxed">{interview.overallFeedback.summary}</p>
+                  <p className="mb-4 text-foreground leading-relaxed">
+                    {interview.overallFeedback.summary}
+                  </p>
                 )}
 
-                {interview.overallFeedback.topStrengths && interview.overallFeedback.topStrengths.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="text-foreground font-semibold mb-2 flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                      Top Strengths
-                    </h4>
-                    <ul className="list-none space-y-1 pl-4">
-                      {interview.overallFeedback.topStrengths.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <span className="text-emerald-500 mt-1 shrink-0">✓</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {interview.overallFeedback.topStrengths &&
+                  interview.overallFeedback.topStrengths.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="text-foreground font-semibold mb-2 flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                        Top Strengths
+                      </h4>
+                      <ul className="list-none space-y-1 pl-4">
+                        {interview.overallFeedback.topStrengths.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <span className="text-emerald-500 mt-1 shrink-0">✓</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
-                {interview.overallFeedback.areasToImprove && interview.overallFeedback.areasToImprove.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="text-foreground font-semibold mb-2 flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                      Areas to Improve
-                    </h4>
-                    <ul className="list-none space-y-1 pl-4">
-                      {interview.overallFeedback.areasToImprove.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <span className="text-amber-500 mt-1 shrink-0">→</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {interview.overallFeedback.areasToImprove &&
+                  interview.overallFeedback.areasToImprove.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="text-foreground font-semibold mb-2 flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                        Areas to Improve
+                      </h4>
+                      <ul className="list-none space-y-1 pl-4">
+                        {interview.overallFeedback.areasToImprove.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <span className="text-amber-500 mt-1 shrink-0">→</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
-                {interview.overallFeedback.recommendations && interview.overallFeedback.recommendations.length > 0 && (
-                  <div>
-                    <h4 className="text-foreground font-semibold mb-2 flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-sky-500"></div>
-                      Recommendations
-                    </h4>
-                    <ul className="list-none space-y-1 pl-4">
-                      {interview.overallFeedback.recommendations.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <span className="text-sky-500 mt-1 shrink-0">→</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {interview.overallFeedback.recommendations &&
+                  interview.overallFeedback.recommendations.length > 0 && (
+                    <div>
+                      <h4 className="text-foreground font-semibold mb-2 flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-sky-500"></div>
+                        Recommendations
+                      </h4>
+                      <ul className="list-none space-y-1 pl-4">
+                        {interview.overallFeedback.recommendations.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <span className="text-sky-500 mt-1 shrink-0">→</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
               </div>
             )}
           </div>
@@ -274,7 +285,10 @@ function AnswerWithExtras({ interviewId, answer, index }) {
       if (res?.data?.annotations) {
         setAnnotations(res.data.annotations);
       } else {
-        setAnnotations((prev) => [...prev, { text: annotation.trim(), createdAt: new Date().toISOString() }]);
+        setAnnotations((prev) => [
+          ...prev,
+          { text: annotation.trim(), createdAt: new Date().toISOString() },
+        ]);
       }
       setAnnotation('');
       setSaved(true);
@@ -291,12 +305,7 @@ function AnswerWithExtras({ interviewId, answer, index }) {
       {answer.audioUrl && (
         <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3">
           <Volume2 className="w-5 h-5 text-primary shrink-0" />
-          <audio
-            src={answer.audioUrl}
-            controls
-            preload="metadata"
-            className="w-full h-9"
-          />
+          <audio src={answer.audioUrl} controls preload="metadata" className="w-full h-9" />
         </div>
       )}
 

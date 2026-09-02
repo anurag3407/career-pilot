@@ -1,8 +1,8 @@
-import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
-import ExperienceRow from '../../shared/ExperienceRow'
-import ProjectCard from '../../shared/ProjectCard'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import Section from '../../shared/Section';
+import ExperienceRow from '../../shared/ExperienceRow';
+import ProjectCard from '../../shared/ProjectCard';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * ClassicSerif — single-column, traditional resume template.
@@ -12,8 +12,7 @@ import OrderedSections from '../../shared/OrderedSections'
  * unusual font metrics.
  */
 export default function ClassicSerif() {
-  const { personal, experience, education, projects, skills, certifications } =
-    useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   const nodes = {
     summary: personal.summary ? (
@@ -22,89 +21,96 @@ export default function ClassicSerif() {
       </Section>
     ) : null,
 
-    education: education.length > 0 ? (
-      <Section title="Education" accent="#111827" uppercase={false}>
-        {education.map((e, i) => (
-          <article key={i} style={{ marginBottom: '4mm' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <h3 style={{ margin: 0, fontSize: '11.5pt', fontWeight: 700 }}>
-                {e.institution || 'Institution'}
-              </h3>
-              {e.period && (
-                <span style={{ fontSize: '10pt', color: '#374151', fontStyle: 'italic' }}>
-                  {e.period}
-                </span>
+    education:
+      education.length > 0 ? (
+        <Section title="Education" accent="#111827" uppercase={false}>
+          {education.map((e, i) => (
+            <article key={i} style={{ marginBottom: '4mm' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}
+              >
+                <h3 style={{ margin: 0, fontSize: '11.5pt', fontWeight: 700 }}>
+                  {e.institution || 'Institution'}
+                </h3>
+                {e.period && (
+                  <span style={{ fontSize: '10pt', color: '#374151', fontStyle: 'italic' }}>
+                    {e.period}
+                  </span>
+                )}
+              </div>
+              <div style={{ fontSize: '10.5pt', fontStyle: 'italic' }}>
+                {[e.degree, e.location].filter(Boolean).join(', ')}
+              </div>
+              {e.description && (
+                <p style={{ margin: '1mm 0 0', color: '#374151' }}>{e.description}</p>
               )}
-            </div>
-            <div style={{ fontSize: '10.5pt', fontStyle: 'italic' }}>
-              {[e.degree, e.location].filter(Boolean).join(', ')}
-            </div>
-            {e.description && (
-              <p style={{ margin: '1mm 0 0', color: '#374151' }}>{e.description}</p>
-            )}
-          </article>
-        ))}
-      </Section>
-    ) : null,
-
-    experience: experience.length > 0 ? (
-      <Section title="Experience" accent="#111827" uppercase={false}>
-        {experience.map((e, i) => (
-          <ExperienceRow
-            key={i}
-            exp={e}
-            roleColor="#111827"
-            companyColor="#1f2937"
-            periodColor="#374151"
-            bulletColor="#1f2937"
-            fontSize="10.5pt"
-          />
-        ))}
-      </Section>
-    ) : null,
-
-    projects: projects.length > 0 ? (
-      <Section title="Projects" accent="#111827" uppercase={false}>
-        {projects.map((p, i) => (
-          <ProjectCard
-            key={i}
-            project={p}
-            titleColor="#111827"
-            descColor="#1f2937"
-            techColor="#374151"
-            linkColor="#1f2937"
-            fontSize="10.5pt"
-          />
-        ))}
-      </Section>
-    ) : null,
-
-    skills: skills.length > 0 ? (
-      <Section title="Skills" accent="#111827" uppercase={false}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm 4mm' }}>
-          {skills.map((s, i) => (
-            <span key={i} style={{ fontSize: '10pt' }}>
-              <strong>{s.name}</strong>
-              {s.level && <span style={{ color: '#6b7280' }}> ({s.level})</span>}
-              {i < skills.length - 1 && <span style={{ color: '#9ca3af' }}> · </span>}
-            </span>
+            </article>
           ))}
-        </div>
-      </Section>
-    ) : null,
+        </Section>
+      ) : null,
 
-    certifications: certifications.length > 0 ? (
-      <Section title="Certifications" accent="#111827" uppercase={false}>
-        {certifications.map((c, i) => (
-          <div key={i} style={{ marginBottom: '2mm' }}>
-            <strong>{c.name}</strong>
-            {c.issuer && <span> · {c.issuer}</span>}
-            {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
+    experience:
+      experience.length > 0 ? (
+        <Section title="Experience" accent="#111827" uppercase={false}>
+          {experience.map((e, i) => (
+            <ExperienceRow
+              key={i}
+              exp={e}
+              roleColor="#111827"
+              companyColor="#1f2937"
+              periodColor="#374151"
+              bulletColor="#1f2937"
+              fontSize="10.5pt"
+            />
+          ))}
+        </Section>
+      ) : null,
+
+    projects:
+      projects.length > 0 ? (
+        <Section title="Projects" accent="#111827" uppercase={false}>
+          {projects.map((p, i) => (
+            <ProjectCard
+              key={i}
+              project={p}
+              titleColor="#111827"
+              descColor="#1f2937"
+              techColor="#374151"
+              linkColor="#1f2937"
+              fontSize="10.5pt"
+            />
+          ))}
+        </Section>
+      ) : null,
+
+    skills:
+      skills.length > 0 ? (
+        <Section title="Skills" accent="#111827" uppercase={false}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm 4mm' }}>
+            {skills.map((s, i) => (
+              <span key={i} style={{ fontSize: '10pt' }}>
+                <strong>{s.name}</strong>
+                {s.level && <span style={{ color: '#6b7280' }}> ({s.level})</span>}
+                {i < skills.length - 1 && <span style={{ color: '#9ca3af' }}> · </span>}
+              </span>
+            ))}
           </div>
-        ))}
-      </Section>
-    ) : null,
-  }
+        </Section>
+      ) : null,
+
+    certifications:
+      certifications.length > 0 ? (
+        <Section title="Certifications" accent="#111827" uppercase={false}>
+          {certifications.map((c, i) => (
+            <div key={i} style={{ marginBottom: '2mm' }}>
+              <strong>{c.name}</strong>
+              {c.issuer && <span> · {c.issuer}</span>}
+              {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
+            </div>
+          ))}
+        </Section>
+      ) : null,
+  };
 
   return (
     <div
@@ -173,11 +179,11 @@ export default function ClassicSerif() {
         customBodyStyle={{ color: '#1f2937' }}
       />
     </div>
-  )
+  );
 }
 
 const ruleStyle = {
   border: 'none',
   borderTop: '1.5pt solid #111827',
   margin: '0 0 5mm',
-}
+};

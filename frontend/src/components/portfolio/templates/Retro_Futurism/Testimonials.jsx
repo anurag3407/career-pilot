@@ -15,14 +15,22 @@ const FALLBACK_AVATAR = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
 export default function Testimonials() {
   return (
     <section>
-      <SectionHeading><Star size={36} className="text-cyan-400" /> User Feedback</SectionHeading>
+      <SectionHeading>
+        <Star size={36} className="text-cyan-400" /> User Feedback
+      </SectionHeading>
       <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
         {data.testimonials.map((test) => (
-          <motion.div key={test.id ?? `${test.name}-${test.role}`} whileHover={{ y: -8, scale: 1.05 }} className="bg-slate-900/80 border border-slate-800 hover:border-cyan-500 p-6 rounded-xl backdrop-blur-md relative overflow-hidden group">
+          <motion.div
+            key={test.id ?? `${test.name}-${test.role}`}
+            whileHover={{ y: -8, scale: 1.05 }}
+            className="bg-slate-900/80 border border-slate-800 hover:border-cyan-500 p-6 rounded-xl backdrop-blur-md relative overflow-hidden group"
+          >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
               <MessageSquare size={48} className="text-cyan-500" />
             </div>
-            <p className="text-slate-300 text-xs sm:text-sm italic mb-6 relative z-10">"{test.text}"</p>
+            <p className="text-slate-300 text-xs sm:text-sm italic mb-6 relative z-10">
+              "{test.text}"
+            </p>
             <div className="flex items-center gap-4 relative z-10">
               <img
                 src={test.avatar}

@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion as Motion } from 'framer-motion';
 import {
@@ -95,7 +95,9 @@ function GlassPanel({ children, className = '' }) {
   const { portfolioData: data } = usePortfolio();
 
   return (
-    <div className={`w-full max-w-full rounded-2xl border border-white/10 bg-white/[0.06] shadow-2xl shadow-cyan-950/30 backdrop-blur-xl sm:rounded-[1.75rem] ${className}`}>
+    <div
+      className={`w-full max-w-full rounded-2xl border border-white/10 bg-white/[0.06] shadow-2xl shadow-cyan-950/30 backdrop-blur-xl sm:rounded-[1.75rem] ${className}`}
+    >
       {children}
     </div>
   );
@@ -122,15 +124,17 @@ function ProgressTracker({ unlockedCount, activeQuestion, totalQuestions }) {
         <div className="flex items-center justify-between gap-3 lg:block">
           <div>
             <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-200 sm:text-xs sm:tracking-[0.24em]">
-            <Trophy className="h-4 w-4" />
-            Quest Progress
+              <Trophy className="h-4 w-4" />
+              Quest Progress
             </div>
             <p className="mt-1 text-xs text-slate-400 sm:text-sm">
               {unlockedCount} of {sectionMeta.length} sections unlocked
             </p>
           </div>
           <div className="shrink-0 rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-slate-300 sm:hidden">
-            <span className="font-bold text-white">{Math.min(activeQuestion + 1, totalQuestions)}</span>
+            <span className="font-bold text-white">
+              {Math.min(activeQuestion + 1, totalQuestions)}
+            </span>
             <span className="text-slate-500">/{totalQuestions}</span>
           </div>
         </div>
@@ -160,7 +164,11 @@ function ProgressTracker({ unlockedCount, activeQuestion, totalQuestions }) {
                         : 'border-white/10 bg-slate-950/70 text-slate-500'
                   }`}
                 >
-                  {isUnlocked ? React.createElement(section.icon, { className: 'h-3.5 w-3.5 sm:h-4 sm:w-4' }) : <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+                  {isUnlocked ? (
+                    React.createElement(section.icon, { className: 'h-3.5 w-3.5 sm:h-4 sm:w-4' })
+                  ) : (
+                    <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  )}
                   <span className="mt-1 hidden sm:block">{section.title}</span>
                 </div>
               );
@@ -170,7 +178,9 @@ function ProgressTracker({ unlockedCount, activeQuestion, totalQuestions }) {
 
         <div className="hidden rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-slate-300 sm:block">
           <span className="text-slate-500">Question</span>{' '}
-          <span className="font-bold text-white">{Math.min(activeQuestion + 1, totalQuestions)}</span>
+          <span className="font-bold text-white">
+            {Math.min(activeQuestion + 1, totalQuestions)}
+          </span>
           <span className="text-slate-500">/{totalQuestions}</span>
         </div>
       </div>
@@ -313,7 +323,8 @@ function QuizCard({ question, questionIndex, totalQuestions, disabled, onCorrect
               exit={{ opacity: 0 }}
               className="text-slate-400"
             >
-              Choose the best answer to reveal {sectionMeta[questionIndex + 1]?.title || 'the next section'}.
+              Choose the best answer to reveal{' '}
+              {sectionMeta[questionIndex + 1]?.title || 'the next section'}.
             </Motion.p>
           )}
         </AnimatePresence>
@@ -351,19 +362,31 @@ function RevealSection({ id, title, icon: Icon, index, unlocked, children }) {
       transition={{ duration: 0.55, delay: index * 0.04 }}
       className="relative"
     >
-      <GlassPanel className={`relative overflow-hidden p-4 sm:p-7 ${unlocked ? '' : 'min-h-48 sm:min-h-56'}`}>
+      <GlassPanel
+        className={`relative overflow-hidden p-4 sm:p-7 ${unlocked ? '' : 'min-h-48 sm:min-h-56'}`}
+      >
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3 sm:mb-6 sm:gap-4">
           <div className="flex min-w-0 items-center gap-3">
-            <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl border sm:h-11 sm:w-11 ${unlocked ? 'border-cyan-300/40 bg-cyan-300/10 text-cyan-100' : 'border-white/10 bg-slate-950 text-slate-500'}`}>
-              {unlocked ? React.createElement(Icon, { className: 'h-5 w-5' }) : <Lock className="h-5 w-5" />}
+            <div
+              className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl border sm:h-11 sm:w-11 ${unlocked ? 'border-cyan-300/40 bg-cyan-300/10 text-cyan-100' : 'border-white/10 bg-slate-950 text-slate-500'}`}
+            >
+              {unlocked ? (
+                React.createElement(Icon, { className: 'h-5 w-5' })
+              ) : (
+                <Lock className="h-5 w-5" />
+              )}
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 sm:text-xs sm:tracking-[0.24em]">Level {index + 1}</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 sm:text-xs sm:tracking-[0.24em]">
+                Level {index + 1}
+              </p>
               <h2 className="truncate text-xl font-black text-white sm:text-3xl">{title}</h2>
             </div>
           </div>
-          <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-widest sm:text-xs ${unlocked ? 'border-emerald-300/40 bg-emerald-300/10 text-emerald-100' : 'border-white/10 bg-slate-900 text-slate-500'}`}>
+          <span
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-widest sm:text-xs ${unlocked ? 'border-emerald-300/40 bg-emerald-300/10 text-emerald-100' : 'border-white/10 bg-slate-900 text-slate-500'}`}
+          >
             {unlocked ? <Unlock className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
             {unlocked ? 'Unlocked' : 'Locked'}
           </span>
@@ -391,7 +414,9 @@ function StatTile({ value, label }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center">
       <div className="text-xl font-black text-white">{value ?? '0'}+</div>
-      <div className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">{label}</div>
+      <div className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+        {label}
+      </div>
     </div>
   );
 }
@@ -413,7 +438,9 @@ function Hero({ personal, stats }) {
           {personal?.title || 'Creative Professional'}
         </p>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:mt-5 sm:text-base sm:leading-8">
-          {personal?.tagline || personal?.bio || 'A polished portfolio experience is ready to be unlocked.'}
+          {personal?.tagline ||
+            personal?.bio ||
+            'A polished portfolio experience is ready to be unlocked.'}
         </p>
         {personal?.location && (
           <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-slate-300">
@@ -493,7 +520,10 @@ function Skills({ skills }) {
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       {Object.entries(grouped).map(([category, items]) => (
-        <div key={category} className="rounded-2xl border border-white/10 bg-slate-950/55 p-4 sm:rounded-3xl sm:p-5">
+        <div
+          key={category}
+          className="rounded-2xl border border-white/10 bg-slate-950/55 p-4 sm:rounded-3xl sm:p-5"
+        >
           <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-white">
             <Star className="h-5 w-5 text-fuchsia-200" />
             {category}
@@ -569,19 +599,32 @@ function ProjectCard({ project, index }) {
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {safeArray(project.techStack).map((tech) => (
-            <span key={tech} className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
+            <span
+              key={tech}
+              className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100"
+            >
               {tech}
             </span>
           ))}
         </div>
         <div className="mt-5 flex flex-wrap gap-3">
           {project.liveUrl && (
-            <a href={liveUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-cyan-100">
+            <a
+              href={liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-cyan-100"
+            >
               Live <ExternalLink className="h-4 w-4" />
             </a>
           )}
           {project.githubUrl && (
-            <a href={githubUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-white transition hover:border-fuchsia-200 hover:bg-fuchsia-300/10">
+            <a
+              href={githubUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-white transition hover:border-fuchsia-200 hover:bg-fuchsia-300/10"
+            >
               Code <Github className="h-4 w-4" />
             </a>
           )}
@@ -600,7 +643,10 @@ function Experience({ experience }) {
     <div className="relative space-y-4">
       <div className="absolute bottom-6 left-5 top-6 hidden w-px bg-gradient-to-b from-cyan-300 via-fuchsia-300 to-emerald-300 sm:block" />
       {experience.map((item, index) => (
-        <div key={`${item.company}-${item.role}-${index}`} className="relative rounded-2xl border border-white/10 bg-slate-950/60 p-4 sm:ml-12 sm:rounded-3xl sm:p-5">
+        <div
+          key={`${item.company}-${item.role}-${index}`}
+          className="relative rounded-2xl border border-white/10 bg-slate-950/60 p-4 sm:ml-12 sm:rounded-3xl sm:p-5"
+        >
           <div className="absolute -left-[3.25rem] top-6 hidden h-5 w-5 rounded-full border-4 border-slate-950 bg-cyan-300 shadow-lg shadow-cyan-300/30 sm:block" />
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -611,7 +657,9 @@ function Experience({ experience }) {
               {item.period || 'Timeline'}
             </span>
           </div>
-          <p className="mt-4 text-sm leading-6 text-slate-400">{item.description || 'Experience details are coming soon.'}</p>
+          <p className="mt-4 text-sm leading-6 text-slate-400">
+            {item.description || 'Experience details are coming soon.'}
+          </p>
         </div>
       ))}
     </div>
@@ -661,10 +709,30 @@ function Contact({ personal, socials }) {
   const { portfolioData: data } = usePortfolio();
 
   const links = [
-    { label: 'Email', value: socials?.email, href: sanitizeExternalUrl(socials?.email ? `mailto:${socials.email}` : ''), icon: Mail },
-    { label: 'GitHub', value: socials?.github, href: sanitizeExternalUrl(socials?.github), icon: Github },
-    { label: 'LinkedIn', value: socials?.linkedin, href: sanitizeExternalUrl(socials?.linkedin), icon: Linkedin },
-    { label: 'Twitter', value: socials?.twitter, href: sanitizeExternalUrl(socials?.twitter), icon: Twitter },
+    {
+      label: 'Email',
+      value: socials?.email,
+      href: sanitizeExternalUrl(socials?.email ? `mailto:${socials.email}` : ''),
+      icon: Mail,
+    },
+    {
+      label: 'GitHub',
+      value: socials?.github,
+      href: sanitizeExternalUrl(socials?.github),
+      icon: Github,
+    },
+    {
+      label: 'LinkedIn',
+      value: socials?.linkedin,
+      href: sanitizeExternalUrl(socials?.linkedin),
+      icon: Linkedin,
+    },
+    {
+      label: 'Twitter',
+      value: socials?.twitter,
+      href: sanitizeExternalUrl(socials?.twitter),
+      icon: Twitter,
+    },
   ].filter((link) => link.value);
 
   return (
@@ -673,25 +741,30 @@ function Contact({ personal, socials }) {
         <Award className="h-10 w-10 text-fuchsia-100" />
         <h3 className="mt-4 text-2xl font-black text-white sm:text-3xl">Final level cleared.</h3>
         <p className="mt-3 text-slate-300">
-          Connect with {personal?.name || 'this portfolio owner'} and turn the unlocked story into a real conversation.
+          Connect with {personal?.name || 'this portfolio owner'} and turn the unlocked story into a
+          real conversation.
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        {links.length ? links.map((link) => (
-          <a
-            key={link.label}
-            href={link.href}
-            target={link.label === 'Email' ? undefined : '_blank'}
-            rel={link.label === 'Email' ? undefined : 'noreferrer'}
-            className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/60 p-4 transition hover:border-cyan-300/40 hover:bg-cyan-300/10"
-          >
-            <span className="flex items-center gap-3 font-bold text-white">
-              {React.createElement(link.icon, { className: 'h-5 w-5 text-cyan-100' })}
-              {link.label}
-            </span>
-            <ArrowRight className="h-5 w-5 text-slate-500 transition group-hover:translate-x-1 group-hover:text-cyan-100" />
-          </a>
-        )) : <EmptyState label="Contact links" />}
+        {links.length ? (
+          links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              target={link.label === 'Email' ? undefined : '_blank'}
+              rel={link.label === 'Email' ? undefined : 'noreferrer'}
+              className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/60 p-4 transition hover:border-cyan-300/40 hover:bg-cyan-300/10"
+            >
+              <span className="flex items-center gap-3 font-bold text-white">
+                {React.createElement(link.icon, { className: 'h-5 w-5 text-cyan-100' })}
+                {link.label}
+              </span>
+              <ArrowRight className="h-5 w-5 text-slate-500 transition group-hover:translate-x-1 group-hover:text-cyan-100" />
+            </a>
+          ))
+        ) : (
+          <EmptyState label="Contact links" />
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useInView } from "framer-motion";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring, useInView } from 'framer-motion';
 import {
   Github,
   Linkedin,
@@ -17,9 +17,9 @@ import {
   User,
   Code2,
   MessageSquare,
-  Globe
-} from "lucide-react";
-import "./styles.css";
+  Globe,
+} from 'lucide-react';
+import './styles.css';
 
 // ─── Sub-Component: Magnetic Button Physics ──────────────────────────────────
 function Magnetic({ children }) {
@@ -52,7 +52,7 @@ function Magnetic({ children }) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", stiffness: 180, damping: 15, mass: 0.1 }}
+      transition={{ type: 'spring', stiffness: 180, damping: 15, mass: 0.1 }}
       className="inline-block"
     >
       {children}
@@ -61,47 +61,44 @@ function Magnetic({ children }) {
 }
 
 // ─── Sub-Component: Split Text Staggered Letter Animation ────────────────────
-function SplitText({ text, className = "", delay = 0 }) {
+function SplitText({ text, className = '', delay = 0 }) {
   const { portfolioData: data } = usePortfolio();
 
   const letters = Array.from(text);
-  
+
   const containerVariants = {
     hidden: {},
     visible: {
       transition: {
         staggerChildren: 0.02,
-        delayChildren: delay
-      }
-    }
+        delayChildren: delay,
+      },
+    },
   };
-  
+
   const letterVariants = {
-    hidden: { y: "115%" },
-    visible: { 
-      y: "0%",
-      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] }
-    }
+    hidden: { y: '115%' },
+    visible: {
+      y: '0%',
+      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+    },
   };
 
   return (
-    <motion.span 
+    <motion.span
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-5%" }}
+      viewport={{ once: true, margin: '-5%' }}
       className={`inline-flex flex-wrap ${className}`}
     >
       {letters.map((char, index) => (
-        <span 
-          key={index} 
+        <span
+          key={index}
           className="mono-char-overflow inline-block"
-          style={{ whiteSpace: char === " " ? "pre" : "normal" }}
+          style={{ whiteSpace: char === ' ' ? 'pre' : 'normal' }}
         >
-          <motion.span 
-            variants={letterVariants} 
-            className="inline-block"
-          >
+          <motion.span variants={letterVariants} className="inline-block">
             {char}
           </motion.span>
         </span>
@@ -111,36 +108,36 @@ function SplitText({ text, className = "", delay = 0 }) {
 }
 
 // ─── Sub-Component: Split Words Paragraph Animation ──────────────────────────
-function SplitWords({ text, className = "", delay = 0 }) {
+function SplitWords({ text, className = '', delay = 0 }) {
   const { portfolioData: data } = usePortfolio();
 
-  const words = text.split(" ");
-  
+  const words = text.split(' ');
+
   const containerVariants = {
     hidden: {},
     visible: {
       transition: {
         staggerChildren: 0.03,
-        delayChildren: delay
-      }
-    }
+        delayChildren: delay,
+      },
+    },
   };
-  
+
   const wordVariants = {
-    hidden: { y: "110%", opacity: 0 },
-    visible: { 
-      y: "0%", 
+    hidden: { y: '110%', opacity: 0 },
+    visible: {
+      y: '0%',
       opacity: 1,
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
-    }
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+    },
   };
 
   return (
-    <motion.span 
+    <motion.span
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-10%" }}
+      viewport={{ once: true, margin: '-10%' }}
       className={`inline-flex flex-wrap gap-x-[0.25em] ${className}`}
     >
       {words.map((word, index) => (
@@ -160,11 +157,11 @@ function Counter({ value, duration = 1.8, delay = 0 }) {
 
   const [count, setCount] = useState(0);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-5%" });
+  const isInView = useInView(ref, { once: true, margin: '-5%' });
 
   useEffect(() => {
     if (!isInView) return;
-    
+
     let start = 0;
     const end = parseInt(value, 10);
     if (isNaN(end)) {
@@ -176,7 +173,7 @@ function Counter({ value, duration = 1.8, delay = 0 }) {
     let timer;
     const totalMiliseconds = duration * 1000;
     const stepTime = Math.max(Math.floor(totalMiliseconds / end), 15);
-    
+
     setTimeout(() => {
       const startTime = Date.now();
       timer = setInterval(() => {
@@ -184,9 +181,9 @@ function Counter({ value, duration = 1.8, delay = 0 }) {
         const progress = Math.min(timePassed / totalMiliseconds, 1);
         const easedProgress = progress * (2 - progress); // ease out quadratic
         const currentCount = Math.floor(easedProgress * end);
-        
+
         setCount(currentCount);
-        
+
         if (progress === 1) {
           clearInterval(timer);
           setCount(end);
@@ -218,26 +215,27 @@ const staggerContainer = {
 
 // ─── Safe Data Fallbacks ──────────────────────────────────────────────────────
 const personal = data.personal || {
-  name: "Alex Rivera",
-  title: "Full Stack Developer",
-  bio: "Passionate developer crafting beautiful applications.",
-  avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-  location: "San Francisco, CA",
-  tagline: "Building the future, one line of code at a time.",
-  availability: "Open to work"
+  name: 'Alex Rivera',
+  title: 'Full Stack Developer',
+  bio: 'Passionate developer crafting beautiful applications.',
+  avatar:
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+  location: 'San Francisco, CA',
+  tagline: 'Building the future, one line of code at a time.',
+  availability: 'Open to work',
 };
 
 const socials = data.socials || {
-  github: "https://github.com",
-  linkedin: "https://linkedin.com",
-  twitter: "https://twitter.com",
-  email: "alex.rivera@email.com"
+  github: 'https://github.com',
+  linkedin: 'https://linkedin.com',
+  twitter: 'https://twitter.com',
+  email: 'alex.rivera@email.com',
 };
 
 const stats = data.stats || {
   yearsExperience: 5,
   projectsCompleted: 48,
-  happyClients: 32
+  happyClients: 32,
 };
 
 const skills = data.skills || [];
@@ -250,14 +248,14 @@ export default function MonoElegant() {
   const { portfolioData: data } = usePortfolio();
 
   const [isNoir, setIsNoir] = useState(true);
-  const [activeSection, setActiveSection] = useState("hero");
+  const [activeSection, setActiveSection] = useState('hero');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   // Custom Cursor Tracker State
   const [showCustomCursor, setShowCustomCursor] = useState(false);
   const [cursorHovered, setCursorHovered] = useState(false);
-  const [cursorLabel, setCursorLabel] = useState("");
-  
+  const [cursorLabel, setCursorLabel] = useState('');
+
   // Raw cursor position (instant, for dot)
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
@@ -273,13 +271,13 @@ export default function MonoElegant() {
 
   // Initialize and check device requirements for custom cursor follower
   useEffect(() => {
-    const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const checkCursorNeed = () => {
       setShowCustomCursor(!isTouchDevice && window.innerWidth >= 1024);
     };
     checkCursorNeed();
-    window.addEventListener("resize", checkCursorNeed);
-    return () => window.removeEventListener("resize", checkCursorNeed);
+    window.addEventListener('resize', checkCursorNeed);
+    return () => window.removeEventListener('resize', checkCursorNeed);
   }, []);
 
   // Sync cursor coordinates on mousemove
@@ -289,26 +287,28 @@ export default function MonoElegant() {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
     };
-    window.addEventListener("mousemove", moveCursor);
-    return () => window.removeEventListener("mousemove", moveCursor);
+    window.addEventListener('mousemove', moveCursor);
+    return () => window.removeEventListener('mousemove', moveCursor);
   }, [showCustomCursor]);
 
   // Monitor hovered items to expand custom cursor ring
   useEffect(() => {
     if (!showCustomCursor) return;
     const handleMouseOver = (e) => {
-      const link = e.target.closest("a");
-      const btn = e.target.closest("button");
-      const card = e.target.closest(".mono-card");
-      const isInteractive = e.target.closest("a, button, input, textarea, select, [role='button'], .mono-card");
+      const link = e.target.closest('a');
+      const btn = e.target.closest('button');
+      const card = e.target.closest('.mono-card');
+      const isInteractive = e.target.closest(
+        "a, button, input, textarea, select, [role='button'], .mono-card"
+      );
       setCursorHovered(!!isInteractive);
-      if (link) setCursorLabel("Visit");
-      else if (btn) setCursorLabel("Click");
-      else if (card) setCursorLabel("View");
-      else setCursorLabel("");
+      if (link) setCursorLabel('Visit');
+      else if (btn) setCursorLabel('Click');
+      else if (card) setCursorLabel('View');
+      else setCursorLabel('');
     };
-    window.addEventListener("mouseover", handleMouseOver);
-    return () => window.removeEventListener("mouseover", handleMouseOver);
+    window.addEventListener('mouseover', handleMouseOver);
+    return () => window.removeEventListener('mouseover', handleMouseOver);
   }, [showCustomCursor]);
 
   // Scroll progress tracker
@@ -318,8 +318,8 @@ export default function MonoElegant() {
       const progress = totalHeight > 0 ? window.scrollY / totalHeight : 0;
       scrollProgress.set(progress);
     };
-    window.addEventListener("scroll", handleScrollProgress, { passive: true });
-    return () => window.removeEventListener("scroll", handleScrollProgress);
+    window.addEventListener('scroll', handleScrollProgress, { passive: true });
+    return () => window.removeEventListener('scroll', handleScrollProgress);
   }, [scrollProgress]);
 
   // Smooth scroll handler
@@ -327,13 +327,21 @@ export default function MonoElegant() {
     setMobileMenuOpen(false);
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   // Update active section on scroll
   useEffect(() => {
-    const sections = ["hero", "about", "skills", "projects", "experience", "testimonials", "contact"];
+    const sections = [
+      'hero',
+      'about',
+      'skills',
+      'projects',
+      'experience',
+      'testimonials',
+      'contact',
+    ];
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 250;
       for (const section of sections) {
@@ -348,31 +356,32 @@ export default function MonoElegant() {
         }
       }
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className={`mono-elegant-wrapper w-full min-h-screen relative overflow-hidden select-none ${
-      !isNoir ? "theme-blanc" : ""
-    } ${showCustomCursor ? "has-custom-cursor" : ""}`}>
-      
+    <div
+      className={`mono-elegant-wrapper w-full min-h-screen relative overflow-hidden select-none ${
+        !isNoir ? 'theme-blanc' : ''
+      } ${showCustomCursor ? 'has-custom-cursor' : ''}`}
+    >
       {/* ─── Redesigned Cursor: Crosshair Dot + Soft Glow Ring ─── */}
       {showCustomCursor && (
         <>
           {/* Tiny sharp crosshair dot — instant position */}
           <motion.div
             className="pointer-events-none fixed z-[9999]"
-            style={{ x: cursorX, y: cursorY, translateX: "-50%", translateY: "-50%" }}
+            style={{ x: cursorX, y: cursorY, translateX: '-50%', translateY: '-50%' }}
           >
             {/* Center dot */}
             <div
               style={{
-                width: cursorHovered ? "5px" : "4px",
-                height: cursorHovered ? "5px" : "4px",
-                borderRadius: "50%",
-                backgroundColor: "var(--mono-accent)",
-                transition: "width 0.2s ease, height 0.2s ease",
+                width: cursorHovered ? '5px' : '4px',
+                height: cursorHovered ? '5px' : '4px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--mono-accent)',
+                transition: 'width 0.2s ease, height 0.2s ease',
               }}
             />
           </motion.div>
@@ -383,8 +392,8 @@ export default function MonoElegant() {
             style={{
               x: cursorRingX,
               y: cursorRingY,
-              translateX: "-50%",
-              translateY: "-50%",
+              translateX: '-50%',
+              translateY: '-50%',
             }}
           >
             <motion.div
@@ -395,25 +404,56 @@ export default function MonoElegant() {
                 borderColor: `rgba(var(--mono-accent-rgb), ${cursorHovered ? 0.8 : 0.35})`,
                 backgroundColor: `rgba(var(--mono-accent-rgb), ${cursorHovered ? 0.05 : 0})`,
               }}
-              transition={{ type: "spring", stiffness: 260, damping: 22 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 22 }}
               style={{
-                borderRadius: "50%",
-                border: "1px solid",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                borderRadius: '50%',
+                border: '1px solid',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               {/* Crosshair lines inside ring */}
               {!cursorHovered && (
                 <>
-                  <div style={{ position: "absolute", top: "50%", left: 4, right: 4, height: "1px", backgroundColor: `rgba(var(--mono-accent-rgb), 0.25)`, transform: "translateY(-50%)" }} />
-                  <div style={{ position: "absolute", left: "50%", top: 4, bottom: 4, width: "1px", backgroundColor: `rgba(var(--mono-accent-rgb), 0.25)`, transform: "translateX(-50%)" }} />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: 4,
+                      right: 4,
+                      height: '1px',
+                      backgroundColor: `rgba(var(--mono-accent-rgb), 0.25)`,
+                      transform: 'translateY(-50%)',
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: 4,
+                      bottom: 4,
+                      width: '1px',
+                      backgroundColor: `rgba(var(--mono-accent-rgb), 0.25)`,
+                      transform: 'translateX(-50%)',
+                    }}
+                  />
                 </>
               )}
               {/* Label text on hover */}
               {cursorHovered && cursorLabel && (
-                <span style={{ fontSize: "8px", letterSpacing: "0.15em", textTransform: "uppercase", color: `rgba(var(--mono-accent-rgb), 0.85)`, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 500, lineHeight: 1, userSelect: "none" }}>
+                <span
+                  style={{
+                    fontSize: '8px',
+                    letterSpacing: '0.15em',
+                    textTransform: 'uppercase',
+                    color: `rgba(var(--mono-accent-rgb), 0.85)`,
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontWeight: 500,
+                    lineHeight: 1,
+                    userSelect: 'none',
+                  }}
+                >
                   {cursorLabel}
                 </span>
               )}
@@ -427,7 +467,7 @@ export default function MonoElegant() {
         className="fixed top-0 left-0 right-0 h-[1.5px] z-[999] origin-left"
         style={{
           scaleX: smoothScroll,
-          backgroundColor: "var(--mono-accent)",
+          backgroundColor: 'var(--mono-accent)',
           opacity: 0.7,
         }}
       />
@@ -438,31 +478,39 @@ export default function MonoElegant() {
       {/* ─── Navigation Header ─── */}
       <header className="sticky top-0 z-50 w-full border-b mono-border bg-opacity-70 backdrop-blur-md transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          
           {/* Logo / Initials */}
-          <button type="button" 
-            onClick={() => handleScrollTo("hero")}
+          <button
+            type="button"
+            onClick={() => handleScrollTo('hero')}
             className="text-lg font-bold tracking-[0.25em] uppercase mono-font-sans flex items-center gap-2"
           >
-            <span>{personal.name.split(" ").map(n => n[0]).join("")}</span>
+            <span>
+              {personal.name
+                .split(' ')
+                .map((n) => n[0])
+                .join('')}
+            </span>
             <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
           </button>
 
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center gap-8">
             {[
-              { id: "about", label: "About" },
-              { id: "skills", label: "Skills" },
-              { id: "projects", label: "Projects" },
-              { id: "experience", label: "Experience" },
-              { id: "testimonials", label: "Quotes" },
-              { id: "contact", label: "Contact" }
+              { id: 'about', label: 'About' },
+              { id: 'skills', label: 'Skills' },
+              { id: 'projects', label: 'Projects' },
+              { id: 'experience', label: 'Experience' },
+              { id: 'testimonials', label: 'Quotes' },
+              { id: 'contact', label: 'Contact' },
             ].map((item) => (
               <Magnetic key={item.id}>
-                <button type="button"
+                <button
+                  type="button"
                   onClick={() => handleScrollTo(item.id)}
                   className={`mono-nav-link text-xs uppercase tracking-widest text-neutral-400 dark:text-neutral-500 hover:text-current px-1 py-1 ${
-                    activeSection === item.id ? "text-neutral-900 dark:text-neutral-100 font-semibold" : ""
+                    activeSection === item.id
+                      ? 'text-neutral-900 dark:text-neutral-100 font-semibold'
+                      : ''
                   }`}
                 >
                   {item.label}
@@ -474,17 +522,19 @@ export default function MonoElegant() {
           {/* Theme Toggler + Menu Toggle */}
           <div className="flex items-center gap-4">
             <Magnetic>
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => setIsNoir(!isNoir)}
                 className="px-3.5 py-1 text-[10px] tracking-widest uppercase border mono-border rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
                 aria-label="Toggle monochrome theme"
               >
-                {isNoir ? "Blanc ☼" : "Noir ☾"}
+                {isNoir ? 'Blanc ☼' : 'Noir ☾'}
               </button>
             </Magnetic>
 
             {/* Mobile Menu Toggle */}
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-1 md:hidden hover:opacity-75 transition-opacity"
               aria-label="Toggle navigation menu"
@@ -504,18 +554,19 @@ export default function MonoElegant() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
             className="fixed inset-x-0 top-20 z-40 bg-neutral-950 text-white dark:bg-neutral-950 p-6 border-b mono-border md:hidden"
-            style={{ backgroundColor: "var(--mono-bg)", color: "var(--mono-text)" }}
+            style={{ backgroundColor: 'var(--mono-bg)', color: 'var(--mono-text)' }}
           >
             <div className="flex flex-col gap-4">
               {[
-                { id: "about", label: "About" },
-                { id: "skills", label: "Skills" },
-                { id: "projects", label: "Projects" },
-                { id: "experience", label: "Experience" },
-                { id: "testimonials", label: "Quotes" },
-                { id: "contact", label: "Contact" }
+                { id: 'about', label: 'About' },
+                { id: 'skills', label: 'Skills' },
+                { id: 'projects', label: 'Projects' },
+                { id: 'experience', label: 'Experience' },
+                { id: 'testimonials', label: 'Quotes' },
+                { id: 'contact', label: 'Contact' },
               ].map((item) => (
-                <button type="button"
+                <button
+                  type="button"
                   key={item.id}
                   onClick={() => handleScrollTo(item.id)}
                   className="text-left text-sm uppercase tracking-widest py-2 border-b mono-border last:border-0"
@@ -529,48 +580,87 @@ export default function MonoElegant() {
       </AnimatePresence>
 
       {/* ─── Hero Section ─── */}
-      <section id="hero" className="relative min-h-[calc(100vh-80px)] flex flex-col justify-center items-center px-6 py-12 overflow-hidden border-b mono-border">
+      <section
+        id="hero"
+        className="relative min-h-[calc(100vh-80px)] flex flex-col justify-center items-center px-6 py-12 overflow-hidden border-b mono-border"
+      >
         {/* Animated Architectural Rings */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 dark:opacity-10">
-          <svg width="600" height="600" viewBox="0 0 100 100" fill="none" className="w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] mono-rotate-slow">
-            <circle cx="50" cy="50" r="45" stroke="currentColor" strokeWidth="0.08" strokeDasharray="3 3" />
+          <svg
+            width="600"
+            height="600"
+            viewBox="0 0 100 100"
+            fill="none"
+            className="w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] mono-rotate-slow"
+          >
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              stroke="currentColor"
+              strokeWidth="0.08"
+              strokeDasharray="3 3"
+            />
             <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="0.06" />
-            <circle cx="50" cy="50" r="15" stroke="currentColor" strokeWidth="0.06" strokeDasharray="1 3" />
-            <line x1="50" y1="5" x2="50" y2="95" stroke="currentColor" strokeWidth="0.05" strokeDasharray="1 2" />
-            <line x1="5" y1="50" x2="95" y2="50" stroke="currentColor" strokeWidth="0.05" strokeDasharray="1 2" />
+            <circle
+              cx="50"
+              cy="50"
+              r="15"
+              stroke="currentColor"
+              strokeWidth="0.06"
+              strokeDasharray="1 3"
+            />
+            <line
+              x1="50"
+              y1="5"
+              x2="50"
+              y2="95"
+              stroke="currentColor"
+              strokeWidth="0.05"
+              strokeDasharray="1 2"
+            />
+            <line
+              x1="5"
+              y1="50"
+              x2="95"
+              y2="50"
+              stroke="currentColor"
+              strokeWidth="0.05"
+              strokeDasharray="1 2"
+            />
           </svg>
         </div>
 
-        <motion.div 
+        <motion.div
           className="max-w-5xl w-full mx-auto text-center z-10 flex flex-col items-center"
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
         >
           {/* Availability Tag */}
-          <motion.div 
+          <motion.div
             variants={fadeUp}
             className="inline-flex items-center gap-2 px-4.5 py-1 border mono-border-strong rounded-full mb-8 text-[9px] uppercase tracking-[0.25em] font-medium"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-neutral-900 dark:bg-white animate-pulse" />
-            <span>{personal.availability ?? "Available for Creative Commissions"}</span>
+            <span>{personal.availability ?? 'Available for Creative Commissions'}</span>
           </motion.div>
 
           {/* Name Header - Premium Sliced Stagger Reveal */}
           <h1 className="leading-none mb-6">
-            <SplitText 
-              text={personal.name.split(" ")[0]} 
-              className="block font-light text-[8vw] md:text-[5.5rem] tracking-[0.28em] uppercase text-neutral-400 dark:text-neutral-500 font-sans" 
+            <SplitText
+              text={personal.name.split(' ')[0]}
+              className="block font-light text-[8vw] md:text-[5.5rem] tracking-[0.28em] uppercase text-neutral-400 dark:text-neutral-500 font-sans"
             />
-            <SplitText 
-              text={personal.name.split(" ").slice(1).join(" ")} 
-              className="block font-bold text-[11vw] md:text-[7.5rem] tracking-tight uppercase mono-font-serif -mt-2 md:-mt-5" 
+            <SplitText
+              text={personal.name.split(' ').slice(1).join(' ')}
+              className="block font-bold text-[11vw] md:text-[7.5rem] tracking-tight uppercase mono-font-serif -mt-2 md:-mt-5"
               delay={0.15}
             />
           </h1>
 
           {/* Title */}
-          <motion.p 
+          <motion.p
             variants={fadeUp}
             className="text-xs md:text-sm uppercase tracking-[0.35em] font-sans font-light text-neutral-500 dark:text-neutral-400 mb-8 max-w-xl"
           >
@@ -589,8 +679,9 @@ export default function MonoElegant() {
           {/* Calls to Action */}
           <motion.div variants={fadeUp} className="flex flex-wrap gap-4 justify-center">
             <Magnetic>
-              <button type="button" 
-                onClick={() => handleScrollTo("contact")}
+              <button
+                type="button"
+                onClick={() => handleScrollTo('contact')}
                 className="mono-btn-primary px-9 py-4 text-xs uppercase tracking-widest flex items-center gap-2 border mono-border"
               >
                 <span>Initiate Project</span>
@@ -598,8 +689,9 @@ export default function MonoElegant() {
               </button>
             </Magnetic>
             <Magnetic>
-              <button type="button" 
-                onClick={() => handleScrollTo("projects")}
+              <button
+                type="button"
+                onClick={() => handleScrollTo('projects')}
                 className="mono-btn-secondary px-9 py-4 text-xs uppercase tracking-widest"
               >
                 View Exhibition
@@ -610,12 +702,14 @@ export default function MonoElegant() {
 
         {/* Scroll indicator with moving line */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="text-[9px] uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">Scroll</span>
+          <span className="text-[9px] uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
+            Scroll
+          </span>
           <div className="w-[1px] h-12 bg-neutral-200 dark:bg-neutral-800 relative overflow-hidden">
-            <motion.div 
+            <motion.div
               className="absolute top-0 left-0 right-0 bg-neutral-950 dark:bg-white w-full h-1/2"
-              animate={{ y: ["-100%", "200%"] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              animate={{ y: ['-100%', '200%'] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             />
           </div>
         </div>
@@ -638,17 +732,17 @@ export default function MonoElegant() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             {/* Left Column: Stylized B&W Avatar & Location */}
-            <motion.div 
+            <motion.div
               className="lg:col-span-4 flex flex-col gap-6"
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
             >
               <div className="mono-image-container border mono-border p-2">
-                <img 
-                  src={personal.avatar} 
-                  alt={personal.name} 
+                <img
+                  src={personal.avatar}
+                  alt={personal.name}
                   className="mono-image-gray w-full aspect-square object-cover"
                 />
               </div>
@@ -669,16 +763,22 @@ export default function MonoElegant() {
 
               {/* Stats Panel - Spec sheet style with counting numbers */}
               <div className="pt-8 border-t mono-border">
-                <h3 className="text-xs uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-8">Performance Indices</h3>
+                <h3 className="text-xs uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-8">
+                  Performance Indices
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-4">
                   {[
-                    { val: stats.yearsExperience, label: "Years Experience", prefix: "0" },
-                    { val: stats.projectsCompleted, label: "Exhibitions/Projects", prefix: "" },
-                    { val: stats.happyClients, label: "Creative Alliances", prefix: "" }
+                    { val: stats.yearsExperience, label: 'Years Experience', prefix: '0' },
+                    { val: stats.projectsCompleted, label: 'Exhibitions/Projects', prefix: '' },
+                    { val: stats.happyClients, label: 'Creative Alliances', prefix: '' },
                   ].map((stat, i) => (
-                    <div key={i} className="flex items-baseline gap-4 sm:flex-col sm:gap-2 border-l sm:border-l-0 sm:border-t mono-border pl-6 sm:pl-0 sm:pt-4">
+                    <div
+                      key={i}
+                      className="flex items-baseline gap-4 sm:flex-col sm:gap-2 border-l sm:border-l-0 sm:border-t mono-border pl-6 sm:pl-0 sm:pt-4"
+                    >
                       <span className="mono-font-serif text-4xl md:text-5xl font-light">
-                        {stat.prefix}<Counter value={stat.val} delay={i * 0.1} />
+                        {stat.prefix}
+                        <Counter value={stat.val} delay={i * 0.1} />
                       </span>
                       <span className="text-[10px] uppercase tracking-widest text-neutral-400 dark:text-neutral-500 font-sans block">
                         {stat.label}
@@ -709,7 +809,7 @@ export default function MonoElegant() {
 
           {/* Grouped Skills Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Array.from(new Set(skills.map(s => s.category))).map((category) => (
+            {Array.from(new Set(skills.map((s) => s.category))).map((category) => (
               <div key={category} className="mono-card p-6 flex flex-col justify-between">
                 {/* Visual outline borders drawing on hover */}
                 <div className="mono-hover-border mono-hover-border-top" />
@@ -723,7 +823,7 @@ export default function MonoElegant() {
                   </h3>
                   <div className="space-y-6">
                     {skills
-                      .filter(s => s.category === category)
+                      .filter((s) => s.category === category)
                       .map((skill) => (
                         <div key={skill.name} className="space-y-2">
                           <div className="flex justify-between items-baseline text-xs uppercase tracking-widest">
@@ -734,7 +834,7 @@ export default function MonoElegant() {
                           </div>
                           {/* Progress bar line reveal */}
                           <div className="h-[3px] w-full border mono-border relative overflow-hidden bg-transparent">
-                            <motion.div 
+                            <motion.div
                               className="absolute top-0 bottom-0 left-0 bg-neutral-900 dark:bg-white"
                               initial={{ width: 0 }}
                               whileInView={{ width: `${skill.level}%` }}
@@ -788,19 +888,18 @@ export default function MonoElegant() {
 
           {/* Timeline Structure */}
           <div className="relative ml-4 md:ml-32 space-y-12">
-            
             {/* Staggered Height Timeline Line Drawing */}
-            <motion.div 
+            <motion.div
               initial={{ height: 0 }}
-              whileInView={{ height: "100%" }}
-              viewport={{ once: true, margin: "-10%" }}
+              whileInView={{ height: '100%' }}
+              viewport={{ once: true, margin: '-10%' }}
               transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
               className="absolute left-[3px] md:left-[131px] top-4 bottom-4 w-[1px] bg-neutral-200 dark:bg-neutral-800"
             />
 
             {experience.map((exp, index) => (
-              <motion.div 
-                key={index} 
+              <motion.div
+                key={index}
                 className="relative pl-8 md:pl-12 group"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -808,12 +907,12 @@ export default function MonoElegant() {
                 transition={{ duration: 0.6, delay: index * 0.05 }}
               >
                 {/* Timeline node scale trigger */}
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ type: "spring", stiffness: 300, delay: 0.2 + index * 0.05 }}
-                  className="absolute -left-[1px] md:-left-[125px] top-2.5 w-[9px] h-[9px] rounded-full bg-neutral-200 dark:bg-neutral-800 group-hover:bg-neutral-900 dark:group-hover:bg-white border border-neutral-900 dark:border-white transition-colors duration-300" 
+                  transition={{ type: 'spring', stiffness: 300, delay: 0.2 + index * 0.05 }}
+                  className="absolute -left-[1px] md:-left-[125px] top-2.5 w-[9px] h-[9px] rounded-full bg-neutral-200 dark:bg-neutral-800 group-hover:bg-neutral-900 dark:group-hover:bg-white border border-neutral-900 dark:border-white transition-colors duration-300"
                 />
 
                 {/* Period for desktop */}
@@ -843,7 +942,7 @@ export default function MonoElegant() {
                   <p className="text-xs uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-4 hidden md:block">
                     {exp.company}
                   </p>
-                  
+
                   <p className="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed font-light">
                     {exp.description}
                   </p>
@@ -851,7 +950,10 @@ export default function MonoElegant() {
                   {exp.techStack && exp.techStack.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t mono-border">
                       {exp.techStack.map((tech) => (
-                        <span key={tech} className="text-[9px] font-mono tracking-wider uppercase border mono-border px-2 py-0.5">
+                        <span
+                          key={tech}
+                          className="text-[9px] font-mono tracking-wider uppercase border mono-border px-2 py-0.5"
+                        >
                           {tech}
                         </span>
                       ))}
@@ -908,25 +1010,33 @@ export default function MonoElegant() {
               <div className="space-y-4">
                 <h3 className="text-xl font-bold uppercase tracking-widest">Collaborate</h3>
                 <p className="text-neutral-500 dark:text-neutral-400 leading-relaxed font-light text-sm">
-                  Let's craft architectural digital products with pure intent. Reach out via email or through the creative alliance network.
+                  Let's craft architectural digital products with pure intent. Reach out via email
+                  or through the creative alliance network.
                 </p>
               </div>
 
               <div className="space-y-6 pt-6 border-t mono-border">
                 <div>
-                  <h4 className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500 mb-1">Direct Communication</h4>
-                  <a href={`mailto:${socials.email}`} className="text-sm border-b mono-border-strong hover:border-neutral-900 dark:hover:border-white transition-all pb-1 font-mono">
+                  <h4 className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500 mb-1">
+                    Direct Communication
+                  </h4>
+                  <a
+                    href={`mailto:${socials.email}`}
+                    className="text-sm border-b mono-border-strong hover:border-neutral-900 dark:hover:border-white transition-all pb-1 font-mono"
+                  >
                     {socials.email}
                   </a>
                 </div>
 
                 <div>
-                  <h4 className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500 mb-2">Syndicated Networks</h4>
+                  <h4 className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500 mb-2">
+                    Syndicated Networks
+                  </h4>
                   <div className="flex flex-wrap gap-4">
                     {[
-                      { icon: <Github size={16} />, href: socials.github, label: "GitHub" },
-                      { icon: <Linkedin size={16} />, href: socials.linkedin, label: "LinkedIn" },
-                      { icon: <Twitter size={16} />, href: socials.twitter, label: "Twitter" },
+                      { icon: <Github size={16} />, href: socials.github, label: 'GitHub' },
+                      { icon: <Linkedin size={16} />, href: socials.linkedin, label: 'LinkedIn' },
+                      { icon: <Twitter size={16} />, href: socials.twitter, label: 'Twitter' },
                     ].map((item, idx) => (
                       <Magnetic key={idx}>
                         <a
@@ -956,7 +1066,12 @@ export default function MonoElegant() {
               <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   <div className="flex flex-col gap-1">
-                    <label htmlFor="mono-name" className="text-[10px] uppercase tracking-widest text-neutral-400">Your Identity</label>
+                    <label
+                      htmlFor="mono-name"
+                      className="text-[10px] uppercase tracking-widest text-neutral-400"
+                    >
+                      Your Identity
+                    </label>
                     <input
                       id="mono-name"
                       type="text"
@@ -966,7 +1081,12 @@ export default function MonoElegant() {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label htmlFor="mono-email" className="text-[10px] uppercase tracking-widest text-neutral-400">Electronic Address</label>
+                    <label
+                      htmlFor="mono-email"
+                      className="text-[10px] uppercase tracking-widest text-neutral-400"
+                    >
+                      Electronic Address
+                    </label>
                     <input
                       id="mono-email"
                       type="email"
@@ -978,7 +1098,12 @@ export default function MonoElegant() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label htmlFor="mono-subject" className="text-[10px] uppercase tracking-widest text-neutral-400">Inquiry Objective</label>
+                  <label
+                    htmlFor="mono-subject"
+                    className="text-[10px] uppercase tracking-widest text-neutral-400"
+                  >
+                    Inquiry Objective
+                  </label>
                   <input
                     id="mono-subject"
                     type="text"
@@ -989,7 +1114,12 @@ export default function MonoElegant() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label htmlFor="mono-message" className="text-[10px] uppercase tracking-widest text-neutral-400">The Directive</label>
+                  <label
+                    htmlFor="mono-message"
+                    className="text-[10px] uppercase tracking-widest text-neutral-400"
+                  >
+                    The Directive
+                  </label>
                   <textarea
                     id="mono-message"
                     rows={4}
@@ -1015,14 +1145,23 @@ export default function MonoElegant() {
       </section>
 
       {/* ─── Footer ─── */}
-      <footer className="py-12 px-6 bg-neutral-950 text-neutral-500 border-t mono-border text-center" style={{ backgroundColor: "var(--mono-bg)", color: "var(--mono-text-muted)" }}>
+      <footer
+        className="py-12 px-6 bg-neutral-950 text-neutral-500 border-t mono-border text-center"
+        style={{ backgroundColor: 'var(--mono-bg)', color: 'var(--mono-text-muted)' }}
+      >
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-[11px] uppercase tracking-widest font-mono">
             © {new Date().getFullYear()} {personal.name}. Form follows function.
           </p>
           <div className="flex gap-6 text-[10px] uppercase tracking-widest">
             <Magnetic>
-              <button type="button" onClick={() => handleScrollTo("hero")} className="hover:text-neutral-900 dark:hover:text-white transition-colors">Back to Top</button>
+              <button
+                type="button"
+                onClick={() => handleScrollTo('hero')}
+                className="hover:text-neutral-900 dark:hover:text-white transition-colors"
+              >
+                Back to Top
+              </button>
             </Magnetic>
           </div>
         </div>
@@ -1035,28 +1174,32 @@ export default function MonoElegant() {
 function ProjectsGrid({ projects }) {
   const { portfolioData: data } = usePortfolio();
 
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] = useState('All');
 
   // Unique list of tags
-  const allTech = ["All", ...new Set(projects.flatMap(p => p.techStack || []))].slice(0, 8);
+  const allTech = ['All', ...new Set(projects.flatMap((p) => p.techStack || []))].slice(0, 8);
 
-  const filteredProjects = activeFilter === "All"
-    ? projects
-    : projects.filter(p => p.techStack && p.techStack.includes(activeFilter));
+  const filteredProjects =
+    activeFilter === 'All'
+      ? projects
+      : projects.filter((p) => p.techStack && p.techStack.includes(activeFilter));
 
   return (
     <div className="space-y-12">
       {/* Taxonomy Filters */}
       <div className="flex flex-wrap items-center gap-2 border-b mono-border pb-6">
-        <span className="text-[10px] uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mr-4">// Taxonomy:</span>
+        <span className="text-[10px] uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mr-4">
+          // Taxonomy:
+        </span>
         {allTech.map((tech) => (
           <Magnetic key={tech}>
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setActiveFilter(tech)}
               className={`px-3 py-1.5 text-[10px] uppercase tracking-widest border transition-colors ${
                 activeFilter === tech
-                  ? "bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 border-neutral-900 dark:border-white font-medium"
-                  : "border-transparent text-neutral-400 dark:text-neutral-500 hover:text-current"
+                  ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 border-neutral-900 dark:border-white font-medium'
+                  : 'border-transparent text-neutral-400 dark:text-neutral-500 hover:text-current'
               }`}
             >
               {tech}
@@ -1066,10 +1209,7 @@ function ProjectsGrid({ projects }) {
       </div>
 
       {/* Stagger Grid */}
-      <motion.div 
-        layout 
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
+      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <AnimatePresence mode="popLayout">
           {filteredProjects.map((project) => (
             <motion.div
@@ -1107,8 +1247,11 @@ function ProjectsGrid({ projects }) {
                   <div className="space-y-1">
                     <h3 className="text-lg font-bold tracking-wide uppercase">{project.title}</h3>
                     <div className="flex flex-wrap gap-2">
-                      {(project.techStack || []).map(tech => (
-                        <span key={tech} className="text-[9px] font-mono tracking-wider uppercase text-neutral-400">
+                      {(project.techStack || []).map((tech) => (
+                        <span
+                          key={tech}
+                          className="text-[9px] font-mono tracking-wider uppercase text-neutral-400"
+                        >
                           #{tech}
                         </span>
                       ))}
@@ -1161,16 +1304,15 @@ function TestimonialsCarousel({ testimonials }) {
   const current = testimonials[activeIndex];
 
   const handlePrev = () => {
-    setActiveIndex(prev => (prev === 0 ? testimonials.length - 1 : prev - 1));
+    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setActiveIndex(prev => (prev === testimonials.length - 1 ? 0 : prev + 1));
+    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
   };
 
   return (
     <div className="max-w-4xl mx-auto border mono-border p-8 md:p-12 relative flex flex-col justify-between min-h-[350px]">
-      
       {/* Slide Transition */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -1178,7 +1320,7 @@ function TestimonialsCarousel({ testimonials }) {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.45, ease: "easeOut" }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
           className="space-y-6"
         >
           {/* Quote Mark Decoration */}
@@ -1192,9 +1334,9 @@ function TestimonialsCarousel({ testimonials }) {
 
           <div className="flex items-center gap-4 border-t mono-border pt-6 pl-4">
             <div className="w-12 h-12 rounded-full overflow-hidden border border-neutral-300 dark:border-neutral-800">
-              <img 
-                src={current.avatar} 
-                alt={current.name} 
+              <img
+                src={current.avatar}
+                alt={current.name}
                 className="mono-image-gray w-full h-full object-cover"
               />
             </div>
@@ -1211,7 +1353,8 @@ function TestimonialsCarousel({ testimonials }) {
       {/* Buttons */}
       <div className="flex justify-end gap-2 mt-8 md:mt-4">
         <Magnetic>
-          <button type="button"
+          <button
+            type="button"
             onClick={handlePrev}
             className="p-2.5 border mono-border hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors flex items-center justify-center"
             aria-label="Previous quote"
@@ -1220,7 +1363,8 @@ function TestimonialsCarousel({ testimonials }) {
           </button>
         </Magnetic>
         <Magnetic>
-          <button type="button"
+          <button
+            type="button"
             onClick={handleNext}
             className="p-2.5 border mono-border hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors flex items-center justify-center"
             aria-label="Next quote"

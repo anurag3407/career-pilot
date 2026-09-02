@@ -24,7 +24,9 @@ export default function Hero() {
         {/* Status label that establishes the terminal/cyberpunk tone. */}
         <div className="flex items-center gap-4 mb-8 vibrate-hover cursor-crosshair w-fit">
           <Terminal className="text-cyan-400 w-6 h-6 animate-pulse" />
-          <span className="text-cyan-400 font-mono tracking-widest text-sm uppercase">System.Init()</span>
+          <span className="text-cyan-400 font-mono tracking-widest text-sm uppercase">
+            System.Init()
+          </span>
         </div>
 
         <h1 className="text-5xl md:text-8xl font-black text-white mb-8 uppercase tracking-tighter leading-tight break-words">
@@ -38,19 +40,34 @@ export default function Hero() {
         {/* Social links are rendered conditionally so missing URLs stay hidden. */}
         <div className="flex flex-wrap gap-8">
           {data.socials.github && (
-            <a href={data.socials.github} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-4 bg-zinc-900 border border-zinc-800 hover:border-cyan-500 hover:text-cyan-400 transition-colors group">
+            <a
+              href={data.socials.github}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 p-4 bg-zinc-900 border border-zinc-800 hover:border-cyan-500 hover:text-cyan-400 transition-colors group"
+            >
               <Github className="w-6 h-6 group-hover:scale-110 transition-transform" />
               <span className="font-mono text-sm hidden sm:block">GitHub</span>
             </a>
           )}
           {data.socials.linkedin && (
-            <a href={data.socials.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-4 bg-zinc-900 border border-zinc-800 hover:border-fuchsia-500 hover:text-fuchsia-500 transition-colors group">
+            <a
+              href={data.socials.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 p-4 bg-zinc-900 border border-zinc-800 hover:border-fuchsia-500 hover:text-fuchsia-500 transition-colors group"
+            >
               <Linkedin className="w-6 h-6 group-hover:scale-110 transition-transform" />
               <span className="font-mono text-sm hidden sm:block">LinkedIn</span>
             </a>
           )}
           {data.socials.twitter && (
-            <a href={data.socials.twitter} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-4 bg-zinc-900 border border-zinc-800 hover:border-cyan-500 hover:text-cyan-400 transition-colors group">
+            <a
+              href={data.socials.twitter}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 p-4 bg-zinc-900 border border-zinc-800 hover:border-cyan-500 hover:text-cyan-400 transition-colors group"
+            >
               <Twitter className="w-6 h-6 group-hover:scale-110 transition-transform" />
               <span className="font-mono text-sm hidden sm:block">Twitter</span>
             </a>

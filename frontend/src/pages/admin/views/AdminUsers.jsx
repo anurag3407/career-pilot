@@ -44,11 +44,21 @@ const AdminUsers = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-background border-b border-border">
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">User</th>
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Role</th>
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Job Role</th>
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Joined</th>
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  User
+                </th>
+                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Role
+                </th>
+                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Job Role
+                </th>
+                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Joined
+                </th>
+                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -60,7 +70,9 @@ const AdminUsers = () => {
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-muted-foreground">No users found.</td>
+                  <td colSpan="5" className="px-6 py-12 text-center text-muted-foreground">
+                    No users found.
+                  </td>
                 </tr>
               ) : (
                 users.map((user) => (
@@ -77,11 +89,13 @@ const AdminUsers = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.role === 'admin' 
-                          ? 'bg-secondary/10 text-secondary' 
-                          : 'bg-primary/10 text-primary'
-                      }`}>
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          user.role === 'admin'
+                            ? 'bg-secondary/10 text-secondary'
+                            : 'bg-primary/10 text-primary'
+                        }`}
+                      >
                         {user.role || 'user'}
                       </span>
                     </td>
@@ -89,10 +103,14 @@ const AdminUsers = () => {
                       {user.jobRole || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                      {user.createdAt ? formatDistanceToNow(new Date(user.createdAt), { addSuffix: true }) : '-'}
+                      {user.createdAt
+                        ? formatDistanceToNow(new Date(user.createdAt), { addSuffix: true })
+                        : '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-primary hover:underline transition-colors">Edit</button>
+                      <button className="text-primary hover:underline transition-colors">
+                        Edit
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -105,18 +123,19 @@ const AdminUsers = () => {
         {!loading && totalPages > 1 && (
           <div className="px-6 py-4 border-t border-border flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
-              Showing page <span className="font-medium text-foreground">{page}</span> of <span className="font-medium text-foreground">{totalPages}</span>
+              Showing page <span className="font-medium text-foreground">{page}</span> of{' '}
+              <span className="font-medium text-foreground">{totalPages}</span>
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className="p-2 text-foreground bg-card border border-border rounded-xl disabled:opacity-50 hover:bg-muted transition-colors"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
                 className="p-2 text-foreground bg-card border border-border rounded-xl disabled:opacity-50 hover:bg-muted transition-colors"
               >

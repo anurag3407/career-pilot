@@ -63,7 +63,8 @@ export default function RoastInput({
     >
       <div>
         <label className="text-sm font-medium text-foreground">
-          Target role <span className="text-muted-foreground font-normal">(optional — sharper roast)</span>
+          Target role{' '}
+          <span className="text-muted-foreground font-normal">(optional — sharper roast)</span>
         </label>
         <input
           type="text"
@@ -77,15 +78,11 @@ export default function RoastInput({
 
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-foreground">
-            Paste your resume
-          </label>
+          <label className="text-sm font-medium text-foreground">Paste your resume</label>
           <span
             className={cn(
               'text-xs tabular-nums',
-              tooLong
-                ? 'text-destructive font-semibold'
-                : 'text-muted-foreground'
+              tooLong ? 'text-destructive font-semibold' : 'text-muted-foreground'
             )}
           >
             {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}

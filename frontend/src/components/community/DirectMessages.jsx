@@ -8,7 +8,7 @@ import { Search, Plus, Circle, X } from 'lucide-react';
 export default function DirectMessages() {
   const { user } = useAuth();
   const { subscribe, onlineUsers, startConversation } = useSocket();
-  
+
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -38,10 +38,10 @@ export default function DirectMessages() {
     const unsubNewDM = subscribe('new_direct_message', ({ message, conversation }) => {
       const convId = conversation.id || conversation._id;
       // Update conversations list
-      setConversations(prev => {
-        const exists = prev.find(c => (c.id || c._id) === convId);
+      setConversations((prev) => {
+        const exists = prev.find((c) => (c.id || c._id) === convId);
         if (exists) {
-          return prev.map(c => (c.id || c._id) === convId ? conversation : c);
+          return prev.map((c) => ((c.id || c._id) === convId ? conversation : c));
         }
         return [conversation, ...prev];
       });
@@ -49,7 +49,7 @@ export default function DirectMessages() {
       // Update messages if viewing this conversation
       const selectedId = selectedConversation?.id || selectedConversation?._id;
       if (selectedId === convId) {
-        setMessages(prev => [...prev, message]);
+        setMessages((prev) => [...prev, message]);
       }
     });
 
@@ -75,19 +75,27 @@ export default function DirectMessages() {
     startConversation({
       receiverId: targetUser.uid,
       receiverName: targetUser.name,
-      receiverEmail: targetUser.email
+      receiverEmail: targetUser.email,
     });
     setShowNewDM(false);
   };
 
   const getInitials = (name) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '??';
+    return (
+      name
+        ?.split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2) || '??'
+    );
   };
 
   // Filter online users for new DM
-  const filteredUsers = onlineUsers.filter(u => 
-    u.uid !== user?.uid &&
-    (searchQuery === '' || (u.name || '').toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredUsers = onlineUsers.filter(
+    (u) =>
+      u.uid !== user?.uid &&
+      (searchQuery === '' || (u.name || '').toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
@@ -119,7 +127,7 @@ export default function DirectMessages() {
           </div>
         ) : conversations.length > 0 ? (
           <div className="py-2">
-            {conversations.map(conv => {
+            {conversations.map((conv) => {
               const convId = conv.id || conv._id;
               const selectedId = selectedConversation?.id || selectedConversation?._id;
               const otherUser = conv.otherParticipant;
@@ -138,8 +146,8 @@ export default function DirectMessages() {
                   <div className="relative">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-sm font-medium">
                       {otherUser?.avatar ? (
-                        <img 
-                          src={otherUser.avatar} 
+                        <img
+                          src={otherUser.avatar}
                           alt={otherUser.name}
                           className="w-full h-full rounded-full object-cover"
                         />
@@ -147,7 +155,7 @@ export default function DirectMessages() {
                         getInitials(otherUser?.name)
                       )}
                     </div>
-                    <span 
+                    <span
                       className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background ${
                         isOnline ? 'bg-green-500' : 'bg-muted-foreground/50'
                       }`}
@@ -161,7 +169,9 @@ export default function DirectMessages() {
                       </span>
                       {conv.lastMessage?.timestamp && (
                         <span className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(new Date(conv.lastMessage.timestamp), { addSuffix: false })}
+                          {formatDistanceToNow(new Date(conv.lastMessage.timestamp), {
+                            addSuffix: false,
+                          })}
                         </span>
                       )}
                     </div>
@@ -228,7 +238,7 @@ export default function DirectMessages() {
                 </p>
                 {filteredUsers.length > 0 ? (
                   <div className="space-y-1">
-                    {filteredUsers.map(u => (
+                    {filteredUsers.map((u) => (
                       <button
                         key={u.uid}
                         onClick={() => handleStartConversation(u)}
@@ -245,9 +255,7 @@ export default function DirectMessages() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground text-center py-4">
-                    No users found
-                  </p>
+                  <p className="text-sm text-muted-foreground text-center py-4">No users found</p>
                 )}
               </div>
             </div>

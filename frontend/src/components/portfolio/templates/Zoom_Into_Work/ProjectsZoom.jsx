@@ -14,7 +14,7 @@ function ProjectCard({ project, index, projectsLength, scrollYProgress, step }) 
   const opacity = useTransform(scrollYProgress, [p0, p1, p2, p3], [0, 1, 1, 0]);
 
   const pointerEvents = useTransform(scrollYProgress, (p) => {
-    return (p >= p1 && p <= p2) ? 'auto' : 'none';
+    return p >= p1 && p <= p2 ? 'auto' : 'none';
   });
 
   const zIndex = projectsLength - index;
@@ -30,10 +30,12 @@ function ProjectCard({ project, index, projectsLength, scrollYProgress, step }) 
         className="bg-zinc-900/95 border border-zinc-800 p-6 md:p-10 rounded-[2rem] w-full max-w-5xl shadow-2xl group hover:border-cyan-500/50 transition-colors duration-500"
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
-
           <div className="relative overflow-hidden rounded-2xl h-56 sm:h-72 lg:h-[420px] bg-zinc-800">
             <img
-              src={project.image || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80'}
+              src={
+                project.image ||
+                'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80'
+              }
               alt={project.title}
               className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-[1.5s] ease-out"
             />
@@ -44,13 +46,14 @@ function ProjectCard({ project, index, projectsLength, scrollYProgress, step }) 
             <h3 className="text-3xl md:text-5xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">
               {project.title}
             </h3>
-            <p className="text-zinc-400 text-lg mb-8 leading-relaxed">
-              {project.description}
-            </p>
+            <p className="text-zinc-400 text-lg mb-8 leading-relaxed">{project.description}</p>
 
             <div className="flex flex-wrap gap-2 mb-8">
               {project.techStack?.map((tech, i) => (
-                <span key={i} className="px-4 py-1.5 text-sm bg-zinc-950 text-cyan-300 rounded-full border border-cyan-500/20 shadow-sm">
+                <span
+                  key={i}
+                  className="px-4 py-1.5 text-sm bg-zinc-950 text-cyan-300 rounded-full border border-cyan-500/20 shadow-sm"
+                >
                   {tech}
                 </span>
               ))}
@@ -58,18 +61,27 @@ function ProjectCard({ project, index, projectsLength, scrollYProgress, step }) 
 
             <div className="flex gap-4">
               {project.liveUrl && (
-                <a href={project.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 bg-zinc-50 text-zinc-950 font-bold rounded-full hover:bg-cyan-400 transition-colors shadow-lg">
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 px-6 py-3 bg-zinc-50 text-zinc-950 font-bold rounded-full hover:bg-cyan-400 transition-colors shadow-lg"
+                >
                   <ExternalLink size={18} /> View Live
                 </a>
               )}
               {project.githubUrl && (
-                <a href={project.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 bg-zinc-800 text-white font-bold rounded-full hover:bg-zinc-700 transition-colors border border-zinc-700">
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 px-6 py-3 bg-zinc-800 text-white font-bold rounded-full hover:bg-zinc-700 transition-colors border border-zinc-700"
+                >
                   <Github size={18} /> Source
                 </a>
               )}
             </div>
           </div>
-
         </div>
       </div>
     </motion.div>
@@ -80,7 +92,7 @@ export default function ProjectsZoom() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ['start start', 'end end'],
   });
 
   const projects = data.projects || [];
@@ -93,25 +105,39 @@ export default function ProjectsZoom() {
 
   return (
     <section className="bg-zinc-950 relative z-10">
-      <div ref={containerRef} className="relative w-full" style={{ height: `${(projects.length + 2) * 100}vh` }}>
+      <div
+        ref={containerRef}
+        className="relative w-full"
+        style={{ height: `${(projects.length + 2) * 100}vh` }}
+      >
         <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center bg-zinc-950">
-          
-          <div className="absolute inset-0 opacity-[0.04] pointer-events-none" 
-               style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+          <div
+            className="absolute inset-0 opacity-[0.04] pointer-events-none"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+              backgroundSize: '40px 40px',
+            }}
+          />
 
           {/* Intro Title with Static Dark White Heading */}
           <motion.div
             style={{
               opacity: titleOpacity,
               scale: titleScale,
-              zIndex: projects.length + 10 
+              zIndex: projects.length + 10,
             }}
             className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
           >
-            <SectionHeading icon={Star} className="flex items-center justify-center gap-4 mb-4" disableAnimation={true}>
+            <SectionHeading
+              icon={Star}
+              className="flex items-center justify-center gap-4 mb-4"
+              disableAnimation={true}
+            >
               Projects
             </SectionHeading>
-            <p className="text-zinc-500 mt-6 tracking-[0.3em] uppercase text-sm font-bold animate-pulse">Keep Scrolling</p>
+            <p className="text-zinc-500 mt-6 tracking-[0.3em] uppercase text-sm font-bold animate-pulse">
+              Keep Scrolling
+            </p>
           </motion.div>
 
           {projects.map((project, index) => (

@@ -19,7 +19,10 @@ export default function Contact({ data }) {
   };
 
   return (
-    <section id="contact" className="relative py-20 bg-[#121216] border-b border-neutral-900 text-white overflow-hidden selection:bg-[#E10600] selection:text-white">
+    <section
+      id="contact"
+      className="relative py-20 bg-[#121216] border-b border-neutral-900 text-white overflow-hidden selection:bg-[#E10600] selection:text-white"
+    >
       {/* Background Decor */}
       <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none -z-10" />
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-[#E10600]/50 to-transparent" />
@@ -42,7 +45,7 @@ export default function Contact({ data }) {
           <div className="bg-[#070709]/80 backdrop-blur-md border border-neutral-800 rounded-2xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
             {/* Top caution tape design */}
             <div className="absolute top-0 left-0 right-0 h-2 bg-[linear-gradient(45deg,#E10600_25%,#000_25%,#000_50%,#E10600_50%,#E10600_75%,#000_75%,#000_100%)] bg-[size:20px_20px]" />
-            
+
             <div className="flex items-center gap-3 mb-8">
               <Mail className="w-6 h-6 text-[#E10600]" />
               <h3 className="text-xl font-bold font-mono tracking-tight text-white uppercase">
@@ -53,7 +56,10 @@ export default function Contact({ data }) {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex justify-between">
+                  <label
+                    htmlFor="name"
+                    className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex justify-between"
+                  >
                     <span>Driver / Team Name</span>
                     <span className="text-[#E10600]">*</span>
                   </label>
@@ -68,7 +74,10 @@ export default function Contact({ data }) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex justify-between">
+                  <label
+                    htmlFor="email"
+                    className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex justify-between"
+                  >
                     <span>Secure Comms Channel (Email)</span>
                     <span className="text-[#E10600]">*</span>
                   </label>
@@ -85,7 +94,10 @@ export default function Contact({ data }) {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="message" className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex justify-between">
+                <label
+                  htmlFor="message"
+                  className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex justify-between"
+                >
                   <span>Strategy / Proposal Details</span>
                   <span className="text-[#E10600]">*</span>
                 </label>
@@ -130,14 +142,17 @@ export default function Contact({ data }) {
               </button>
             </form>
           </div>
-          
+
           {/* Quick contact / personal info below form */}
           {personal && personal.email && (
             <div className="mt-8 text-center">
               <p className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest mb-2">
                 DIRECT RADIO FREQUENCY
               </p>
-              <a href={`mailto:${personal.email}`} className="text-white hover:text-[#E10600] font-mono tracking-widest transition-colors">
+              <a
+                href={`mailto:${personal.email}`}
+                className="text-white hover:text-[#E10600] font-mono tracking-widest transition-colors"
+              >
                 {personal.email}
               </a>
             </div>

@@ -13,7 +13,11 @@ const ShareCard = ({ interview }, ref) => {
 
   const score = Math.round(interview.overallScore || 0);
   const date = interview.completedAt
-    ? new Date(interview.completedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    ? new Date(interview.completedAt).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
     : '';
   const topStrength = interview.overallFeedback?.topStrengths?.[0] || 'Strong communication';
   const topImprovement = interview.overallFeedback?.areasToImprove?.[0] || 'Sharpen edge cases';
@@ -48,9 +52,7 @@ const ShareCard = ({ interview }, ref) => {
         <div className="flex flex-col items-center justify-center w-40 h-40 rounded-3xl bg-gradient-to-br from-purple-500 to-indigo-600 shadow-2xl">
           <Award className="w-12 h-12 text-white/90 mb-1" />
           <span className="text-5xl font-bold">{score}</span>
-          <span className="text-xs uppercase tracking-wide text-purple-200 mt-1">
-            out of 100
-          </span>
+          <span className="text-xs uppercase tracking-wide text-purple-200 mt-1">out of 100</span>
         </div>
       </div>
 

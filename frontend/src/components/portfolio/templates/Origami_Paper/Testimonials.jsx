@@ -1,19 +1,19 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Star, Quote } from 'lucide-react';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 32 },
   visible: (i) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay: i * 0.13, ease: "easeOut" },
+    transition: { duration: 0.5, delay: i * 0.13, ease: 'easeOut' },
   }),
 };
 
 const stripVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.45, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.45, ease: 'easeOut' } },
 };
 
 export default function Testimonials({ testimonials }) {
@@ -32,9 +32,7 @@ export default function Testimonials({ testimonials }) {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 border-2 border-black bg-white px-5 py-2 shadow-[4px_4px_0px_#000]">
             <Quote size={16} />
-            <span className="font-mono text-xs uppercase tracking-widest">
-              Feedback
-            </span>
+            <span className="font-mono text-xs uppercase tracking-widest">Feedback</span>
           </div>
 
           <h2 className="mt-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-black">
@@ -42,15 +40,15 @@ export default function Testimonials({ testimonials }) {
           </h2>
 
           <p className="mx-auto mt-4 max-w-xl text-gray-700 text-base md:text-lg leading-relaxed">
-            Like a carefully folded note passed between colleagues — each
-            testimonial carries weight, intention, and genuine craft.
+            Like a carefully folded note passed between colleagues — each testimonial carries
+            weight, intention, and genuine craft.
           </p>
         </div>
 
         {/* Testimonial Grid */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3">
           {testimonials.map((item, i) => {
-            const rotations = ["rotate-1", "-rotate-1", "rotate-2", "-rotate-2"];
+            const rotations = ['rotate-1', '-rotate-1', 'rotate-2', '-rotate-2'];
             const rotate = rotations[i % rotations.length];
             return (
               <motion.div
@@ -92,7 +90,7 @@ export default function Testimonials({ testimonials }) {
                 {/* Author */}
                 <div className="flex items-center gap-3">
                   <div className="flex-shrink-0 h-10 w-10 bg-[#f8f4ec] border-2 border-black flex items-center justify-center font-black text-sm select-none">
-                    {item.author?.[0] || "?"}
+                    {item.author?.[0] || '?'}
                   </div>
                   <div>
                     <p className="font-extrabold text-black text-sm leading-tight">{item.author}</p>

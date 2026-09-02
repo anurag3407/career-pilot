@@ -9,7 +9,7 @@ const AdminDashboard = () => {
     totalUsers: 0,
     totalResumes: 0,
     totalPortfolios: 0,
-    totalJobs: 0
+    totalJobs: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -45,28 +45,28 @@ const AdminDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <AdminStatCard 
-          title="Total Users" 
-          value={stats.totalUsers} 
-          icon={Users} 
+        <AdminStatCard
+          title="Total Users"
+          value={stats.totalUsers}
+          icon={Users}
           description="Registered accounts"
         />
-        <AdminStatCard 
-          title="Resumes Created" 
-          value={stats.totalResumes} 
-          icon={FileText} 
+        <AdminStatCard
+          title="Resumes Created"
+          value={stats.totalResumes}
+          icon={FileText}
           description="Total resume builder usage"
         />
-        <AdminStatCard 
-          title="Portfolios Built" 
-          value={stats.totalPortfolios} 
-          icon={Globe} 
+        <AdminStatCard
+          title="Portfolios Built"
+          value={stats.totalPortfolios}
+          icon={Globe}
           description="Active portfolio templates"
         />
-        <AdminStatCard 
-          title="Job Listings" 
-          value={stats.totalJobs} 
-          icon={Briefcase} 
+        <AdminStatCard
+          title="Job Listings"
+          value={stats.totalJobs}
+          icon={Briefcase}
           description="Total tracked jobs"
         />
       </div>

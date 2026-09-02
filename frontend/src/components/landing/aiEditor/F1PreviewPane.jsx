@@ -16,103 +16,108 @@ import F1RacingTemplate from '../../portfolio/templates/F1_Racing/index';
  * This eliminates all cross-origin issues, postMessage round-trips, and
  * fragile text-matching heuristics that broke after the first edit.
  */
-export default function F1PreviewPane({
-  portfolioData,
-  onUpdate,
-  onShowToast,
-}) {
+export default function F1PreviewPane({ portfolioData, onUpdate, onShowToast }) {
   const containerRef = useRef(null);
   const [editorState, setEditorState] = useState(null);
   const [hoveredPath, setHoveredPath] = useState(null);
 
-  const handleClick = useCallback((e) => {
-    const container = containerRef.current;
-    if (!container) return;
+  const handleClick = useCallback(
+    (e) => {
+      const container = containerRef.current;
+      if (!container) return;
 
-    // Don't intercept clicks on the editor popover itself
-    if (e.target.closest('[data-editor-popover]')) return;
+      // Don't intercept clicks on the editor popover itself
+      if (e.target.closest('[data-editor-popover]')) return;
 
-    // Walk up from click target to find meaningful text
-    let target = e.target;
-    let depth = 0;
-    let text = '';
+      // Walk up from click target to find meaningful text
+      let target = e.target;
+      let depth = 0;
+      let text = '';
 
-    while (target && target !== container && depth < 8) {
-      const nodeText = target.textContent?.trim() || '';
-      if (nodeText.length > 1 && nodeText.length < 600) {
-        text = nodeText;
-        break;
+      while (target && target !== container && depth < 8) {
+        const nodeText = target.textContent?.trim() || '';
+        if (nodeText.length > 1 && nodeText.length < 600) {
+          text = nodeText;
+          break;
+        }
+        target = target.parentElement;
+        depth += 1;
       }
-      target = target.parentElement;
-      depth += 1;
-    }
 
-    if (!text) return;
+      if (!text) return;
 
-    // Resolve which editable field this text belongs to
-    const resolved = resolveEditableFromClick(text, portfolioData);
-    if (!resolved) return;
+      // Resolve which editable field this text belongs to
+      const resolved = resolveEditableFromClick(text, portfolioData);
+      if (!resolved) return;
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
 
-    // Get position for the popover
-    const rect = (target || e.target).getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
+      // Get position for the popover
+      const rect = (target || e.target).getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
 
-    setEditorState({
-      element: resolved.element,
-      position: {
-        x: rect.left + rect.width / 2 - containerRect.left,
-        y: rect.top - containerRect.top,
-      },
-      currentValue: resolved.currentValue,
-      currentColor: portfolioData?.themeAccent || '#E10600',
-    });
-  }, [portfolioData]);
+      setEditorState({
+        element: resolved.element,
+        position: {
+          x: rect.left + rect.width / 2 - containerRect.left,
+          y: rect.top - containerRect.top,
+        },
+        currentValue: resolved.currentValue,
+        currentColor: portfolioData?.themeAccent || '#E10600',
+      });
+    },
+    [portfolioData]
+  );
 
-  const handleMouseOver = useCallback((e) => {
-    const container = containerRef.current;
-    if (!container || editorState) return;
+  const handleMouseOver = useCallback(
+    (e) => {
+      const container = containerRef.current;
+      if (!container || editorState) return;
 
-    let target = e.target;
-    let depth = 0;
-    let text = '';
+      let target = e.target;
+      let depth = 0;
+      let text = '';
 
-    while (target && target !== container && depth < 6) {
-      const nodeText = target.textContent?.trim() || '';
-      if (nodeText.length > 1 && nodeText.length < 300) {
-        text = nodeText;
-        break;
+      while (target && target !== container && depth < 6) {
+        const nodeText = target.textContent?.trim() || '';
+        if (nodeText.length > 1 && nodeText.length < 300) {
+          text = nodeText;
+          break;
+        }
+        target = target.parentElement;
+        depth += 1;
       }
-      target = target.parentElement;
-      depth += 1;
-    }
 
-    if (!text) {
-      setHoveredPath(null);
-      return;
-    }
+      if (!text) {
+        setHoveredPath(null);
+        return;
+      }
 
-    const resolved = resolveEditableFromClick(text, portfolioData);
-    setHoveredPath(resolved ? resolved.element.dataPath : null);
-  }, [portfolioData, editorState]);
+      const resolved = resolveEditableFromClick(text, portfolioData);
+      setHoveredPath(resolved ? resolved.element.dataPath : null);
+    },
+    [portfolioData, editorState]
+  );
 
   const closeEditor = useCallback(() => {
     setEditorState(null);
   }, []);
 
-  const commitEdit = useCallback(({ slug, value, color }) => {
-    const element = F1_EDITABLE_ELEMENTS.find((el) => el.slug === slug);
-    if (!element) return;
-    const next = applyFieldEdit(portfolioData, element.dataPath, value);
-    if (color && color !== portfolioData?.themeAccent) {
-      next.themeAccent = color;
-    }
-    onUpdate?.(next);
-    onShowToast?.(`Updated ${element.label}`);
-    setEditorState(null);
-  }, [onShowToast, onUpdate, portfolioData]);
+  const commitEdit = useCallback(
+    ({ slug, value, color }) => {
+      const element = F1_EDITABLE_ELEMENTS.find((el) => el.slug === slug);
+      if (!element) return;
+      const next = applyFieldEdit(portfolioData, element.dataPath, value);
+      if (color && color !== portfolioData?.themeAccent) {
+        next.themeAccent = color;
+      }
+      onUpdate?.(next);
+      onShowToast?.(`Updated ${element.label}`);
+      setEditorState(null);
+    },
+    [onShowToast, onUpdate, portfolioData]
+  );
 
   const handleEnhance = useCallback(async ({ slug, kind, value }) => {
     try {
@@ -176,10 +181,12 @@ export default function F1PreviewPane({
         )}
 
         {/* The actual template — rendered in-place, fully interactive */}
-        <div className={cn(
-          'transition-opacity duration-200',
-          hoveredPath && '[&_*]:transition-shadow'
-        )}>
+        <div
+          className={cn(
+            'transition-opacity duration-200',
+            hoveredPath && '[&_*]:transition-shadow'
+          )}
+        >
           <F1RacingTemplate portfolioData={portfolioData} />
         </div>
       </div>

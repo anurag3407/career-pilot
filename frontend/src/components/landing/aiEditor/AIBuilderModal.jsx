@@ -14,8 +14,7 @@ const FALLBACK_PORTFOLIO = {
     title: 'Lead Full-Stack Developer & Performance Architect',
     location: 'Monaco / Remote',
     avatar: null,
-    bio:
-      'Engineering high-performance web systems with sub-millisecond response times. Specializing in React, Node.js, Go, and high-octane system architecture.',
+    bio: 'Engineering high-performance web systems with sub-millisecond response times. Specializing in React, Node.js, Go, and high-octane system architecture.',
     email: 'alex@example.com',
     socials: {
       github: 'https://github.com',
@@ -28,8 +27,7 @@ const FALLBACK_PORTFOLIO = {
     title: 'Lead Full-Stack Developer & Performance Architect',
     location: 'Monaco / Remote',
     avatar: null,
-    bio:
-      'Engineering high-performance web systems with sub-millisecond response times. Specializing in React, Node.js, Go, and high-octane system architecture.',
+    bio: 'Engineering high-performance web systems with sub-millisecond response times. Specializing in React, Node.js, Go, and high-octane system architecture.',
     email: 'alex@example.com',
   },
   stats: {
@@ -221,11 +219,7 @@ export default function AIBuilderModal({ isOpen, onClose }) {
 
             {/* Split layout */}
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_380px] overflow-hidden">
-              <F1PreviewPane
-                portfolioData={data}
-                onUpdate={handleUpdate}
-                onShowToast={showToast}
-              />
+              <F1PreviewPane portfolioData={data} onUpdate={handleUpdate} onShowToast={showToast} />
               <AIChatPanel
                 portfolioData={data}
                 onApplyPatch={handleApplyPatch}

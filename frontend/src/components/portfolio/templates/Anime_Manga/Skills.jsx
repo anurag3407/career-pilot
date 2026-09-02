@@ -14,7 +14,10 @@ export default function Skills({ skills }) {
 
       <div className="manga-panel p-8 pt-12 relative overflow-hidden bg-white">
         {/* Background Action Lines for the section */}
-        <div className="absolute top-0 right-0 w-64 h-full action-lines opacity-10" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0% 100%)' }} />
+        <div
+          className="absolute top-0 right-0 w-64 h-full action-lines opacity-10"
+          style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0% 100%)' }}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
           {skills.map((skillGroup, idx) => (
@@ -23,13 +26,15 @@ export default function Skills({ skills }) {
               <div className="border-4 border-black p-6 bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all h-full flex flex-col">
                 <h3 className="text-xl font-black uppercase mb-4 border-b-4 border-black pb-2 flex items-center justify-between">
                   {skillGroup.category}
-                  <span className="text-xs bg-black text-white px-2 py-1 ml-2 rounded-full">LVL {idx + 1}</span>
+                  <span className="text-xs bg-black text-white px-2 py-1 ml-2 rounded-full">
+                    LVL {idx + 1}
+                  </span>
                 </h3>
-                
+
                 <div className="flex flex-wrap gap-2 mt-auto">
                   {skillGroup.items.map((item, itemIdx) => (
-                    <span 
-                      key={itemIdx} 
+                    <span
+                      key={itemIdx}
                       className="text-sm font-bold border-2 border-black px-3 py-1 bg-white hover:bg-black hover:text-white transition-colors cursor-default transform hover:scale-105"
                       style={{ transform: `rotate(${Math.random() * 4 - 2}deg)` }}
                     >

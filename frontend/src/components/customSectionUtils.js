@@ -14,9 +14,7 @@ export function sectionsToMarkdown(sections) {
         .map((e) => {
           const parts = [];
           if (e?.title) {
-            const titleLine = e.subtitle
-              ? `**${e.title}** — *${e.subtitle}*`
-              : `**${e.title}**`;
+            const titleLine = e.subtitle ? `**${e.title}** — *${e.subtitle}*` : `**${e.title}**`;
             parts.push(e.date ? `${titleLine} *(${e.date})*` : titleLine);
           }
           if (e?.description) parts.push(e.description);

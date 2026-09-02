@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { ExternalLink, Github, Layers, Cpu, Zap, Eye } from "lucide-react";
+import { useState, useRef, useEffect } from 'react';
+import { ExternalLink, Github, Layers, Cpu, Zap, Eye } from 'lucide-react';
 
 /**
  * Default project data — replace with real portfolio data prop in production.
@@ -7,75 +7,75 @@ import { ExternalLink, Github, Layers, Cpu, Zap, Eye } from "lucide-react";
 const DEFAULT_PROJECTS = [
   {
     id: 1,
-    title: "Neural Interface Dashboard",
+    title: 'Neural Interface Dashboard',
     description:
-      "A real-time data visualization platform leveraging AI-driven insights and holographic rendering pipelines. Built with cutting-edge WebGL shaders and neural network APIs.",
-    tags: ["React", "WebGL", "TensorFlow.js", "Node.js"],
-    liveUrl: "#",
-    githubUrl: "#",
+      'A real-time data visualization platform leveraging AI-driven insights and holographic rendering pipelines. Built with cutting-edge WebGL shaders and neural network APIs.',
+    tags: ['React', 'WebGL', 'TensorFlow.js', 'Node.js'],
+    liveUrl: '#',
+    githubUrl: '#',
     featured: true,
-    category: "AI / ML",
-    stats: { stars: 248, forks: 64, views: "12K" },
+    category: 'AI / ML',
+    stats: { stars: 248, forks: 64, views: '12K' },
   },
   {
     id: 2,
-    title: "Quantum State Manager",
+    title: 'Quantum State Manager',
     description:
-      "Next-generation state management library inspired by quantum superposition principles — manage parallel UI states with zero boilerplate and maximum predictability.",
-    tags: ["TypeScript", "React", "Zustand", "Vite"],
-    liveUrl: "#",
-    githubUrl: "#",
+      'Next-generation state management library inspired by quantum superposition principles — manage parallel UI states with zero boilerplate and maximum predictability.',
+    tags: ['TypeScript', 'React', 'Zustand', 'Vite'],
+    liveUrl: '#',
+    githubUrl: '#',
     featured: false,
-    category: "Open Source",
-    stats: { stars: 512, forks: 89, views: "28K" },
+    category: 'Open Source',
+    stats: { stars: 512, forks: 89, views: '28K' },
   },
   {
     id: 3,
-    title: "Holo-Auth Framework",
+    title: 'Holo-Auth Framework',
     description:
-      "Multi-dimensional authentication system combining biometric holographic scanning with cryptographic identity proofs, built on Web3 standards.",
-    tags: ["Web3", "Ethereum", "Next.js", "Solidity"],
-    liveUrl: "#",
-    githubUrl: "#",
+      'Multi-dimensional authentication system combining biometric holographic scanning with cryptographic identity proofs, built on Web3 standards.',
+    tags: ['Web3', 'Ethereum', 'Next.js', 'Solidity'],
+    liveUrl: '#',
+    githubUrl: '#',
     featured: false,
-    category: "Web3",
-    stats: { stars: 134, forks: 41, views: "8K" },
+    category: 'Web3',
+    stats: { stars: 134, forks: 41, views: '8K' },
   },
   {
     id: 4,
-    title: "Spectral Analytics Engine",
+    title: 'Spectral Analytics Engine',
     description:
-      "High-performance analytics pipeline that processes petabyte-scale event streams with spectral decomposition algorithms, delivering sub-millisecond query latency.",
-    tags: ["Rust", "WebAssembly", "Kafka", "ClickHouse"],
-    liveUrl: "#",
-    githubUrl: "#",
+      'High-performance analytics pipeline that processes petabyte-scale event streams with spectral decomposition algorithms, delivering sub-millisecond query latency.',
+    tags: ['Rust', 'WebAssembly', 'Kafka', 'ClickHouse'],
+    liveUrl: '#',
+    githubUrl: '#',
     featured: true,
-    category: "Infrastructure",
-    stats: { stars: 76, forks: 22, views: "5K" },
+    category: 'Infrastructure',
+    stats: { stars: 76, forks: 22, views: '5K' },
   },
   {
     id: 5,
-    title: "Prism UI System",
+    title: 'Prism UI System',
     description:
-      "A design system that refracts visual hierarchy into prismatic color spectrums. Includes 200+ accessible components with holographic depth theming.",
-    tags: ["Figma", "Storybook", "CSS-in-JS", "a11y"],
-    liveUrl: "#",
-    githubUrl: "#",
+      'A design system that refracts visual hierarchy into prismatic color spectrums. Includes 200+ accessible components with holographic depth theming.',
+    tags: ['Figma', 'Storybook', 'CSS-in-JS', 'a11y'],
+    liveUrl: '#',
+    githubUrl: '#',
     featured: false,
-    category: "Design",
-    stats: { stars: 921, forks: 203, views: "45K" },
+    category: 'Design',
+    stats: { stars: 921, forks: 203, views: '45K' },
   },
   {
     id: 6,
-    title: "Void Protocol API",
+    title: 'Void Protocol API',
     description:
-      "Ultra-low-latency REST and GraphQL gateway with adaptive rate limiting, distributed caching, and self-healing circuit breakers designed for planetary-scale systems.",
-    tags: ["Go", "GraphQL", "Redis", "Kubernetes"],
-    liveUrl: "#",
-    githubUrl: "#",
+      'Ultra-low-latency REST and GraphQL gateway with adaptive rate limiting, distributed caching, and self-healing circuit breakers designed for planetary-scale systems.',
+    tags: ['Go', 'GraphQL', 'Redis', 'Kubernetes'],
+    liveUrl: '#',
+    githubUrl: '#',
     featured: false,
-    category: "Backend",
-    stats: { stars: 387, forks: 91, views: "19K" },
+    category: 'Backend',
+    stats: { stars: 387, forks: 91, views: '19K' },
   },
 ];
 
@@ -84,21 +84,21 @@ const DEFAULT_PROJECTS = [
    the visible spectrum on every card.
 ───────────────────────────────────────── */
 const HOLO_GRADIENTS = [
-  "from-cyan-400 via-blue-500 to-violet-600",
-  "from-fuchsia-500 via-rose-400 to-orange-400",
-  "from-emerald-400 via-cyan-400 to-blue-500",
-  "from-violet-500 via-purple-400 to-fuchsia-500",
-  "from-sky-400 via-indigo-400 to-violet-500",
-  "from-teal-400 via-emerald-400 to-cyan-500",
+  'from-cyan-400 via-blue-500 to-violet-600',
+  'from-fuchsia-500 via-rose-400 to-orange-400',
+  'from-emerald-400 via-cyan-400 to-blue-500',
+  'from-violet-500 via-purple-400 to-fuchsia-500',
+  'from-sky-400 via-indigo-400 to-violet-500',
+  'from-teal-400 via-emerald-400 to-cyan-500',
 ];
 
 const CATEGORY_COLORS = {
-  "AI / ML": "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
-  "Open Source": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
-  Web3: "bg-violet-500/20 text-violet-300 border-violet-500/30",
-  Infrastructure: "bg-orange-500/20 text-orange-300 border-orange-500/30",
-  Design: "bg-pink-500/20 text-pink-300 border-pink-500/30",
-  Backend: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+  'AI / ML': 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+  'Open Source': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+  Web3: 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  Infrastructure: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+  Design: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+  Backend: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
 };
 
 /* ─── Tilt-on-hover card ───────────────── */
@@ -110,8 +110,7 @@ function HoloCard({ project, index, isActive, onActivate }) {
 
   const gradient = HOLO_GRADIENTS[index % HOLO_GRADIENTS.length];
   const categoryStyle =
-    CATEGORY_COLORS[project.category] ||
-    "bg-slate-500/20 text-slate-300 border-slate-500/30";
+    CATEGORY_COLORS[project.category] || 'bg-slate-500/20 text-slate-300 border-slate-500/30';
 
   const handleMouseMove = (e) => {
     const card = cardRef.current;
@@ -145,16 +144,14 @@ function HoloCard({ project, index, isActive, onActivate }) {
       onClick={() => onActivate(project.id === isActive ? null : project.id)}
       style={{
         transform: `perspective(800px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${hovered ? 1.03 : 1})`,
-        transition: hovered
-          ? "transform 0.1s ease-out"
-          : "transform 0.5s ease-out",
+        transition: hovered ? 'transform 0.1s ease-out' : 'transform 0.5s ease-out',
       }}
       className="relative cursor-pointer rounded-2xl overflow-hidden group"
     >
       {/* ── outer prismatic border ── */}
       <div
         className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-        style={{ padding: "1.5px" }}
+        style={{ padding: '1.5px' }}
       />
       <div
         className={`absolute inset-[1.5px] rounded-2xl bg-gradient-to-br ${gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`}
@@ -163,7 +160,7 @@ function HoloCard({ project, index, isActive, onActivate }) {
       {/* ── glass body ── */}
       <div
         className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden"
-        style={{ isolation: "isolate" }}
+        style={{ isolation: 'isolate' }}
       >
         {/* Holographic shine layer */}
         <div
@@ -179,9 +176,9 @@ function HoloCard({ project, index, isActive, onActivate }) {
           className="absolute top-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           style={{
             background:
-              "linear-gradient(90deg, #00f5ff, #7c3aed, #ec4899, #f97316, #eab308, #22c55e, #00f5ff)",
-            backgroundSize: "200% 100%",
-            animation: hovered ? "shimmer 2s linear infinite" : "none",
+              'linear-gradient(90deg, #00f5ff, #7c3aed, #ec4899, #f97316, #eab308, #22c55e, #00f5ff)',
+            backgroundSize: '200% 100%',
+            animation: hovered ? 'shimmer 2s linear infinite' : 'none',
           }}
         />
 
@@ -248,8 +245,18 @@ function HoloCard({ project, index, isActive, onActivate }) {
               {project.stats.stars}
             </span>
             <span className="flex items-center gap-1">
-              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              <svg
+                className="w-3.5 h-3.5 text-slate-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                />
               </svg>
               {project.stats.forks}
             </span>
@@ -261,7 +268,7 @@ function HoloCard({ project, index, isActive, onActivate }) {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            {project.liveUrl && project.liveUrl !== "#" && (
+            {project.liveUrl && project.liveUrl !== '#' && (
               <a
                 href={project.liveUrl}
                 target="_blank"
@@ -274,7 +281,7 @@ function HoloCard({ project, index, isActive, onActivate }) {
                 Live Demo
               </a>
             )}
-            {project.githubUrl && project.githubUrl !== "#" && (
+            {project.githubUrl && project.githubUrl !== '#' && (
               <a
                 href={project.githubUrl}
                 target="_blank"
@@ -288,9 +295,11 @@ function HoloCard({ project, index, isActive, onActivate }) {
               </a>
             )}
             {/* Fallback when both are placeholder "#" — show greyed buttons */}
-            {project.liveUrl === "#" && project.githubUrl === "#" && (
+            {project.liveUrl === '#' && project.githubUrl === '#' && (
               <>
-                <span className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r ${gradient} text-white text-sm font-semibold opacity-70`}>
+                <span
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r ${gradient} text-white text-sm font-semibold opacity-70`}
+                >
                   <ExternalLink className="w-4 h-4" />
                   Live Demo
                 </span>
@@ -310,14 +319,15 @@ function HoloCard({ project, index, isActive, onActivate }) {
 /* ─── Filter pill ─────────────────────── */
 function FilterPill({ label, active, onClick }) {
   return (
-    <button type="button"
+    <button
+      type="button"
       onClick={onClick}
       aria-pressed={active}
       className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 whitespace-nowrap
         ${
           active
-            ? "bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white border-transparent shadow-[0_0_20px_rgba(99,102,241,0.5)]"
-            : "border-white/10 text-slate-400 bg-white/5 hover:bg-white/10 hover:text-white"
+            ? 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white border-transparent shadow-[0_0_20px_rgba(99,102,241,0.5)]'
+            : 'border-white/10 text-slate-400 bg-white/5 hover:bg-white/10 hover:text-white'
         }`}
     >
       {label}
@@ -337,10 +347,10 @@ function FilterPill({ label, active, onClick }) {
  */
 export default function HolographicProjects({
   projects = DEFAULT_PROJECTS,
-  title = "Projects",
-  subtitle = "Engineered at the intersection of imagination and reality",
+  title = 'Projects',
+  subtitle = 'Engineered at the intersection of imagination and reality',
 }) {
-  const [filter, setFilter] = useState("All");
+  const [filter, setFilter] = useState('All');
   const [activeId, setActiveId] = useState(null);
   const [visible, setVisible] = useState(false);
   const sectionRef = useRef(null);
@@ -360,10 +370,9 @@ export default function HolographicProjects({
     return () => observer.disconnect();
   }, []);
 
-  const categories = ["All", ...new Set(projects.map((p) => p.category))];
+  const categories = ['All', ...new Set(projects.map((p) => p.category))];
 
-  const filtered =
-    filter === "All" ? projects : projects.filter((p) => p.category === filter);
+  const filtered = filter === 'All' ? projects : projects.filter((p) => p.category === filter);
 
   return (
     <>
@@ -410,16 +419,16 @@ export default function HolographicProjects({
           className="absolute inset-0 pointer-events-none opacity-[0.04]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(120,200,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(120,200,255,1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
+              'linear-gradient(rgba(120,200,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(120,200,255,1) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
           }}
         />
 
         {/* Floating orbs */}
         {[
-          { top: "10%", left: "5%", size: 220, color: "rgba(99,102,241,0.12)", dur: "8s" },
-          { top: "60%", left: "88%", size: 180, color: "rgba(20,184,166,0.10)", dur: "11s" },
-          { top: "40%", left: "50%", size: 300, color: "rgba(236,72,153,0.06)", dur: "14s" },
+          { top: '10%', left: '5%', size: 220, color: 'rgba(99,102,241,0.12)', dur: '8s' },
+          { top: '60%', left: '88%', size: 180, color: 'rgba(20,184,166,0.10)', dur: '11s' },
+          { top: '40%', left: '50%', size: 300, color: 'rgba(236,72,153,0.06)', dur: '14s' },
         ].map((orb, i) => (
           <div
             key={i}
@@ -442,21 +451,19 @@ export default function HolographicProjects({
           style={{
             width: 700,
             height: 700,
-            border: "1.5px solid",
-            borderImage:
-              "linear-gradient(135deg,#00f5ff,#7c3aed,#ec4899,#f97316,#00f5ff) 1",
-            borderRadius: "9999px",
-            animation: "holo-spin 30s linear infinite",
+            border: '1.5px solid',
+            borderImage: 'linear-gradient(135deg,#00f5ff,#7c3aed,#ec4899,#f97316,#00f5ff) 1',
+            borderRadius: '9999px',
+            animation: 'holo-spin 30s linear infinite',
           }}
         />
 
         {/* ────────────── Content ────────────── */}
         <div className="relative z-10 max-w-7xl mx-auto">
-
           {/* Section header */}
           <div
             className={`text-center mb-14 transition-all duration-700 ${
-              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
             {/* Eyebrow badge */}
@@ -471,13 +478,10 @@ export default function HolographicProjects({
             </div>
 
             {/* Heading */}
-            <h2
-              id="projects-heading"
-              className="text-4xl sm:text-5xl lg:text-6xl font-black mb-4"
-            >
+            <h2 id="projects-heading" className="text-4xl sm:text-5xl lg:text-6xl font-black mb-4">
               <span
                 className="bg-gradient-to-r from-cyan-300 via-blue-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent"
-                style={{ backgroundSize: "200% 100%", animation: "shimmer 5s linear infinite" }}
+                style={{ backgroundSize: '200% 100%', animation: 'shimmer 5s linear infinite' }}
               >
                 {title}
               </span>
@@ -498,7 +502,7 @@ export default function HolographicProjects({
           {/* Filter tabs */}
           <div
             className={`flex flex-wrap items-center justify-center gap-2 mb-10 transition-all duration-700 delay-150 ${
-              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
             role="group"
             aria-label="Filter projects by category"
@@ -516,7 +520,7 @@ export default function HolographicProjects({
           {/* Count badge */}
           <div className="flex justify-center mb-8">
             <span className="text-xs text-slate-500 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
-              {filtered.length} project{filtered.length !== 1 ? "s" : ""}
+              {filtered.length} project{filtered.length !== 1 ? 's' : ''}
             </span>
           </div>
 
@@ -529,7 +533,7 @@ export default function HolographicProjects({
             {filtered.map((project, index) => (
               <div
                 key={project.id}
-                className={visible ? "card-enter" : "opacity-0"}
+                className={visible ? 'card-enter' : 'opacity-0'}
                 style={{ animationDelay: `${index * 80}ms` }}
               >
                 <HoloCard
@@ -547,8 +551,9 @@ export default function HolographicProjects({
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <Layers className="w-12 h-12 text-slate-600 mb-4" />
               <p className="text-slate-500 text-lg font-medium">No projects in this category yet</p>
-              <button type="button"
-                onClick={() => setFilter("All")}
+              <button
+                type="button"
+                onClick={() => setFilter('All')}
                 className="mt-4 text-sm text-cyan-400 hover:text-cyan-300 underline transition-colors"
               >
                 Show all projects
@@ -559,7 +564,7 @@ export default function HolographicProjects({
           {/* Footer CTA */}
           <div
             className={`mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 transition-all duration-700 delay-300 ${
-              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
             <a

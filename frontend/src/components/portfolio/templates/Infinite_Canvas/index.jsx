@@ -1,14 +1,14 @@
-import React from "react";
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import React from 'react';
+import { usePortfolio } from '../../../../context/PortfolioContext';
 
-import Hero from "./Hero";
-import About from "./About";
-import Skills from "./Skills";
-import Projects from "./Projects";
-import Experience from "./Experience";
-import Testimonials from "./Testimonials";
-import Contact from "./Contact";
-import CanvasBackground from "./CanvasBackground";
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
+import CanvasBackground from './CanvasBackground';
 
 export default function InfiniteCanvas() {
   const { portfolioData: data } = usePortfolio();

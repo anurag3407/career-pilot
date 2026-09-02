@@ -16,12 +16,14 @@ export default function Testimonials({ testimonials }) {
               className="p-8 rounded-3xl bg-gray-100 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] flex flex-col justify-between"
             >
               <div className="mb-6">
-                <svg className="w-10 h-10 text-gray-400 mb-4" fill="currentColor" viewBox="0 0 32 32">
+                <svg
+                  className="w-10 h-10 text-gray-400 mb-4"
+                  fill="currentColor"
+                  viewBox="0 0 32 32"
+                >
                   <path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14H8c0-1.1.9-2 2-2h2V8h-2zm16 0c-3.3 0-6 2.7-6 6v10h10V14h-6c0-1.1.9-2 2-2h2V8h-2z" />
                 </svg>
-                <p className="text-gray-600 italic leading-relaxed">
-                  "{t.content}"
-                </p>
+                <p className="text-gray-600 italic leading-relaxed">"{t.content}"</p>
               </div>
               <div className="mt-auto">
                 <p className="text-xl font-bold text-gray-800">{t.author}</p>

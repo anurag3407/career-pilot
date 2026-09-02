@@ -1,13 +1,16 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
-import { Quote, Star } from "lucide-react";
+import { motion } from 'framer-motion';
+import { useInView } from 'framer-motion';
+import { useRef } from 'react';
+import { Quote, Star } from 'lucide-react';
 
 function Stars({ count = 5 }) {
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
-        <Star key={i} className={`w-3.5 h-3.5 ${i < count ? "text-amber-400 fill-amber-400" : "text-slate-200 fill-slate-200"}`} />
+        <Star
+          key={i}
+          className={`w-3.5 h-3.5 ${i < count ? 'text-amber-400 fill-amber-400' : 'text-slate-200 fill-slate-200'}`}
+        />
       ))}
     </div>
   );
@@ -16,7 +19,7 @@ function Stars({ count = 5 }) {
 export default function Testimonials({ data }) {
   const { testimonials } = data;
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
     <section id="testimonials" ref={ref} className="py-24 bg-white">
@@ -27,11 +30,19 @@ export default function Testimonials({ data }) {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-blue-600 text-sm font-semibold tracking-widest uppercase block mb-3">Testimonials</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+          <span className="text-blue-600 text-sm font-semibold tracking-widest uppercase block mb-3">
+            Testimonials
+          </span>
+          <h2
+            className="text-3xl md:text-4xl font-bold text-slate-900"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+          >
             What Patients Say
           </h2>
-          <p className="text-slate-500 mt-4 max-w-xl mx-auto text-base">Real stories from patients whose lives have been positively impacted through dedicated care.</p>
+          <p className="text-slate-500 mt-4 max-w-xl mx-auto text-base">
+            Real stories from patients whose lives have been positively impacted through dedicated
+            care.
+          </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -52,13 +63,19 @@ export default function Testimonials({ data }) {
                   {t.avatar ? (
                     <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-white text-sm font-bold">{(t.name ?? "P").charAt(0)}</span>
+                    <span className="text-white text-sm font-bold">
+                      {(t.name ?? 'P').charAt(0)}
+                    </span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-slate-800 font-semibold text-sm truncate">{t.name ?? "Anonymous Patient"}</p>
+                  <p className="text-slate-800 font-semibold text-sm truncate">
+                    {t.name ?? 'Anonymous Patient'}
+                  </p>
                   {(t.role ?? t.condition ?? t.type) && (
-                    <p className="text-slate-400 text-xs truncate">{t.role ?? t.condition ?? t.type}</p>
+                    <p className="text-slate-400 text-xs truncate">
+                      {t.role ?? t.condition ?? t.type}
+                    </p>
                   )}
                 </div>
                 <Stars count={t.rating ?? 5} />

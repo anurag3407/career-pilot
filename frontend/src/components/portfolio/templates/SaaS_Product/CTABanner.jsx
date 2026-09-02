@@ -17,7 +17,9 @@ export default function CTABanner({ data }) {
         <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-white/20 blur-3xl" />
         <div className="absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-black/20 blur-3xl" />
         <div className="relative">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/80">Available for New Projects</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/80">
+            Available for New Projects
+          </p>
           <h2 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl">
             Let&apos;s Build Something
             <span className="block">Remarkable Together</span>

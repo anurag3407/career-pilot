@@ -14,7 +14,10 @@ const fadeUp = {
 
 function Label({ children }) {
   return (
-    <span className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase" style={{ color: ACCENT }}>
+    <span
+      className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase"
+      style={{ color: ACCENT }}
+    >
       {children}
     </span>
   );
@@ -43,7 +46,10 @@ export default function Experience({ data }) {
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">
                   {job.period}
                 </p>
-                <p className="text-xs font-black uppercase tracking-widest" style={{ color: ACCENT }}>
+                <p
+                  className="text-xs font-black uppercase tracking-widest"
+                  style={{ color: ACCENT }}
+                >
                   {job.company}
                 </p>
               </div>

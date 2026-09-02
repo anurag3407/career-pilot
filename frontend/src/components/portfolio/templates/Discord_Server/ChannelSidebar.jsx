@@ -14,9 +14,18 @@ const channels = [
 
 const categories = ['INFORMATION', 'PORTFOLIO', 'COMMUNITY'];
 
-export default function ChannelSidebar({ activeChannel, setActiveChannel, name, title, avatar, forceShow = false }) {
+export default function ChannelSidebar({
+  activeChannel,
+  setActiveChannel,
+  name,
+  title,
+  avatar,
+  forceShow = false,
+}) {
   return (
-    <div className={`${forceShow ? 'flex' : 'hidden md:flex'} flex-col w-60 min-w-[240px] bg-[#2B2D31] overflow-hidden select-none`}>
+    <div
+      className={`${forceShow ? 'flex' : 'hidden md:flex'} flex-col w-60 min-w-[240px] bg-[#2B2D31] overflow-hidden select-none`}
+    >
       {/* Server Header */}
       <div className="h-12 px-4 flex items-center justify-between border-b border-[#1F2023] shadow-md cursor-pointer hover:bg-[#35373C] transition-colors">
         <h2 className="text-[15px] font-semibold text-white truncate">{name}'s Portfolio</h2>
@@ -47,7 +56,9 @@ export default function ChannelSidebar({ activeChannel, setActiveChannel, name, 
                   <Hash className="w-4 h-4 shrink-0 opacity-70" />
                   <span className="truncate">{ch.label}</span>
                   {ch.id === 'welcome' && (
-                    <span className="ml-auto bg-[#DA373C] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">!</span>
+                    <span className="ml-auto bg-[#DA373C] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                      !
+                    </span>
                   )}
                 </motion.button>
               ))}
@@ -75,7 +86,9 @@ export default function ChannelSidebar({ activeChannel, setActiveChannel, name, 
           <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#23A559] rounded-full border-[3px] border-[#232428]" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-medium text-white truncate leading-tight">{name.split(' ')[0]}</div>
+          <div className="text-sm font-medium text-white truncate leading-tight">
+            {name.split(' ')[0]}
+          </div>
           <div className="text-[11px] text-[#949BA4] truncate leading-tight">Online</div>
         </div>
         <div className="flex items-center gap-1">

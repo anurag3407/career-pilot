@@ -1,4 +1,4 @@
-import { useResume } from '../../../context/ResumeContext'
+import { useResume } from '../../../context/ResumeContext';
 
 /**
  * Avatar — renders initials OR photo. Falls back gracefully.
@@ -20,13 +20,13 @@ export default function Avatar({
   fontSize,
   style = {},
 }) {
-  const { personal } = useResume()
+  const { personal } = useResume();
   const initials = (personal?.name || 'U')
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((s) => s[0]?.toUpperCase())
-    .join('')
+    .join('');
 
   const baseStyle = {
     width: `${sizeMm}mm`,
@@ -38,7 +38,7 @@ export default function Avatar({
     overflow: 'hidden',
     flexShrink: 0,
     ...style,
-  }
+  };
 
   if (personal?.photo) {
     return (
@@ -55,7 +55,7 @@ export default function Avatar({
           }}
         />
       </div>
-    )
+    );
   }
 
   return (
@@ -70,5 +70,5 @@ export default function Avatar({
     >
       {initials || '·'}
     </div>
-  )
+  );
 }

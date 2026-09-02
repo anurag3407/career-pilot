@@ -1,5 +1,5 @@
-import React from "react";
-import { Wrench } from "lucide-react";
+import React from 'react';
+import { Wrench } from 'lucide-react';
 
 export default function Skills({ skills }) {
   if (!skills || skills.length === 0) return null;
@@ -10,9 +10,7 @@ export default function Skills({ skills }) {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 border-2 border-black bg-white px-5 py-2 shadow-[4px_4px_0px_#000]">
             <Wrench size={16} />
-            <span className="font-mono text-xs uppercase tracking-widest">
-              Toolkit
-            </span>
+            <span className="font-mono text-xs uppercase tracking-widest">Toolkit</span>
           </div>
 
           <h2 className="mt-6 text-4xl md:text-5xl font-black tracking-tight text-black">
@@ -32,9 +30,7 @@ export default function Skills({ skills }) {
               {/* Paper Shadow Layer */}
               <div className="absolute -bottom-1 -left-1 w-full h-full bg-[#efe6d6] border-2 border-black -z-10" />
 
-              <span className="font-bold text-black text-sm tracking-wide">
-                {skill.name}
-              </span>
+              <span className="font-bold text-black text-sm tracking-wide">{skill.name}</span>
             </div>
           ))}
         </div>

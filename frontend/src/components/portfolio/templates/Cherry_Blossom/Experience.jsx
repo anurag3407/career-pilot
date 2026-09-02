@@ -1,15 +1,13 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Briefcase } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Briefcase } from 'lucide-react';
 
 export default function Experience({ data }) {
   const { experience } = data;
   return (
     <section className="relative z-10 px-6 py-20 text-left">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-rose-800 mb-14">
-          Experience
-        </h2>
+        <h2 className="text-4xl font-bold text-center text-rose-800 mb-14">Experience</h2>
 
         <div className="space-y-8">
           {experience.map((exp, index) => (
@@ -24,21 +22,13 @@ export default function Experience({ data }) {
                 </div>
 
                 <div>
-                  <h3 className="text-2xl font-semibold text-rose-700">
-                    {exp.role}
-                  </h3>
+                  <h3 className="text-2xl font-semibold text-rose-700">{exp.role}</h3>
 
-                  <p className="text-pink-600 font-medium">
-                    {exp.company}
-                  </p>
+                  <p className="text-pink-600 font-medium">{exp.company}</p>
 
-                  <p className="text-sm text-gray-500 mt-1">
-                    {exp.period}
-                  </p>
+                  <p className="text-sm text-gray-500 mt-1">{exp.period}</p>
 
-                  <p className="mt-4 text-gray-600 leading-relaxed">
-                    {exp.description}
-                  </p>
+                  <p className="mt-4 text-gray-600 leading-relaxed">{exp.description}</p>
                 </div>
               </div>
             </motion.div>

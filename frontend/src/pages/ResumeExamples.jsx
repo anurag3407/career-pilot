@@ -1,14 +1,8 @@
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import {
-  Search, Filter, Sparkles, ArrowRight, Briefcase, FileText,
-} from 'lucide-react'
-import { motion } from 'framer-motion'
-import {
-  RESUME_EXAMPLES,
-  EXAMPLE_CATEGORIES,
-  getExamplesByCategory,
-} from '../data/resumeExamples'
+import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Search, Filter, Sparkles, ArrowRight, Briefcase, FileText } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { RESUME_EXAMPLES, EXAMPLE_CATEGORIES, getExamplesByCategory } from '../data/resumeExamples';
 
 /**
  * ResumeExamples — browsable library of curated resume examples by
@@ -19,20 +13,21 @@ import {
  * styled against the sample.
  */
 export default function ResumeExamples() {
-  const [activeCategory, setActiveCategory] = useState('all')
-  const [query, setQuery] = useState('')
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [query, setQuery] = useState('');
 
   const filtered = useMemo(() => {
-    const base = getExamplesByCategory(activeCategory)
-    const q = query.trim().toLowerCase()
-    if (!q) return base
-    return base.filter(e =>
-      e.role.toLowerCase().includes(q) ||
-      e.company.toLowerCase().includes(q) ||
-      e.summary.toLowerCase().includes(q) ||
-      e.category.toLowerCase().includes(q)
-    )
-  }, [activeCategory, query])
+    const base = getExamplesByCategory(activeCategory);
+    const q = query.trim().toLowerCase();
+    if (!q) return base;
+    return base.filter(
+      (e) =>
+        e.role.toLowerCase().includes(q) ||
+        e.company.toLowerCase().includes(q) ||
+        e.summary.toLowerCase().includes(q) ||
+        e.category.toLowerCase().includes(q)
+    );
+  }, [activeCategory, query]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,8 +45,8 @@ export default function ResumeExamples() {
             {RESUME_EXAMPLES.length}+ curated resume examples
           </h1>
           <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
-            Browse by industry or role. Every example opens in the templates gallery so
-            you can see how it renders across our 8 styles — and export as PDF, DOCX, or TXT.
+            Browse by industry or role. Every example opens in the templates gallery so you can see
+            how it renders across our 8 styles — and export as PDF, DOCX, or TXT.
           </p>
         </motion.header>
 
@@ -62,7 +57,7 @@ export default function ResumeExamples() {
             <input
               type="text"
               value={query}
-              onChange={e => setQuery(e.target.value)}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="Search roles, industries, or keywords…"
               className="w-full pl-9 pr-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/50"
             />
@@ -81,7 +76,7 @@ export default function ResumeExamples() {
               <Filter className="w-3 h-3" />
               All
             </button>
-            {EXAMPLE_CATEGORIES.map(c => (
+            {EXAMPLE_CATEGORIES.map((c) => (
               <button
                 key={c.id}
                 type="button"
@@ -106,9 +101,7 @@ export default function ResumeExamples() {
               No examples match "{query}". Try a different search.
             </div>
           ) : (
-            filtered.map(example => (
-              <ExampleCard key={example.id} example={example} />
-            ))
+            filtered.map((example) => <ExampleCard key={example.id} example={example} />)
           )}
         </div>
 
@@ -123,13 +116,13 @@ export default function ResumeExamples() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function ExampleCard({ example }) {
   const params = new URLSearchParams({
     exampleId: example.id,
-  }).toString()
+  }).toString();
   return (
     <Link
       to={`/resume-templates?${params}`}
@@ -143,12 +136,8 @@ function ExampleCard({ example }) {
       >
         <div className="text-center px-6">
           <Briefcase className="w-8 h-8 mx-auto text-sky-500 mb-2" />
-          <div className="font-bold text-foreground text-sm">
-            {example.personal.name}
-          </div>
-          <div className="text-xs text-sky-600 mt-0.5">
-            {example.personal.title}
-          </div>
+          <div className="font-bold text-foreground text-sm">{example.personal.name}</div>
+          <div className="text-xs text-sky-600 mt-0.5">{example.personal.title}</div>
         </div>
       </div>
       <div className="p-4">
@@ -157,17 +146,13 @@ function ExampleCard({ example }) {
             <h3 className="font-semibold text-foreground text-sm group-hover:text-sky-500 transition-colors">
               {example.role}
             </h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {example.company}
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">{example.company}</p>
           </div>
           <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-muted text-foreground uppercase tracking-wider">
             {example.category}
           </span>
         </div>
-        <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
-          {example.summary}
-        </p>
+        <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{example.summary}</p>
         <div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-sky-500">
           <FileText className="w-3 h-3" />
           Open in templates
@@ -175,5 +160,5 @@ function ExampleCard({ example }) {
         </div>
       </div>
     </Link>
-  )
+  );
 }

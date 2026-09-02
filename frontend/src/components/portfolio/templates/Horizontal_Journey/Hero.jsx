@@ -24,10 +24,15 @@ export default function Hero() {
             className="text-4xl font-black leading-[0.9] tracking-tighter text-zinc-100 md:text-[6rem] lg:text-[9rem]"
           >
             {data.personal.title.split(' ')[0]} <br />
-            <span className="text-zinc-600">{data.personal.title.split(' ').slice(1).join(' ')}</span>
+            <span className="text-zinc-600">
+              {data.personal.title.split(' ').slice(1).join(' ')}
+            </span>
           </motion.h1>
         </div>
-        <motion.div variants={fadeUp} className="mt-4 flex flex-col gap-3 lg:mt-8 md:flex-row lg:items-center">
+        <motion.div
+          variants={fadeUp}
+          className="mt-4 flex flex-col gap-3 lg:mt-8 md:flex-row lg:items-center"
+        >
           <div className="h-1 w-8 shrink-0 bg-zinc-100 lg:w-24" />
           <p className="max-w-md text-xs leading-snug text-zinc-400 lg:text-lg">
             Swipe down to move forward through my journey, projects, and experience.

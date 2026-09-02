@@ -22,11 +22,15 @@ export function Message({ avatar, name, timestamp, children, isBot, index = 0 })
       />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className={`font-medium text-sm cursor-pointer hover:underline ${isBot ? 'text-[#5865F2]' : 'text-[#F2F3F5]'}`}>
+          <span
+            className={`font-medium text-sm cursor-pointer hover:underline ${isBot ? 'text-[#5865F2]' : 'text-[#F2F3F5]'}`}
+          >
             {name}
           </span>
           {isBot && (
-            <span className="bg-[#5865F2] text-[10px] text-white font-bold px-1 py-[1px] rounded text-center leading-tight">BOT</span>
+            <span className="bg-[#5865F2] text-[10px] text-white font-bold px-1 py-[1px] rounded text-center leading-tight">
+              BOT
+            </span>
           )}
           <span className="text-[11px] text-[#949BA4]">{timestamp}</span>
         </div>
@@ -53,7 +57,13 @@ export function Embed({ color = '#5865F2', title, description, fields, image, fo
             ))}
           </div>
         )}
-        {image && <img src={image} alt={title || 'Embedded image'} className="w-full rounded mt-1 max-h-48 object-cover" />}
+        {image && (
+          <img
+            src={image}
+            alt={title || 'Embedded image'}
+            className="w-full rounded mt-1 max-h-48 object-cover"
+          />
+        )}
         {footer && <div className="text-[11px] text-[#949BA4] mt-2">{footer}</div>}
       </div>
     </div>

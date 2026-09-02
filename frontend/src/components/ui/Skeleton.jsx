@@ -5,20 +5,12 @@
 
 /** Base rectangular block */
 export function SkeletonBlock({ className = '' }) {
-  return (
-    <div
-      className={`animate-pulse rounded-lg bg-muted-foreground/15 ${className}`}
-    />
-  );
+  return <div className={`animate-pulse rounded-lg bg-muted-foreground/15 ${className}`} />;
 }
 
 /** Circular skeleton (avatars, icons) */
 export function SkeletonCircle({ className = '' }) {
-  return (
-    <div
-      className={`animate-pulse rounded-full bg-muted-foreground/15 ${className}`}
-    />
-  );
+  return <div className={`animate-pulse rounded-full bg-muted-foreground/15 ${className}`} />;
 }
 
 /** Multiple text lines of varying width */
@@ -69,9 +61,7 @@ export function SkeletonRow({ className = '' }) {
 /** Stat card skeleton (icon + number + label) */
 export function SkeletonStat({ className = '' }) {
   return (
-    <div
-      className={`p-6 rounded-2xl bg-card border border-border text-center ${className}`}
-    >
+    <div className={`p-6 rounded-2xl bg-card border border-border text-center ${className}`}>
       <SkeletonCircle className="w-12 h-12 mx-auto mb-4" />
       <SkeletonBlock className="h-8 w-12 mx-auto mb-2 rounded" />
       <SkeletonBlock className="h-3 w-16 mx-auto rounded" />
@@ -82,9 +72,7 @@ export function SkeletonStat({ className = '' }) {
 /** Action card skeleton (icon + title + subtitle) */
 export function SkeletonAction({ className = '' }) {
   return (
-    <div
-      className={`p-5 rounded-2xl bg-card border border-border ${className}`}
-    >
+    <div className={`p-5 rounded-2xl bg-card border border-border ${className}`}>
       <SkeletonCircle className="w-12 h-12 mb-4" />
       <SkeletonBlock className="h-4 w-3/4 mb-2" />
       <SkeletonBlock className="h-3 w-1/2" />
@@ -95,9 +83,7 @@ export function SkeletonAction({ className = '' }) {
 /** Job card skeleton */
 export function SkeletonJobCard({ className = '' }) {
   return (
-    <div
-      className={`p-6 rounded-xl bg-background/50 border border-border ${className}`}
-    >
+    <div className={`p-6 rounded-xl bg-background/50 border border-border ${className}`}>
       <div className="flex gap-4">
         <SkeletonBlock className="w-14 h-14 rounded-xl flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -277,10 +263,7 @@ export function SkeletonTracker({ className = '' }) {
         {/* Stats Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div
-              key={i}
-              className="p-6 bg-background/50 border border-border rounded-xl"
-            >
+            <div key={i} className="p-6 bg-background/50 border border-border rounded-xl">
               <SkeletonBlock className="h-4 w-16 mb-2" />
               <SkeletonBlock className="h-8 w-12" />
             </div>
@@ -391,10 +374,7 @@ export function SkeletonDashboard() {
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div
-            key={i}
-            className="rounded-xl border border-border bg-card p-4 space-y-2"
-          >
+          <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-2">
             <Skeleton className="h-3 w-1/2" />
             <Skeleton className="h-8 w-1/3" />
           </div>
@@ -500,10 +480,7 @@ export function SkeletonDashboardActions() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
       {Array.from({ length: 7 }).map((_, i) => (
-        <div
-          key={i}
-          className="p-5 rounded-2xl bg-card border border-border space-y-3"
-        >
+        <div key={i} className="p-5 rounded-2xl bg-card border border-border space-y-3">
           <Skeleton className="h-10 w-10 rounded-lg" />
           <Skeleton className="h-3 w-2/3" />
           <Skeleton className="h-2 w-1/2" />
@@ -539,11 +516,7 @@ export function SkeletonListItems({ count = 4 }) {
 }
 
 // ============ Page Skeletons ============
-export function SkeletonPage({
-  width = 'max-w-6xl',
-  rows = 4,
-  className = '',
-}) {
+export function SkeletonPage({ width = 'max-w-6xl', rows = 4, className = '' }) {
   return (
     <div className={`min-h-screen bg-background ${className}`}>
       <div className={`${width} mx-auto px-4 sm:px-6 lg:px-8 py-8`}>

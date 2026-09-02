@@ -8,9 +8,12 @@ export default function Contact({ personal, socials }) {
       <div className="max-w-3xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-light mb-8 tracking-wide">Get In Touch</h2>
         <div className="w-12 h-px bg-gray-300 mx-auto mb-12"></div>
-        
+
         {personal?.email && (
-          <a href={`mailto:${personal.email}`} className="text-xl md:text-2xl font-light text-gray-500 hover:text-gray-900 transition-colors block mb-12">
+          <a
+            href={`mailto:${personal.email}`}
+            className="text-xl md:text-2xl font-light text-gray-500 hover:text-gray-900 transition-colors block mb-12"
+          >
             {personal.email}
           </a>
         )}

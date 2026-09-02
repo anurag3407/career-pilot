@@ -59,17 +59,14 @@ export default function Experience({ data }) {
                 </div>
 
                 <p className="mt-6 text-sm leading-relaxed text-amber-100/80">
-                  {item?.description ||
-                    'No description available for this role.'}
+                  {item?.description || 'No description available for this role.'}
                 </p>
               </motion.article>
             ))}
           </div>
         ) : (
           <div className="rounded-[2rem] border border-amber-200/20 bg-slate-900/75 p-8 text-center shadow-[0_30px_80px_rgba(15,23,42,0.3)]">
-            <p className="text-amber-100/80">
-              No experience information available.
-            </p>
+            <p className="text-amber-100/80">No experience information available.</p>
           </div>
         )}
       </div>

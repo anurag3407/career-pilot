@@ -10,7 +10,6 @@ export default function Skills({ data }) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_var(--tw-gradient-stops))] from-neutral-900/20 via-[#050505] to-[#050505] z-0"></div>
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
-        
         {/* Section Header */}
         <div className="mb-16 flex flex-col items-center text-center animate-cinematic">
           <p className="text-[10px] sm:text-xs font-medium tracking-[0.5em] text-neutral-500 uppercase mb-4 flex items-center gap-3">
@@ -26,8 +25,8 @@ export default function Skills({ data }) {
           {data.skills.map((skill, index) => {
             const skillName = typeof skill === 'string' ? skill : skill.name;
             return (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="group relative px-6 py-3 border border-neutral-800 bg-[#0a0a0a] hover:bg-white hover:text-black transition-all duration-500 overflow-hidden rounded-sm"
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
@@ -39,7 +38,6 @@ export default function Skills({ data }) {
             );
           })}
         </div>
-
       </div>
     </section>
   );

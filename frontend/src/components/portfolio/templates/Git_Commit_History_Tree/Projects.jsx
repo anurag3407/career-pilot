@@ -4,15 +4,18 @@ import { GitBranch, GitMerge, Github, ExternalLink, Check, Code2, Star } from 'l
 import { usePortfolio } from './PortfolioContext';
 
 /* ─── Slugify ─────────────────────────────────────────────────── */
-const slugify = str =>
-  str?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'project';
+const slugify = (str) =>
+  str
+    ?.toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '') || 'project';
 
 /* ─── Branch colors (cycle) ───────────────────────────────────── */
 const BRANCH_COLORS = [
-  { line: '#58A6FF', bg: 'rgba(88,166,255,0.08)',  border: 'rgba(88,166,255,0.25)' },
-  { line: '#3FB950', bg: 'rgba(63,185,80,0.08)',   border: 'rgba(63,185,80,0.25)'  },
-  { line: '#BC8CFF', bg: 'rgba(188,140,255,0.08)', border: 'rgba(188,140,255,0.25)'},
-  { line: '#F0883E', bg: 'rgba(240,136,62,0.08)',  border: 'rgba(240,136,62,0.25)' },
+  { line: '#58A6FF', bg: 'rgba(88,166,255,0.08)', border: 'rgba(88,166,255,0.25)' },
+  { line: '#3FB950', bg: 'rgba(63,185,80,0.08)', border: 'rgba(63,185,80,0.25)' },
+  { line: '#BC8CFF', bg: 'rgba(188,140,255,0.08)', border: 'rgba(188,140,255,0.25)' },
+  { line: '#F0883E', bg: 'rgba(240,136,62,0.08)', border: 'rgba(240,136,62,0.25)' },
 ];
 
 /* ─── Project Card ────────────────────────────────────────────── */
@@ -42,8 +45,9 @@ function ProjectCard({ project, index, inView }) {
         style={{ backgroundColor: theme.bg, borderColor: theme.border }}
       >
         {/* Branch name header */}
-        <button type="button"
-          onClick={() => setExpanded(v => !v)}
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
           className="w-full flex items-center gap-3 px-4 py-3 border-b text-left hover:opacity-90 transition-all"
           style={{ borderColor: theme.border }}
           aria-expanded={expanded}
@@ -57,7 +61,11 @@ function ProjectCard({ project, index, inView }) {
           {/* Merged badge */}
           <span
             className="flex items-center gap-1 text-[10px] font-mono border rounded-full px-2 py-0.5"
-            style={{ color: '#3FB950', borderColor: '#3FB95040', backgroundColor: 'rgba(63,185,80,0.1)' }}
+            style={{
+              color: '#3FB950',
+              borderColor: '#3FB95040',
+              backgroundColor: 'rgba(63,185,80,0.1)',
+            }}
           >
             <Check size={9} />
             Merged into main ✓
@@ -81,8 +89,11 @@ function ProjectCard({ project, index, inView }) {
             <div className="text-[#8B949E] text-xs truncate">{project.description}</div>
           </div>
           <div className="flex gap-2 shrink-0">
-            {project.techStack?.slice(0, 2).map(t => (
-              <span key={t} className="text-[10px] border border-[#30363D] text-[#8B949E] px-1.5 py-0.5 rounded font-mono">
+            {project.techStack?.slice(0, 2).map((t) => (
+              <span
+                key={t}
+                className="text-[10px] border border-[#30363D] text-[#8B949E] px-1.5 py-0.5 rounded font-mono"
+              >
                 {t}
               </span>
             ))}
@@ -103,8 +114,14 @@ function ProjectCard({ project, index, inView }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
                   {/* Screenshot */}
                   {project.image && (
-                    <div className="relative overflow-hidden border-r" style={{ borderColor: theme.border }}>
-                      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#0D1117]/60 border-b font-mono text-xs text-[#8B949E]" style={{ borderColor: theme.border }}>
+                    <div
+                      className="relative overflow-hidden border-r"
+                      style={{ borderColor: theme.border }}
+                    >
+                      <div
+                        className="flex items-center gap-2 px-3 py-1.5 bg-[#0D1117]/60 border-b font-mono text-xs text-[#8B949E]"
+                        style={{ borderColor: theme.border }}
+                      >
                         <Code2 size={10} />
                         <span>preview.png</span>
                       </div>
@@ -124,9 +141,7 @@ function ProjectCard({ project, index, inView }) {
                       <span className="text-white font-semibold">{project.title}</span>
                     </div>
 
-                    <p className="text-[#8B949E] text-xs leading-relaxed">
-                      {project.description}
-                    </p>
+                    <p className="text-[#8B949E] text-xs leading-relaxed">{project.description}</p>
 
                     {/* Tech stack */}
                     {project.techStack?.length > 0 && (
@@ -139,7 +154,11 @@ function ProjectCard({ project, index, inView }) {
                               <span
                                 key={t}
                                 className="text-[10px] border rounded px-2 py-0.5"
-                                style={{ color: tagColor.line, borderColor: tagColor.border, backgroundColor: tagColor.bg }}
+                                style={{
+                                  color: tagColor.line,
+                                  borderColor: tagColor.border,
+                                  backgroundColor: tagColor.bg,
+                                }}
                               >
                                 {t}
                               </span>
@@ -193,7 +212,7 @@ function ProjectCard({ project, index, inView }) {
 export default function Projects() {
   const { portfolioData } = usePortfolio();
   const { projects } = portfolioData;
-  const ref    = useRef(null);
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
@@ -204,7 +223,6 @@ export default function Projects() {
       aria-label="Projects"
     >
       <div className="max-w-4xl mx-auto space-y-8">
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -240,12 +258,7 @@ export default function Projects() {
         {/* Feature branches */}
         <div className="relative">
           {projects.map((project, i) => (
-            <ProjectCard
-              key={project.title}
-              project={project}
-              index={i}
-              inView={inView}
-            />
+            <ProjectCard key={project.title} project={project} index={i} inView={inView} />
           ))}
         </div>
       </div>

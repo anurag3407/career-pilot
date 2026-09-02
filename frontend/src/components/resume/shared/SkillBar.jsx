@@ -16,7 +16,7 @@ const LEVEL_FILL = {
   Beginner: 0.4,
   Novice: 0.25,
   '': 0.7,
-}
+};
 
 export default function SkillBar({
   name,
@@ -25,7 +25,7 @@ export default function SkillBar({
   track = '#e2e8f0',
   fontSize = '9pt',
 }) {
-  const fill = LEVEL_FILL[level] ?? 0.7
+  const fill = LEVEL_FILL[level] ?? 0.7;
   return (
     <div style={{ marginBottom: '1.5mm' }}>
       <div
@@ -38,9 +38,7 @@ export default function SkillBar({
         }}
       >
         <span style={{ fontWeight: 500 }}>{name}</span>
-        {level && (
-          <span style={{ color: '#94a3b8', fontWeight: 300 }}>{level}</span>
-        )}
+        {level && <span style={{ color: '#94a3b8', fontWeight: 300 }}>{level}</span>}
       </div>
       <div
         style={{
@@ -60,5 +58,5 @@ export default function SkillBar({
         />
       </div>
     </div>
-  )
+  );
 }

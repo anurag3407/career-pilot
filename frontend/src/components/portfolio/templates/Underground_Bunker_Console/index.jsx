@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 import Navbar from './Navbar';
 import Hero from './Hero';
@@ -12,7 +12,14 @@ export default function UndergroundBunkerConsole() {
   const { portfolioData: data } = usePortfolio();
 
   return (
-    <div style={{ backgroundColor: '#0a0a0a', color: '#33ff33', fontFamily: '"JetBrains Mono", "Courier New", monospace', minHeight: '100vh' }}>
+    <div
+      style={{
+        backgroundColor: '#0a0a0a',
+        color: '#33ff33',
+        fontFamily: '"JetBrains Mono", "Courier New", monospace',
+        minHeight: '100vh',
+      }}
+    >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }

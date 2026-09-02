@@ -1,5 +1,5 @@
-import { render } from '@testing-library/react'
-import TrainJourney from '../components/portfolio/templates/Train_Journey'
+import { render } from '@testing-library/react';
+import TrainJourney from '../components/portfolio/templates/Train_Journey';
 
 // Mock IntersectionObserver which is not implemented in jsdom
 global.IntersectionObserver = class IntersectionObserver {
@@ -7,11 +7,11 @@ global.IntersectionObserver = class IntersectionObserver {
   observe() {}
   unobserve() {}
   disconnect() {}
-}
+};
 
 describe('TrainJourney component', () => {
   test('renders successfully', () => {
-    const { container } = render(<TrainJourney />)
-    expect(container).toBeInTheDocument()
-  })
-})
+    const { container } = render(<TrainJourney />);
+    expect(container).toBeInTheDocument();
+  });
+});

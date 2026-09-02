@@ -63,7 +63,10 @@ export default function About() {
 
             <div className="relative overflow-hidden rounded-2xl w-64 h-64 sm:w-80 sm:h-80 mb-6">
               <img
-                src={personal.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face'}
+                src={
+                  personal.avatar ||
+                  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face'
+                }
                 alt={personal.name}
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
               />
@@ -94,9 +97,7 @@ export default function About() {
             Crafting elegant code to solve real-world problems.
           </h3>
 
-          <p className="text-gray-400 text-base md:text-lg mb-8 leading-relaxed">
-            {personal.bio}
-          </p>
+          <p className="text-gray-400 text-base md:text-lg mb-8 leading-relaxed">{personal.bio}</p>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -107,7 +108,9 @@ export default function About() {
                   key={index}
                   className="p-6 rounded-2xl bg-gray-900/30 border border-white/5 hover:border-white/10 backdrop-blur-md flex flex-col items-center sm:items-start text-center sm:text-left transition-all duration-300 hover:bg-gray-900/50 hover:-translate-y-1 group"
                 >
-                  <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} text-white mb-4 shadow-lg`}>
+                  <div
+                    className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} text-white mb-4 shadow-lg`}
+                  >
                     <Icon className="w-5 h-5" />
                   </div>
                   <span className="text-3xl font-extrabold text-white mb-1 group-hover:scale-105 transition-transform duration-300">

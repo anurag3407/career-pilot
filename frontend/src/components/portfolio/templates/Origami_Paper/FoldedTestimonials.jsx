@@ -1,30 +1,31 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Star, Quote } from 'lucide-react';
 
 const testimonials = [
   {
-    name: "Aiko Tanaka",
-    role: "Senior UX Designer @ Figma",
+    name: 'Aiko Tanaka',
+    role: 'Senior UX Designer @ Figma',
     quote:
-      "Working with Alex was like watching origami unfold — each layer of the project revealed something more refined and intentional. Truly a master of structured, purposeful design.",
+      'Working with Alex was like watching origami unfold — each layer of the project revealed something more refined and intentional. Truly a master of structured, purposeful design.',
     rating: 3,
-    rotate: "rotate-1",
+    rotate: 'rotate-1',
   },
   {
-    name: "Marcus Chen",
-    role: "Engineering Lead @ Notion",
-    quote: "Alex's code is as precise as a folded crane. Every component fits together perfectly, and the architectural attention to detail was unlike anything I had seen before.",
+    name: 'Marcus Chen',
+    role: 'Engineering Lead @ Notion',
+    quote:
+      "Alex's code is as precise as a folded crane. Every component fits together perfectly, and the architectural attention to detail was unlike anything I had seen before.",
     rating: 3,
-    rotate: "-rotate-1",
+    rotate: '-rotate-1',
   },
   {
-    name: "Priya Nair",
-    role: "Product Manager @ Linear",
+    name: 'Priya Nair',
+    role: 'Product Manager @ Linear',
     quote:
-      "Collaborating with Alex felt effortless. They brought a calm, methodical approach to every sprint — and the results were always beyond what we scoped.",
+      'Collaborating with Alex felt effortless. They brought a calm, methodical approach to every sprint — and the results were always beyond what we scoped.',
     rating: 3,
-    rotate: "rotate-2",
+    rotate: 'rotate-2',
   },
 ];
 
@@ -33,13 +34,13 @@ const cardVariants = {
   visible: (i) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay: i * 0.13, ease: "easeOut" },
+    transition: { duration: 0.5, delay: i * 0.13, ease: 'easeOut' },
   }),
 };
 
 const stripVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.45, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.45, ease: 'easeOut' } },
 };
 
 export default function FoldedTestimonials() {
@@ -56,9 +57,7 @@ export default function FoldedTestimonials() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 border-2 border-black bg-white px-5 py-2 shadow-[4px_4px_0px_#000]">
             <Quote size={16} />
-            <span className="font-mono text-xs uppercase tracking-widest">
-              Folded Testimonials
-            </span>
+            <span className="font-mono text-xs uppercase tracking-widest">Folded Testimonials</span>
           </div>
 
           <h2 className="mt-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-black">
@@ -66,8 +65,8 @@ export default function FoldedTestimonials() {
           </h2>
 
           <p className="mx-auto mt-4 max-w-xl text-gray-700 text-base md:text-lg leading-relaxed">
-            Like a carefully folded note passed between colleagues — each
-            testimonial carries weight, intention, and genuine craft.
+            Like a carefully folded note passed between colleagues — each testimonial carries
+            weight, intention, and genuine craft.
           </p>
         </div>
 

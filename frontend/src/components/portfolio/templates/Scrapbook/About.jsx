@@ -1,42 +1,42 @@
-import { MapPin, Twitter, Linkedin, Github, Mail, Check } from "lucide-react";
+import { MapPin, Twitter, Linkedin, Github, Mail, Check } from 'lucide-react';
 
 const SAMPLE_DATA = {
-  name: "Alex Jordan",
-  role: "Full-Stack Developer",
+  name: 'Alex Jordan',
+  role: 'Full-Stack Developer',
   bio: [
     "Hey! I'm a creative developer who loves building things that live on the internet. I believe great software is equal parts logic and magic.",
     "When I'm not writing code, you'll catch me hiking trails, sketching in notebooks, or hunting down the best coffee in the city ☕",
   ],
   quote: '"code is just organized chaos" 🎨',
-  location: "San Francisco, CA",
-  locationSub: "Based on the west coast ☀️",
+  location: 'San Francisco, CA',
+  locationSub: 'Based on the west coast ☀️',
   photoLabel: "summer '24 🌻",
   facts: [
-    "Built my first website at age 12 — a terrible fan page for a video game 🎮",
-    "Open source contributor with 300+ GitHub stars across my projects ⭐",
-    "I journal every single day — analog, pen on paper 📓",
+    'Built my first website at age 12 — a terrible fan page for a video game 🎮',
+    'Open source contributor with 300+ GitHub stars across my projects ⭐',
+    'I journal every single day — analog, pen on paper 📓',
   ],
   skills: [
-    { label: "React", color: "blue" },
-    { label: "Node.js", color: "green" },
-    { label: "TypeScript", color: "amber" },
-    { label: "Figma", color: "pink" },
-    { label: "PostgreSQL", color: "blue" },
-    { label: "Docker", color: "green" },
-    { label: "GraphQL", color: "amber" },
-    { label: "Tailwind", color: "pink" },
-    { label: "Next.js", color: "blue" },
+    { label: 'React', color: 'blue' },
+    { label: 'Node.js', color: 'green' },
+    { label: 'TypeScript', color: 'amber' },
+    { label: 'Figma', color: 'pink' },
+    { label: 'PostgreSQL', color: 'blue' },
+    { label: 'Docker', color: 'green' },
+    { label: 'GraphQL', color: 'amber' },
+    { label: 'Tailwind', color: 'pink' },
+    { label: 'Next.js', color: 'blue' },
   ],
   links: [
-    { icon: "twitter", label: "@alex.dev", href: "#" },
-    { icon: "linkedin", label: "linkedin.com/in/alexjordan", href: "#" },
-    { icon: "github", label: "github.com/alexjordan", href: "#" },
+    { icon: 'twitter', label: '@alex.dev', href: '#' },
+    { icon: 'linkedin', label: 'linkedin.com/in/alexjordan', href: '#' },
+    { icon: 'github', label: 'github.com/alexjordan', href: '#' },
   ],
 };
 
 /* ─── sub-components ──────────────────────────────────────── */
 
-function Tape({ className = "" }) {
+function Tape({ className = '' }) {
   return (
     <div
       className={`absolute bg-yellow-200/55 border border-yellow-400/30 rounded-sm z-10 ${className}`}
@@ -61,11 +61,24 @@ function PolaroidAvatar({ label }) {
             className="w-3/5 h-3/5 opacity-50"
           >
             <circle cx="50" cy="38" r="22" fill="#c4a882" stroke="#a07850" strokeWidth="2" />
-            <ellipse cx="50" cy="85" rx="30" ry="18" fill="#c4a882" stroke="#a07850" strokeWidth="2" />
+            <ellipse
+              cx="50"
+              cy="85"
+              rx="30"
+              ry="18"
+              fill="#c4a882"
+              stroke="#a07850"
+              strokeWidth="2"
+            />
             <circle cx="43" cy="36" r="3" fill="#7a5c40" />
             <circle cx="57" cy="36" r="3" fill="#7a5c40" />
             <path d="M44 46 Q50 52 56 46" stroke="#7a5c40" strokeWidth="2" strokeLinecap="round" />
-            <path d="M30 30 Q35 18 50 20 Q65 18 70 30" stroke="#8b6340" strokeWidth="2.5" strokeLinecap="round" />
+            <path
+              d="M30 30 Q35 18 50 20 Q65 18 70 30"
+              stroke="#8b6340"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
           </svg>
         </div>
         <p className="font-[Caveat,cursive] text-xl text-[#4a3728] text-center mt-2.5 -rotate-[0.5deg]">
@@ -78,10 +91,10 @@ function PolaroidAvatar({ label }) {
 
 function SkillTag({ label, color }) {
   const palette = {
-    pink:  "bg-pink-50   border-pink-500   text-pink-900",
-    blue:  "bg-blue-50   border-blue-600   text-blue-900",
-    green: "bg-green-50  border-green-600  text-green-900",
-    amber: "bg-amber-50  border-amber-600  text-amber-900",
+    pink: 'bg-pink-50   border-pink-500   text-pink-900',
+    blue: 'bg-blue-50   border-blue-600   text-blue-900',
+    green: 'bg-green-50  border-green-600  text-green-900',
+    amber: 'bg-amber-50  border-amber-600  text-amber-900',
   };
   return (
     <span
@@ -96,13 +109,13 @@ function SkillTag({ label, color }) {
 
 function SocialIcon({ icon }) {
   const size = 16;
-  if (icon === "twitter")
+  if (icon === 'twitter')
     return (
       <svg width={size} height={size} viewBox="0 0 24 24" fill="white">
         <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.4 5.4 3.9 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
       </svg>
     );
-  if (icon === "linkedin")
+  if (icon === 'linkedin')
     return (
       <svg width={size} height={size} viewBox="0 0 24 24" fill="white">
         <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -118,9 +131,9 @@ function SocialIcon({ icon }) {
 }
 
 const iconBg = {
-  twitter: "bg-[#1da1f2]",
-  linkedin: "bg-[#0a66c2]",
-  github: "bg-[#333]",
+  twitter: 'bg-[#1da1f2]',
+  linkedin: 'bg-[#0a66c2]',
+  github: 'bg-[#333]',
 };
 
 /* ─── main component ──────────────────────────────────────── */
@@ -129,13 +142,19 @@ export default function About({ data }) {
   // Extract personal/info fields from data.personal or data.personalInfo if they exist
   const name = data?.personal?.name || data?.personalInfo?.name || data?.name || SAMPLE_DATA.name;
   const role = data?.personal?.title || data?.personalInfo?.title || data?.role || SAMPLE_DATA.role;
-  const location = data?.personal?.location || data?.personalInfo?.location || data?.location || SAMPLE_DATA.location;
-  
+  const location =
+    data?.personal?.location ||
+    data?.personalInfo?.location ||
+    data?.location ||
+    SAMPLE_DATA.location;
+
   // Handle bio (could be string or array)
   const rawBio = data?.personal?.bio || data?.personalInfo?.bio || data?.bio;
-  const bio = Array.isArray(rawBio) 
-    ? rawBio 
-    : (typeof rawBio === 'string' ? [rawBio] : SAMPLE_DATA.bio);
+  const bio = Array.isArray(rawBio)
+    ? rawBio
+    : typeof rawBio === 'string'
+      ? [rawBio]
+      : SAMPLE_DATA.bio;
 
   const quote = data?.quote || SAMPLE_DATA.quote;
   const locationSub = data?.locationSub || SAMPLE_DATA.locationSub;
@@ -144,12 +163,14 @@ export default function About({ data }) {
 
   // Transform skills from standard format ({name}) to Scrapbook format ({label, color})
   const colors = ['blue', 'green', 'amber', 'pink'];
-  const skills = (data?.skills && data.skills.length > 0)
-    ? data.skills.map((skill, idx) => ({
-        label: typeof skill === 'object' ? (skill.name || skill.label) : skill,
-        color: (typeof skill === 'object' && skill.color) ? skill.color : colors[idx % colors.length]
-      }))
-    : SAMPLE_DATA.skills;
+  const skills =
+    data?.skills && data.skills.length > 0
+      ? data.skills.map((skill, idx) => ({
+          label: typeof skill === 'object' ? skill.name || skill.label : skill,
+          color:
+            typeof skill === 'object' && skill.color ? skill.color : colors[idx % colors.length],
+        }))
+      : SAMPLE_DATA.skills;
 
   // Transform socials object to links array if needed
   let links = SAMPLE_DATA.links;
@@ -159,7 +180,7 @@ export default function About({ data }) {
       links = socialsEntries.map(([platform, url]) => ({
         icon: platform,
         label: url.replace(/^https?:\/\/(www\.)?/, ''),
-        href: url
+        href: url,
       }));
     }
   } else if (data?.links) {
@@ -201,7 +222,6 @@ export default function About({ data }) {
         }}
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-
           {/* ── heading ── */}
           <div className="text-center mb-12 relative">
             <div className="inline-block mb-2 w-20 h-5 bg-yellow-200/55 border border-yellow-400/30 rounded-sm -rotate-3" />
@@ -213,10 +233,8 @@ export default function About({ data }) {
 
           {/* ── two-column grid ── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
-
             {/* ── LEFT column ── */}
             <div className="flex flex-col gap-7">
-
               {/* polaroid */}
               <div className="anim-1">
                 <PolaroidAvatar label={photoLabel} />
@@ -255,7 +273,9 @@ export default function About({ data }) {
                       className="flex items-center gap-2.5 sb-body text-[15px] text-[#4a2f00]
                                  no-underline hover:translate-x-1 transition-transform duration-200"
                     >
-                      <span className={`w-[30px] h-[30px] rounded-full flex items-center justify-center shrink-0 ${iconBg[icon]}`}>
+                      <span
+                        className={`w-[30px] h-[30px] rounded-full flex items-center justify-center shrink-0 ${iconBg[icon]}`}
+                      >
                         <SocialIcon icon={icon} />
                       </span>
                       {label}
@@ -263,12 +283,10 @@ export default function About({ data }) {
                   ))}
                 </div>
               </div>
-
             </div>
 
             {/* ── RIGHT column ── */}
             <div className="flex flex-col gap-7">
-
               {/* main info card */}
               <div
                 className="anim-2 relative bg-[#fffdf5] border-[1.5px] border-[#d4b896] rounded-[3px] p-7
@@ -289,23 +307,22 @@ export default function About({ data }) {
                   ✦ {role}
                 </span>
                 {bio.map((p, i) => (
-                  <p key={i} className="sb-body text-[16px] text-[#4a3828] leading-relaxed mb-4 last:mb-5">
+                  <p
+                    key={i}
+                    className="sb-body text-[16px] text-[#4a3828] leading-relaxed mb-4 last:mb-5"
+                  >
                     {i === 0 && p === SAMPLE_DATA.bio[0] ? (
                       <>
-                        Hey! I'm a{" "}
-                        <span className="sb-highlight">creative developer</span>{" "}
-                        who loves building things that live on the internet. I believe great software
-                        is equal parts logic and{" "}
-                        <span className="sb-highlight">magic</span>.
+                        Hey! I'm a <span className="sb-highlight">creative developer</span> who
+                        loves building things that live on the internet. I believe great software is
+                        equal parts logic and <span className="sb-highlight">magic</span>.
                       </>
                     ) : (
                       p
                     )}
                   </p>
                 ))}
-                <p className="sb-hand text-lg text-[#e05a3a] -rotate-[0.5deg]">
-                  — {quote}
-                </p>
+                <p className="sb-hand text-lg text-[#e05a3a] -rotate-[0.5deg]">— {quote}</p>
               </div>
 
               {/* fun facts */}
@@ -320,9 +337,12 @@ export default function About({ data }) {
                 </p>
                 <ul className="flex flex-col gap-2.5">
                   {facts.map((fact, i) => {
-                    const colors = ["bg-[#e05a3a]", "bg-[#3f51b5]", "bg-[#388e3c]"];
+                    const colors = ['bg-[#e05a3a]', 'bg-[#3f51b5]', 'bg-[#388e3c]'];
                     return (
-                      <li key={i} className="flex items-start gap-2.5 sb-body text-[15px] text-[#2d4a2a]">
+                      <li
+                        key={i}
+                        className="flex items-start gap-2.5 sb-body text-[15px] text-[#2d4a2a]"
+                      >
                         <span
                           className={`shrink-0 mt-0.5 w-[18px] h-[18px] rounded-full flex items-center justify-center ${colors[i % colors.length]}`}
                         >
@@ -349,7 +369,6 @@ export default function About({ data }) {
                   ))}
                 </div>
               </div>
-
             </div>
           </div>
 

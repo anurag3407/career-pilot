@@ -14,7 +14,10 @@ const fadeUp = {
 
 function Label({ children }) {
   return (
-    <span className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase" style={{ color: ACCENT }}>
+    <span
+      className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase"
+      style={{ color: ACCENT }}
+    >
       {children}
     </span>
   );

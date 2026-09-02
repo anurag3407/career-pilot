@@ -99,7 +99,7 @@ export default function PortfolioGithub() {
     setBuilding(true);
     setError(null);
     try {
-      const pat = authMode === 'pat' ? (getDecryptedToken() || undefined) : undefined;
+      const pat = authMode === 'pat' ? getDecryptedToken() || undefined : undefined;
       const res = await githubPortfolioApi.build({
         username: username.trim(),
         token: pat,
@@ -165,7 +165,8 @@ export default function PortfolioGithub() {
             Build a portfolio from your GitHub
           </h1>
           <p className="mt-2 text-muted-foreground max-w-xl mx-auto text-sm">
-            Pick a username, choose your best repos, and AI generates a complete portfolio in seconds.
+            Pick a username, choose your best repos, and AI generates a complete portfolio in
+            seconds.
           </p>
         </motion.div>
 
@@ -192,8 +193,8 @@ export default function PortfolioGithub() {
               {(oauthConnected || validated) && (
                 <p className="mt-4 text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <CheckCircle2 className="h-3.5 w-3.5" />
-                  You're already connected via {oauthConnected ? 'OAuth' : 'PAT'}.
-                  Pick the matching option above to continue.
+                  You're already connected via {oauthConnected ? 'OAuth' : 'PAT'}. Pick the matching
+                  option above to continue.
                 </p>
               )}
             </motion.div>
@@ -254,7 +255,11 @@ export default function PortfolioGithub() {
                 <Button variant="ghost" onClick={() => setStep('auth')} className="gap-2">
                   <ArrowLeft className="h-4 w-4" /> Back
                 </Button>
-                <Button onClick={fetchRepos} disabled={!username.trim() || loadingRepos} className="gap-2">
+                <Button
+                  onClick={fetchRepos}
+                  disabled={!username.trim() || loadingRepos}
+                  className="gap-2"
+                >
                   {loadingRepos ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (

@@ -14,12 +14,10 @@ export default function Contact({ personal, socials }) {
     <section id="contact" className="bg-[#0A192F] py-32 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-2xl mx-auto text-center">
         <p className="text-[#64FFDA] font-mono mb-4 tracking-widest">05. What's Next?</p>
-        <h2 className="text-4xl md:text-5xl font-bold text-[#CCD6F6] mb-6">
-          Get In Touch
-        </h2>
-        
+        <h2 className="text-4xl md:text-5xl font-bold text-[#CCD6F6] mb-6">Get In Touch</h2>
+
         <p className="text-[#8892B0] text-lg mb-12 mx-auto leading-relaxed">
-          Although I'm not currently looking for any new opportunities, my inbox is always open. 
+          Although I'm not currently looking for any new opportunities, my inbox is always open.
           Whether you have a question or just want to say hi, I'll try my best to get back to you!
         </p>
 
@@ -52,12 +50,12 @@ export default function Contact({ personal, socials }) {
           })}
         </div>
       </div>
-      
+
       {/* Footer */}
       <div className="absolute bottom-8 left-0 w-full text-center mt-12">
-        <a 
-          href="https://github.com" 
-          target="_blank" 
+        <a
+          href="https://github.com"
+          target="_blank"
           rel="noopener noreferrer"
           className="font-mono text-[#8892B0] text-[13px] hover:text-[#64FFDA] transition-colors inline-flex items-center gap-2"
         >

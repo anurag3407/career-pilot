@@ -13,7 +13,10 @@ import Contact from './Contact';
 const FloatingCubesBackground = () => {
   const cubes = Array.from({ length: 20 });
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-950" style={{ perspective: '1000px' }}>
+    <div
+      className="fixed inset-0 overflow-hidden pointer-events-none z-0 bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-950"
+      style={{ perspective: '1000px' }}
+    >
       {cubes.map((_, i) => (
         <motion.div
           key={i}
@@ -29,12 +32,12 @@ const FloatingCubesBackground = () => {
             x: [0, Math.random() * 300 - 150, 0],
             rotateX: [0, 720],
             rotateY: [0, 360],
-            rotateZ: [0, 180]
+            rotateZ: [0, 180],
           }}
           transition={{
             duration: Math.random() * 25 + 20,
             repeat: Infinity,
-            ease: "linear",
+            ease: 'linear',
           }}
         />
       ))}

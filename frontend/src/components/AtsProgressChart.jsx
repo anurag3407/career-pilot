@@ -1,37 +1,45 @@
-import React, { useState, useEffect } from 'react'
-import { resumeApi } from '../services/api'
-import { Sparkles, TrendingUp, AlertCircle, ArrowUpRight, BarChart3, Star, Layers } from 'lucide-react'
-import toast from 'react-hot-toast'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect } from 'react';
+import { resumeApi } from '../services/api';
+import {
+  Sparkles,
+  TrendingUp,
+  AlertCircle,
+  ArrowUpRight,
+  BarChart3,
+  Star,
+  Layers,
+} from 'lucide-react';
+import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 export default function AtsProgressChart({ resumeId }) {
-  const [history, setHistory] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [hoveredPoint, setHoveredPoint] = useState(null)
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [hoveredPoint, setHoveredPoint] = useState(null);
 
   useEffect(() => {
-    fetchHistory()
+    fetchHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resumeId])
+  }, [resumeId]);
 
   const fetchHistory = async () => {
     try {
-      setLoading(true)
-      const res = await resumeApi.getAtsHistory(resumeId)
-      setHistory(res.data || [])
+      setLoading(true);
+      const res = await resumeApi.getAtsHistory(resumeId);
+      setHistory(res.data || []);
     } catch (err) {
-      toast.error('Failed to load ATS progression history')
+      toast.error('Failed to load ATS progression history');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="flex justify-center py-12">
         <div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
       </div>
-    )
+    );
   }
 
   if (history.length === 0) {
@@ -39,77 +47,85 @@ export default function AtsProgressChart({ resumeId }) {
       <div className="border border-dashed border-border rounded-2xl p-10 text-center text-muted-foreground bg-card/10">
         <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-55" />
         <p className="text-sm mb-2">No ATS score history logged yet.</p>
-        <p className="text-xs">Analyze your resume in the preview tab to start tracking progress!</p>
+        <p className="text-xs">
+          Analyze your resume in the preview tab to start tracking progress!
+        </p>
       </div>
-    )
+    );
   }
 
   // Calculate Key metrics
-  const startingScore = history[0].atsScore
-  const currentScore = history[history.length - 1].atsScore
-  const totalDifference = currentScore - startingScore
-  const totalOptimizations = history.length
-  
+  const startingScore = history[0].atsScore;
+  const currentScore = history[history.length - 1].atsScore;
+  const totalDifference = currentScore - startingScore;
+  const totalOptimizations = history.length;
+
   // Latest log data
-  const latestLog = history[history.length - 1]
-  const breakdown = latestLog.scoreBreakdown || {}
-  const keywordScore = breakdown.keywordMatch ?? breakdown.projects ?? 0
-  const formattingScore = breakdown.formatting ?? breakdown.summary ?? 0
-  const experienceScore = breakdown.experienceRelevance ?? breakdown.experience ?? 0
-  const skillsScore = breakdown.skillsAlignment ?? breakdown.skills ?? 0
-  const educationScore = breakdown.educationMatch ?? breakdown.education ?? 0
+  const latestLog = history[history.length - 1];
+  const breakdown = latestLog.scoreBreakdown || {};
+  const keywordScore = breakdown.keywordMatch ?? breakdown.projects ?? 0;
+  const formattingScore = breakdown.formatting ?? breakdown.summary ?? 0;
+  const experienceScore = breakdown.experienceRelevance ?? breakdown.experience ?? 0;
+  const skillsScore = breakdown.skillsAlignment ?? breakdown.skills ?? 0;
+  const educationScore = breakdown.educationMatch ?? breakdown.education ?? 0;
 
   // Chart Dimensions
-  const width = 600
-  const height = 240
-  const paddingLeft = 40
-  const paddingRight = 20
-  const paddingTop = 20
-  const paddingBottom = 35
+  const width = 600;
+  const height = 240;
+  const paddingLeft = 40;
+  const paddingRight = 20;
+  const paddingTop = 20;
+  const paddingBottom = 35;
 
-  const chartWidth = width - paddingLeft - paddingRight
-  const chartHeight = height - paddingTop - paddingBottom
+  const chartWidth = width - paddingLeft - paddingRight;
+  const chartHeight = height - paddingTop - paddingBottom;
 
   // Coordinates calculation
   const getCoordinates = () => {
-    if (history.length === 0) return []
+    if (history.length === 0) return [];
     if (history.length === 1) {
-      return [{ x: paddingLeft + chartWidth / 2, y: paddingTop + chartHeight - (history[0].atsScore / 100) * chartHeight, ...history[0] }]
+      return [
+        {
+          x: paddingLeft + chartWidth / 2,
+          y: paddingTop + chartHeight - (history[0].atsScore / 100) * chartHeight,
+          ...history[0],
+        },
+      ];
     }
 
     return history.map((point, index) => {
-      const x = paddingLeft + (index / (history.length - 1)) * chartWidth
-      const y = paddingTop + chartHeight - (point.atsScore / 100) * chartHeight
-      return { x, y, ...point }
-    })
-  }
+      const x = paddingLeft + (index / (history.length - 1)) * chartWidth;
+      const y = paddingTop + chartHeight - (point.atsScore / 100) * chartHeight;
+      return { x, y, ...point };
+    });
+  };
 
-  const points = getCoordinates()
+  const points = getCoordinates();
 
   // Generate SVG path string
   const generatePath = () => {
-    if (points.length < 2) return ''
+    if (points.length < 2) return '';
     return points.reduce((path, p, idx) => {
-      return idx === 0 ? `M ${p.x} ${p.y}` : `${path} L ${p.x} ${p.y}`
-    }, '')
-  }
+      return idx === 0 ? `M ${p.x} ${p.y}` : `${path} L ${p.x} ${p.y}`;
+    }, '');
+  };
 
   // Generate path string for gradient area underneath
   const generateAreaPath = () => {
-    if (points.length < 2) return ''
-    const linePath = generatePath()
-    return `${linePath} L ${points[points.length - 1].x} ${paddingTop + chartHeight} L ${points[0].x} ${paddingTop + chartHeight} Z`
-  }
+    if (points.length < 2) return '';
+    const linePath = generatePath();
+    return `${linePath} L ${points[points.length - 1].x} ${paddingTop + chartHeight} L ${points[0].x} ${paddingTop + chartHeight} Z`;
+  };
 
-  const linePath = generatePath()
-  const areaPath = generateAreaPath()
+  const linePath = generatePath();
+  const areaPath = generateAreaPath();
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
-      day: 'numeric'
-    })
-  }
+      day: 'numeric',
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -134,7 +150,9 @@ export default function AtsProgressChart({ resumeId }) {
         <div className="bg-card/30 border border-border p-4 rounded-2xl flex flex-col justify-between">
           <span className="text-xs font-semibold text-muted-foreground">Total Improvement</span>
           <div className="flex items-center gap-1.5 mt-2">
-            <span className={`text-2xl font-bold ${totalDifference >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+            <span
+              className={`text-2xl font-bold ${totalDifference >= 0 ? 'text-green-400' : 'text-red-400'}`}
+            >
               {totalDifference >= 0 ? `+${totalDifference}` : totalDifference}
             </span>
             {totalDifference > 0 && <ArrowUpRight className="w-5 h-5 text-green-400" />}
@@ -178,8 +196,8 @@ export default function AtsProgressChart({ resumeId }) {
               </defs>
 
               {/* Grid Lines */}
-              {[0, 25, 50, 75, 100].map(val => {
-                const y = paddingTop + chartHeight - (val / 100) * chartHeight
+              {[0, 25, 50, 75, 100].map((val) => {
+                const y = paddingTop + chartHeight - (val / 100) * chartHeight;
                 return (
                   <g key={val}>
                     <line
@@ -202,7 +220,7 @@ export default function AtsProgressChart({ resumeId }) {
                       {val}
                     </text>
                   </g>
-                )
+                );
               })}
 
               {/* Horizontal Dates Label */}
@@ -242,8 +260,8 @@ export default function AtsProgressChart({ resumeId }) {
                   <circle
                     cx={p.x}
                     cy={p.y}
-                    r={hoveredPoint?.id === p.id ? "7" : "4.5"}
-                    fill={hoveredPoint?.id === p.id ? "var(--primary)" : "var(--background)"}
+                    r={hoveredPoint?.id === p.id ? '7' : '4.5'}
+                    fill={hoveredPoint?.id === p.id ? 'var(--primary)' : 'var(--background)'}
                     stroke="var(--primary)"
                     strokeWidth="2.5"
                     style={{ transition: 'all 0.15s ease' }}
@@ -262,15 +280,21 @@ export default function AtsProgressChart({ resumeId }) {
               <div className="flex justify-between items-center w-full">
                 <div className="space-y-0.5">
                   <p className="font-semibold text-foreground">Role: {hoveredPoint.jobRole}</p>
-                  <p className="text-muted-foreground text-[10px]">Analyzed: {new Date(hoveredPoint.createdAt).toLocaleString()}</p>
+                  <p className="text-muted-foreground text-[10px]">
+                    Analyzed: {new Date(hoveredPoint.createdAt).toLocaleString()}
+                  </p>
                 </div>
                 <div className="text-right">
                   <p className="text-lg font-bold text-primary">{hoveredPoint.atsScore}%</p>
-                  <p className="text-[10px] text-muted-foreground">{hoveredPoint.improvementsCount} improvements suggested</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {hoveredPoint.improvementsCount} improvements suggested
+                  </p>
                 </div>
               </div>
             ) : (
-              <p className="text-muted-foreground italic text-center w-full">Hover over any graph point to inspect specific run details.</p>
+              <p className="text-muted-foreground italic text-center w-full">
+                Hover over any graph point to inspect specific run details.
+              </p>
             )}
           </div>
         </div>
@@ -302,9 +326,13 @@ export default function AtsProgressChart({ resumeId }) {
                       animate={{ width: `${category.score}%` }}
                       transition={{ duration: 0.8 }}
                       className={`h-full rounded-full ${
-                        category.score >= 80 ? 'bg-green-500' :
-                        category.score >= 60 ? 'bg-yellow-500' :
-                        category.score >= 40 ? 'bg-orange-500' : 'bg-red-500'
+                        category.score >= 80
+                          ? 'bg-green-500'
+                          : category.score >= 60
+                            ? 'bg-yellow-500'
+                            : category.score >= 40
+                              ? 'bg-orange-500'
+                              : 'bg-red-500'
                       }`}
                     />
                   </div>
@@ -315,7 +343,9 @@ export default function AtsProgressChart({ resumeId }) {
 
           <div className="mt-4 pt-3 border-t border-border flex items-center gap-2 text-xs text-muted-foreground leading-snug">
             <AlertCircle className="w-4 h-4 text-primary shrink-0" />
-            <span>Scores correspond to: <strong className="text-foreground">{latestLog.jobRole}</strong></span>
+            <span>
+              Scores correspond to: <strong className="text-foreground">{latestLog.jobRole}</strong>
+            </span>
           </div>
         </div>
       </div>
@@ -334,13 +364,11 @@ export default function AtsProgressChart({ resumeId }) {
               Trend Analysis
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              {totalDifference > 0 ? (
-                `Great work! Your ATS optimization efforts have resulted in a significant score surge of +${totalDifference} points, from initial ${startingScore} to ${currentScore}. Keep focusing on keyword density to hit 90+.`
-              ) : totalDifference === 0 ? (
-                `Your score has remained stable at ${currentScore}. Try targeting more specific industry keywords or enhancing the experience bullet points using STAR format to boost the score.`
-              ) : (
-                `Your score declined by ${Math.abs(totalDifference)} points, likely due to changing job roles or removal of key skills. Re-add relevant keywords to recover your score.`
-              )}
+              {totalDifference > 0
+                ? `Great work! Your ATS optimization efforts have resulted in a significant score surge of +${totalDifference} points, from initial ${startingScore} to ${currentScore}. Keep focusing on keyword density to hit 90+.`
+                : totalDifference === 0
+                  ? `Your score has remained stable at ${currentScore}. Try targeting more specific industry keywords or enhancing the experience bullet points using STAR format to boost the score.`
+                  : `Your score declined by ${Math.abs(totalDifference)} points, likely due to changing job roles or removal of key skills. Re-add relevant keywords to recover your score.`}
             </p>
           </div>
 
@@ -351,7 +379,10 @@ export default function AtsProgressChart({ resumeId }) {
             </div>
             <ul className="text-xs text-muted-foreground list-disc list-inside space-y-1.5">
               {keywordScore < 80 && (
-                <li>Keyword Match is at {keywordScore}%. Tailor resume to include missing target terms.</li>
+                <li>
+                  Keyword Match is at {keywordScore}%. Tailor resume to include missing target
+                  terms.
+                </li>
               )}
               {experienceScore < 80 && (
                 <li>Experience score is {experienceScore}%. Quantify achievements with metrics.</li>
@@ -363,12 +394,15 @@ export default function AtsProgressChart({ resumeId }) {
                 <li>Missing Keywords: {latestLog.missingKeywords.slice(0, 4).join(', ')}</li>
               )}
               {keywordScore >= 80 && experienceScore >= 80 && skillsScore >= 80 && (
-                <li>Your resume sections are highly optimized! Try adding custom sections or formatting tweaks.</li>
+                <li>
+                  Your resume sections are highly optimized! Try adding custom sections or
+                  formatting tweaks.
+                </li>
               )}
             </ul>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

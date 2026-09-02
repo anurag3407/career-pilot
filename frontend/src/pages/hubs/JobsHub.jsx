@@ -1,59 +1,112 @@
-import { useState, useEffect } from 'react'
-import { Briefcase, Search, Bell, Star, Send, MessageSquare, CheckCircle2, Building2, Eye, ExternalLink, Mail, LineChart } from 'lucide-react'
-import { jobTrackerApi } from '../../services/api'
-import HubLayout from '../../components/HubLayout'
-import ToolCard from '../../components/ToolCard'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react';
+import {
+  Briefcase,
+  Search,
+  Bell,
+  Star,
+  Send,
+  MessageSquare,
+  CheckCircle2,
+  Building2,
+  Eye,
+  ExternalLink,
+  Mail,
+  LineChart,
+} from 'lucide-react';
+import { jobTrackerApi } from '../../services/api';
+import HubLayout from '../../components/HubLayout';
+import ToolCard from '../../components/ToolCard';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const STATUS_CONFIG = {
-  saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
-  applied: { label: 'Applied', color: 'bg-primary/10 text-primary border border-primary/20', icon: Send },
-  interviewing: { label: 'Interviewing', color: 'bg-secondary/10 text-secondary border border-secondary/20', icon: MessageSquare },
-  offered: { label: 'Offered', color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20', icon: CheckCircle2 }
-}
+  saved: {
+    label: 'Saved',
+    color: 'bg-muted text-muted-foreground border border-border',
+    icon: Star,
+  },
+  applied: {
+    label: 'Applied',
+    color: 'bg-primary/10 text-primary border border-primary/20',
+    icon: Send,
+  },
+  interviewing: {
+    label: 'Interviewing',
+    color: 'bg-secondary/10 text-secondary border border-secondary/20',
+    icon: MessageSquare,
+  },
+  offered: {
+    label: 'Offered',
+    color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20',
+    icon: CheckCircle2,
+  },
+};
 
 export default function JobsHub() {
-  const [trackedJobs, setTrackedJobs] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [trackedJobs, setTrackedJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [jobStats, setJobStats] = useState({
     total: 0,
     saved: 0,
     applied: 0,
     interviewing: 0,
-    offered: 0
-  })
+    offered: 0,
+  });
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await jobTrackerApi.getAll()
-        const jobs = res.trackedJobs || []
-        setTrackedJobs(jobs)
-        
+        const res = await jobTrackerApi.getAll();
+        const jobs = res.trackedJobs || [];
+        setTrackedJobs(jobs);
+
         const stats = {
           total: jobs.length,
-          saved: jobs.filter(j => j.status === 'saved').length,
-          applied: jobs.filter(j => j.status === 'applied').length,
-          interviewing: jobs.filter(j => j.status === 'interviewing').length,
-          offered: jobs.filter(j => j.status === 'offered').length
-        }
-        setJobStats(stats)
+          saved: jobs.filter((j) => j.status === 'saved').length,
+          applied: jobs.filter((j) => j.status === 'applied').length,
+          interviewing: jobs.filter((j) => j.status === 'interviewing').length,
+          offered: jobs.filter((j) => j.status === 'offered').length,
+        };
+        setJobStats(stats);
       } catch (err) {
-        console.error('Failed to fetch jobs in JobsHub', err)
+        console.error('Failed to fetch jobs in JobsHub', err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchJobs()
-  }, [])
+    };
+    fetchJobs();
+  }, []);
 
   const stats = [
-    { icon: Briefcase, value: jobStats.total, label: 'Total Tracked', color: 'text-primary', bg: 'bg-primary/10' },
-    { icon: Send, value: jobStats.applied, label: 'Applied', color: 'text-secondary', bg: 'bg-secondary/10' },
-    { icon: MessageSquare, value: jobStats.interviewing, label: 'Interviews', color: 'text-amber-500', bg: 'bg-amber-500/10' },
-    { icon: CheckCircle2, value: jobStats.offered, label: 'Offers', color: 'text-emerald-500', bg: 'bg-emerald-500/10' }
-  ]
+    {
+      icon: Briefcase,
+      value: jobStats.total,
+      label: 'Total Tracked',
+      color: 'text-primary',
+      bg: 'bg-primary/10',
+    },
+    {
+      icon: Send,
+      value: jobStats.applied,
+      label: 'Applied',
+      color: 'text-secondary',
+      bg: 'bg-secondary/10',
+    },
+    {
+      icon: MessageSquare,
+      value: jobStats.interviewing,
+      label: 'Interviews',
+      color: 'text-amber-500',
+      bg: 'bg-amber-500/10',
+    },
+    {
+      icon: CheckCircle2,
+      value: jobStats.offered,
+      label: 'Offers',
+      color: 'text-emerald-500',
+      bg: 'bg-emerald-500/10',
+    },
+  ];
 
   return (
     <HubLayout
@@ -122,14 +175,17 @@ export default function JobsHub() {
               <span className="w-1.5 h-6 rounded-full bg-secondary" />
               Recent Applications
             </h2>
-            <Link to="/job-tracker" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+            <Link
+              to="/job-tracker"
+              className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
+            >
               View Application Tracker <ExternalLink className="w-3 h-3" />
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {trackedJobs.slice(0, 3).map((job, idx) => {
-              const statusConfig = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved
-              const StatusIcon = statusConfig.icon
+              const statusConfig = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved;
+              const StatusIcon = statusConfig.icon;
 
               return (
                 <motion.div
@@ -143,17 +199,15 @@ export default function JobsHub() {
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Briefcase className="w-5 h-5 text-primary" />
                     </div>
-                    <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black flex items-center gap-1.5 uppercase ${statusConfig.color}`}>
+                    <span
+                      className={`px-2 py-0.5 rounded-lg text-[10px] font-black flex items-center gap-1.5 uppercase ${statusConfig.color}`}
+                    >
                       <StatusIcon className="w-3 h-3" />
                       {statusConfig.label}
                     </span>
                   </div>
-                  <h3 className="font-bold text-foreground mb-1 truncate">
-                    {job.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mb-4 font-semibold">
-                    {job.company}
-                  </p>
+                  <h3 className="font-bold text-foreground mb-1 truncate">{job.title}</h3>
+                  <p className="text-xs text-muted-foreground mb-4 font-semibold">{job.company}</p>
                   <div className="flex items-center gap-2">
                     <Link
                       to="/job-tracker"
@@ -164,11 +218,11 @@ export default function JobsHub() {
                     </Link>
                   </div>
                 </motion.div>
-              )
+              );
             })}
           </div>
         </div>
       )}
     </HubLayout>
-  )
+  );
 }

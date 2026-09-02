@@ -12,26 +12,31 @@ export default function Testimonials({ testimonials }) {
         <div className="flex items-center gap-3 border-b border-cyan-500/30 pb-4">
           <MessageSquareQuote className="w-8 h-8 text-cyan-300" />
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-cyan-100">
-              EVALUATIONS
-            </h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-cyan-100">EVALUATIONS</h2>
             <div className="text-sm text-cyan-600 mt-1">Peer reviews & personnel feedback</div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {testimonials.map((t, i) => (
-            <div key={i} className="border border-cyan-900/50 bg-cyan-950/20 p-6 relative group flex flex-col justify-between">
+            <div
+              key={i}
+              className="border border-cyan-900/50 bg-cyan-950/20 p-6 relative group flex flex-col justify-between"
+            >
               <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-500/50 opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-500/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-              
+
               <div className="text-cyan-200 text-sm leading-relaxed mb-6 italic relative z-10 before:content-['>_'] before:text-cyan-500 before:mr-2">
                 "{t.text || t.content}"
               </div>
-              
+
               <div className="flex items-center gap-4 border-t border-cyan-900/50 pt-4">
                 {t.avatar ? (
-                  <img src={t.avatar} alt={t.name || t.author} className="w-10 h-10 object-cover border border-cyan-500/50 grayscale group-hover:grayscale-0 transition-all" />
+                  <img
+                    src={t.avatar}
+                    alt={t.name || t.author}
+                    className="w-10 h-10 object-cover border border-cyan-500/50 grayscale group-hover:grayscale-0 transition-all"
+                  />
                 ) : (
                   <div className="w-10 h-10 border border-cyan-500/50 flex items-center justify-center bg-cyan-950/50">
                     <User className="w-5 h-5 text-cyan-500" />

@@ -1,15 +1,15 @@
-import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
-import ExperienceRow from '../../shared/ExperienceRow'
-import SkillBar from '../../shared/SkillBar'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import Section from '../../shared/Section';
+import ExperienceRow from '../../shared/ExperienceRow';
+import SkillBar from '../../shared/SkillBar';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * BerlinTwoCol — heavy left sidebar with skills heatmap. Berlin-startup
  * minimalist aesthetic.
  */
 export default function BerlinTwoCol() {
-  const { personal, experience, education, projects, skills, certifications } = useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   const nodes = {
     summary: personal.summary ? (
@@ -18,36 +18,38 @@ export default function BerlinTwoCol() {
       </Section>
     ) : null,
 
-    experience: experience.length > 0 ? (
-      <Section title="Experience" accent="#b45309" uppercase={false}>
-        {experience.map((e, i) => (
-          <ExperienceRow
-            key={i}
-            exp={e}
-            roleColor="#0f172a"
-            companyColor="#b45309"
-            periodColor="#6b7280"
-            bulletColor="#334155"
-            fontSize="10pt"
-          />
-        ))}
-      </Section>
-    ) : null,
+    experience:
+      experience.length > 0 ? (
+        <Section title="Experience" accent="#b45309" uppercase={false}>
+          {experience.map((e, i) => (
+            <ExperienceRow
+              key={i}
+              exp={e}
+              roleColor="#0f172a"
+              companyColor="#b45309"
+              periodColor="#6b7280"
+              bulletColor="#334155"
+              fontSize="10pt"
+            />
+          ))}
+        </Section>
+      ) : null,
 
-    projects: projects.length > 0 ? (
-      <Section title="Projects" accent="#b45309" uppercase={false}>
-        {projects.map((p, i) => (
-          <div key={i} style={{ marginBottom: '3mm' }}>
-            <strong>{p.title}</strong>
-            {p.description && <div style={{ color: '#334155' }}>{p.description}</div>}
-            {p.techStack.length > 0 && (
-              <div style={{ color: '#b45309', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
-            )}
-          </div>
-        ))}
-      </Section>
-    ) : null,
-  }
+    projects:
+      projects.length > 0 ? (
+        <Section title="Projects" accent="#b45309" uppercase={false}>
+          {projects.map((p, i) => (
+            <div key={i} style={{ marginBottom: '3mm' }}>
+              <strong>{p.title}</strong>
+              {p.description && <div style={{ color: '#334155' }}>{p.description}</div>}
+              {p.techStack.length > 0 && (
+                <div style={{ color: '#b45309', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
+              )}
+            </div>
+          ))}
+        </Section>
+      ) : null,
+  };
 
   return (
     <div
@@ -72,7 +74,16 @@ export default function BerlinTwoCol() {
           borderRight: '1pt solid #fde68a',
         }}
       >
-        <h1 style={{ margin: 0, fontSize: '22pt', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.5px', lineHeight: 1.1 }}>
+        <h1
+          style={{
+            margin: 0,
+            fontSize: '22pt',
+            fontWeight: 700,
+            color: '#0f172a',
+            letterSpacing: '-0.5px',
+            lineHeight: 1.1,
+          }}
+        >
           {personal.name || 'Your Name'}
         </h1>
         {personal.title && (
@@ -86,8 +97,16 @@ export default function BerlinTwoCol() {
           {personal.email && <div>{personal.email}</div>}
           {personal.phone && <div>{personal.phone}</div>}
           {personal.location && <div>{personal.location}</div>}
-          {personal.website && <div style={{ wordBreak: 'break-word', color: '#b45309' }}>{personal.website.replace(/^https?:\/\//, '')}</div>}
-          {personal.linkedin && <div style={{ wordBreak: 'break-word', color: '#b45309' }}>{personal.linkedin.replace(/^https?:\/\//, '')}</div>}
+          {personal.website && (
+            <div style={{ wordBreak: 'break-word', color: '#b45309' }}>
+              {personal.website.replace(/^https?:\/\//, '')}
+            </div>
+          )}
+          {personal.linkedin && (
+            <div style={{ wordBreak: 'break-word', color: '#b45309' }}>
+              {personal.linkedin.replace(/^https?:\/\//, '')}
+            </div>
+          )}
         </div>
 
         {skills.length > 0 && (
@@ -95,13 +114,7 @@ export default function BerlinTwoCol() {
             <SideTitle>Skills Heatmap</SideTitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2mm' }}>
               {skills.map((s, i) => (
-                <SkillBar
-                  key={i}
-                  name={s.name}
-                  level={s.level}
-                  accent="#b45309"
-                  track="#fde68a"
-                />
+                <SkillBar key={i} name={s.name} level={s.level} accent="#b45309" track="#fde68a" />
               ))}
             </div>
           </>
@@ -145,7 +158,7 @@ export default function BerlinTwoCol() {
         />
       </main>
     </div>
-  )
+  );
 }
 
 function SideTitle({ children }) {
@@ -164,5 +177,5 @@ function SideTitle({ children }) {
     >
       {children}
     </h2>
-  )
+  );
 }

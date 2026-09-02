@@ -1,19 +1,19 @@
-import { motion } from 'framer-motion'
-import { CheckCircle, Lightbulb, RefreshCw } from 'lucide-react'
+import { motion } from 'framer-motion';
+import { CheckCircle, Lightbulb, RefreshCw } from 'lucide-react';
 
 const getScoreColor = (score) => {
-  if (score >= 70) return { bar: 'bg-green-500', text: 'text-green-400', ring: '#22c55e' }
-  if (score >= 40) return { bar: 'bg-yellow-500', text: 'text-yellow-400', ring: '#eab308' }
-  return { bar: 'bg-red-500', text: 'text-red-400', ring: '#ef4444' }
-}
+  if (score >= 70) return { bar: 'bg-green-500', text: 'text-green-400', ring: '#22c55e' };
+  if (score >= 40) return { bar: 'bg-yellow-500', text: 'text-yellow-400', ring: '#eab308' };
+  return { bar: 'bg-red-500', text: 'text-red-400', ring: '#ef4444' };
+};
 
 const ScoreRing = ({ score }) => {
-  const size = 140
-  const strokeWidth = 10
-  const radius = (size - strokeWidth) / 2
-  const circumference = radius * 2 * Math.PI
-  const offset = circumference - (score / 100) * circumference
-  const { ring } = getScoreColor(score)
+  const size = 140;
+  const strokeWidth = 10;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (score / 100) * circumference;
+  const { ring } = getScoreColor(score);
 
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
@@ -53,11 +53,11 @@ const ScoreRing = ({ score }) => {
         <span className="text-xs text-muted-foreground mt-0.5">/ 100</span>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const SectionBar = ({ section, score, feedback, index }) => {
-  const { bar, text } = getScoreColor(score)
+  const { bar, text } = getScoreColor(score);
   return (
     <motion.div
       initial={{ opacity: 0, x: -10 }}
@@ -79,20 +79,23 @@ const SectionBar = ({ section, score, feedback, index }) => {
       </div>
       <p className="text-xs text-muted-foreground">{feedback}</p>
     </motion.div>
-  )
-}
+  );
+};
 
 export default function ResumeScore({ data, onRescore }) {
-  if (!data) return null
+  if (!data) return null;
 
-  const { overallScore, sections, topSuggestions } = data
-  const { text: scoreText } = getScoreColor(overallScore)
+  const { overallScore, sections, topSuggestions } = data;
+  const { text: scoreText } = getScoreColor(overallScore);
 
   const label =
-    overallScore >= 80 ? 'Excellent!' :
-    overallScore >= 60 ? 'Good Progress' :
-    overallScore >= 40 ? 'Needs Work' :
-    'Major Improvements Needed'
+    overallScore >= 80
+      ? 'Excellent!'
+      : overallScore >= 60
+        ? 'Good Progress'
+        : overallScore >= 40
+          ? 'Needs Work'
+          : 'Major Improvements Needed';
 
   return (
     <motion.div
@@ -123,7 +126,13 @@ export default function ResumeScore({ data, onRescore }) {
         <div className="bg-background/50 border border-border rounded-2xl p-6 space-y-5">
           <h3 className="text-lg font-semibold text-foreground">Section Breakdown</h3>
           {Object.entries(sections).map(([section, { score, feedback }], i) => (
-            <SectionBar key={section} section={section} score={score} feedback={feedback} index={i} />
+            <SectionBar
+              key={section}
+              section={section}
+              score={score}
+              feedback={feedback}
+              index={i}
+            />
           ))}
         </div>
       )}
@@ -152,5 +161,5 @@ export default function ResumeScore({ data, onRescore }) {
         </div>
       )}
     </motion.div>
-  )
+  );
 }

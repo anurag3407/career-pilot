@@ -21,7 +21,8 @@ export default function Experience({ experience }) {
           {/* Tabs */}
           <div className="flex md:flex-col overflow-x-auto hide-scrollbar md:w-48 border-b md:border-b-0 md:border-l border-[#233554]">
             {experience.map((exp, index) => (
-              <button type="button"
+              <button
+                type="button"
                 key={index}
                 onClick={() => setActiveTabId(index)}
                 className={`text-left px-5 py-3 font-mono text-sm whitespace-nowrap transition-all duration-200 border-b-2 md:border-b-0 md:border-l-2 -ml-[2px] ${
@@ -41,7 +42,9 @@ export default function Experience({ experience }) {
               <div
                 key={index}
                 className={`transition-all duration-500 ${
-                  activeTabId === index ? 'block opacity-100 translate-y-0' : 'hidden opacity-0 translate-y-4'
+                  activeTabId === index
+                    ? 'block opacity-100 translate-y-0'
+                    : 'hidden opacity-0 translate-y-4'
                 }`}
               >
                 <h3 className="text-xl md:text-2xl font-bold text-[#CCD6F6] mb-2">
@@ -53,12 +56,18 @@ export default function Experience({ experience }) {
                 </p>
 
                 <ul className="space-y-4">
-                  {exp.description && exp.description.split('. ').map((item, i) => item ? (
-                    <li key={i} className="flex items-start gap-3 text-[#8892B0]">
-                      <ChevronRight className="w-5 h-5 text-[#64FFDA] shrink-0 mt-0.5" />
-                      <span className="leading-relaxed">{item.trim()}{item.endsWith('.') ? '' : '.'}</span>
-                    </li>
-                  ) : null)}
+                  {exp.description &&
+                    exp.description.split('. ').map((item, i) =>
+                      item ? (
+                        <li key={i} className="flex items-start gap-3 text-[#8892B0]">
+                          <ChevronRight className="w-5 h-5 text-[#64FFDA] shrink-0 mt-0.5" />
+                          <span className="leading-relaxed">
+                            {item.trim()}
+                            {item.endsWith('.') ? '' : '.'}
+                          </span>
+                        </li>
+                      ) : null
+                    )}
                 </ul>
               </div>
             ))}

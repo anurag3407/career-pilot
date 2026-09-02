@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Menu, X } from 'lucide-react';
@@ -149,9 +149,7 @@ function NeonNav({ menuOpen, setMenuOpen }) {
         }}
       >
         {data.personal.name.split(' ')[0]}
-        <span style={{ color: '#00d4ff', textShadow: '0 0 10px #00d4ff' }}>
-          .DEV
-        </span>
+        <span style={{ color: '#00d4ff', textShadow: '0 0 10px #00d4ff' }}>.DEV</span>
       </div>
 
       {/* Desktop links */}
@@ -186,14 +184,19 @@ function NeonNav({ menuOpen, setMenuOpen }) {
           boxShadow: '0 0 10px #ff2bd640',
           fontFamily: "'Courier New', monospace",
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 20px #ff2bd6'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 10px #ff2bd640'; }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = '0 0 20px #ff2bd6';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = '0 0 10px #ff2bd640';
+        }}
       >
         HIRE ME
       </Motion.a>
 
       {/* Mobile hamburger */}
-      <button type="button"
+      <button
+        type="button"
         className="md:hidden p-2 rounded border border-pink-500/40 text-pink-400 cursor-pointer"
         style={{ background: 'rgba(255,43,214,0.06)', boxShadow: '0 0 8px #ff2bd620' }}
         onClick={() => setMenuOpen((o) => !o)}
@@ -253,11 +256,9 @@ function MobileAccordion({ sectionId, label, color, children }) {
 
   const [open, setOpen] = useState(false);
   return (
-    <div
-      className="border-b border-white/5"
-      style={{ borderColor: `${color}20` }}
-    >
-      <button type="button"
+    <div className="border-b border-white/5" style={{ borderColor: `${color}20` }}>
+      <button
+        type="button"
         id={sectionId}
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between px-5 py-4 cursor-pointer"
@@ -373,7 +374,8 @@ export default function NeonSign() {
         <div
           className="w-3/4 h-0.5 rounded-full mb-4"
           style={{
-            background: 'linear-gradient(90deg, #ff2bd6, #00d4ff, #39ff14, #ffd000, #b026ff, #ff8c00)',
+            background:
+              'linear-gradient(90deg, #ff2bd6, #00d4ff, #39ff14, #ffd000, #b026ff, #ff8c00)',
             boxShadow: '0 0 12px #00d4ff',
           }}
         />
@@ -384,16 +386,15 @@ export default function NeonSign() {
           © {new Date().getFullYear()}{' '}
           <span style={{ color: '#ff2bd6', textShadow: '0 0 6px #ff2bd6' }}>
             {data.personal.name}
-          </span>
-          {' '}— All rights reserved
+          </span>{' '}
+          — All rights reserved
         </p>
         <p
           className="text-gray-700 text-xs tracking-widest"
           style={{ fontFamily: "'Courier New', monospace" }}
         >
-          Built with{' '}
-          <span style={{ color: '#ff2bd6', textShadow: '0 0 4px #ff2bd6' }}>♥</span>
-          {' '}& neon lights
+          Built with <span style={{ color: '#ff2bd6', textShadow: '0 0 4px #ff2bd6' }}>♥</span> &
+          neon lights
         </p>
       </footer>
     </div>

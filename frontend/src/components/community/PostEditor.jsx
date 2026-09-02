@@ -43,9 +43,9 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
   const [pollOptions, setPollOptions] = useState(['', '']);
 
   // Attachment state — store File object + local preview URL
-  const [imageFile, setImageFile] = useState(null);       // File object
-  const [imagePreview, setImagePreview] = useState(null);  // object URL for preview
-  const [docFile, setDocFile] = useState(null);             // File object
+  const [imageFile, setImageFile] = useState(null); // File object
+  const [imagePreview, setImagePreview] = useState(null); // object URL for preview
+  const [docFile, setDocFile] = useState(null); // File object
 
   const imageInputRef = useRef(null);
   const docInputRef = useRef(null);
@@ -53,26 +53,29 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
   // ---- Image handlers ----
   const handleImageClick = () => imageInputRef.current?.click();
 
-  const handleImageChange = useCallback((e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleImageChange = useCallback(
+    (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-    const ext = getExtension(file.name);
-    if (!['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) {
-      setError('Unsupported image type. Please use PNG, JPG, GIF, or WEBP.');
+      const ext = getExtension(file.name);
+      if (!['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) {
+        setError('Unsupported image type. Please use PNG, JPG, GIF, or WEBP.');
+        e.target.value = '';
+        return;
+      }
+
+      // Revoke old preview URL if any
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+
+      const preview = URL.createObjectURL(file);
+      setImageFile(file);
+      setImagePreview(preview);
+      setError('');
       e.target.value = '';
-      return;
-    }
-
-    // Revoke old preview URL if any
-    if (imagePreview) URL.revokeObjectURL(imagePreview);
-
-    const preview = URL.createObjectURL(file);
-    setImageFile(file);
-    setImagePreview(preview);
-    setError('');
-    e.target.value = '';
-  }, [imagePreview]);
+    },
+    [imagePreview]
+  );
 
   const removeImage = useCallback(() => {
     if (imagePreview) URL.revokeObjectURL(imagePreview);
@@ -120,9 +123,7 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
       });
     }
 
-    const normalizedOptions = pollOptions
-      .map(option => option.trim())
-      .filter(Boolean);
+    const normalizedOptions = pollOptions.map((option) => option.trim()).filter(Boolean);
     const trimmedQuestion = pollQuestion.trim();
     const isValidPoll = trimmedQuestion.length > 0 && normalizedOptions.length >= 2;
 
@@ -130,14 +131,18 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
       title: title.trim(),
       content: content.trim(),
       category,
-      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+      tags: tags
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean),
       ...(attachments.length > 0 && { attachments }),
-      ...(showPoll && isValidPoll && {
-        poll: {
-          question: trimmedQuestion,
-          options: normalizedOptions
-        }
-      }),
+      ...(showPoll &&
+        isValidPoll && {
+          poll: {
+            question: trimmedQuestion,
+            options: normalizedOptions,
+          },
+        }),
       ...(scheduledAt && { scheduledAt }),
     };
   };
@@ -163,24 +168,24 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
   };
 
   const clearSchedule = () => setScheduledAt(null);
-const addPollOption = () => {
-  if (pollOptions.length < 6) {
-    setPollOptions([...pollOptions, '']);
-  }
-};
+  const addPollOption = () => {
+    if (pollOptions.length < 6) {
+      setPollOptions([...pollOptions, '']);
+    }
+  };
 
-const updatePollOption = (index, value) => {
-  const updated = [...pollOptions];
-  updated[index] = value;
-  setPollOptions(updated);
-};
-
-const removePollOption = (index) => {
-  if (pollOptions.length > 2) {
-    const updated = pollOptions.filter((_, i) => i !== index);
+  const updatePollOption = (index, value) => {
+    const updated = [...pollOptions];
+    updated[index] = value;
     setPollOptions(updated);
-  }
-};
+  };
+
+  const removePollOption = (index) => {
+    if (pollOptions.length > 2) {
+      const updated = pollOptions.filter((_, i) => i !== index);
+      setPollOptions(updated);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50 p-4">
       <div className="bg-card border border-border rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
@@ -189,7 +194,7 @@ const removePollOption = (index) => {
           <h2 className="text-xl font-semibold text-foreground">
             {editPost ? 'Edit Post' : 'Create New Post'}
           </h2>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
           >
@@ -202,9 +207,7 @@ const removePollOption = (index) => {
           <div className="p-6 space-y-5">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
-                Title *
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Title *</label>
               <input
                 type="text"
                 value={title}
@@ -214,18 +217,14 @@ const removePollOption = (index) => {
                 required
                 maxLength={200}
               />
-              <p className="mt-1 text-xs text-muted-foreground text-right">
-                {title.length}/200
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground text-right">{title.length}/200</p>
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
-                Category
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Category</label>
               <div className="flex flex-wrap gap-2">
-                {CATEGORIES.map(cat => (
+                {CATEGORIES.map((cat) => (
                   <button
                     key={cat.value}
                     type="button"
@@ -244,9 +243,7 @@ const removePollOption = (index) => {
 
             {/* Content */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
-                Content *
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Content *</label>
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
@@ -257,12 +254,8 @@ const removePollOption = (index) => {
                 maxLength={10000}
               />
               <div className="flex items-center justify-between mt-1">
-                <p className="text-xs text-muted-foreground">
-                  Supports Markdown formatting
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {content.length}/10000
-                </p>
+                <p className="text-xs text-muted-foreground">Supports Markdown formatting</p>
+                <p className="text-xs text-muted-foreground">{content.length}/10000</p>
               </div>
             </div>
 
@@ -279,87 +272,81 @@ const removePollOption = (index) => {
                 placeholder="Add tags separated by commas (e.g., react, frontend, tips)"
                 className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary"
               />
-              <p className="mt-1 text-xs text-muted-foreground">
-                Tags help others find your post
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">Tags help others find your post</p>
             </div>
 
             {/* Preview of tags */}
             {showPoll && (
-  <div className="space-y-4 border border-border rounded-xl p-4 bg-muted/30">
+              <div className="space-y-4 border border-border rounded-xl p-4 bg-muted/30">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Poll Question</label>
 
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        Poll Question
-      </label>
+                  <input
+                    type="text"
+                    value={pollQuestion}
+                    onChange={(e) => setPollQuestion(e.target.value)}
+                    placeholder="Ask your poll question..."
+                    className="w-full px-4 py-2 rounded-lg bg-muted border border-border"
+                  />
+                </div>
 
-      <input
-        type="text"
-        value={pollQuestion}
-        onChange={(e) => setPollQuestion(e.target.value)}
-        placeholder="Ask your poll question..."
-        className="w-full px-4 py-2 rounded-lg bg-muted border border-border"
-      />
-    </div>
+                <div className="space-y-2">
+                  {pollOptions.map((option, index) => (
+                    <div key={index} className="flex gap-2">
+                      <input
+                        type="text"
+                        value={option}
+                        onChange={(e) => updatePollOption(index, e.target.value)}
+                        placeholder={`Option ${index + 1}`}
+                        className="flex-1 px-4 py-2 rounded-lg bg-muted border border-border"
+                      />
 
-    <div className="space-y-2">
-      {pollOptions.map((option, index) => (
-        <div key={index} className="flex gap-2">
+                      {pollOptions.length > 2 && (
+                        <button
+                          type="button"
+                          onClick={() => removePollOption(index)}
+                          aria-label={`Remove poll option ${index + 1}`}
+                          className="px-3 py-2 bg-red-500 text-white rounded-lg"
+                        >
+                          X
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
 
-          <input
-            type="text"
-            value={option}
-            onChange={(e) =>
-              updatePollOption(index, e.target.value)
-            }
-            placeholder={`Option ${index + 1}`}
-            className="flex-1 px-4 py-2 rounded-lg bg-muted border border-border"
-          />
-
-          {pollOptions.length > 2 && (
-            <button
-  type="button"
-  onClick={() => removePollOption(index)}
-  aria-label={`Remove poll option ${index + 1}`}
-  className="px-3 py-2 bg-red-500 text-white rounded-lg"
->
-  X
-</button>
-          )}
-        </div>
-      ))}
-    </div>
-
-    {pollOptions.length < 6 && (
-      <button
-        type="button"
-        onClick={addPollOption}
-        className="px-4 py-2 bg-primary text-white rounded-lg"
-      >
-        Add Option
-      </button>
-    )}
-  </div>
-)}
+                {pollOptions.length < 6 && (
+                  <button
+                    type="button"
+                    onClick={addPollOption}
+                    className="px-4 py-2 bg-primary text-white rounded-lg"
+                  >
+                    Add Option
+                  </button>
+                )}
+              </div>
+            )}
             {tags && (
               <div className="flex flex-wrap gap-1.5">
-                {tags.split(',').map(tag => tag.trim()).filter(Boolean).map(tag => (
-                  <span
-                    key={tag}
-                    className="px-2 py-0.5 bg-primary/20 text-primary rounded text-xs"
-                  >
-                    #{tag}
-                  </span>
-                ))}
+                {tags
+                  .split(',')
+                  .map((tag) => tag.trim())
+                  .filter(Boolean)
+                  .map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-0.5 bg-primary/20 text-primary rounded text-xs"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
               </div>
             )}
 
             {/* Attachment Previews */}
             {(imageFile || docFile) && (
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-foreground">
-                  Attachments
-                </label>
+                <label className="block text-sm font-medium text-foreground">Attachments</label>
 
                 {/* Image preview */}
                 {imageFile && imagePreview && (
@@ -390,9 +377,7 @@ const removePollOption = (index) => {
                       {FILE_ICONS[getExtension(docFile.name)] || '📎'}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {docFile.name}
-                      </p>
+                      <p className="text-sm font-medium text-foreground truncate">{docFile.name}</p>
                       <p className="text-xs text-muted-foreground uppercase">
                         {getExtension(docFile.name)} file
                       </p>
@@ -411,11 +396,7 @@ const removePollOption = (index) => {
             )}
           </div>
 
-          {error && (
-            <div className="px-6 pb-2 text-sm text-destructive">
-              {error}
-            </div>
-          )}
+          {error && <div className="px-6 pb-2 text-sm text-destructive">{error}</div>}
 
           {/* Scheduled time indicator */}
           {scheduledAt && (
@@ -513,9 +494,10 @@ const removePollOption = (index) => {
                   className={`
                     flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors
                     disabled:opacity-50 disabled:cursor-not-allowed
-                    ${scheduledAt
-                      ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300 hover:bg-indigo-500/30'
-                      : 'border-neutral-600 text-neutral-300 hover:bg-neutral-800'
+                    ${
+                      scheduledAt
+                        ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300 hover:bg-indigo-500/30'
+                        : 'border-neutral-600 text-neutral-300 hover:bg-neutral-800'
                     }
                   `}
                 >
@@ -546,10 +528,7 @@ const removePollOption = (index) => {
       </div>
 
       {showScheduler && (
-        <SchedulePost
-          onClose={() => setShowScheduler(false)}
-          onSchedule={handleScheduleConfirm}
-        />
+        <SchedulePost onClose={() => setShowScheduler(false)} onSchedule={handleScheduleConfirm} />
       )}
     </div>
   );

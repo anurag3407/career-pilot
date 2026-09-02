@@ -1,19 +1,16 @@
-import { motion } from "framer-motion";
-import { MapPin, Star, Briefcase, Users } from "lucide-react";
+import { motion } from 'framer-motion';
+import { MapPin, Star, Briefcase, Users } from 'lucide-react';
 
 export default function Hero({ personal, stats }) {
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden"
-    >
+    <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background image with Netflix overlay */}
       <div className="absolute inset-0">
         <img
           src={personal.avatar}
           alt={personal.name}
           className="w-full h-full object-cover object-center opacity-20"
-          style={{ filter: "blur(2px) saturate(0.5)" }}
+          style={{ filter: 'blur(2px) saturate(0.5)' }}
         />
         {/* Left-heavy gradient like Netflix */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/80 to-transparent" />
@@ -100,9 +97,9 @@ export default function Hero({ personal, stats }) {
           className="flex flex-wrap gap-8"
         >
           {[
-            { icon: Star, label: "Years Experience", value: `${stats.yearsExperience}+` },
-            { icon: Briefcase, label: "Projects", value: `${stats.projectsCompleted}+` },
-            { icon: Users, label: "Happy Clients", value: `${stats.happyClients}+` },
+            { icon: Star, label: 'Years Experience', value: `${stats.yearsExperience}+` },
+            { icon: Briefcase, label: 'Projects', value: `${stats.projectsCompleted}+` },
+            { icon: Users, label: 'Happy Clients', value: `${stats.happyClients}+` },
           ].map(({ icon: Icon, label, value }) => (
             <div key={label} className="flex items-center gap-3">
               <div className="w-10 h-10 rounded bg-[#E50914]/20 border border-[#E50914]/40 flex items-center justify-center flex-shrink-0">

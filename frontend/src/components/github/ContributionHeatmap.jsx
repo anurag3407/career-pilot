@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react';
 
-const WEEKS = 52
-const DAYS = 7
-const CELL_SIZE = 12
-const CELL_GAP = 3
-const LABEL_WIDTH = 32
-const MONTH_LABEL_HEIGHT = 22
+const WEEKS = 52;
+const DAYS = 7;
+const CELL_SIZE = 12;
+const CELL_GAP = 3;
+const LABEL_WIDTH = 32;
+const MONTH_LABEL_HEIGHT = 22;
 
 const LEVEL_COLORS = {
   0: 'var(--heatmap-level-0, #161b22)',
@@ -13,42 +13,42 @@ const LEVEL_COLORS = {
   2: 'var(--heatmap-level-2, #006d32)',
   3: 'var(--heatmap-level-3, #26a641)',
   4: 'var(--heatmap-level-4, #39d353)',
-}
+};
 
 function formatDate(dateString) {
-  const date = new Date(dateString)
+  const date = new Date(dateString);
 
   if (Number.isNaN(date.getTime())) {
-    return dateString
+    return dateString;
   }
 
   return date.toLocaleDateString(undefined, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-  })
+  });
 }
 
 function getMonthLabel(dateString) {
-  const date = new Date(dateString)
+  const date = new Date(dateString);
 
   if (Number.isNaN(date.getTime())) {
-    return ''
+    return '';
   }
 
   return date.toLocaleDateString(undefined, {
     month: 'short',
-  })
+  });
 }
 
 function buildGrid(data) {
-  const normalizedData = Array.isArray(data) ? data : []
-  const cells = []
+  const normalizedData = Array.isArray(data) ? data : [];
+  const cells = [];
 
   for (let week = 0; week < WEEKS; week += 1) {
     for (let day = 0; day < DAYS; day += 1) {
-      const index = week * DAYS + day
-      const item = normalizedData[index] || {}
+      const index = week * DAYS + day;
+      const item = normalizedData[index] || {};
 
       cells.push({
         week,
@@ -56,44 +56,44 @@ function buildGrid(data) {
         date: item.date || '',
         count: Number.isFinite(item.count) ? item.count : 0,
         level: Math.min(Math.max(Number(item.level) || 0, 0), 4),
-      })
+      });
     }
   }
 
-  return cells
+  return cells;
 }
 
 function getMonthLabels(cells) {
-  const labels = []
-  let lastMonth = ''
+  const labels = [];
+  let lastMonth = '';
 
   cells
     .filter((cell) => cell.day === 0 && cell.date)
     .forEach((cell) => {
-      const month = getMonthLabel(cell.date)
+      const month = getMonthLabel(cell.date);
 
       if (month && month !== lastMonth) {
         labels.push({
           month,
           week: cell.week,
-        })
-        lastMonth = month
+        });
+        lastMonth = month;
       }
-    })
+    });
 
-  return labels
+  return labels;
 }
 
 export default function ContributionHeatmap({ data = [], className = '' }) {
-  const [tooltip, setTooltip] = useState(null)
+  const [tooltip, setTooltip] = useState(null);
 
-  const cells = useMemo(() => buildGrid(data), [data])
-  const monthLabels = useMemo(() => getMonthLabels(cells), [cells])
+  const cells = useMemo(() => buildGrid(data), [data]);
+  const monthLabels = useMemo(() => getMonthLabels(cells), [cells]);
 
-  const gridWidth = WEEKS * (CELL_SIZE + CELL_GAP)
-  const gridHeight = DAYS * (CELL_SIZE + CELL_GAP)
-  const svgWidth = LABEL_WIDTH + gridWidth
-  const svgHeight = MONTH_LABEL_HEIGHT + gridHeight
+  const gridWidth = WEEKS * (CELL_SIZE + CELL_GAP);
+  const gridHeight = DAYS * (CELL_SIZE + CELL_GAP);
+  const svgWidth = LABEL_WIDTH + gridWidth;
+  const svgHeight = MONTH_LABEL_HEIGHT + gridHeight;
 
   return (
     <div
@@ -136,8 +136,8 @@ export default function ContributionHeatmap({ data = [], className = '' }) {
         ))}
 
         {cells.map((cell) => {
-          const x = LABEL_WIDTH + cell.week * (CELL_SIZE + CELL_GAP)
-          const y = MONTH_LABEL_HEIGHT + cell.day * (CELL_SIZE + CELL_GAP)
+          const x = LABEL_WIDTH + cell.week * (CELL_SIZE + CELL_GAP);
+          const y = MONTH_LABEL_HEIGHT + cell.day * (CELL_SIZE + CELL_GAP);
 
           return (
             <rect
@@ -167,7 +167,7 @@ export default function ContributionHeatmap({ data = [], className = '' }) {
               }
               onBlur={() => setTooltip(null)}
             />
-          )
+          );
         })}
       </svg>
 
@@ -183,5 +183,5 @@ export default function ContributionHeatmap({ data = [], className = '' }) {
         </div>
       )}
     </div>
-  )
+  );
 }

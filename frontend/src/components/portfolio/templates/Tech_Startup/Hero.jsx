@@ -1,5 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Rocket, Zap, ArrowRight, Github, Linkedin, ExternalLink, ChevronDown, Sparkles, Code2, Cpu } from 'lucide-react';
+import {
+  Rocket,
+  Zap,
+  ArrowRight,
+  Github,
+  Linkedin,
+  ExternalLink,
+  ChevronDown,
+  Sparkles,
+  Code2,
+  Cpu,
+} from 'lucide-react';
 
 /* ──────────────────────────────────────────────────────────────
    Animated Particle Canvas
@@ -146,7 +157,12 @@ function AnimatedCounter({ target, suffix = '', duration = 1800 }) {
     return () => observer.disconnect();
   }, [target, duration]);
 
-  return <span ref={ref}>{count}{suffix}</span>;
+  return (
+    <span ref={ref}>
+      {count}
+      {suffix}
+    </span>
+  );
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -161,7 +177,16 @@ const STATS = [
   { label: 'Team Members', value: 12, suffix: '' },
 ];
 
-const SKILLS = ['React', 'Next.js', 'Node.js', 'TypeScript', 'AWS', 'Kubernetes', 'Postgres', 'Redis'];
+const SKILLS = [
+  'React',
+  'Next.js',
+  'Node.js',
+  'TypeScript',
+  'AWS',
+  'Kubernetes',
+  'Postgres',
+  'Redis',
+];
 
 export default function Hero() {
   const typedText = useTypingEffect(TYPING_WORDS);
@@ -177,7 +202,9 @@ export default function Hero() {
     <section
       id="hero"
       className="relative min-h-screen flex flex-col justify-center overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #0a0f1e 0%, #0d1a2d 40%, #071626 70%, #050d18 100%)' }}
+      style={{
+        background: 'linear-gradient(135deg, #0a0f1e 0%, #0d1a2d 40%, #071626 70%, #050d18 100%)',
+      }}
     >
       {/* ── Particle network ── */}
       <ParticleCanvas />
@@ -209,12 +236,11 @@ export default function Hero() {
       {/* ── Main Content ── */}
       <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-16 w-full">
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20 pt-24 pb-16">
-
           {/* Left column */}
           <div className="flex-1 text-center lg:text-left">
-
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-xs font-semibold tracking-widest uppercase"
+            <div
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-xs font-semibold tracking-widest uppercase"
               style={{
                 background: 'rgba(100, 255, 218, 0.08)',
                 border: '1px solid rgba(100, 255, 218, 0.25)',
@@ -248,9 +274,12 @@ export default function Hero() {
               </span>
             </h1>
 
-            <p className="mt-6 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed" style={{ color: '#8892b0' }}>
-              We are obsessed with shipping products that scale.
-              We turn ideas into production-grade software — fast.
+            <p
+              className="mt-6 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed"
+              style={{ color: '#8892b0' }}
+            >
+              We are obsessed with shipping products that scale. We turn ideas into production-grade
+              software — fast.
             </p>
 
             {/* CTA Buttons */}
@@ -276,11 +305,11 @@ export default function Hero() {
                   color: '#64ffda',
                   background: 'rgba(100, 255, 218, 0.05)',
                 }}
-                onMouseEnter={e => {
+                onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(100, 255, 218, 0.1)';
                   e.currentTarget.style.borderColor = 'rgba(100, 255, 218, 0.6)';
                 }}
-                onMouseLeave={e => {
+                onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'rgba(100, 255, 218, 0.05)';
                   e.currentTarget.style.borderColor = 'rgba(100, 255, 218, 0.3)';
                 }}
@@ -301,8 +330,8 @@ export default function Hero() {
                   border: '1px solid rgba(255,255,255,0.08)',
                   color: '#8892b0',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#64ffda')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#8892b0')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#64ffda')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#8892b0')}
               >
                 <Github className="w-4 h-4" />
               </a>
@@ -315,8 +344,8 @@ export default function Hero() {
                   border: '1px solid rgba(255,255,255,0.08)',
                   color: '#8892b0',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#64ffda')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#8892b0')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#64ffda')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#8892b0')}
               >
                 <Linkedin className="w-4 h-4" />
               </a>
@@ -329,8 +358,8 @@ export default function Hero() {
                   border: '1px solid rgba(255,255,255,0.08)',
                   color: '#8892b0',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#64ffda')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#8892b0')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#64ffda')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#8892b0')}
               >
                 <ExternalLink className="w-4 h-4" />
               </a>
@@ -359,7 +388,9 @@ export default function Hero() {
                 <div className="w-3 h-3 rounded-full" style={{ background: '#ff5f57' }} />
                 <div className="w-3 h-3 rounded-full" style={{ background: '#febc2e' }} />
                 <div className="w-3 h-3 rounded-full" style={{ background: '#28c840' }} />
-                <span className="ml-3 text-xs font-mono" style={{ color: '#8892b0' }}>~/portfolio</span>
+                <span className="ml-3 text-xs font-mono" style={{ color: '#8892b0' }}>
+                  ~/portfolio
+                </span>
                 <Code2 className="w-3.5 h-3.5 ml-auto" style={{ color: '#64ffda' }} />
               </div>
 
@@ -367,7 +398,9 @@ export default function Hero() {
               <div className="font-mono text-xs leading-relaxed space-y-1.5 mb-6">
                 <div style={{ color: '#64ffda' }}>$ whoami</div>
                 <div style={{ color: '#ccd6f6' }}>{'>'} Full-Stack Engineer &amp; Founder</div>
-                <div style={{ color: '#64ffda' }} className="mt-2">$ stack --list</div>
+                <div style={{ color: '#64ffda' }} className="mt-2">
+                  $ stack --list
+                </div>
                 <div className="flex flex-wrap gap-1.5 mt-1">
                   {SKILLS.map((skill) => (
                     <span
@@ -383,17 +416,28 @@ export default function Hero() {
                     </span>
                   ))}
                 </div>
-                <div style={{ color: '#64ffda' }} className="mt-2">$ git status</div>
+                <div style={{ color: '#64ffda' }} className="mt-2">
+                  $ git status
+                </div>
                 <div style={{ color: '#28c840' }}>{'>'} On branch: main ✓ Ready to ship</div>
               </div>
 
               {/* Divider */}
-              <div className="h-px mb-5" style={{ background: 'linear-gradient(90deg, transparent, rgba(100,255,218,0.2), transparent)' }} />
+              <div
+                className="h-px mb-5"
+                style={{
+                  background:
+                    'linear-gradient(90deg, transparent, rgba(100,255,218,0.2), transparent)',
+                }}
+              />
 
               {/* Availability badge */}
               <div
                 className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{ background: 'rgba(100, 255, 218, 0.05)', border: '1px solid rgba(100,255,218,0.12)' }}
+                style={{
+                  background: 'rgba(100, 255, 218, 0.05)',
+                  border: '1px solid rgba(100,255,218,0.12)',
+                }}
               >
                 <div className="relative">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ background: '#64ffda' }} />
@@ -403,8 +447,12 @@ export default function Hero() {
                   />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold" style={{ color: '#64ffda' }}>Available for hire</p>
-                  <p className="text-[10px]" style={{ color: '#8892b0' }}>Responding within 24 hours</p>
+                  <p className="text-xs font-semibold" style={{ color: '#64ffda' }}>
+                    Available for hire
+                  </p>
+                  <p className="text-[10px]" style={{ color: '#8892b0' }}>
+                    Responding within 24 hours
+                  </p>
                 </div>
                 <Cpu className="w-4 h-4 ml-auto" style={{ color: '#7f5af0' }} />
               </div>
@@ -413,9 +461,7 @@ export default function Hero() {
         </div>
 
         {/* ── Stats Row ── */}
-        <div
-          className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-4 pb-16"
-        >
+        <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-4 pb-16">
           {STATS.map(({ label, value, suffix }) => (
             <div
               key={label}
@@ -425,8 +471,8 @@ export default function Hero() {
                 border: '1px solid rgba(100, 255, 218, 0.1)',
                 backdropFilter: 'blur(12px)',
               }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(100,255,218,0.35)')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(100,255,218,0.1)')}
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(100,255,218,0.35)')}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(100,255,218,0.1)')}
             >
               <p
                 className="text-3xl sm:text-4xl font-extrabold tabular-nums"
@@ -439,7 +485,9 @@ export default function Hero() {
               >
                 <AnimatedCounter target={value} suffix={suffix} />
               </p>
-              <p className="text-xs mt-1 font-medium tracking-wide" style={{ color: '#8892b0' }}>{label}</p>
+              <p className="text-xs mt-1 font-medium tracking-wide" style={{ color: '#8892b0' }}>
+                {label}
+              </p>
             </div>
           ))}
         </div>
@@ -449,7 +497,9 @@ export default function Hero() {
       <div
         className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 transition-opacity duration-500 ${scrolled ? 'opacity-0' : 'opacity-100'}`}
       >
-        <span className="text-[10px] tracking-widest uppercase" style={{ color: '#8892b0' }}>Scroll</span>
+        <span className="text-[10px] tracking-widest uppercase" style={{ color: '#8892b0' }}>
+          Scroll
+        </span>
         <ChevronDown className="w-4 h-4 animate-bounce" style={{ color: '#64ffda' }} />
       </div>
     </section>

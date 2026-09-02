@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function FlipCardDeck() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Flip Card Deck Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Projects displayed as a deck of cards. Click to flip cards revealing project details on the back. Drag to shuffle. CSS 3D card flip animations.
+            Projects displayed as a deck of cards. Click to flip cards revealing project details on
+            the back. Drag to shuffle. CSS 3D card flip animations.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo } from 'react'
-import dummy from '../data/dummy_resume.json'
+import { createContext, useContext, useMemo } from 'react';
+import dummy from '../data/dummy_resume.json';
 
 /**
  * Resume data context.
@@ -23,96 +23,94 @@ import dummy from '../data/dummy_resume.json'
  *   }
  */
 
-const FALLBACK = dummy
+const FALLBACK = dummy;
 
-const ResumeContext = createContext(null)
+const ResumeContext = createContext(null);
 
 export function ResumeProvider({ value, children }) {
   // Memoize so referential equality holds across re-renders unless data changes.
-  const memo = useMemo(() => normalizeResumeData(value), [value])
-  return (
-    <ResumeContext.Provider value={memo}>{children}</ResumeContext.Provider>
-  )
+  const memo = useMemo(() => normalizeResumeData(value), [value]);
+  return <ResumeContext.Provider value={memo}>{children}</ResumeContext.Provider>;
 }
 
 export function useResume() {
-  const ctx = useContext(ResumeContext)
+  const ctx = useContext(ResumeContext);
   if (!ctx) {
     // Allow components to render outside a provider by falling back to dummy data
     // (useful for storybook-style previews and lazy-loaded templates).
-    return FALLBACK
+    return FALLBACK;
   }
-  return ctx
+  return ctx;
 }
 
 // ─── Normalization helpers ────────────────────────────────────────────────────
 
 function asString(v, fallback = '') {
-  if (v === null || v === undefined) return fallback
-  return String(v).trim()
+  if (v === null || v === undefined) return fallback;
+  return String(v).trim();
 }
 
 function pickPeriod(item = {}) {
-  if (item.period) return asString(item.period)
-  if (item.duration) return asString(item.duration)
-  if (item.year) return asString(item.year)
+  if (item.period) return asString(item.period);
+  if (item.duration) return asString(item.duration);
+  if (item.year) return asString(item.year);
   if (item.startDate || item.endDate) {
-    const s = item.startDate ? asString(item.startDate) : ''
-    const e = item.endDate ? asString(item.endDate) : (item.current ? 'Present' : '')
-    if (s && e) return `${s} – ${e}`
-    return s || e
+    const s = item.startDate ? asString(item.startDate) : '';
+    const e = item.endDate ? asString(item.endDate) : item.current ? 'Present' : '';
+    if (s && e) return `${s} – ${e}`;
+    return s || e;
   }
-  return ''
+  return '';
 }
 
 function splitBullets(input) {
-  if (Array.isArray(input)) return input.filter(Boolean).map(asString)
-  if (typeof input !== 'string' || !input.trim()) return []
+  if (Array.isArray(input)) return input.filter(Boolean).map(asString);
+  if (typeof input !== 'string' || !input.trim()) return [];
   // Split on newline OR " • " OR " - " OR " * " so multi-line descriptions
   // (e.g. from the AI extractor) become bullet items automatically.
   return input
     .split(/\r?\n|(?:^|\s)[•\-*]\s+/)
-    .map(s => s.trim())
-    .filter(Boolean)
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 function normalizeSkill(s) {
-  if (typeof s === 'string') return { name: s, level: '', category: '' }
+  if (typeof s === 'string') return { name: s, level: '', category: '' };
   if (s && typeof s === 'object') {
     return {
       name: asString(s.name || s.title),
       level: asString(s.level || s.rating),
       category: asString(s.category || s.type),
-    }
+    };
   }
-  return { name: '', level: '', category: '' }
+  return { name: '', level: '', category: '' };
 }
 
 function normalizeExperience(item = {}) {
-  if (typeof item === 'string') return { description: item }
+  if (typeof item === 'string') return { description: item };
   return {
     role: asString(item.role || item.title || item.position),
     company: asString(item.company || item.organization || item.employer),
     period: pickPeriod(item),
     location: asString(item.location),
     bullets: splitBullets(item.bullets || item.description || item.highlights),
-  }
+  };
 }
 
 function normalizeProject(item = {}) {
-  if (typeof item === 'string') return { title: item }
+  if (typeof item === 'string') return { title: item };
   return {
     title: asString(item.title || item.name),
     description: asString(item.description || item.summary),
     techStack: Array.isArray(item.techStack)
       ? item.techStack.map(asString).filter(Boolean)
       : Array.isArray(item.technologies)
-      ? item.technologies.map(asString).filter(Boolean)
-      : Array.isArray(item.tech)
-      ? item.tech.map(asString).filter(Boolean)
-      : [],
+        ? item.technologies.map(asString).filter(Boolean)
+        : Array.isArray(item.tech)
+          ? item.tech.map(asString).filter(Boolean)
+          : [],
     link: asString(item.link || item.url || item.liveUrl || item.githubUrl),
-  }
+  };
 }
 
 function normalizeEducation(item = {}) {
@@ -122,7 +120,7 @@ function normalizeEducation(item = {}) {
     period: pickPeriod(item),
     location: asString(item.location),
     description: asString(item.description),
-  }
+  };
 }
 
 function normalizeCertification(item = {}) {
@@ -130,15 +128,15 @@ function normalizeCertification(item = {}) {
     name: asString(item.name || item.title),
     issuer: asString(item.issuer || item.organization),
     year: asString(item.year || item.date),
-  }
+  };
 }
 
 // Mirrors backend/src/models/Resume.model.js customSections schema.
-const CUSTOM_SECTION_KINDS = ['list', 'paragraph', 'books', 'quotes']
+const CUSTOM_SECTION_KINDS = ['list', 'paragraph', 'books', 'quotes'];
 
 function normalizeCustomSection(item, index = 0) {
-  if (!item || typeof item !== 'object') return null
-  const kind = CUSTOM_SECTION_KINDS.includes(item.kind) ? item.kind : 'list'
+  if (!item || typeof item !== 'object') return null;
+  const kind = CUSTOM_SECTION_KINDS.includes(item.kind) ? item.kind : 'list';
   return {
     id: asString(item.id) || `custom-${index}`,
     title: asString(item.title),
@@ -146,11 +144,11 @@ function normalizeCustomSection(item, index = 0) {
     items: Array.isArray(item.items) ? item.items.map(asString).filter(Boolean) : [],
     body: asString(item.body),
     order: Number.isFinite(item.order) ? item.order : index,
-  }
+  };
 }
 
 function normalizePersonal(p = {}, fallback = {}) {
-  const src = { ...fallback, ...p }
+  const src = { ...fallback, ...p };
   return {
     name: asString(src.name || src.fullName),
     title: asString(src.title || src.headline),
@@ -162,7 +160,7 @@ function normalizePersonal(p = {}, fallback = {}) {
     linkedin: asString(src.linkedin),
     github: asString(src.github),
     photo: asString(src.photo || src.avatar || src.avatarUrl),
-  }
+  };
 }
 
 // ─── Top-level shape detection ────────────────────────────────────────────────
@@ -172,7 +170,7 @@ function normalizePersonal(p = {}, fallback = {}) {
  * (hero / contact / about / experience / projects / skills).
  */
 function fromAiExtractor(raw) {
-  return Boolean(raw && (raw.hero || raw.contact || raw.about))
+  return Boolean(raw && (raw.hero || raw.contact || raw.about));
 }
 
 /**
@@ -180,50 +178,50 @@ function fromAiExtractor(raw) {
  * @returns {object} The canonical resume shape
  */
 export function normalizeResumeData(raw) {
-  const fbPersonal = { photo: '', ...(FALLBACK.personal || {}) }
-  const personal = normalizePersonal(raw?.personal || {}, fbPersonal)
+  const fbPersonal = { photo: '', ...(FALLBACK.personal || {}) };
+  const personal = normalizePersonal(raw?.personal || {}, fbPersonal);
 
   // Merge in social-links from portfolio/socials if explicit fields missing
-  const socials = raw?.socials || {}
-  if (!personal.email && raw?.contact?.email) personal.email = raw.contact.email
-  if (!personal.phone && raw?.contact?.phone) personal.phone = raw.contact.phone
+  const socials = raw?.socials || {};
+  if (!personal.email && raw?.contact?.email) personal.email = raw.contact.email;
+  if (!personal.phone && raw?.contact?.phone) personal.phone = raw.contact.phone;
   if (!personal.linkedin && (socials.linkedin || raw?.contact?.linkedin))
-    personal.linkedin = socials.linkedin || raw.contact.linkedin
+    personal.linkedin = socials.linkedin || raw.contact.linkedin;
   if (!personal.github && (socials.github || raw?.contact?.github))
-    personal.github = socials.github || raw.contact.github
+    personal.github = socials.github || raw.contact.github;
   if (!personal.website && (socials.portfolio || raw?.contact?.portfolio))
-    personal.website = socials.portfolio || raw.contact.portfolio
+    personal.website = socials.portfolio || raw.contact.portfolio;
 
   // Backfill personal from AI extractor hero/about blocks
   if (fromAiExtractor(raw) && !raw.personal) {
-    if (!personal.name && raw.hero?.subtitle) personal.name = raw.hero.subtitle
-    if (!personal.title && raw.hero?.title) personal.title = raw.hero.title
-    if (!personal.summary && raw.about?.bio) personal.summary = raw.about.bio
+    if (!personal.name && raw.hero?.subtitle) personal.name = raw.hero.subtitle;
+    if (!personal.title && raw.hero?.title) personal.title = raw.hero.title;
+    if (!personal.summary && raw.about?.bio) personal.summary = raw.about.bio;
   }
 
   const experience = Array.isArray(raw?.experience)
-    ? raw.experience.map(normalizeExperience).filter(e => e.role || e.company || e.bullets.length)
-    : []
+    ? raw.experience.map(normalizeExperience).filter((e) => e.role || e.company || e.bullets.length)
+    : [];
 
   const education = Array.isArray(raw?.education)
-    ? raw.education.map(normalizeEducation).filter(e => e.degree || e.institution)
-    : []
+    ? raw.education.map(normalizeEducation).filter((e) => e.degree || e.institution)
+    : [];
 
   const projects = Array.isArray(raw?.projects)
-    ? raw.projects.map(normalizeProject).filter(p => p.title || p.description)
-    : []
+    ? raw.projects.map(normalizeProject).filter((p) => p.title || p.description)
+    : [];
 
   const skills = Array.isArray(raw?.skills)
-    ? raw.skills.map(normalizeSkill).filter(s => s.name)
-    : []
+    ? raw.skills.map(normalizeSkill).filter((s) => s.name)
+    : [];
 
   const certifications = Array.isArray(raw?.certifications)
-    ? raw.certifications.map(normalizeCertification).filter(c => c.name)
-    : []
+    ? raw.certifications.map(normalizeCertification).filter((c) => c.name)
+    : [];
 
   // Layout controls (Gap #9). Accepts the same shape as DEFAULT_LAYOUT,
   // or undefined. Caller can override via ResumeProvider value.layout.
-  const layout = { ...DEFAULT_LAYOUT, ...(raw?.layout || {}) }
+  const layout = { ...DEFAULT_LAYOUT, ...(raw?.layout || {}) };
 
   // Drag-and-drop section order + user-defined custom sections. Both are
   // optional; templates that honor ordering read these via <OrderedSections>.
@@ -231,14 +229,14 @@ export function normalizeResumeData(raw) {
   // so templates that don't consume it are unaffected.
   const sectionOrder = Array.isArray(raw?.sectionOrder)
     ? [...new Set(raw.sectionOrder.map((v) => asString(v)).filter(Boolean))]
-    : []
+    : [];
 
   const customSections = Array.isArray(raw?.customSections)
     ? raw.customSections
         .map(normalizeCustomSection)
-        .filter(s => s && (s.title || s.items.length || s.body))
+        .filter((s) => s && (s.title || s.items.length || s.body))
         .sort((a, b) => a.order - b.order)
-    : []
+    : [];
 
   return {
     personal,
@@ -250,7 +248,7 @@ export function normalizeResumeData(raw) {
     layout,
     sectionOrder,
     customSections,
-  }
+  };
 }
 
 const DEFAULT_LAYOUT = {
@@ -259,6 +257,6 @@ const DEFAULT_LAYOUT = {
   fontSizePx: '14px',
   spacing: 'Comfortable',
   lineHeight: 1.5,
-}
+};
 
-export { FALLBACK as RESUME_FALLBACK, DEFAULT_LAYOUT }
+export { FALLBACK as RESUME_FALLBACK, DEFAULT_LAYOUT };

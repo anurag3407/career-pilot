@@ -30,7 +30,9 @@ const AdminLogins = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Login History</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Recent successful logins across the platform.</p>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">
+          Recent successful logins across the platform.
+        </p>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
@@ -61,8 +63,14 @@ const AdminLogins = () => {
                 </tr>
               ) : (
                 logins.map((log) => (
-                  <tr key={log._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td className="px-6 py-4 font-medium text-gray-900 dark:text-white truncate max-w-[200px]" title={log.email}>
+                  <tr
+                    key={log._id}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  >
+                    <td
+                      className="px-6 py-4 font-medium text-gray-900 dark:text-white truncate max-w-[200px]"
+                      title={log.email}
+                    >
                       {log.email}
                     </td>
                     <td className="px-6 py-4">
@@ -82,7 +90,7 @@ const AdminLogins = () => {
             </tbody>
           </table>
         </div>
-        
+
         {/* Pagination */}
         {!loading && totalPages > 1 && (
           <div className="flex items-center justify-between p-4 border-t border-gray-100 dark:border-gray-700">
@@ -94,7 +102,8 @@ const AdminLogins = () => {
               Previous
             </button>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Page <span className="font-semibold text-gray-900 dark:text-white">{page}</span> of <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
+              Page <span className="font-semibold text-gray-900 dark:text-white">{page}</span> of{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
             </span>
             <button
               disabled={page === totalPages}

@@ -24,8 +24,8 @@ export default function Section({
   divider = true,
   children,
 }) {
-  const padMap = { Compact: '4mm', Comfortable: '6mm', Spacious: '9mm' }
-  const pad = padMap[spacing] || padMap.Comfortable
+  const padMap = { Compact: '4mm', Comfortable: '6mm', Spacious: '9mm' };
+  const pad = padMap[spacing] || padMap.Comfortable;
 
   const headingStyle = {
     fontSize: headingSize,
@@ -35,7 +35,7 @@ export default function Section({
     marginBottom: '3mm',
     textTransform: uppercase ? 'uppercase' : 'none',
     letterSpacing: uppercase ? '1.5px' : '0',
-  }
+  };
 
   if (variant === 'boxed') {
     return (
@@ -51,7 +51,7 @@ export default function Section({
         <h2 style={headingStyle}>{title}</h2>
         <div style={{ color: muted }}>{children}</div>
       </section>
-    )
+    );
   }
 
   if (variant === 'banded') {
@@ -72,7 +72,7 @@ export default function Section({
         </h2>
         <div style={{ color: muted, padding: '0 1mm' }}>{children}</div>
       </section>
-    )
+    );
   }
 
   if (variant === 'plain') {
@@ -81,7 +81,7 @@ export default function Section({
         <h2 style={{ ...headingStyle, borderBottom: 'none', marginBottom: '2mm' }}>{title}</h2>
         <div style={{ color: muted }}>{children}</div>
       </section>
-    )
+    );
   }
 
   // underline (default)
@@ -98,5 +98,5 @@ export default function Section({
       </h2>
       <div style={{ color: muted, marginTop: '2mm' }}>{children}</div>
     </section>
-  )
+  );
 }

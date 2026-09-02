@@ -1,4 +1,4 @@
-import data from "../../../../data/dummy_data.json";
+import data from '../../../../data/dummy_data.json';
 
 export default function Footer() {
   return (

@@ -1,19 +1,13 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
-export function AnimatedGradientText({ children, className = "" }) {
-  return (
-    <span
-      className={`text-sky-400 ${className}`}
-    >
-      {children}
-    </span>
-  );
+export function AnimatedGradientText({ children, className = '' }) {
+  return <span className={`text-sky-400 ${className}`}>{children}</span>;
 }
 
-export function AnimatedLetters({ text, className = "", delay = 0 }) {
+export function AnimatedLetters({ text, className = '', delay = 0 }) {
   return (
     <span className={className}>
-      {text.split("").map((char, idx) => (
+      {text.split('').map((char, idx) => (
         <motion.span
           key={idx}
           className="inline-block"
@@ -21,17 +15,17 @@ export function AnimatedLetters({ text, className = "", delay = 0 }) {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3, delay: delay + idx * 0.03 }}
         >
-          {char === " " ? "\u00A0" : char}
+          {char === ' ' ? '\u00A0' : char}
         </motion.span>
       ))}
     </span>
   );
 }
 
-export function TypewriterText({ text, className = "", delay = 0 }) {
+export function TypewriterText({ text, className = '', delay = 0 }) {
   return (
     <span className={className}>
-      {text.split("").map((char, idx) => (
+      {text.split('').map((char, idx) => (
         <motion.span
           key={idx}
           initial={{ opacity: 0 }}
@@ -45,7 +39,7 @@ export function TypewriterText({ text, className = "", delay = 0 }) {
   );
 }
 
-export function FadeInText({ children, className = "", delay = 0 }) {
+export function FadeInText({ children, className = '', delay = 0 }) {
   return (
     <motion.span
       className={className}

@@ -20,7 +20,8 @@ export default function Projects({ projects }) {
         {/* Orbital arc layout */}
         <div className="relative">
           {/* Central glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full opacity-20 pointer-events-none"
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full opacity-20 pointer-events-none"
             style={{
               background: 'radial-gradient(circle, #ff6a00 0%, transparent 70%)',
             }}
@@ -43,7 +44,8 @@ export default function Projects({ projects }) {
                 className="group relative rounded-2xl overflow-hidden bg-gray-900/80 border border-gray-800 backdrop-blur-sm"
               >
                 {/* Orbital glow on hover */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                <div
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                   style={{
                     boxShadow: 'inset 0 0 30px 5px #ff6a0010',
                   }}

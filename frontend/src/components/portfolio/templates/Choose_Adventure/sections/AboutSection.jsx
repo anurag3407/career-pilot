@@ -7,7 +7,7 @@ export default function AboutSection({ data, onChoice }) {
 
   const choices = [
     { label: 'Explore my technical skills', next: 'skills' },
-    { label: 'See the projects I\'ve built', next: 'projects' },
+    { label: "See the projects I've built", next: 'projects' },
     { label: 'Review my work history', next: 'experience' },
   ];
 
@@ -43,7 +43,9 @@ export default function AboutSection({ data, onChoice }) {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <User size={13} className="text-violet-400" />
-                <span className="text-xs text-violet-400 uppercase tracking-wider">About the hero</span>
+                <span className="text-xs text-violet-400 uppercase tracking-wider">
+                  About the hero
+                </span>
               </div>
               <h2 className="text-2xl font-bold text-white">{personal.name}</h2>
               <p className="text-sm text-violet-300">{personal.title}</p>
@@ -79,7 +81,10 @@ export default function AboutSection({ data, onChoice }) {
               onClick={() => onChoice(choice.next)}
               className="w-full flex items-center gap-3 text-left px-5 py-4 rounded-xl border border-violet-700/40 hover:border-violet-400/70 bg-violet-950/30 hover:bg-violet-900/40 text-violet-200 hover:text-white transition-all duration-200 group"
             >
-              <ChevronRight size={14} className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0" />
+              <ChevronRight
+                size={14}
+                className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0"
+              />
               <span className="text-sm">{choice.label}</span>
             </motion.button>
           ))}

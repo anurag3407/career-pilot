@@ -7,9 +7,9 @@ const AdminLayout = () => {
   const { user, loading } = useAuth();
 
   if (loading) return null;
-  
+
   // Basic frontend check. Real check happens on backend.
-  // In a real app we'd fetch the user profile to check role, 
+  // In a real app we'd fetch the user profile to check role,
   // but we can rely on the backend rejecting API calls for now.
   if (!user) {
     return <Navigate to="/login" replace />;

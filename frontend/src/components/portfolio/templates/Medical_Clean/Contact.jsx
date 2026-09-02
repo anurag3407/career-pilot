@@ -146,10 +146,7 @@ export default function Contact({ data = {} }) {
       className="relative w-full bg-gradient-to-br from-slate-50 via-white to-teal-50/40 py-20 px-4 overflow-hidden font-sans"
     >
       {/* ── Background decoration ── */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-      >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
         {/* Soft teal blob top-right */}
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-100/50 rounded-full blur-3xl" />
         {/* Soft blue blob bottom-left */}
@@ -194,8 +191,7 @@ export default function Contact({ data = {} }) {
             custom={0.1}
             className="text-3xl md:text-4xl font-bold text-slate-800 mb-3 leading-tight"
           >
-            Schedule a{' '}
-            <span className="text-teal-600">Consultation</span>
+            Schedule a <span className="text-teal-600">Consultation</span>
           </motion.h2>
 
           <motion.p
@@ -203,9 +199,8 @@ export default function Contact({ data = {} }) {
             custom={0.15}
             className="text-slate-500 text-sm md:text-base max-w-xl mx-auto leading-relaxed mb-4"
           >
-            Specializing in{' '}
-            <span className="font-medium text-teal-700">{specialty}</span>. Reach out to
-            discuss your health concerns or book an appointment.
+            Specializing in <span className="font-medium text-teal-700">{specialty}</span>. Reach
+            out to discuss your health concerns or book an appointment.
           </motion.p>
 
           <motion.div variants={fadeUp} custom={0.2} className="flex justify-center">
@@ -229,12 +224,10 @@ export default function Contact({ data = {} }) {
             className="lg:col-span-2 flex flex-col gap-4"
           >
             <motion.div variants={fadeUp} custom={0}>
-              <h3 className="text-base font-semibold text-slate-700 mb-1">
-                Contact Information
-              </h3>
+              <h3 className="text-base font-semibold text-slate-700 mb-1">Contact Information</h3>
               <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-                All communications are handled with the utmost confidentiality in
-                accordance with HIPAA guidelines.
+                All communications are handled with the utmost confidentiality in accordance with
+                HIPAA guidelines.
               </p>
             </motion.div>
 
@@ -299,10 +292,10 @@ export default function Contact({ data = {} }) {
                   </div>
                   <h4 className="text-lg font-bold text-slate-800 mb-2">Message Sent!</h4>
                   <p className="text-sm text-slate-500 max-w-xs leading-relaxed">
-                    Thank you for reaching out. Our office will contact you within one
-                    business day.
+                    Thank you for reaching out. Our office will contact you within one business day.
                   </p>
-                  <button type="button"
+                  <button
+                    type="button"
                     onClick={() => setStatus('idle')}
                     className="mt-6 text-xs font-semibold text-teal-600 hover:underline"
                   >
@@ -426,8 +419,8 @@ export default function Contact({ data = {} }) {
 
                   {/* Disclaimer */}
                   <p className="text-xs text-slate-400 leading-relaxed bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">
-                    ⚕️ This form is for non-emergency inquiries only. If you are
-                    experiencing a medical emergency, please call{' '}
+                    ⚕️ This form is for non-emergency inquiries only. If you are experiencing a
+                    medical emergency, please call{' '}
                     <span className="font-semibold text-red-500">911</span> immediately.
                   </p>
 
@@ -486,8 +479,7 @@ export default function Contact({ data = {} }) {
           <div className="flex items-center gap-2 text-slate-400 text-xs">
             <Stethoscope className="w-4 h-4 text-teal-500" strokeWidth={1.8} />
             <span>
-              <span className="font-semibold text-slate-600">{name}</span> ·{' '}
-              {specialty}
+              <span className="font-semibold text-slate-600">{name}</span> · {specialty}
             </span>
           </div>
           <p className="text-xs text-slate-400">

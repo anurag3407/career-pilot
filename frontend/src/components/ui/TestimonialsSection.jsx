@@ -1,69 +1,69 @@
-import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { motion } from 'framer-motion';
+import { Star } from 'lucide-react';
 
 const testimonials = [
   {
     text: "careerpilot's AI resume enhancement is incredible. Landed my dream job in 3 weeks!",
-    image: "https://randomuser.me/api/portraits/women/1.jpg",
-    name: "Sarah Chen",
-    role: "Software Engineer at Google",
+    image: 'https://randomuser.me/api/portraits/women/1.jpg',
+    name: 'Sarah Chen',
+    role: 'Software Engineer at Google',
     featured: true,
   },
   {
-    text: "The job tracking feature kept me organized throughout my search. Highly recommend.",
-    image: "https://randomuser.me/api/portraits/men/2.jpg",
-    name: "Michael Rodriguez",
-    role: "Product Manager at Meta",
+    text: 'The job tracking feature kept me organized throughout my search. Highly recommend.',
+    image: 'https://randomuser.me/api/portraits/men/2.jpg',
+    name: 'Michael Rodriguez',
+    role: 'Product Manager at Meta',
   },
   {
-    text: "Finally, a platform that understands what job seekers actually need.",
-    image: "https://randomuser.me/api/portraits/women/3.jpg",
-    name: "Emily Johnson",
-    role: "UX Designer at Apple",
+    text: 'Finally, a platform that understands what job seekers actually need.',
+    image: 'https://randomuser.me/api/portraits/women/3.jpg',
+    name: 'Emily Johnson',
+    role: 'UX Designer at Apple',
   },
   {
-    text: "The AI matching is incredibly accurate. Complete game changer for my career.",
-    image: "https://randomuser.me/api/portraits/men/4.jpg",
-    name: "David Kim",
-    role: "Data Scientist at Netflix",
+    text: 'The AI matching is incredibly accurate. Complete game changer for my career.',
+    image: 'https://randomuser.me/api/portraits/men/4.jpg',
+    name: 'David Kim',
+    role: 'Data Scientist at Netflix',
   },
   {
-    text: "Used careerpilot to transition from startup to big tech. The resume analyzer helped me highlight the right achievements.",
-    image: "https://randomuser.me/api/portraits/women/5.jpg",
-    name: "Lisa Thompson",
-    role: "Engineering Lead at Stripe",
+    text: 'Used careerpilot to transition from startup to big tech. The resume analyzer helped me highlight the right achievements.',
+    image: 'https://randomuser.me/api/portraits/women/5.jpg',
+    name: 'Lisa Thompson',
+    role: 'Engineering Lead at Stripe',
   },
   {
-    text: "Clean interface, powerful features. Worth every minute spent on this platform.",
-    image: "https://randomuser.me/api/portraits/men/6.jpg",
-    name: "James Wilson",
-    role: "Frontend Dev at Vercel",
+    text: 'Clean interface, powerful features. Worth every minute spent on this platform.',
+    image: 'https://randomuser.me/api/portraits/men/6.jpg',
+    name: 'James Wilson',
+    role: 'Frontend Dev at Vercel',
   },
   {
-    text: "The mock interview feature gave me the confidence I needed. Aced my final round.",
-    image: "https://randomuser.me/api/portraits/women/7.jpg",
-    name: "Amanda Foster",
-    role: "Backend Engineer at Spotify",
+    text: 'The mock interview feature gave me the confidence I needed. Aced my final round.',
+    image: 'https://randomuser.me/api/portraits/women/7.jpg',
+    name: 'Amanda Foster',
+    role: 'Backend Engineer at Spotify',
   },
   {
-    text: "Fellowship challenges helped me build real portfolio projects while earning.",
-    image: "https://randomuser.me/api/portraits/men/8.jpg",
-    name: "Ryan Martinez",
-    role: "Full Stack Dev at Airbnb",
+    text: 'Fellowship challenges helped me build real portfolio projects while earning.',
+    image: 'https://randomuser.me/api/portraits/men/8.jpg',
+    name: 'Ryan Martinez',
+    role: 'Full Stack Dev at Airbnb',
   },
   {
-    text: "From application to offer in just 2 weeks. careerpilot streamlined my entire job search process beautifully.",
-    image: "https://randomuser.me/api/portraits/women/9.jpg",
-    name: "Jessica Lee",
-    role: "ML Engineer at OpenAI",
+    text: 'From application to offer in just 2 weeks. careerpilot streamlined my entire job search process beautifully.',
+    image: 'https://randomuser.me/api/portraits/women/9.jpg',
+    name: 'Jessica Lee',
+    role: 'ML Engineer at OpenAI',
   },
 ];
 
 const stats = [
-  { value: "4.9/5", label: "Average rating" },
-  { value: "50K+", label: "Job seekers" },
-  { value: "3x", label: "More interviews" },
-  { value: "92%", label: "Would recommend" },
+  { value: '4.9/5', label: 'Average rating' },
+  { value: '50K+', label: 'Job seekers' },
+  { value: '3x', label: 'More interviews' },
+  { value: '92%', label: 'Would recommend' },
 ];
 
 function TestimonialCard({ t, index }) {
@@ -73,12 +73,12 @@ function TestimonialCard({ t, index }) {
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
+      viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.5, delay: index * 0.06 }}
       whileHover={{ rotate: 0, scale: 1.02 }}
       style={{ rotate: `${rotation}deg` }}
       className={`rounded-2xl border border-border bg-card/60 p-6 backdrop-blur-sm transition-shadow duration-300 hover:shadow-xl ${
-        t.featured ? "md:col-span-2 border-primary/20" : ""
+        t.featured ? 'md:col-span-2 border-primary/20' : ''
       }`}
     >
       <div className="mb-4 flex gap-1">
@@ -86,7 +86,9 @@ function TestimonialCard({ t, index }) {
           <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
         ))}
       </div>
-      <p className={`font-medium leading-relaxed text-foreground ${t.featured ? "text-lg md:text-xl" : "text-sm"}`}>
+      <p
+        className={`font-medium leading-relaxed text-foreground ${t.featured ? 'text-lg md:text-xl' : 'text-sm'}`}
+      >
         "{t.text}"
       </p>
       <div className="mt-5 flex items-center gap-3">

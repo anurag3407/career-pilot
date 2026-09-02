@@ -32,10 +32,16 @@ const Experience = ({ experience }) => (
 
             <div className={`md:w-[45%] ${index % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
               <div className="group border border-gray-800 bg-black/50 p-6 transition-all duration-300 hover:border-cyan-500/30 hover:bg-cyan-950/10">
-                <span className="mb-2 block font-mono text-sm tracking-widest text-cyan-400">{exp.period}</span>
-                <h4 className="mb-1 text-xl font-bold text-white transition-colors group-hover:text-cyan-300">{exp.role}</h4>
+                <span className="mb-2 block font-mono text-sm tracking-widest text-cyan-400">
+                  {exp.period}
+                </span>
+                <h4 className="mb-1 text-xl font-bold text-white transition-colors group-hover:text-cyan-300">
+                  {exp.role}
+                </h4>
                 <h5 className="mb-4 text-md text-gray-500">{exp.company}</h5>
-                <p className="text-sm leading-relaxed text-gray-400 font-light md:text-base">{exp.description}</p>
+                <p className="text-sm leading-relaxed text-gray-400 font-light md:text-base">
+                  {exp.description}
+                </p>
               </div>
             </div>
           </motion.div>

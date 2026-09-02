@@ -15,14 +15,17 @@ export default function Experience({ data }) {
         <div className="flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 border border-stone-200 bg-white shadow-sm rounded-full px-5 py-2 mb-6">
             <Truck size={16} className="text-orange-500" />
-            <span className="text-sm font-semibold text-stone-700" style={{ fontFamily: "sans-serif" }}>
+            <span
+              className="text-sm font-semibold text-stone-700"
+              style={{ fontFamily: 'sans-serif' }}
+            >
               Career Logistics
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black tracking-tight text-stone-900 mb-4">
             Track <span className="text-stone-400">Experience</span>
           </h2>
-          <p className="text-stone-500 max-w-xl text-lg" style={{ fontFamily: "sans-serif" }}>
+          <p className="text-stone-500 max-w-xl text-lg" style={{ fontFamily: 'sans-serif' }}>
             Tracking history of professional milestones and deliveries.
           </p>
         </div>
@@ -37,7 +40,9 @@ export default function Experience({ data }) {
               return (
                 <div key={index} className="relative flex items-start gap-6 md:gap-8 group">
                   {/* Status Icon */}
-                  <div className={`relative z-10 w-12 h-12 md:w-16 md:h-16 shrink-0 rounded-full flex items-center justify-center border-4 border-white shadow-lg transition-transform duration-300 group-hover:scale-110 ${isFirst ? 'bg-orange-500' : 'bg-stone-200'}`}>
+                  <div
+                    className={`relative z-10 w-12 h-12 md:w-16 md:h-16 shrink-0 rounded-full flex items-center justify-center border-4 border-white shadow-lg transition-transform duration-300 group-hover:scale-110 ${isFirst ? 'bg-orange-500' : 'bg-stone-200'}`}
+                  >
                     {isFirst ? (
                       <Truck size={20} className="text-white md:w-6 md:h-6" />
                     ) : (
@@ -63,7 +68,10 @@ export default function Experience({ data }) {
                       </div>
                     </div>
 
-                    <p className="text-stone-500 leading-relaxed mt-4" style={{ fontFamily: "sans-serif" }}>
+                    <p
+                      className="text-stone-500 leading-relaxed mt-4"
+                      style={{ fontFamily: 'sans-serif' }}
+                    >
                       {exp.description}
                     </p>
 

@@ -35,7 +35,10 @@ const Experience = ({ experience = [] }) => (
       {experience.map((exp, i) => (
         <motion.div
           key={i}
-          variants={{ hidden: { opacity: 0, x: -36, y: 24, scale: 0.94 }, show: { opacity: 1, x: 0, y: 0, scale: 1 } }}
+          variants={{
+            hidden: { opacity: 0, x: -36, y: 24, scale: 0.94 },
+            show: { opacity: 1, x: 0, y: 0, scale: 1 },
+          }}
           whileHover={{ x: 8, scale: 1.01 }}
           className="relative ml-10 md:ml-0 md:w-[48%] md:odd:mr-auto md:odd:pr-6 md:even:ml-auto md:even:pl-6"
         >

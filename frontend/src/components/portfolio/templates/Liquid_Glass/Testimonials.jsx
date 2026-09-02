@@ -1,8 +1,8 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { MessageSquare } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { MessageSquare } from 'lucide-react';
 
-const GlassCard = ({ children, className = "" }) => (
+const GlassCard = ({ children, className = '' }) => (
   <div
     className={`rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${className}`}
   >
@@ -12,7 +12,7 @@ const GlassCard = ({ children, className = "" }) => (
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 };
 
 const stagger = {

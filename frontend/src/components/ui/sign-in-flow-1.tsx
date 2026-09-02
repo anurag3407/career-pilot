@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 /**
  * Sign-in flow component.
@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
  */
 
 function cn(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -34,14 +34,12 @@ const CanvasRevealEffect = ({
   reverse = false,
 }) => {
   return (
-    <div className={cn("h-full relative w-full", containerClassName)}>
+    <div className={cn('h-full relative w-full', containerClassName)}>
       <div className="h-full w-full">
         <DotMatrix
           colors={colors ?? [[0, 255, 255]]}
           dotSize={dotSize ?? 3}
-          opacities={
-            opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]
-          }
+          opacities={opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]}
           animationSpeed={animationSpeed}
           reverse={reverse}
         />
@@ -94,7 +92,7 @@ const DotMatrix = ({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
 
     const measure = () => {
       const parent = canvas.parentElement;
@@ -114,7 +112,7 @@ const DotMatrix = ({
     measure();
 
     const onResize = () => measure();
-    window.addEventListener("resize", onResize);
+    window.addEventListener('resize', onResize);
 
     const draw = (timestamp) => {
       if (!startRef.current) startRef.current = timestamp;
@@ -133,10 +131,8 @@ const DotMatrix = ({
       const palette = paletteRef.current;
 
       // Centered grid (matches the `center = ["x","y"]` flag in the original)
-      const offsetX =
-        ((w - Math.floor(w / totalSize) * totalSize) - dotSize) * 0.5;
-      const offsetY =
-        ((h - Math.floor(h / totalSize) * totalSize) - dotSize) * 0.5;
+      const offsetX = (w - Math.floor(w / totalSize) * totalSize - dotSize) * 0.5;
+      const offsetY = (h - Math.floor(h / totalSize) * totalSize - dotSize) * 0.5;
 
       const centerX = cols / 2;
       const centerY = rows / 2;
@@ -149,27 +145,19 @@ const DotMatrix = ({
           // Dot outline (kept, like the shader's two `step()` multipliers)
           const localX = i * totalSize + offsetX;
           const localY = j * totalSize + offsetY;
-          if (
-            localX < 0 ||
-            localY < 0 ||
-            localX + dotSize > w ||
-            localY + dotSize > h
-          )
-            continue;
+          if (localX < 0 || localY < 0 || localX + dotSize > w || localY + dotSize > h) continue;
 
           // Phase shift for the "intro" wavefront
           const distFromCenter = Math.hypot(centerX - i, centerY - j);
-          const timingIntro =
-            distFromCenter * 0.01 + seeded(i, j) * 0.15;
-          const timingOutro =
-            (maxDist - distFromCenter) * 0.02 + seeded(i + 42, j + 42) * 0.2;
+          const timingIntro = distFromCenter * 0.01 + seeded(i, j) * 0.15;
+          const timingOutro = (maxDist - distFromCenter) * 0.02 + seeded(i + 42, j + 42) * 0.2;
           const current = reverse ? timingOutro : timingIntro;
 
           // Base opacity pulled from the `opacities` ladder using a per-dot
           // animated index, just like the GLSL `rand` over time.
           const phase = seeded(
             i * Math.floor(t / 5 + show_offset + 5),
-            j * Math.floor(t / 5 + show_offset + 5),
+            j * Math.floor(t / 5 + show_offset + 5)
           );
           let opacity = opacities[Math.min(9, Math.floor(phase * 10))];
 
@@ -178,19 +166,13 @@ const DotMatrix = ({
             opacity *= 1 - (current < t * animation_speed_factor ? 1 : 0);
             opacity *= Math.min(
               1.25,
-              Math.max(
-                1,
-                (current + 0.1 < t * animation_speed_factor ? 1.25 : 1),
-              ),
+              Math.max(1, current + 0.1 < t * animation_speed_factor ? 1.25 : 1)
             );
           } else {
             opacity *= current < t * animation_speed_factor ? 1 : 0;
             opacity *= Math.min(
               1.25,
-              Math.max(
-                1,
-                1.25 * (1 - (current + 0.1 < t * animation_speed_factor ? 1 : 0)),
-              ),
+              Math.max(1, 1.25 * (1 - (current + 0.1 < t * animation_speed_factor ? 1 : 0)))
             );
           }
 
@@ -211,17 +193,11 @@ const DotMatrix = ({
 
     return () => {
       cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener('resize', onResize);
     };
   }, [opacities, totalSize, dotSize, animationSpeed, reverse]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 h-full w-full"
-      aria-hidden="true"
-    />
-  );
+  return <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" />;
 };
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -229,9 +205,9 @@ const DotMatrix = ({
    ───────────────────────────────────────────────────────────────────────── */
 
 const AnimatedNavLink = ({ href, children }) => {
-  const defaultTextColor = "text-gray-300";
-  const hoverTextColor = "text-white";
-  const textSizeClass = "text-sm";
+  const defaultTextColor = 'text-gray-300';
+  const hoverTextColor = 'text-white';
+  const textSizeClass = 'text-sm';
 
   return (
     <a
@@ -248,7 +224,7 @@ const AnimatedNavLink = ({ href, children }) => {
 
 function MiniNavbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [headerShapeClass, setHeaderShapeClass] = useState("rounded-full");
+  const [headerShapeClass, setHeaderShapeClass] = useState('rounded-full');
   const shapeTimeoutRef = useRef(null);
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -256,10 +232,10 @@ function MiniNavbar() {
   useEffect(() => {
     if (shapeTimeoutRef.current) clearTimeout(shapeTimeoutRef.current);
     if (isOpen) {
-      setHeaderShapeClass("rounded-xl");
+      setHeaderShapeClass('rounded-xl');
     } else {
       shapeTimeoutRef.current = setTimeout(() => {
-        setHeaderShapeClass("rounded-full");
+        setHeaderShapeClass('rounded-full');
       }, 300);
     }
     return () => {
@@ -277,9 +253,9 @@ function MiniNavbar() {
   );
 
   const navLinksData = [
-    { label: "Manifesto", href: "#1" },
-    { label: "Careers", href: "#2" },
-    { label: "Discover", href: "#3" },
+    { label: 'Manifesto', href: '#1' },
+    { label: 'Careers', href: '#2' },
+    { label: 'Discover', href: '#3' },
   ];
 
   const loginButtonElement = (
@@ -323,15 +299,25 @@ function MiniNavbar() {
         <button
           className="sm:hidden flex items-center justify-center w-8 h-8 text-gray-300 focus:outline-none"
           onClick={toggleMenu}
-          aria-label={isOpen ? "Close Menu" : "Open Menu"}
+          aria-label={isOpen ? 'Close Menu' : 'Open Menu'}
         >
           {isOpen ? (
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           ) : (
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           )}
         </button>
@@ -339,7 +325,7 @@ function MiniNavbar() {
 
       <div
         className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overflow-hidden ${
-          isOpen ? "max-h-[1000px] opacity-100 pt-4" : "max-h-0 opacity-0 pt-0 pointer-events-none"
+          isOpen ? 'max-h-[1000px] opacity-100 pt-4' : 'max-h-0 opacity-0 pt-0 pointer-events-none'
         }`}
       >
         <nav className="flex flex-col items-center space-y-4 text-base w-full">
@@ -363,9 +349,9 @@ function MiniNavbar() {
 }
 
 export const SignInPage = ({ className }) => {
-  const [email, setEmail] = useState("");
-  const [step, setStep] = useState("email");
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [email, setEmail] = useState('');
+  const [step, setStep] = useState('email');
+  const [code, setCode] = useState(['', '', '', '', '', '']);
   const codeInputRefs = useRef([]);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [initialCanvasVisible, setInitialCanvasVisible] = useState(true);
@@ -373,11 +359,11 @@ export const SignInPage = ({ className }) => {
 
   const handleEmailSubmit = (e) => {
     e.preventDefault();
-    if (email) setStep("code");
+    if (email) setStep('code');
   };
 
   useEffect(() => {
-    if (step === "code") {
+    if (step === 'code') {
       setTimeout(() => codeInputRefs.current[0]?.focus(), 500);
     }
   }, [step]);
@@ -393,27 +379,27 @@ export const SignInPage = ({ className }) => {
         if (isComplete) {
           setReverseCanvasVisible(true);
           setTimeout(() => setInitialCanvasVisible(false), 50);
-          setTimeout(() => setStep("success"), 2000);
+          setTimeout(() => setStep('success'), 2000);
         }
       }
     }
   };
 
   const handleKeyDown = (index, e) => {
-    if (e.key === "Backspace" && !code[index] && index > 0) {
+    if (e.key === 'Backspace' && !code[index] && index > 0) {
       codeInputRefs.current[index - 1]?.focus();
     }
   };
 
   const handleBackClick = () => {
-    setStep("email");
-    setCode(["", "", "", "", "", ""]);
+    setStep('email');
+    setCode(['', '', '', '', '', '']);
     setReverseCanvasVisible(false);
     setInitialCanvasVisible(true);
   };
 
   return (
-    <div className={cn("flex w-[100%] flex-col min-h-screen bg-black relative", className)}>
+    <div className={cn('flex w-[100%] flex-col min-h-screen bg-black relative', className)}>
       <div className="absolute inset-0 z-0">
         {initialCanvasVisible && (
           <div className="absolute inset-0">
@@ -456,13 +442,13 @@ export const SignInPage = ({ className }) => {
           <div className="flex-1 flex flex-col justify-center items-center">
             <div className="w-full mt-[150px] max-w-sm">
               <AnimatePresence mode="wait">
-                {step === "email" ? (
+                {step === 'email' ? (
                   <motion.div
                     key="email-step"
                     initial={{ opacity: 0, x: -100 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -100 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
                     className="space-y-6 text-center"
                   >
                     <div className="space-y-1">
@@ -514,21 +500,51 @@ export const SignInPage = ({ className }) => {
                     </div>
 
                     <p className="text-xs text-white/40 pt-10">
-                      By signing up, you agree to the{" "}
-                      <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">MSA</Link>,{" "}
-                      <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">Product Terms</Link>,{" "}
-                      <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">Policies</Link>,{" "}
-                      <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">Privacy Notice</Link>, and{" "}
-                      <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">Cookie Notice</Link>.
+                      By signing up, you agree to the{' '}
+                      <Link
+                        to="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        MSA
+                      </Link>
+                      ,{' '}
+                      <Link
+                        to="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Product Terms
+                      </Link>
+                      ,{' '}
+                      <Link
+                        to="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Policies
+                      </Link>
+                      ,{' '}
+                      <Link
+                        to="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Privacy Notice
+                      </Link>
+                      , and{' '}
+                      <Link
+                        to="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Cookie Notice
+                      </Link>
+                      .
                     </p>
                   </motion.div>
-                ) : step === "code" ? (
+                ) : step === 'code' ? (
                   <motion.div
                     key="code-step"
                     initial={{ opacity: 0, x: 100 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 100 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
                     className="space-y-6 text-center"
                   >
                     <div className="space-y-1">
@@ -556,7 +572,7 @@ export const SignInPage = ({ className }) => {
                                   onChange={(e) => handleCodeChange(i, e.target.value)}
                                   onKeyDown={(e) => handleKeyDown(i, e)}
                                   className="w-8 text-center text-xl bg-transparent text-white border-none focus:outline-none focus:ring-0 appearance-none"
-                                  style={{ caretColor: "transparent" }}
+                                  style={{ caretColor: 'transparent' }}
                                 />
                                 {!digit && (
                                   <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
@@ -593,11 +609,11 @@ export const SignInPage = ({ className }) => {
                       </motion.button>
                       <motion.button
                         className={`flex-1 rounded-full font-medium py-3 border transition-all duration-300 ${
-                          code.every((d) => d !== "")
-                            ? "bg-white text-black border-transparent hover:bg-white/90 cursor-pointer"
-                            : "bg-[#111] text-white/50 border-white/10 cursor-not-allowed"
+                          code.every((d) => d !== '')
+                            ? 'bg-white text-black border-transparent hover:bg-white/90 cursor-pointer'
+                            : 'bg-[#111] text-white/50 border-white/10 cursor-not-allowed'
                         }`}
-                        disabled={!code.every((d) => d !== "")}
+                        disabled={!code.every((d) => d !== '')}
                       >
                         Continue
                       </motion.button>
@@ -605,12 +621,42 @@ export const SignInPage = ({ className }) => {
 
                     <div className="pt-16">
                       <p className="text-xs text-white/40">
-                        By signing up, you agree to the{" "}
-                        <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">MSA</Link>,{" "}
-                        <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">Product Terms</Link>,{" "}
-                        <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">Policies</Link>,{" "}
-                        <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">Privacy Notice</Link>, and{" "}
-                        <Link to="#" className="underline text-white/40 hover:text-white/60 transition-colors">Cookie Notice</Link>.
+                        By signing up, you agree to the{' '}
+                        <Link
+                          to="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          MSA
+                        </Link>
+                        ,{' '}
+                        <Link
+                          to="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Product Terms
+                        </Link>
+                        ,{' '}
+                        <Link
+                          to="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Policies
+                        </Link>
+                        ,{' '}
+                        <Link
+                          to="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Privacy Notice
+                        </Link>
+                        , and{' '}
+                        <Link
+                          to="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Cookie Notice
+                        </Link>
+                        .
                       </p>
                     </div>
                   </motion.div>
@@ -619,7 +665,7 @@ export const SignInPage = ({ className }) => {
                     key="success-step"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, ease: "easeOut", delay: 0.3 }}
+                    transition={{ duration: 0.4, ease: 'easeOut', delay: 0.3 }}
                     className="space-y-6 text-center"
                   >
                     <div className="space-y-1">

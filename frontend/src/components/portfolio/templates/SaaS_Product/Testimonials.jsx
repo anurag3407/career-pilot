@@ -88,16 +88,22 @@ export default function Testimonials({ data }) {
               <article
                 key={`${testimonial?.name}-${index}`}
                 className={`relative overflow-hidden rounded-2xl border bg-[#13131A] p-8 ${
-                  index === 0 ? 'border-[#6366F1]/40 shadow-lg shadow-indigo-500/10' : 'border-white/8'
+                  index === 0
+                    ? 'border-[#6366F1]/40 shadow-lg shadow-indigo-500/10'
+                    : 'border-white/8'
                 }`}
               >
-                <span className="absolute right-6 top-3 text-6xl font-bold text-[#6366F1]/20">&quot;</span>
+                <span className="absolute right-6 top-3 text-6xl font-bold text-[#6366F1]/20">
+                  &quot;
+                </span>
                 <div className="mb-6 flex gap-1">
                   {[0, 1, 2, 3, 4].map((star) => (
                     <Star key={star} size={16} className="fill-[#F59E0B] text-[#F59E0B]" />
                   ))}
                 </div>
-                <p className="relative text-lg italic leading-relaxed text-[#F1F0FF]">{testimonial?.text}</p>
+                <p className="relative text-lg italic leading-relaxed text-[#F1F0FF]">
+                  {testimonial?.text}
+                </p>
                 <div className="mt-8 flex items-center gap-3">
                   {testimonial?.avatar ? (
                     <img

@@ -1,12 +1,12 @@
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import SectionLabel from "./SectionLabel";
-import data from "../../../../data/dummy_data.json";
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import SectionLabel from './SectionLabel';
+import data from '../../../../data/dummy_data.json';
 
 export default function Experience() {
   const { experience } = data;
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
     <section id="experience" ref={ref} className="py-28 px-6 md:px-16 lg:px-24">
@@ -25,8 +25,8 @@ export default function Experience() {
           <motion.div
             className="absolute left-[10px] top-0 w-px bg-gradient-to-b from-[#ea4c89] via-[#ea4c89]/30 to-transparent"
             initial={{ height: 0 }}
-            animate={inView ? { height: "100%" } : {}}
-            transition={{ duration: 1.6, ease: "easeOut" }}
+            animate={inView ? { height: '100%' } : {}}
+            transition={{ duration: 1.6, ease: 'easeOut' }}
           />
 
           <div className="space-y-8 ml-10">
@@ -49,7 +49,7 @@ export default function Experience() {
                 </motion.div>
 
                 <motion.div
-                  whileHover={{ x: 4, boxShadow: "0 8px 32px rgba(234,76,137,0.07)" }}
+                  whileHover={{ x: 4, boxShadow: '0 8px 32px rgba(234,76,137,0.07)' }}
                   className="bg-white border border-[#f0f0f0] rounded-2xl p-6 transition-all"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3 mb-2">

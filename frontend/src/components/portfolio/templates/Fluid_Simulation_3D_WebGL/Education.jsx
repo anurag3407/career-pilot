@@ -7,20 +7,24 @@ export default function Education({ data }) {
   const certifications = data?.certifications || [];
 
   const handleCardHover = (e, color = '#10b981') => {
-    window.dispatchEvent(new CustomEvent('fluid-burst', {
-      detail: {
-        x: e.clientX,
-        y: e.clientY,
-        count: 8,
-        color // Emerald/Mint or Cyan
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-burst', {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          count: 8,
+          color, // Emerald/Mint or Cyan
+        },
+      })
+    );
   };
 
   return (
-    <section id="education-section" className="relative py-28 px-6 md:px-12 bg-slate-950/10 overflow-hidden text-white">
+    <section
+      id="education-section"
+      className="relative py-28 px-6 md:px-12 bg-slate-950/10 overflow-hidden text-white"
+    >
       <div className="max-w-6xl mx-auto relative z-10 space-y-16">
-        
         {/* Title */}
         <div className="text-center space-y-4 max-w-xl mx-auto">
           <motion.h2
@@ -37,13 +41,13 @@ export default function Education({ data }) {
             viewport={{ once: true }}
             className="text-slate-400 text-sm md:text-base leading-relaxed"
           >
-            Education history and professional certifications. Hovering over blocks triggers local vector streams.
+            Education history and professional certifications. Hovering over blocks triggers local
+            vector streams.
           </motion.p>
         </div>
 
         {/* Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          
           {/* Left: Education */}
           <div className="space-y-6">
             <h3 className="text-xl font-bold flex items-center gap-2 text-slate-200 pl-2">
@@ -69,7 +73,7 @@ export default function Education({ data }) {
                     className="bg-slate-900/40 hover:bg-slate-900/60 border border-slate-800/80 hover:border-emerald-500/30 backdrop-blur-md p-6 rounded-2xl shadow-xl transition duration-300 relative overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500" />
-                    
+
                     <div className="space-y-3 pl-2">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
@@ -124,7 +128,7 @@ export default function Education({ data }) {
                     className="bg-slate-900/40 hover:bg-slate-900/60 border border-slate-800/80 hover:border-cyan-500/30 backdrop-blur-md p-5 rounded-2xl shadow-xl transition duration-300 relative overflow-hidden flex flex-col justify-between min-h-32"
                   >
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-cyan-500" />
-                    
+
                     <div className="space-y-2 pl-2">
                       <h4 className="text-sm font-bold text-slate-100 leading-snug">{name}</h4>
                       {issuer && (
@@ -145,7 +149,6 @@ export default function Education({ data }) {
               })}
             </div>
           </div>
-
         </div>
       </div>
     </section>

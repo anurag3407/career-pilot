@@ -78,9 +78,7 @@ export default function Testimonials() {
                 <h4 className="font-bold text-white group-hover:text-pink-400 transition-colors">
                   {testimonial.name}
                 </h4>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  {testimonial.role}
-                </p>
+                <p className="text-xs text-gray-400 mt-0.5">{testimonial.role}</p>
               </div>
             </div>
           </motion.div>

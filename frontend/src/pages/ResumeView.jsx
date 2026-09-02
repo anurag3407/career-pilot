@@ -1,213 +1,207 @@
-import { useState, useEffect } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import toast from 'react-hot-toast'
-import ReactMarkdown from 'react-markdown'
-import { resumeApi, enhanceApi } from '../services/api'
-import Button from '../components/Button'
-import Card from '../components/Card'
-import { SkeletonResumeView } from '../components/ui/Skeleton'
-import CustomSection from '../components/CustomSection'
-import { sectionsToMarkdown } from '../components/customSectionUtils'
-import { SkeletonList } from '../components/ui/Skeleton'
-import ResumeVersions from '../components/ResumeVersions'
-import AtsProgressChart from '../components/AtsProgressChart'
-import ResumeTranslator from '../components/resume/ResumeTranslator'
-import ResumeTailor from '../components/resume/ResumeTailor'
-import { Loader2 } from 'lucide-react'
-import html2canvas from 'html2canvas'
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
+import ReactMarkdown from 'react-markdown';
+import { resumeApi, enhanceApi } from '../services/api';
+import Button from '../components/Button';
+import Card from '../components/Card';
+import { SkeletonResumeView } from '../components/ui/Skeleton';
+import CustomSection from '../components/CustomSection';
+import { sectionsToMarkdown } from '../components/customSectionUtils';
+import { SkeletonList } from '../components/ui/Skeleton';
+import ResumeVersions from '../components/ResumeVersions';
+import AtsProgressChart from '../components/AtsProgressChart';
+import ResumeTranslator from '../components/resume/ResumeTranslator';
+import ResumeTailor from '../components/resume/ResumeTailor';
+import { Loader2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
 
 export default function ResumeView() {
-  const { resumeId } = useParams()
-  const navigate = useNavigate()
+  const { resumeId } = useParams();
+  const navigate = useNavigate();
 
-  const [resume, setResume] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [downloading, setDownloading] = useState(false)
-  const [downloadingImage, setDownloadingImage] = useState(false)
-  const [imageFormat, setImageFormat] = useState('png')
-  const [activeTab, setActiveTab] = useState('preview') // 'preview' | 'versions' | 'ats'
-  const [previewTab, setPreviewTab] = useState('enhanced') // 'enhanced' | 'original'
-  const [scoreData, setScoreData] = useState(null)
-  const [scoring, setScoring] = useState(false)
-  const [scoringStep, setScoringStep] = useState(0)
-  const [fontFamily, setFontFamily] = useState("Poppins")
-  const [fontSize, setFontSize] = useState("Medium")
+  const [resume, setResume] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadingImage, setDownloadingImage] = useState(false);
+  const [imageFormat, setImageFormat] = useState('png');
+  const [activeTab, setActiveTab] = useState('preview'); // 'preview' | 'versions' | 'ats'
+  const [previewTab, setPreviewTab] = useState('enhanced'); // 'enhanced' | 'original'
+  const [scoreData, setScoreData] = useState(null);
+  const [scoring, setScoring] = useState(false);
+  const [scoringStep, setScoringStep] = useState(0);
+  const [fontFamily, setFontFamily] = useState('Poppins');
+  const [fontSize, setFontSize] = useState('Medium');
 
   useEffect(() => {
-    let interval
+    let interval;
     if (scoring) {
       interval = setInterval(() => {
-        setScoringStep((prev) => (prev + 1) % 4)
-      }, 2500)
+        setScoringStep((prev) => (prev + 1) % 4);
+      }, 2500);
     } else {
-      setScoringStep(0)
+      setScoringStep(0);
     }
-    return () => clearInterval(interval)
-  }, [scoring])
+    return () => clearInterval(interval);
+  }, [scoring]);
   // ── Custom sections – persisted per-resume in localStorage ───────────────
-  const STORAGE_KEY = `resume_custom_sections_${resumeId}`
+  const STORAGE_KEY = `resume_custom_sections_${resumeId}`;
   const [customSections, setCustomSections] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-      return saved ? JSON.parse(saved) : []
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return []
+      return [];
     }
-  })
+  });
 
   const handleSectionsChange = (sections) => {
-    setCustomSections(sections)
+    setCustomSections(sections);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sections))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sections));
     } catch {
       // storage quota exceeded – silently ignore
     }
-  }
+  };
 
   useEffect(() => {
-    fetchResume()
-  }, [resumeId])
+    fetchResume();
+  }, [resumeId]);
 
   const fetchResume = async () => {
     try {
-      const response = await resumeApi.getById(resumeId)
-      setResume(response.data)
+      const response = await resumeApi.getById(resumeId);
+      setResume(response.data);
 
       // Set default tab based on available content
       if (!response.data.enhancedText) {
-        setPreviewTab('original')
+        setPreviewTab('original');
       } else {
-        setPreviewTab('enhanced')
+        setPreviewTab('enhanced');
       }
     } catch (error) {
-      toast.error('Failed to load resume')
-      navigate('/dashboard')
+      toast.error('Failed to load resume');
+      navigate('/dashboard');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleCopy = async (text) => {
     try {
-      await navigator.clipboard.writeText(text)
-      toast.success('Copied to clipboard!')
+      await navigator.clipboard.writeText(text);
+      toast.success('Copied to clipboard!');
     } catch (error) {
-      console.error('Clipboard copy failed:', error)
-      toast.error('Failed to copy to clipboard')
+      console.error('Clipboard copy failed:', error);
+      toast.error('Failed to copy to clipboard');
     }
-  }
+  };
 
   const handleDownloadPdf = async () => {
     try {
-      setDownloading(true)
-      toast.success(
-  `Exporting with ${fontFamily} font and ${fontSize} size`
-)
-      const blob = await resumeApi.downloadPdf(resumeId, previewTab)
+      setDownloading(true);
+      toast.success(`Exporting with ${fontFamily} font and ${fontSize} size`);
+      const blob = await resumeApi.downloadPdf(resumeId, previewTab);
 
       // Create download link
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${resume?.title || 'resume'}_${previewTab}.pdf`
-      document.body.appendChild(a)
-      a.click()
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${resume?.title || 'resume'}_${previewTab}.pdf`;
+      document.body.appendChild(a);
+      a.click();
 
       // Cleanup
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
 
-      toast.success('PDF downloaded successfully!')
+      toast.success('PDF downloaded successfully!');
     } catch (error) {
-      toast.error(error.message || 'Failed to download PDF')
+      toast.error(error.message || 'Failed to download PDF');
     } finally {
-      setDownloading(false)
+      setDownloading(false);
     }
-  }
+  };
 
   const handleDownloadImage = async () => {
     try {
-      setDownloadingImage(true)
+      setDownloadingImage(true);
 
-      const targetElement = document.querySelector('.resume-preview') || document.querySelector('pre.whitespace-pre-wrap')
+      const targetElement =
+        document.querySelector('.resume-preview') ||
+        document.querySelector('pre.whitespace-pre-wrap');
 
       if (!targetElement) {
-        toast.error('Resume preview not found')
-        return
+        toast.error('Resume preview not found');
+        return;
       }
 
-      toast.success(`Exporting resume as ${imageFormat.toUpperCase()}`)
+      toast.success(`Exporting resume as ${imageFormat.toUpperCase()}`);
 
       const canvas = await html2canvas(targetElement, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#ffffff'
-      })
+        backgroundColor: '#ffffff',
+      });
 
-      const dataUrl = canvas.toDataURL(`image/${imageFormat}`)
+      const dataUrl = canvas.toDataURL(`image/${imageFormat}`);
 
-      const a = document.createElement('a')
-      a.href = dataUrl
-      a.download = `${resume?.title || 'resume'}_${previewTab}.${imageFormat === 'jpeg' ? 'jpg' : 'png'}`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `${resume?.title || 'resume'}_${previewTab}.${imageFormat === 'jpeg' ? 'jpg' : 'png'}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
 
-      toast.success('Image downloaded successfully!')
+      toast.success('Image downloaded successfully!');
     } catch (error) {
-      console.error('Image download failed:', error)
-      toast.error('Failed to download image')
+      console.error('Image download failed:', error);
+      toast.error('Failed to download image');
     } finally {
-      setDownloadingImage(false)
+      setDownloadingImage(false);
     }
-  }
+  };
 
   // Download the resume as plain text. Useful for ATS systems and quick
   // copy-paste into other tools (LinkedIn, application portals, email).
   const handleDownloadTxt = () => {
-    const text =
-      previewTab === 'enhanced'
-        ? resume?.enhancedText
-        : resume?.originalText
+    const text = previewTab === 'enhanced' ? resume?.enhancedText : resume?.originalText;
     if (!text || !text.trim()) {
-      toast.error('No resume text to export')
-      return
+      toast.error('No resume text to export');
+      return;
     }
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${resume?.title || 'resume'}_${previewTab}.txt`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-    toast.success('Text file downloaded')
-  }
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${resume?.title || 'resume'}_${previewTab}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success('Text file downloaded');
+  };
 
   const handleAnalyzeResume = async () => {
     try {
-      setScoring(true)
+      setScoring(true);
 
-      const resumeText =
-        previewTab === 'enhanced'
-          ? resume?.enhancedText
-          : resume?.originalText
+      const resumeText = previewTab === 'enhanced' ? resume?.enhancedText : resume?.originalText;
 
       if (!resumeText || !resumeText.trim()) {
-        toast.error('No resume text available to analyze.')
-        return
+        toast.error('No resume text available to analyze.');
+        return;
       }
 
-      const result = await enhanceApi.scoreResume(resumeText)
+      const result = await enhanceApi.scoreResume(resumeText);
 
       if (!result.success) {
-        throw new Error(result.message || 'Failed to analyze resume')
+        throw new Error(result.message || 'Failed to analyze resume');
       }
 
-      setScoreData(result.data)
-      toast.success('Resume analyzed successfully!')
+      setScoreData(result.data);
+      toast.success('Resume analyzed successfully!');
 
       // Log score to ATS history
       try {
@@ -219,37 +213,37 @@ export default function ResumeView() {
             skills: result.data.sections?.skills?.score || 0,
             experience: result.data.sections?.experience?.score || 0,
             education: result.data.sections?.education?.score || 0,
-            projects: result.data.sections?.projects?.score || 0
+            projects: result.data.sections?.projects?.score || 0,
           },
           missingKeywords: [],
-          improvementsCount: result.data.topSuggestions?.length || 0
-        })
+          improvementsCount: result.data.topSuggestions?.length || 0,
+        });
       } catch (historyErr) {
-        console.error('Failed to log ATS score run:', historyErr)
+        console.error('Failed to log ATS score run:', historyErr);
       }
     } catch (error) {
-      console.error('Resume analysis error:', error)
+      console.error('Resume analysis error:', error);
 
       if (error.message === 'Not authenticated') {
-        toast.error('Session expired. Please log in again.')
+        toast.error('Session expired. Please log in again.');
       } else if (error.status === 429) {
         const retryMsg = error.retryAfter
           ? ` Try again in ${Math.ceil(error.retryAfter / 60)} minutes.`
-          : ' Try again tomorrow.'
-        toast.error(`Daily AI limit reached.${retryMsg}`)
+          : ' Try again tomorrow.';
+        toast.error(`Daily AI limit reached.${retryMsg}`);
       } else if (error.status === 401 || error.status === 403) {
-        toast.error('Authentication error. Please log in again.')
+        toast.error('Authentication error. Please log in again.');
       } else if (error.status >= 500) {
-        toast.error('Analysis service temporarily unavailable. Please try again.')
+        toast.error('Analysis service temporarily unavailable. Please try again.');
       } else if (!navigator.onLine || error.message?.includes('Failed to fetch')) {
-        toast.error('Network error. Check your connection and try again.')
+        toast.error('Network error. Check your connection and try again.');
       } else {
-        toast.error(error.message || 'Failed to analyze resume. Please try again.')
+        toast.error(error.message || 'Failed to analyze resume. Please try again.');
       }
     } finally {
-      setScoring(false)
+      setScoring(false);
     }
-  }
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -257,12 +251,12 @@ export default function ResumeView() {
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
+      minute: '2-digit',
+    });
+  };
 
   if (loading) {
-    return <SkeletonResumeView />
+    return <SkeletonResumeView />;
   }
 
   return (
@@ -280,20 +274,18 @@ export default function ResumeView() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Link 
-              to="/interview-prep" 
-              state={{ 
-                resumeId: resumeId, 
+            <Link
+              to="/interview-prep"
+              state={{
+                resumeId: resumeId,
                 resumeText: resume?.enhancedText || resume?.originalText,
-                jobRole: resume?.jobRole
+                jobRole: resume?.jobRole,
               }}
             >
               <Button variant="secondary">Practice Interview</Button>
             </Link>
             <Link to={`/enhance/${resumeId}`}>
-              <Button variant="primary">
-                {resume?.enhancedText ? 'Re-enhance' : 'Enhance'}
-              </Button>
+              <Button variant="primary">{resume?.enhancedText ? 'Re-enhance' : 'Enhance'}</Button>
             </Link>
             <Link to={`/resume-templates?resumeId=${resumeId}`}>
               <Button variant="secondary">Templates</Button>
@@ -309,28 +301,31 @@ export default function ResumeView() {
           <nav className="flex gap-8">
             <button
               onClick={() => setActiveTab('preview')}
-              className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'preview'
+              className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+                activeTab === 'preview'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}
+              }`}
             >
               Resume Preview
             </button>
             <button
               onClick={() => setActiveTab('versions')}
-              className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'versions'
+              className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+                activeTab === 'versions'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}
+              }`}
             >
               Versions & Snapshots
             </button>
             <button
               onClick={() => setActiveTab('ats')}
-              className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'ats'
+              className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+                activeTab === 'ats'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}
+              }`}
             >
               ATS Progression
             </button>
@@ -351,7 +346,9 @@ export default function ResumeView() {
                       <button
                         onClick={() => setPreviewTab('enhanced')}
                         className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
-                          previewTab === 'enhanced' ? 'bg-primary text-primary-foreground shadow' : 'text-muted-foreground hover:text-foreground'
+                          previewTab === 'enhanced'
+                            ? 'bg-primary text-primary-foreground shadow'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
                         AI Enhanced
@@ -359,7 +356,9 @@ export default function ResumeView() {
                       <button
                         onClick={() => setPreviewTab('original')}
                         className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
-                          previewTab === 'original' ? 'bg-primary text-primary-foreground shadow' : 'text-muted-foreground hover:text-foreground'
+                          previewTab === 'original'
+                            ? 'bg-primary text-primary-foreground shadow'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
                         Original
@@ -368,59 +367,55 @@ export default function ResumeView() {
                   )}
                 </div>
                 <div className="mb-4 flex gap-4">
-  <div>
-    <label className="block text-sm mb-1">Font Family</label>
-    <select
-      value={fontFamily}
-      onChange={(e) => setFontFamily(e.target.value)}
-      className="border rounded px-2 py-1"
-    >
-      <option value="Poppins">Poppins</option>
-      <option value="Arial">Arial</option>
-      <option value="Times New Roman">Times New Roman</option>
-    </select>
-  </div>
+                  <div>
+                    <label className="block text-sm mb-1">Font Family</label>
+                    <select
+                      value={fontFamily}
+                      onChange={(e) => setFontFamily(e.target.value)}
+                      className="border rounded px-2 py-1"
+                    >
+                      <option value="Poppins">Poppins</option>
+                      <option value="Arial">Arial</option>
+                      <option value="Times New Roman">Times New Roman</option>
+                    </select>
+                  </div>
 
-  <div>
-    <label className="block text-sm mb-1">Font Size</label>
-    <select
-      value={fontSize}
-      onChange={(e) => setFontSize(e.target.value)}
-      className="border rounded px-2 py-1"
-    >
-      <option value="Small">Small</option>
-      <option value="Medium">Medium</option>
-      <option value="Large">Large</option>
-    </select>
-  </div>
+                  <div>
+                    <label className="block text-sm mb-1">Font Size</label>
+                    <select
+                      value={fontSize}
+                      onChange={(e) => setFontSize(e.target.value)}
+                      className="border rounded px-2 py-1"
+                    >
+                      <option value="Small">Small</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Large">Large</option>
+                    </select>
+                  </div>
 
-  <div>
-    <label className="block text-sm mb-1">Image Format</label>
-    <select
-      value={imageFormat}
-      onChange={(e) => setImageFormat(e.target.value)}
-      className="border rounded px-2 py-1"
-    >
-      <option value="png">PNG</option>
-      <option value="jpeg">JPEG</option>
-    </select>
-  </div>
-</div>
+                  <div>
+                    <label className="block text-sm mb-1">Image Format</label>
+                    <select
+                      value={imageFormat}
+                      onChange={(e) => setImageFormat(e.target.value)}
+                      className="border rounded px-2 py-1"
+                    >
+                      <option value="png">PNG</option>
+                      <option value="jpeg">JPEG</option>
+                    </select>
+                  </div>
+                </div>
                 <div className="flex gap-2 flex-wrap">
-                 <Button
-  variant="primary"
-  onClick={handleDownloadPdf}
-  disabled={downloading}
->
-  {downloading ? (
-    <div className="flex items-center gap-2">
-      <Loader2 className="w-4 h-4 animate-spin" />
-      Generating PDF...
-    </div>
-  ) : (
-    'Download PDF'
-  )}
-</Button>
+                  <Button variant="primary" onClick={handleDownloadPdf} disabled={downloading}>
+                    {downloading ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Generating PDF...
+                      </div>
+                    ) : (
+                      'Download PDF'
+                    )}
+                  </Button>
                   <Button
                     variant="primary"
                     onClick={handleDownloadImage}
@@ -435,52 +430,39 @@ export default function ResumeView() {
                       'Download as Image'
                     )}
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleDownloadTxt}
-                  >
+                  <Button variant="outline" onClick={handleDownloadTxt}>
                     Download .txt
                   </Button>
                   <ResumeTranslator
                     resumeText={
-                      previewTab === 'enhanced'
-                        ? resume?.enhancedText
-                        : resume?.originalText
+                      previewTab === 'enhanced' ? resume?.enhancedText : resume?.originalText
                     }
                     onTranslated={(text) => {
                       // Update the in-memory copy so the user can immediately
                       // download the translation or copy it. The persisted
                       // resume on the server is unchanged.
-                      setResume(prev => ({ ...(prev || {}), enhancedText: text }))
-                      toast.success('Preview updated to translated version')
+                      setResume((prev) => ({ ...(prev || {}), enhancedText: text }));
+                      toast.success('Preview updated to translated version');
                     }}
                   />
                   <ResumeTailor
                     resumeText={
-                      previewTab === 'enhanced'
-                        ? resume?.enhancedText
-                        : resume?.originalText
+                      previewTab === 'enhanced' ? resume?.enhancedText : resume?.originalText
                     }
                     jobRole={resume?.jobRole}
                     onTailored={(text) => {
-                      setResume(prev => ({ ...(prev || {}), enhancedText: text }))
-                      toast.success('Resume tailored to this job')
+                      setResume((prev) => ({ ...(prev || {}), enhancedText: text }));
+                      toast.success('Resume tailored to this job');
                     }}
                   />
-                  <Button
-                    variant="primary"
-                    onClick={handleAnalyzeResume}
-                    disabled={scoring}
-                  >
+                  <Button variant="primary" onClick={handleAnalyzeResume} disabled={scoring}>
                     {scoring ? 'Analyzing...' : 'Analyze Resume'}
                   </Button>
                   <Button
                     variant="secondary"
                     onClick={() =>
                       handleCopy(
-                        previewTab === 'enhanced'
-                          ? resume?.enhancedText
-                          : resume?.originalText,
+                        previewTab === 'enhanced' ? resume?.enhancedText : resume?.originalText
                       )
                     }
                   >
@@ -491,10 +473,8 @@ export default function ResumeView() {
                       variant="outline"
                       onClick={() => {
                         const base =
-                          previewTab === 'enhanced'
-                            ? resume?.enhancedText
-                            : resume?.originalText
-                        handleCopy((base || '') + '\n\n' + sectionsToMarkdown(customSections))
+                          previewTab === 'enhanced' ? resume?.enhancedText : resume?.originalText;
+                        handleCopy((base || '') + '\n\n' + sectionsToMarkdown(customSections));
                       }}
                     >
                       Copy with Custom Sections
@@ -503,7 +483,10 @@ export default function ResumeView() {
                 </div>
               </div>
 
-              <div className="bg-card border border-border/40 rounded-lg p-6 min-h-96 overflow-auto shadow-lg" style={{ maxWidth: '210mm', margin: '0 auto' }}>
+              <div
+                className="bg-card border border-border/40 rounded-lg p-6 min-h-96 overflow-auto shadow-lg"
+                style={{ maxWidth: '210mm', margin: '0 auto' }}
+              >
                 {previewTab === 'enhanced' && resume?.enhancedText ? (
                   <div className="resume-preview max-w-none text-foreground text-sm leading-tight">
                     <ReactMarkdown
@@ -529,9 +512,7 @@ export default function ResumeView() {
                           </p>
                         ),
                         ul: ({ node, ...props }) => (
-                          <ul className="list-none pl-0 space-y-0 mb-1">
-                            {props.children}
-                          </ul>
+                          <ul className="list-none pl-0 space-y-0 mb-1">{props.children}</ul>
                         ),
                         li: ({ node, ...props }) => (
                           <li className="text-xs text-foreground flex items-start gap-1 leading-snug">
@@ -540,9 +521,7 @@ export default function ResumeView() {
                           </li>
                         ),
                         strong: ({ node, ...props }) => (
-                          <strong className="font-bold text-foreground">
-                            {props.children}
-                          </strong>
+                          <strong className="font-bold text-foreground">{props.children}</strong>
                         ),
                         em: ({ node, ...props }) => (
                           <em className="text-muted-foreground text-xs font-normal">
@@ -551,7 +530,12 @@ export default function ResumeView() {
                         ),
                         hr: () => null,
                         a: ({ node, ...props }) => (
-                          <a className="text-blue-600 hover:underline text-xs" href={props.href} target="_blank" rel="noopener noreferrer">
+                          <a
+                            className="text-blue-600 hover:underline text-xs"
+                            href={props.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {props.children}
                           </a>
                         ),
@@ -581,14 +565,24 @@ export default function ResumeView() {
                     />
                     <div className="absolute inset-2 rounded-full border-4 border-dashed border-primary/40 animate-spin" />
                     <div className="absolute inset-4 rounded-full border border-primary/60 flex items-center justify-center">
-                      <svg className="w-8 h-8 text-primary animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      <svg
+                        className="w-8 h-8 text-primary animate-pulse"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        />
                       </svg>
                     </div>
                   </div>
 
                   <h3 className="text-xl font-bold text-foreground mb-2">Analyzing Your Resume</h3>
-                  
+
                   {/* Animated active scoring message */}
                   <motion.p
                     key={scoringStep}
@@ -597,14 +591,15 @@ export default function ResumeView() {
                     exit={{ opacity: 0, y: -5 }}
                     className="text-sm font-semibold text-primary tracking-wide text-center"
                   >
-                    {scoringStep === 0 && "🤖 Initializing AI ATS parser..."}
-                    {scoringStep === 1 && "🔍 Analyzing keyword relevance & density..."}
-                    {scoringStep === 2 && "⚡ Measuring impact statements & formatting..."}
-                    {scoringStep === 3 && "📈 Compiling score and suggestions..."}
+                    {scoringStep === 0 && '🤖 Initializing AI ATS parser...'}
+                    {scoringStep === 1 && '🔍 Analyzing keyword relevance & density...'}
+                    {scoringStep === 2 && '⚡ Measuring impact statements & formatting...'}
+                    {scoringStep === 3 && '📈 Compiling score and suggestions...'}
                   </motion.p>
-                  
+
                   <p className="text-xs text-muted-foreground mt-4 text-center max-w-sm">
-                    This might take a few seconds as the AI evaluates your resume against industry benchmarks and formats custom suggestions.
+                    This might take a few seconds as the AI evaluates your resume against industry
+                    benchmarks and formats custom suggestions.
                   </p>
                 </div>
               </Card>
@@ -612,27 +607,21 @@ export default function ResumeView() {
 
             {scoreData && (
               <Card className="mt-6">
-                <h3 className="text-2xl font-bold mb-6">
-                  Resume Analysis
-                </h3>
+                <h3 className="text-2xl font-bold mb-6">Resume Analysis</h3>
 
                 <div className="flex flex-col items-center mb-8">
                   <div className="w-32 h-32 rounded-full border-8 border-primary flex items-center justify-center text-3xl font-bold">
                     {scoreData.overallScore}
                   </div>
 
-                  <p className="mt-3 text-muted-foreground">
-                    Overall Resume Score
-                  </p>
+                  <p className="mt-3 text-muted-foreground">Overall Resume Score</p>
                 </div>
 
                 <div className="space-y-4">
                   {Object.entries(scoreData.sections).map(([section, value]) => (
                     <div key={section}>
                       <div className="flex justify-between mb-1">
-                        <span className="capitalize font-medium">
-                          {section}
-                        </span>
+                        <span className="capitalize font-medium">{section}</span>
                         <span>{value.score}/100</span>
                       </div>
 
@@ -643,24 +632,17 @@ export default function ResumeView() {
                         />
                       </div>
 
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {value.feedback}
-                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">{value.feedback}</p>
                     </div>
                   ))}
                 </div>
 
                 <div className="mt-8">
-                  <h4 className="font-semibold mb-3">
-                    Top Suggestions
-                  </h4>
+                  <h4 className="font-semibold mb-3">Top Suggestions</h4>
 
                   <ul className="space-y-2">
                     {scoreData.topSuggestions.map((tip, index) => (
-                      <li
-                        key={index}
-                        className="bg-muted p-3 rounded-lg"
-                      >
+                      <li key={index} className="bg-muted p-3 rounded-lg">
                         • {tip}
                       </li>
                     ))}
@@ -672,7 +654,9 @@ export default function ResumeView() {
             {/* Metadata */}
             {resume?.preferences && Object.keys(resume.preferences).length > 0 && (
               <Card className="mt-6">
-                <h3 className="text-lg font-medium text-foreground mb-4">Enhancement Settings Used</h3>
+                <h3 className="text-lg font-medium text-foreground mb-4">
+                  Enhancement Settings Used
+                </h3>
                 <div className="grid sm:grid-cols-2 gap-4 text-sm">
                   {resume.jobRole && (
                     <div>
@@ -707,17 +691,32 @@ export default function ResumeView() {
                       <span className="text-muted-foreground block mb-2">Profile Links:</span>
                       <div className="flex flex-wrap gap-3">
                         {resume.preferences.profileInfo.linkedinUrl && (
-                          <a href={resume.preferences.profileInfo.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 text-xs">
+                          <a
+                            href={resume.preferences.profileInfo.linkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:text-primary/80 text-xs"
+                          >
                             LinkedIn ↗
                           </a>
                         )}
                         {resume.preferences.profileInfo.githubUrl && (
-                          <a href={resume.preferences.profileInfo.githubUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 text-xs">
+                          <a
+                            href={resume.preferences.profileInfo.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:text-primary/80 text-xs"
+                          >
                             GitHub ↗
                           </a>
                         )}
                         {resume.preferences.profileInfo.portfolioUrl && (
-                          <a href={resume.preferences.profileInfo.portfolioUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 text-xs">
+                          <a
+                            href={resume.preferences.profileInfo.portfolioUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:text-primary/80 text-xs"
+                          >
                             Portfolio ↗
                           </a>
                         )}
@@ -730,10 +729,7 @@ export default function ResumeView() {
 
             {/* Custom Sections */}
             <Card className="mt-6">
-              <CustomSection
-                sections={customSections}
-                onSectionsChange={handleSectionsChange}
-              />
+              <CustomSection sections={customSections} onSectionsChange={handleSectionsChange} />
             </Card>
           </div>
         )}
@@ -747,13 +743,13 @@ export default function ResumeView() {
               currentJobRole={resume?.jobRole}
               currentAtsScore={resume?.atsScore}
               onRestore={(updatedResume) => {
-                setResume(updatedResume)
+                setResume(updatedResume);
                 if (!updatedResume.enhancedText) {
-                  setPreviewTab('original')
+                  setPreviewTab('original');
                 } else {
-                  setPreviewTab('enhanced')
+                  setPreviewTab('enhanced');
                 }
-                setActiveTab('preview')
+                setActiveTab('preview');
               }}
             />
           </Card>
@@ -766,5 +762,5 @@ export default function ResumeView() {
         )}
       </div>
     </div>
-  )
+  );
 }

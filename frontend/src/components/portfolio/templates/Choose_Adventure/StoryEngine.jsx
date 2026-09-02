@@ -20,7 +20,8 @@ export default function StoryEngine({ node, onChoice, onReset, history = [] }) {
 
       <div className="relative z-10 w-full max-w-2xl">
         {history.length > 0 && (
-          <button type="button"
+          <button
+            type="button"
             onClick={onReset}
             className="mb-8 flex items-center gap-2 text-xs text-violet-400 hover:text-violet-200 transition-colors"
           >
@@ -60,7 +61,10 @@ export default function StoryEngine({ node, onChoice, onReset, history = [] }) {
                     onClick={() => onChoice(choice.next)}
                     className="w-full flex items-center gap-3 text-left px-5 py-4 rounded-xl border border-violet-700/40 hover:border-violet-400/70 bg-violet-950/30 hover:bg-violet-900/40 text-violet-200 hover:text-white transition-all duration-200 group"
                   >
-                    <ChevronRight size={14} className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0" />
+                    <ChevronRight
+                      size={14}
+                      className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0"
+                    />
                     <span className="text-sm">{choice.label}</span>
                   </motion.button>
                 ))}

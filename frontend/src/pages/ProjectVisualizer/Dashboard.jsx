@@ -2,10 +2,28 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  GitBranch, Star, GitFork, AlertCircle, ArrowLeft,
-  Map, Grid3X3, AlertTriangle, Users, Search,
-  Loader2, ChevronDown, Box, Info, Scale,
-  Sparkles, CheckCircle2, Package, Code2, BrainCircuit, BookOpen, TrendingUp
+  GitBranch,
+  Star,
+  GitFork,
+  AlertCircle,
+  ArrowLeft,
+  Map,
+  Grid3X3,
+  AlertTriangle,
+  Users,
+  Search,
+  Loader2,
+  ChevronDown,
+  Box,
+  Info,
+  Scale,
+  Sparkles,
+  CheckCircle2,
+  Package,
+  Code2,
+  BrainCircuit,
+  BookOpen,
+  TrendingUp,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
@@ -32,10 +50,10 @@ import { cn } from '../../lib/utils';
 const Dashboard = () => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
-  const { 
-    sessionId: storeSessionId, 
+  const {
+    sessionId: storeSessionId,
     status,
-    activeTab, 
+    activeTab,
     setActiveTab,
     setAnalysisData,
     setStatus,
@@ -51,7 +69,7 @@ const Dashboard = () => {
     repoName,
     setSelectedModule,
     setInspectorOpen,
-    architectureSummary
+    architectureSummary,
   } = useProjectVisualizerStore();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +80,7 @@ const Dashboard = () => {
   // Load Data if not in store
   useEffect(() => {
     if (!sessionId) return;
-    
+
     if (storeSessionId !== sessionId || status !== 'complete') {
       loadAnalysisData(sessionId);
     } else {
@@ -79,12 +97,12 @@ const Dashboard = () => {
       setError(null);
       const data = await projectVisualizerApi.getAnalysis(id);
       setAnalysisData(data);
-      
+
       // Kick off extra loading
       loadExtraData(id);
     } catch (err) {
       console.error(err);
-      setError("Failed to load analysis data or analysis not found.");
+      setError('Failed to load analysis data or analysis not found.');
       setStatus('error');
     } finally {
       setIsLoading(false);
@@ -93,13 +111,19 @@ const Dashboard = () => {
 
   const loadExtraData = async (id) => {
     try {
-      projectVisualizerApi.getContributors(id).then(res => {
-         if (res && res.length) setContributors(res);
-      }).catch(e => console.warn('Failed to load contributors', e));
-      
-      projectVisualizerApi.getCommits(id).then(res => {
-         if (res && res.length) setCommits(res);
-      }).catch(e => console.warn('Failed to load commits', e));
+      projectVisualizerApi
+        .getContributors(id)
+        .then((res) => {
+          if (res && res.length) setContributors(res);
+        })
+        .catch((e) => console.warn('Failed to load contributors', e));
+
+      projectVisualizerApi
+        .getCommits(id)
+        .then((res) => {
+          if (res && res.length) setCommits(res);
+        })
+        .catch((e) => console.warn('Failed to load commits', e));
     } catch (e) {
       // silent fail for extra data
     }
@@ -111,9 +135,8 @@ const Dashboard = () => {
     let filtered = modules;
     if (moduleSearch) {
       const q = moduleSearch.toLowerCase();
-      filtered = filtered.filter(m => 
-        m.name.toLowerCase().includes(q) || 
-        m.path.toLowerCase().includes(q)
+      filtered = filtered.filter(
+        (m) => m.name.toLowerCase().includes(q) || m.path.toLowerCase().includes(q)
       );
     }
     // Sort by file count desc by default
@@ -125,9 +148,9 @@ const Dashboard = () => {
     if (!risks) return [];
     let filtered = risks;
     if (riskFilter !== 'all') {
-      filtered = filtered.filter(r => r.severity === riskFilter);
+      filtered = filtered.filter((r) => r.severity === riskFilter);
     }
-    
+
     // Sort by severity (critical -> high -> medium -> low)
     const order = { critical: 0, high: 1, medium: 2, low: 3 };
     return filtered.sort((a, b) => order[a.severity] - order[b.severity]);
@@ -143,7 +166,7 @@ const Dashboard = () => {
         <AlertCircle className="w-16 h-16 text-red-500 mb-6" />
         <h2 className="text-2xl font-bold text-white mb-2">Analysis Error</h2>
         <p className="text-slate-400 mb-8 max-w-md text-center">{error}</p>
-        <button 
+        <button
           onClick={() => navigate('/project-visualizer')}
           className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors"
         >
@@ -154,31 +177,85 @@ const Dashboard = () => {
   }
 
   const tabs = [
-    { id: 'architecture', label: 'Architecture', icon: Map, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
-    { id: 'modules', label: 'Modules', icon: Grid3X3, color: 'text-violet-400', bg: 'bg-violet-500/10' },
-    { id: 'files', label: 'Files & Code', icon: Code2, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-    { id: 'activity', label: 'Activity', icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-    { id: 'dependencies', label: 'Dependencies', icon: Package, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-    { id: 'interview', label: 'Interview Prep', icon: BrainCircuit, color: 'text-red-400', bg: 'bg-red-500/10' },
-    { id: 'contribution', label: 'Contribution Guide', icon: BookOpen, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-    { id: 'risks', label: 'Risks', icon: AlertTriangle, color: 'text-orange-400', bg: 'bg-orange-500/10', count: risks?.length },
-    { id: 'contributors', label: 'Contributors', icon: Users, color: 'text-pink-400', bg: 'bg-pink-500/10' }
+    {
+      id: 'architecture',
+      label: 'Architecture',
+      icon: Map,
+      color: 'text-cyan-400',
+      bg: 'bg-cyan-500/10',
+    },
+    {
+      id: 'modules',
+      label: 'Modules',
+      icon: Grid3X3,
+      color: 'text-violet-400',
+      bg: 'bg-violet-500/10',
+    },
+    {
+      id: 'files',
+      label: 'Files & Code',
+      icon: Code2,
+      color: 'text-blue-400',
+      bg: 'bg-blue-500/10',
+    },
+    {
+      id: 'activity',
+      label: 'Activity',
+      icon: TrendingUp,
+      color: 'text-emerald-400',
+      bg: 'bg-emerald-500/10',
+    },
+    {
+      id: 'dependencies',
+      label: 'Dependencies',
+      icon: Package,
+      color: 'text-amber-400',
+      bg: 'bg-amber-500/10',
+    },
+    {
+      id: 'interview',
+      label: 'Interview Prep',
+      icon: BrainCircuit,
+      color: 'text-red-400',
+      bg: 'bg-red-500/10',
+    },
+    {
+      id: 'contribution',
+      label: 'Contribution Guide',
+      icon: BookOpen,
+      color: 'text-emerald-400',
+      bg: 'bg-emerald-500/10',
+    },
+    {
+      id: 'risks',
+      label: 'Risks',
+      icon: AlertTriangle,
+      color: 'text-orange-400',
+      bg: 'bg-orange-500/10',
+      count: risks?.length,
+    },
+    {
+      id: 'contributors',
+      label: 'Contributors',
+      icon: Users,
+      color: 'text-pink-400',
+      bg: 'bg-pink-500/10',
+    },
   ];
 
   return (
     <div className="min-h-screen bg-[#050505] text-white flex flex-col overflow-hidden font-sans">
-      
       {/* Header */}
       <header className="shrink-0 bg-[#0a0f1c] border-b border-white/5 py-4 px-6 flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-30 shadow-xl">
         <div className="flex flex-col gap-2">
-          <button 
+          <button
             onClick={() => navigate('/project-visualizer')}
             className="flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-white transition-colors group w-max"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Search
           </button>
-          
+
           <div className="flex items-center gap-3 mt-1">
             <div className="p-2 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 rounded-lg border border-white/10 shadow-inner">
               <GitBranch className="w-6 h-6 text-cyan-400" />
@@ -187,7 +264,9 @@ const Dashboard = () => {
               <h1 className="text-xl font-bold tracking-tight">
                 <span className="text-slate-400 font-medium">{repoOwner}</span>
                 <span className="text-slate-500 mx-1">/</span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">{repoName}</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
+                  {repoName}
+                </span>
               </h1>
             </div>
           </div>
@@ -195,32 +274,36 @@ const Dashboard = () => {
 
         {/* Tab Navigation */}
         <div className="flex items-center p-1 bg-black/40 rounded-xl border border-white/5 overflow-x-auto custom-scrollbar md:w-auto w-full">
-          {tabs.map(tab => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "relative flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 shrink-0",
-                activeTab === tab.id 
-                  ? "text-white shadow-sm" 
-                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                'relative flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 shrink-0',
+                activeTab === tab.id
+                  ? 'text-white shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
               )}
             >
               {activeTab === tab.id && (
-                <motion.div 
+                <motion.div
                   layoutId="activeTab"
-                  className={cn("absolute inset-0 rounded-lg", tab.bg)}
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  className={cn('absolute inset-0 rounded-lg', tab.bg)}
+                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                 />
               )}
-              <tab.icon className={cn("w-4 h-4 relative z-10", activeTab === tab.id ? tab.color : "")} />
+              <tab.icon
+                className={cn('w-4 h-4 relative z-10', activeTab === tab.id ? tab.color : '')}
+              />
               <span className="relative z-10">{tab.label}</span>
-              
+
               {tab.count !== undefined && (
-                <span className={cn(
-                  "relative z-10 ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold",
-                  activeTab === tab.id ? "bg-white/20" : "bg-white/10"
-                )}>
+                <span
+                  className={cn(
+                    'relative z-10 ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold',
+                    activeTab === tab.id ? 'bg-white/20' : 'bg-white/10'
+                  )}
+                >
                   {tab.count}
                 </span>
               )}
@@ -233,10 +316,9 @@ const Dashboard = () => {
       <main className="flex-1 overflow-y-auto overflow-x-hidden relative custom-scrollbar pb-[80px]">
         <div className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full h-full">
           <AnimatePresence mode="wait">
-            
             {/* ARCHITECTURE TAB */}
             {activeTab === 'architecture' && (
-              <motion.div 
+              <motion.div
                 key="architecture"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -246,19 +328,19 @@ const Dashboard = () => {
               >
                 <StatsOverview />
                 <LanguageBar languages={github?.languages} />
-                
+
                 {architectureSummary && (
-                   <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/5 rounded-full blur-3xl pointer-events-none" />
-                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                       <Sparkles className="w-5 h-5 text-violet-400" /> AI Architecture Summary
-                     </h3>
-                     <p className="text-slate-300 leading-relaxed max-w-5xl whitespace-pre-wrap text-sm">
-                       {architectureSummary}
-                     </p>
-                   </div>
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/5 rounded-full blur-3xl pointer-events-none" />
+                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-violet-400" /> AI Architecture Summary
+                    </h3>
+                    <p className="text-slate-300 leading-relaxed max-w-5xl whitespace-pre-wrap text-sm">
+                      {architectureSummary}
+                    </p>
+                  </div>
                 )}
-                
+
                 <div className="flex-1 min-h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                   <ArchitectureCanvas />
                 </div>
@@ -267,7 +349,7 @@ const Dashboard = () => {
 
             {/* MODULES TAB */}
             {activeTab === 'modules' && (
-              <motion.div 
+              <motion.div
                 key="modules"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -306,8 +388,8 @@ const Dashboard = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
-                        {filteredModules.map(mod => (
-                          <tr 
+                        {filteredModules.map((mod) => (
+                          <tr
                             key={mod.name}
                             onClick={() => {
                               setSelectedModule(mod);
@@ -327,8 +409,12 @@ const Dashboard = () => {
                                 {mod.type}
                               </span>
                             </td>
-                            <td className="p-4 text-right text-slate-300 font-medium">{mod.fileCount}</td>
-                            <td className="p-4 text-right text-slate-400">{mod.loc.toLocaleString()}</td>
+                            <td className="p-4 text-right text-slate-300 font-medium">
+                              {mod.fileCount}
+                            </td>
+                            <td className="p-4 text-right text-slate-400">
+                              {mod.loc.toLocaleString()}
+                            </td>
                             <td className="p-4 text-right text-slate-400">
                               {mod.dependencies ? mod.dependencies.length : 0}
                             </td>
@@ -350,7 +436,7 @@ const Dashboard = () => {
 
             {/* RISKS TAB */}
             {activeTab === 'risks' && (
-              <motion.div 
+              <motion.div
                 key="risks"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -363,13 +449,13 @@ const Dashboard = () => {
                   <div className="lg:col-span-1">
                     <RiskSummaryChart risks={risks} />
                   </div>
-                  
+
                   {/* AI Suggestions */}
                   <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6">
                     <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-violet-400" /> AI Improvement Suggestions
                     </h3>
-                    
+
                     {suggestions && suggestions.length > 0 ? (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {suggestions.map((sug, i) => (
@@ -383,7 +469,7 @@ const Dashboard = () => {
                     )}
                   </div>
                 </div>
-                
+
                 {/* Detailed Risks List */}
                 <div className="mt-4">
                   <div className="flex items-center justify-between mb-6">
@@ -391,17 +477,17 @@ const Dashboard = () => {
                       <AlertTriangle className="w-5 h-5 text-orange-400" />
                       Detailed Hotspots ({filteredRisks.length})
                     </h3>
-                    
+
                     <div className="flex items-center gap-2 bg-black/30 p-1 rounded-lg border border-white/10">
-                      {['all', 'critical', 'high', 'medium', 'low'].map(f => (
+                      {['all', 'critical', 'high', 'medium', 'low'].map((f) => (
                         <button
                           key={f}
                           onClick={() => setRiskFilter(f)}
                           className={cn(
-                            "px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-colors",
-                            riskFilter === f 
-                              ? "bg-white/10 text-white" 
-                              : "text-slate-500 hover:text-slate-300"
+                            'px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-colors',
+                            riskFilter === f
+                              ? 'bg-white/10 text-white'
+                              : 'text-slate-500 hover:text-slate-300'
                           )}
                         >
                           {f}
@@ -409,7 +495,7 @@ const Dashboard = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   {filteredRisks.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {filteredRisks.map((risk, i) => (
@@ -428,7 +514,7 @@ const Dashboard = () => {
 
             {/* CONTRIBUTORS TAB */}
             {activeTab === 'contributors' && (
-              <motion.div 
+              <motion.div
                 key="contributors"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -444,7 +530,7 @@ const Dashboard = () => {
                     </h2>
                     <ContributorGrid contributors={contributors} />
                   </div>
-                  
+
                   <div className="lg:col-span-1">
                     <CommitTimeline commits={commits} />
                   </div>
@@ -454,7 +540,7 @@ const Dashboard = () => {
 
             {/* DEPENDENCIES TAB */}
             {activeTab === 'dependencies' && (
-              <motion.div 
+              <motion.div
                 key="dependencies"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -468,7 +554,7 @@ const Dashboard = () => {
 
             {/* FILES TAB */}
             {activeTab === 'files' && (
-              <motion.div 
+              <motion.div
                 key="files"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -482,7 +568,7 @@ const Dashboard = () => {
 
             {/* INTERVIEW TAB */}
             {activeTab === 'interview' && (
-              <motion.div 
+              <motion.div
                 key="interview"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -521,17 +607,15 @@ const Dashboard = () => {
                 <ActivityTab />
               </motion.div>
             )}
-
           </AnimatePresence>
         </div>
       </main>
 
       {/* Slide-in Inspector Panel */}
       <ModuleInspector />
-      
+
       {/* Docked Chat */}
       <VisualizerChat />
-      
     </div>
   );
 };

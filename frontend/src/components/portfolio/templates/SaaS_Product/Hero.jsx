@@ -23,7 +23,9 @@ function bioTeaser(bio = '') {
 }
 
 export default function Hero({ data }) {
-  const proofAvatars = (data.testimonials || []).slice(0, 3).map((testimonial) => testimonial?.avatar);
+  const proofAvatars = (data.testimonials || [])
+    .slice(0, 3)
+    .map((testimonial) => testimonial?.avatar);
   const fallbackAvatar = data.personal?.avatar;
 
   return (
@@ -61,11 +63,17 @@ export default function Hero({ data }) {
             {data.personal?.name}
           </motion.h1>
 
-          <motion.p variants={item} className="mt-7 max-w-3xl text-xl font-light text-[#8884A8] md:text-2xl">
+          <motion.p
+            variants={item}
+            className="mt-7 max-w-3xl text-xl font-light text-[#8884A8] md:text-2xl"
+          >
             {data.personal?.title}
           </motion.p>
 
-          <motion.p variants={item} className="mt-5 max-w-xl text-base leading-relaxed text-[#4B4870]">
+          <motion.p
+            variants={item}
+            className="mt-5 max-w-xl text-base leading-relaxed text-[#4B4870]"
+          >
             {bioTeaser(data.personal?.bio)}
           </motion.p>
 
@@ -88,16 +96,18 @@ export default function Hero({ data }) {
 
           <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-4">
             <div className="flex pl-2">
-              {(proofAvatars.length ? proofAvatars : [fallbackAvatar, fallbackAvatar, fallbackAvatar]).map(
-                (avatar, index) =>
-                  avatar ? (
-                    <img
-                      key={`${avatar}-${index}`}
-                      src={avatar}
-                      alt={`Client proof ${index + 1}`}
-                      className="-ml-2 h-9 w-9 rounded-full border-2 border-[#0D0D12] object-cover"
-                    />
-                  ) : null,
+              {(proofAvatars.length
+                ? proofAvatars
+                : [fallbackAvatar, fallbackAvatar, fallbackAvatar]
+              ).map((avatar, index) =>
+                avatar ? (
+                  <img
+                    key={`${avatar}-${index}`}
+                    src={avatar}
+                    alt={`Client proof ${index + 1}`}
+                    className="-ml-2 h-9 w-9 rounded-full border-2 border-[#0D0D12] object-cover"
+                  />
+                ) : null
               )}
             </div>
             <p className="text-sm text-[#4B4870]">Trusted by {data.stats?.happyClients}+ clients</p>

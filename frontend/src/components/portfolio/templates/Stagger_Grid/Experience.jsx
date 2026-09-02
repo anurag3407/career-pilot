@@ -16,8 +16,15 @@ export const Experience = () => {
               initial={{ opacity: 0, y: 100, scale: 0.9, rotateX: -30 }}
               whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
               viewport={{ once: true, amount: 0.3 }} // Strict trigger
-              transition={{ type: "spring", stiffness: 120, damping: 15, delay: index * 0.2 }}
-              whileHover={{ x: 15, scale: 1.02, backgroundColor: "#ffffff", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.1)", borderColor: "#e5e7eb", transition: { type: "spring", stiffness: 300, damping: 15 } }}
+              transition={{ type: 'spring', stiffness: 120, damping: 15, delay: index * 0.2 }}
+              whileHover={{
+                x: 15,
+                scale: 1.02,
+                backgroundColor: '#ffffff',
+                boxShadow: '0 25px 50px -12px rgba(0,0,0,0.1)',
+                borderColor: '#e5e7eb',
+                transition: { type: 'spring', stiffness: 300, damping: 15 },
+              }}
               className="p-8 md:p-10 rounded-3xl border border-transparent transition-colors duration-300 relative group"
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4">

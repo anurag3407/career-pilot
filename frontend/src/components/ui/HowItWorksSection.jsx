@@ -1,28 +1,28 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { FileText, Sparkles, Target } from "lucide-react";
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { FileText, Sparkles, Target } from 'lucide-react';
 
 const steps = [
   {
-    step: "01",
+    step: '01',
     icon: FileText,
-    title: "Upload Your Resume",
+    title: 'Upload Your Resume',
     description:
-      "Start by uploading your existing resume. Our AI will analyze your experience, skills, and achievements to understand your profile.",
+      'Start by uploading your existing resume. Our AI will analyze your experience, skills, and achievements to understand your profile.',
   },
   {
-    step: "02",
+    step: '02',
     icon: Sparkles,
-    title: "AI Enhancement",
+    title: 'AI Enhancement',
     description:
-      "Get intelligent suggestions to optimize your resume. Improve ATS compatibility, enhance keywords, and highlight your best achievements.",
+      'Get intelligent suggestions to optimize your resume. Improve ATS compatibility, enhance keywords, and highlight your best achievements.',
   },
   {
-    step: "03",
+    step: '03',
     icon: Target,
-    title: "Match & Apply",
+    title: 'Match & Apply',
     description:
-      "Discover perfectly matched opportunities and apply with your optimized resume. Track every application in your personalized dashboard.",
+      'Discover perfectly matched opportunities and apply with your optimized resume. Track every application in your personalized dashboard.',
   },
 ];
 
@@ -30,7 +30,7 @@ export default function HowItWorksSection() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 60%", "end 40%"],
+    offset: ['start 60%', 'end 40%'],
   });
   const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
@@ -69,7 +69,7 @@ export default function HowItWorksSection() {
                 key={item.step}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
+                viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.6, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
                 className="relative flex gap-8 md:gap-12"
               >

@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function CeramicMinimal() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Ceramic Minimal Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Ceramic/pottery-inspired smooth matte surfaces. Earthy, warm undertones. Rounded shapes that look like sculpted clay objects. Organic plus minimal.
+            Ceramic/pottery-inspired smooth matte surfaces. Earthy, warm undertones. Rounded shapes
+            that look like sculpted clay objects. Organic plus minimal.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function SnowfallWinter() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Snowfall Winter Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Falling snowflakes CSS animation, frosted glass cards, winter blue and white palette. Cozy winter cabin vibes with warm light accents.
+            Falling snowflakes CSS animation, frosted glass cards, winter blue and white palette.
+            Cozy winter cabin vibes with warm light accents.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

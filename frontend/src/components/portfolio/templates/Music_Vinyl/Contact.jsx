@@ -1,5 +1,16 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Send, Headphones, Github, Linkedin, Twitter, Link2, Instagram } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  Headphones,
+  Github,
+  Linkedin,
+  Twitter,
+  Link2,
+  Instagram,
+} from 'lucide-react';
 
 export default function Contact({ personal, socials }) {
   if (!personal && (!socials || socials.length === 0)) return null;
@@ -16,7 +27,9 @@ export default function Contact({ personal, socials }) {
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-center space-x-3 text-amber-500 mb-16">
           <Headphones className="w-8 h-8" />
-          <h2 className="text-3xl sm:text-4xl font-bold uppercase tracking-widest text-amber-100">Bookings & Inquiries</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold uppercase tracking-widest text-amber-100">
+            Bookings & Inquiries
+          </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-[#1a110a] p-8 md:p-12 rounded-2xl border border-amber-900/40 shadow-2xl relative overflow-hidden">
@@ -28,30 +41,39 @@ export default function Contact({ personal, socials }) {
             <h3 className="text-2xl font-bold text-amber-100 mb-6">Drop a Demo</h3>
             <form className="space-y-4 font-sans" onSubmit={(e) => e.preventDefault()}>
               <div>
-                <label className="block text-xs uppercase tracking-widest text-amber-500/80 mb-2">Artist Name</label>
-                <input 
-                  type="text" 
+                <label className="block text-xs uppercase tracking-widest text-amber-500/80 mb-2">
+                  Artist Name
+                </label>
+                <input
+                  type="text"
                   className="w-full bg-[#0a0502] border border-amber-900/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-amber-500 transition-colors"
                   placeholder="Your name"
                 />
               </div>
               <div>
-                <label className="block text-xs uppercase tracking-widest text-amber-500/80 mb-2">Frequency (Email)</label>
-                <input 
-                  type="email" 
+                <label className="block text-xs uppercase tracking-widest text-amber-500/80 mb-2">
+                  Frequency (Email)
+                </label>
+                <input
+                  type="email"
                   className="w-full bg-[#0a0502] border border-amber-900/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-amber-500 transition-colors"
                   placeholder="your@email.com"
                 />
               </div>
               <div>
-                <label className="block text-xs uppercase tracking-widest text-amber-500/80 mb-2">The Mix (Message)</label>
-                <textarea 
+                <label className="block text-xs uppercase tracking-widest text-amber-500/80 mb-2">
+                  The Mix (Message)
+                </label>
+                <textarea
                   rows="4"
                   className="w-full bg-[#0a0502] border border-amber-900/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-amber-500 transition-colors resize-none"
                   placeholder="What's on your mind?"
                 ></textarea>
               </div>
-              <button type="button" className="w-full bg-amber-600 hover:bg-amber-500 text-[#0a0502] font-bold uppercase tracking-widest py-3 px-6 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+              <button
+                type="button"
+                className="w-full bg-amber-600 hover:bg-amber-500 text-[#0a0502] font-bold uppercase tracking-widest py-3 px-6 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+              >
                 <span>Send Track</span>
                 <Send className="w-4 h-4" />
               </button>
@@ -62,15 +84,20 @@ export default function Contact({ personal, socials }) {
           <div className="relative z-10 flex flex-col justify-between">
             <div className="space-y-8">
               <h3 className="text-2xl font-bold text-amber-100 mb-6">Studio Info</h3>
-              
+
               {personal?.email && (
                 <div className="flex items-start space-x-4">
                   <div className="w-10 h-10 rounded-full bg-amber-900/30 flex items-center justify-center shrink-0 border border-amber-900/50">
                     <Mail className="w-5 h-5 text-amber-500" />
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-amber-500/80 font-mono mb-1">Email</p>
-                    <a href={`mailto:${personal.email}`} className="text-amber-100 hover:text-amber-400 font-sans transition-colors">
+                    <p className="text-xs uppercase tracking-widest text-amber-500/80 font-mono mb-1">
+                      Email
+                    </p>
+                    <a
+                      href={`mailto:${personal.email}`}
+                      className="text-amber-100 hover:text-amber-400 font-sans transition-colors"
+                    >
                       {personal.email}
                     </a>
                   </div>
@@ -83,10 +110,10 @@ export default function Contact({ personal, socials }) {
                     <Phone className="w-5 h-5 text-amber-500" />
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-amber-500/80 font-mono mb-1">Direct Line</p>
-                    <p className="text-amber-100 font-sans">
-                      {personal.phone}
+                    <p className="text-xs uppercase tracking-widest text-amber-500/80 font-mono mb-1">
+                      Direct Line
                     </p>
+                    <p className="text-amber-100 font-sans">{personal.phone}</p>
                   </div>
                 </div>
               )}
@@ -97,10 +124,10 @@ export default function Contact({ personal, socials }) {
                     <MapPin className="w-5 h-5 text-amber-500" />
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-amber-500/80 font-mono mb-1">Base</p>
-                    <p className="text-amber-100 font-sans">
-                      {personal.location}
+                    <p className="text-xs uppercase tracking-widest text-amber-500/80 font-mono mb-1">
+                      Base
                     </p>
+                    <p className="text-amber-100 font-sans">{personal.location}</p>
                   </div>
                 </div>
               )}
@@ -108,7 +135,9 @@ export default function Contact({ personal, socials }) {
 
             {socials && socials.length > 0 && (
               <div className="mt-12 pt-8 border-t border-amber-900/40">
-                <p className="text-xs uppercase tracking-widest text-amber-500/80 font-mono mb-4">Record Labels (Socials)</p>
+                <p className="text-xs uppercase tracking-widest text-amber-500/80 font-mono mb-4">
+                  Record Labels (Socials)
+                </p>
                 <div className="flex flex-wrap gap-4">
                   {socials.map((social, i) => {
                     const Icon = socialIcons[social.platform?.toLowerCase()] || Link2;

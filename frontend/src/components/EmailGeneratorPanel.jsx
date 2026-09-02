@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { X, Mail, FileText, Briefcase, Sparkles, Copy, Check } from 'lucide-react'
-import { enhanceApi } from '../services/api'
-import { SkeletonList } from './ui/Skeleton'
-import toast from 'react-hot-toast'
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Mail, FileText, Briefcase, Sparkles, Copy, Check } from 'lucide-react';
+import { enhanceApi } from '../services/api';
+import { SkeletonList } from './ui/Skeleton';
+import toast from 'react-hot-toast';
 
 export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) {
-  const [formData, setFormData] = useState({ 
-    resume: '', 
-    jobDesc: `Applying for ${jobTitle || 'a role'} at ${companyName || 'your company'}\n\n`, 
-    tone: 'Professional' 
+  const [formData, setFormData] = useState({
+    resume: '',
+    jobDesc: `Applying for ${jobTitle || 'a role'} at ${companyName || 'your company'}\n\n`,
+    tone: 'Professional',
   });
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -22,8 +22,8 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
       const response = await enhanceApi.generateEmail(formData);
       setResults(response);
     } catch (error) {
-      console.error("Error generating emails:", error);
-      toast.error("Failed to generate emails. Please try again.");
+      console.error('Error generating emails:', error);
+      toast.error('Failed to generate emails. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -63,7 +63,9 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
               </div>
               <div>
                 <h3 className="text-lg font-bold text-foreground line-clamp-1">Draft Email</h3>
-                <p className="text-xs text-muted-foreground">{companyName ? `${jobTitle} at ${companyName}` : 'AI Email Generator'}</p>
+                <p className="text-xs text-muted-foreground">
+                  {companyName ? `${jobTitle} at ${companyName}` : 'AI Email Generator'}
+                </p>
               </div>
             </div>
             <button
@@ -111,7 +113,9 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">Select Email Tone</label>
+                  <label className="block text-sm font-semibold text-foreground mb-2">
+                    Select Email Tone
+                  </label>
                   <select
                     className="w-full p-3 border border-border bg-muted/50 rounded-xl focus:ring-2 focus:ring-primary text-foreground cursor-pointer"
                     value={formData.tone}
@@ -135,7 +139,9 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
                       Crafting Magic...
                     </span>
                   ) : (
-                    <><Sparkles size={20} /> Generate Emails</>
+                    <>
+                      <Sparkles size={20} /> Generate Emails
+                    </>
                   )}
                 </button>
               </form>
@@ -147,7 +153,10 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
               >
                 <div className="flex items-center justify-between border-b border-border pb-2">
                   <h2 className="text-xl font-bold text-foreground">Your AI Generated Options</h2>
-                  <button onClick={() => setResults(null)} className="text-sm text-primary font-semibold hover:underline">
+                  <button
+                    onClick={() => setResults(null)}
+                    className="text-sm text-primary font-semibold hover:underline"
+                  >
                     Edit Details
                   </button>
                 </div>
@@ -158,15 +167,24 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
                   </h3>
                   <ul className="space-y-3">
                     {results.subjectLines.map((subject, idx) => (
-                      <li key={idx} className="flex items-center gap-3 bg-background p-3 rounded-lg shadow-sm border border-border">
-                        <span className="shrink-0 w-6 h-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-sm font-bold">{idx + 1}</span>
+                      <li
+                        key={idx}
+                        className="flex items-center gap-3 bg-background p-3 rounded-lg shadow-sm border border-border"
+                      >
+                        <span className="shrink-0 w-6 h-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-sm font-bold">
+                          {idx + 1}
+                        </span>
                         <span className="text-foreground font-medium text-sm">{subject}</span>
                         <button
                           onClick={() => copyToClipboard(subject, `subj-${idx}`)}
                           className="ml-auto text-muted-foreground hover:text-primary transition p-1"
                           title="Copy"
                         >
-                          {copiedIndex === `subj-${idx}` ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                          {copiedIndex === `subj-${idx}` ? (
+                            <Check size={16} className="text-green-500" />
+                          ) : (
+                            <Copy size={16} />
+                          )}
                         </button>
                       </li>
                     ))}
@@ -177,14 +195,27 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
                   <h3 className="font-bold text-foreground text-lg">Email Variants</h3>
                   <div className="grid gap-6">
                     {results.variants.map((variant, idx) => (
-                      <div key={idx} className="bg-background p-5 rounded-2xl shadow-sm border border-border flex flex-col h-full hover:border-primary/50 transition-all">
+                      <div
+                        key={idx}
+                        className="bg-background p-5 rounded-2xl shadow-sm border border-border flex flex-col h-full hover:border-primary/50 transition-all"
+                      >
                         <div className="flex justify-between items-center mb-4 border-b border-border pb-2">
-                          <span className="font-bold text-foreground text-sm">Option {idx + 1}</span>
+                          <span className="font-bold text-foreground text-sm">
+                            Option {idx + 1}
+                          </span>
                           <button
                             onClick={() => copyToClipboard(variant, `body-${idx}`)}
                             className="text-xs flex items-center gap-1 text-primary hover:text-primary/80 font-semibold"
                           >
-                            {copiedIndex === `body-${idx}` ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy</>}
+                            {copiedIndex === `body-${idx}` ? (
+                              <>
+                                <Check size={14} /> Copied
+                              </>
+                            ) : (
+                              <>
+                                <Copy size={14} /> Copy
+                              </>
+                            )}
                           </button>
                         </div>
                         <div className="text-muted-foreground whitespace-pre-wrap flex-grow text-sm leading-relaxed">
@@ -200,5 +231,5 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
         </motion.div>
       </div>
     </AnimatePresence>
-  )
+  );
 }

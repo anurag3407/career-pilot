@@ -1,104 +1,118 @@
-import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import Section from '../../shared/Section';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * TerminalCLI — full terminal-window frame, light variant of TechMono.
  * Lighter background, less neon, similar $prompt experience feel.
  */
 export default function TerminalCLI() {
-  const { personal, experience, education, projects, skills, certifications } = useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   const nodes = {
     summary: personal.summary ? (
       <Section title="$ about" accent="#0f766e" uppercase={false}>
-        <p style={{ margin: 0, color: '#1c1917', fontFamily: '"SF Mono", Menlo, monospace' }}>{personal.summary}</p>
+        <p style={{ margin: 0, color: '#1c1917', fontFamily: '"SF Mono", Menlo, monospace' }}>
+          {personal.summary}
+        </p>
       </Section>
     ) : null,
 
-    skills: skills.length > 0 ? (
-      <Section title="$ ls skills/" accent="#0f766e" uppercase={false}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
-          {skills.map((s, i) => (
-            <span
-              key={i}
-              style={{
-                fontSize: '8.5pt',
-                padding: '0.5mm 2mm',
-                background: '#ccfbf1',
-                color: '#0f766e',
-                border: '1px solid #5eead4',
-                borderRadius: 3,
-              }}
-            >
-              {s.name}
-            </span>
+    skills:
+      skills.length > 0 ? (
+        <Section title="$ ls skills/" accent="#0f766e" uppercase={false}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
+            {skills.map((s, i) => (
+              <span
+                key={i}
+                style={{
+                  fontSize: '8.5pt',
+                  padding: '0.5mm 2mm',
+                  background: '#ccfbf1',
+                  color: '#0f766e',
+                  border: '1px solid #5eead4',
+                  borderRadius: 3,
+                }}
+              >
+                {s.name}
+              </span>
+            ))}
+          </div>
+        </Section>
+      ) : null,
+
+    experience:
+      experience.length > 0 ? (
+        <Section title="$ cat experience.log" accent="#0f766e" uppercase={false}>
+          {experience.map((e, i) => (
+            <div key={i} style={{ marginBottom: '4mm' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}
+              >
+                <strong style={{ fontSize: '11pt', color: '#0f172a' }}>{e.role}</strong>
+                {e.period && <span style={{ color: '#78716c', fontSize: '9pt' }}>{e.period}</span>}
+              </div>
+              <div style={{ color: '#0f766e' }}>
+                @{e.company}
+                {e.location ? ` · ${e.location}` : ''}
+              </div>
+              {e.bullets.length > 0 && (
+                <ul style={{ margin: '1.5mm 0 0', paddingLeft: '5mm', color: '#1c1917' }}>
+                  {e.bullets.map((b, j) => (
+                    <li key={j} style={{ marginBottom: '0.5mm' }}>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           ))}
-        </div>
-      </Section>
-    ) : null,
+        </Section>
+      ) : null,
 
-    experience: experience.length > 0 ? (
-      <Section title="$ cat experience.log" accent="#0f766e" uppercase={false}>
-        {experience.map((e, i) => (
-          <div key={i} style={{ marginBottom: '4mm' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <strong style={{ fontSize: '11pt', color: '#0f172a' }}>{e.role}</strong>
-              {e.period && <span style={{ color: '#78716c', fontSize: '9pt' }}>{e.period}</span>}
+    projects:
+      projects.length > 0 ? (
+        <Section title="$ cd projects && ls" accent="#0f766e" uppercase={false}>
+          {projects.map((p, i) => (
+            <div key={i} style={{ marginBottom: '3mm' }}>
+              <strong>{p.title}/</strong>
+              {p.description && <div style={{ color: '#1c1917' }}>{p.description}</div>}
+              {p.techStack.length > 0 && (
+                <div style={{ color: '#78716c', fontSize: '8.5pt' }}>
+                  tech: {p.techStack.join(', ')}
+                </div>
+              )}
             </div>
-            <div style={{ color: '#0f766e' }}>
-              @{e.company}{e.location ? ` · ${e.location}` : ''}
+          ))}
+        </Section>
+      ) : null,
+
+    education:
+      education.length > 0 ? (
+        <Section title="$ cat education.json" accent="#0f766e" uppercase={false}>
+          {education.map((e, i) => (
+            <div key={i} style={{ marginBottom: '2mm' }}>
+              <strong>{e.degree}</strong>
+              <div style={{ color: '#0f766e' }}>{e.institution}</div>
+              <div style={{ color: '#78716c', fontSize: '8.5pt' }}>{e.period}</div>
             </div>
-            {e.bullets.length > 0 && (
-              <ul style={{ margin: '1.5mm 0 0', paddingLeft: '5mm', color: '#1c1917' }}>
-                {e.bullets.map((b, j) => (
-                  <li key={j} style={{ marginBottom: '0.5mm' }}>{b}</li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
-      </Section>
-    ) : null,
+          ))}
+        </Section>
+      ) : null,
 
-    projects: projects.length > 0 ? (
-      <Section title="$ cd projects && ls" accent="#0f766e" uppercase={false}>
-        {projects.map((p, i) => (
-          <div key={i} style={{ marginBottom: '3mm' }}>
-            <strong>{p.title}/</strong>
-            {p.description && <div style={{ color: '#1c1917' }}>{p.description}</div>}
-            {p.techStack.length > 0 && (
-              <div style={{ color: '#78716c', fontSize: '8.5pt' }}>tech: {p.techStack.join(', ')}</div>
-            )}
-          </div>
-        ))}
-      </Section>
-    ) : null,
-
-    education: education.length > 0 ? (
-      <Section title="$ cat education.json" accent="#0f766e" uppercase={false}>
-        {education.map((e, i) => (
-          <div key={i} style={{ marginBottom: '2mm' }}>
-            <strong>{e.degree}</strong>
-            <div style={{ color: '#0f766e' }}>{e.institution}</div>
-            <div style={{ color: '#78716c', fontSize: '8.5pt' }}>{e.period}</div>
-          </div>
-        ))}
-      </Section>
-    ) : null,
-
-    certifications: certifications.length > 0 ? (
-      <Section title="$ cat certs.json" accent="#0f766e" uppercase={false}>
-        {certifications.map((c, i) => (
-          <div key={i} style={{ marginBottom: '1.5mm', fontSize: '9pt' }}>
-            <strong>{c.name}</strong>
-            {c.issuer && <span style={{ color: '#78716c' }}> · {c.issuer}</span>}
-            {c.year && <span style={{ color: '#78716c' }}> ({c.year})</span>}
-          </div>
-        ))}
-      </Section>
-    ) : null,
-  }
+    certifications:
+      certifications.length > 0 ? (
+        <Section title="$ cat certs.json" accent="#0f766e" uppercase={false}>
+          {certifications.map((c, i) => (
+            <div key={i} style={{ marginBottom: '1.5mm', fontSize: '9pt' }}>
+              <strong>{c.name}</strong>
+              {c.issuer && <span style={{ color: '#78716c' }}> · {c.issuer}</span>}
+              {c.year && <span style={{ color: '#78716c' }}> ({c.year})</span>}
+            </div>
+          ))}
+        </Section>
+      ) : null,
+  };
 
   return (
     <div
@@ -130,7 +144,9 @@ export default function TerminalCLI() {
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#10b981' }} />
         </div>
         <div style={{ flex: 1, textAlign: 'center', fontSize: '9pt', color: '#57534e' }}>
-          {personal.name ? `${personal.name.toLowerCase().replace(/\s+/g, '-')}@career-pilot: ~` : 'career-pilot@resume: ~'}
+          {personal.name
+            ? `${personal.name.toLowerCase().replace(/\s+/g, '-')}@career-pilot: ~`
+            : 'career-pilot@resume: ~'}
         </div>
       </div>
 
@@ -145,7 +161,16 @@ export default function TerminalCLI() {
             → {personal.title}
           </div>
         )}
-        <div style={{ marginTop: '3mm', fontSize: '9pt', color: '#57534e', display: 'flex', flexWrap: 'wrap', gap: '1mm 4mm' }}>
+        <div
+          style={{
+            marginTop: '3mm',
+            fontSize: '9pt',
+            color: '#57534e',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '1mm 4mm',
+          }}
+        >
           {personal.email && <span>✉ {personal.email}</span>}
           {personal.phone && <span>☎ {personal.phone}</span>}
           {personal.location && <span>⌂ {personal.location}</span>}
@@ -169,5 +194,5 @@ export default function TerminalCLI() {
         />
       </div>
     </div>
-  )
+  );
 }

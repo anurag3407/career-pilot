@@ -1,44 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import {
-  ArrowRight,
-  Rocket,
-  Sparkles,
-  Palette,
-  Github,
-  Linkedin,
-  FileText,
-} from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Rocket, Sparkles, Palette, Github, Linkedin, FileText } from 'lucide-react';
 
 const themes = [
   {
     id: 1,
-    name: "Developer",
-    skills: ["React", "TypeScript", "Node.js"],
-    accent: "from-sky-500 to-blue-600",
-    dot: "bg-sky-400",
+    name: 'Developer',
+    skills: ['React', 'TypeScript', 'Node.js'],
+    accent: 'from-sky-500 to-blue-600',
+    dot: 'bg-sky-400',
   },
   {
     id: 2,
-    name: "Creative",
-    skills: ["Figma", "UI/UX", "Design Systems"],
-    accent: "from-violet-500 to-fuchsia-600",
-    dot: "bg-violet-400",
+    name: 'Creative',
+    skills: ['Figma', 'UI/UX', 'Design Systems'],
+    accent: 'from-violet-500 to-fuchsia-600',
+    dot: 'bg-violet-400',
   },
   {
     id: 3,
-    name: "Professional",
-    skills: ["Product", "Strategy", "Growth"],
-    accent: "from-amber-500 to-orange-600",
-    dot: "bg-amber-400",
+    name: 'Professional',
+    skills: ['Product', 'Strategy', 'Growth'],
+    accent: 'from-amber-500 to-orange-600',
+    dot: 'bg-amber-400',
   },
 ];
 
 const sources = [
-  { icon: FileText, label: "Resume" },
-  { icon: Github, label: "GitHub" },
-  { icon: Linkedin, label: "LinkedIn" },
+  { icon: FileText, label: 'Resume' },
+  { icon: Github, label: 'GitHub' },
+  { icon: Linkedin, label: 'LinkedIn' },
 ];
 
 export default function PortfolioShowcaseSection() {
@@ -80,7 +72,9 @@ export default function PortfolioShowcaseSection() {
           className="relative mx-auto max-w-4xl"
         >
           {/* Glow behind */}
-          <div className={`absolute -inset-8 -z-10 rounded-[3rem] bg-gradient-to-br ${theme.accent} opacity-10 blur-3xl transition-all duration-700`} />
+          <div
+            className={`absolute -inset-8 -z-10 rounded-[3rem] bg-gradient-to-br ${theme.accent} opacity-10 blur-3xl transition-all duration-700`}
+          />
 
           <div className="overflow-hidden rounded-2xl border border-border bg-card/50 shadow-2xl backdrop-blur-xl">
             {/* Browser chrome */}
@@ -105,12 +99,16 @@ export default function PortfolioShowcaseSection() {
                 >
                   {/* Avatar + name */}
                   <div className="flex items-center gap-5">
-                    <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${theme.accent} shadow-lg`} />
+                    <div
+                      className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${theme.accent} shadow-lg`}
+                    />
                     <div>
                       <div className="h-4 w-36 rounded bg-foreground/12" />
                       <div className="mt-2 h-3 w-24 rounded bg-foreground/6" />
                     </div>
-                    <div className={`ml-auto rounded-full bg-gradient-to-r ${theme.accent} px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white`}>
+                    <div
+                      className={`ml-auto rounded-full bg-gradient-to-r ${theme.accent} px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white`}
+                    >
                       {theme.name}
                     </div>
                   </div>
@@ -126,7 +124,9 @@ export default function PortfolioShowcaseSection() {
                   <div className="mt-8 grid grid-cols-3 gap-4">
                     {[0, 1, 2].map((i) => (
                       <div key={i} className="rounded-xl border border-border bg-muted/40 p-4">
-                        <div className={`mb-3 h-1.5 w-8 rounded-full bg-gradient-to-r ${theme.accent}`} />
+                        <div
+                          className={`mb-3 h-1.5 w-8 rounded-full bg-gradient-to-r ${theme.accent}`}
+                        />
                         <div className="h-2 w-full rounded bg-foreground/8" />
                         <div className="mt-2 h-2 w-2/3 rounded bg-foreground/5" />
                       </div>
@@ -136,7 +136,10 @@ export default function PortfolioShowcaseSection() {
                   {/* Skills */}
                   <div className="mt-8 flex gap-2">
                     {theme.skills.map((skill) => (
-                      <span key={skill} className="rounded-full border border-border bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground">
+                      <span
+                        key={skill}
+                        className="rounded-full border border-border bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground"
+                      >
                         {skill}
                       </span>
                     ))}
@@ -154,8 +157,8 @@ export default function PortfolioShowcaseSection() {
                 onClick={() => setActive(i)}
                 className={`flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold transition-all duration-300 ${
                   i === active
-                    ? "border-primary bg-primary/10 text-foreground"
-                    : "border-border text-muted-foreground hover:border-primary/40"
+                    ? 'border-primary bg-primary/10 text-foreground'
+                    : 'border-border text-muted-foreground hover:border-primary/40'
                 }`}
               >
                 <span className={`h-2 w-2 rounded-full ${t.dot}`} />
@@ -176,18 +179,24 @@ export default function PortfolioShowcaseSection() {
           {/* Source chips */}
           <div className="flex flex-wrap items-center justify-center gap-3">
             {sources.map((s) => (
-              <span key={s.label} className="inline-flex items-center gap-2 rounded-lg border border-border bg-card/60 px-4 py-2 text-sm font-bold text-foreground">
+              <span
+                key={s.label}
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card/60 px-4 py-2 text-sm font-bold text-foreground"
+              >
                 <s.icon className="h-4 w-4 text-primary" />
                 {s.label}
               </span>
             ))}
             <span className="text-muted-foreground/40">→</span>
             {[
-              { label: "One-Click Deploy", icon: Rocket },
-              { label: "AI Content", icon: Sparkles },
-              { label: "10+ Themes", icon: Palette },
+              { label: 'One-Click Deploy', icon: Rocket },
+              { label: 'AI Content', icon: Sparkles },
+              { label: '10+ Themes', icon: Palette },
             ].map((p) => (
-              <span key={p.label} className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-bold text-primary">
+              <span
+                key={p.label}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-bold text-primary"
+              >
                 <p.icon className="h-3.5 w-3.5" />
                 {p.label}
               </span>

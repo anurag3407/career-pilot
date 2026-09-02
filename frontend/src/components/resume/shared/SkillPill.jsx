@@ -18,7 +18,7 @@ export default function SkillPill({
   solid = false,
   style = {},
 }) {
-  if (!name) return null
+  if (!name) return null;
   return (
     <span
       style={{
@@ -36,5 +36,5 @@ export default function SkillPill({
     >
       {name}
     </span>
-  )
+  );
 }

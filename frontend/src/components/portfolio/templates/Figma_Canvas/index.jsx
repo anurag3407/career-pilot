@@ -1,13 +1,38 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  MousePointer2, Frame, Square, Pen, Type, Hand, MessageSquare,
-  ChevronDown, ChevronRight, Eye, EyeOff,
-  ZoomIn, ZoomOut, Play, Share2, Search,
-  MapPin, Mail, Github, Linkedin, Twitter,
-  Briefcase, Star, Quote, Send, Layers, Code2,
-  Sparkles, Globe, Calendar, Maximize
+  MousePointer2,
+  Frame,
+  Square,
+  Pen,
+  Type,
+  Hand,
+  MessageSquare,
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  ZoomIn,
+  ZoomOut,
+  Play,
+  Share2,
+  Search,
+  MapPin,
+  Mail,
+  Github,
+  Linkedin,
+  Twitter,
+  Briefcase,
+  Star,
+  Quote,
+  Send,
+  Layers,
+  Code2,
+  Sparkles,
+  Globe,
+  Calendar,
+  Maximize,
 } from 'lucide-react';
 
 const ALLOWED_PROTOCOLS = ['http:', 'https:', 'mailto:'];
@@ -51,11 +76,26 @@ function FigmaLogo() {
 
   return (
     <svg width="20" height="30" viewBox="0 0 38 57" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M19 28.5C19 23.2533 23.2533 19 28.5 19C33.7467 19 38 23.2533 38 28.5C38 33.7467 33.7467 38 28.5 38C23.2533 38 19 33.7467 19 28.5Z" fill="#1ABCFE"/>
-      <path d="M0 47.5C0 42.2533 4.25329 38 9.5 38H19V47.5C19 52.7467 14.7467 57 9.5 57C4.25329 57 0 52.7467 0 47.5Z" fill="#0ACF83"/>
-      <path d="M19 0V19H28.5C33.7467 19 38 14.7467 38 9.5C38 4.25329 33.7467 0 28.5 0H19Z" fill="#FF7262"/>
-      <path d="M0 9.5C0 14.7467 4.25329 19 9.5 19H19V0H9.5C4.25329 0 0 4.25329 0 9.5Z" fill="#F24E1E"/>
-      <path d="M0 28.5C0 33.7467 4.25329 38 9.5 38H19V19H9.5C4.25329 19 0 23.2533 0 28.5Z" fill="#A259FF"/>
+      <path
+        d="M19 28.5C19 23.2533 23.2533 19 28.5 19C33.7467 19 38 23.2533 38 28.5C38 33.7467 33.7467 38 28.5 38C23.2533 38 19 33.7467 19 28.5Z"
+        fill="#1ABCFE"
+      />
+      <path
+        d="M0 47.5C0 42.2533 4.25329 38 9.5 38H19V47.5C19 52.7467 14.7467 57 9.5 57C4.25329 57 0 52.7467 0 47.5Z"
+        fill="#0ACF83"
+      />
+      <path
+        d="M19 0V19H28.5C33.7467 19 38 14.7467 38 9.5C38 4.25329 33.7467 0 28.5 0H19Z"
+        fill="#FF7262"
+      />
+      <path
+        d="M0 9.5C0 14.7467 4.25329 19 9.5 19H19V0H9.5C4.25329 0 0 4.25329 0 9.5Z"
+        fill="#F24E1E"
+      />
+      <path
+        d="M0 28.5C0 33.7467 4.25329 38 9.5 38H19V19H9.5C4.25329 19 0 23.2533 0 28.5Z"
+        fill="#A259FF"
+      />
     </svg>
   );
 }
@@ -64,13 +104,12 @@ function ToolbarButton({ icon: Icon, label, isActive, onClick }) {
   const { portfolioData: data } = usePortfolio();
 
   return (
-    <button type="button"
+    <button
+      type="button"
       onClick={onClick}
       title={label}
       className={`p-1.5 rounded-md transition-colors ${
-        isActive
-          ? 'bg-[#0d99ff] text-white'
-          : 'text-[#ababab] hover:bg-white/10 hover:text-white'
+        isActive ? 'bg-[#0d99ff] text-white' : 'text-[#ababab] hover:bg-white/10 hover:text-white'
       }`}
     >
       <Icon size={16} />
@@ -82,12 +121,7 @@ function CanvasFrame({ id, label, color, children, isSelected, onClick, style })
   const { portfolioData: data } = usePortfolio();
 
   return (
-    <div
-      id={`frame-${id}`}
-      className="absolute group"
-      style={style}
-      onClick={onClick}
-    >
+    <div id={`frame-${id}`} className="absolute group" style={style} onClick={onClick}>
       <div
         className="absolute -top-7 left-0 text-xs font-medium flex items-center gap-1.5 whitespace-nowrap"
         style={{ color }}
@@ -106,10 +140,22 @@ function CanvasFrame({ id, label, color, children, isSelected, onClick, style })
       >
         {isSelected && (
           <>
-            <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full border-2 bg-white" style={{ borderColor: color }} />
-            <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full border-2 bg-white" style={{ borderColor: color }} />
-            <div className="absolute -bottom-1 -left-1 w-2 h-2 rounded-full border-2 bg-white" style={{ borderColor: color }} />
-            <div className="absolute -bottom-1 -right-1 w-2 h-2 rounded-full border-2 bg-white" style={{ borderColor: color }} />
+            <div
+              className="absolute -top-1 -left-1 w-2 h-2 rounded-full border-2 bg-white"
+              style={{ borderColor: color }}
+            />
+            <div
+              className="absolute -top-1 -right-1 w-2 h-2 rounded-full border-2 bg-white"
+              style={{ borderColor: color }}
+            />
+            <div
+              className="absolute -bottom-1 -left-1 w-2 h-2 rounded-full border-2 bg-white"
+              style={{ borderColor: color }}
+            />
+            <div
+              className="absolute -bottom-1 -right-1 w-2 h-2 rounded-full border-2 bg-white"
+              style={{ borderColor: color }}
+            />
           </>
         )}
         {children}
@@ -118,7 +164,18 @@ function CanvasFrame({ id, label, color, children, isSelected, onClick, style })
   );
 }
 
-function LayerItem({ label, color, isSelected, isVisible, onClick, onToggleVisibility, hasChildren = false, isExpanded = true, onToggleExpanded, depth = 0 }) {
+function LayerItem({
+  label,
+  color,
+  isSelected,
+  isVisible,
+  onClick,
+  onToggleVisibility,
+  hasChildren = false,
+  isExpanded = true,
+  onToggleExpanded,
+  depth = 0,
+}) {
   const { portfolioData: data } = usePortfolio();
 
   return (
@@ -130,8 +187,12 @@ function LayerItem({ label, color, isSelected, isVisible, onClick, onToggleVisib
       onClick={onClick}
     >
       {hasChildren ? (
-        <button type="button"
-          onClick={(e) => { e.stopPropagation(); onToggleExpanded?.(); }}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleExpanded?.();
+          }}
           className="text-[#666] hover:text-[#ababab]"
         >
           {isExpanded ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
@@ -141,8 +202,12 @@ function LayerItem({ label, color, isSelected, isVisible, onClick, onToggleVisib
       )}
       <Frame size={10} style={{ color }} />
       <span className="flex-1 truncate text-[11px]">{label}</span>
-      <button type="button"
-        onClick={(e) => { e.stopPropagation(); onToggleVisibility(); }}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleVisibility();
+        }}
         className="opacity-0 group-hover:opacity-100 text-[#666] hover:text-[#ababab] transition-opacity"
       >
         {isVisible ? <Eye size={10} /> : <EyeOff size={10} />}
@@ -178,9 +243,7 @@ function ProjectCard({ project, index }) {
   const color = colors[index % colors.length];
 
   return (
-    <div
-      className="bg-[#1e1e1e] rounded-lg overflow-hidden border border-[#2c2c2c] hover:border-[#3c3c3c] transition-all group"
-    >
+    <div className="bg-[#1e1e1e] rounded-lg overflow-hidden border border-[#2c2c2c] hover:border-[#3c3c3c] transition-all group">
       <div className="relative overflow-hidden">
         <img
           src={project.image}
@@ -201,7 +264,9 @@ function ProjectCard({ project, index }) {
         <h4 className="text-sm font-semibold text-white mb-1.5 group-hover:text-[#0d99ff] transition-colors">
           {project.title}
         </h4>
-        <p className="text-xs text-[#888] mb-3 line-clamp-2 leading-relaxed">{project.description}</p>
+        <p className="text-xs text-[#888] mb-3 line-clamp-2 leading-relaxed">
+          {project.description}
+        </p>
         <div className="flex flex-wrap gap-1.5 mb-3">
           {(Array.isArray(project.techStack) ? project.techStack : []).map((tech) => (
             <span
@@ -317,15 +382,18 @@ export default function FigmaCanvas() {
     return () => el.removeEventListener('wheel', handleWheel);
   }, [handleWheel]);
 
-  const handleMouseDown = useCallback((e) => {
-    if (e.button === 1 || isHandTool || spaceHeld) {
-      e.preventDefault();
-      isPanningRef.current = true;
-      setIsPanning(true);
-      panStart.current = { x: e.clientX, y: e.clientY };
-      panOrigin.current = { ...pan };
-    }
-  }, [isHandTool, spaceHeld, pan]);
+  const handleMouseDown = useCallback(
+    (e) => {
+      if (e.button === 1 || isHandTool || spaceHeld) {
+        e.preventDefault();
+        isPanningRef.current = true;
+        setIsPanning(true);
+        panStart.current = { x: e.clientX, y: e.clientY };
+        panOrigin.current = { ...pan };
+      }
+    },
+    [isHandTool, spaceHeld, pan]
+  );
 
   const handleMouseMove = useCallback((e) => {
     if (!isPanningRef.current) return;
@@ -385,7 +453,10 @@ export default function FigmaCanvas() {
   const fitAll = useCallback(() => {
     if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    let minX = Infinity,
+      minY = Infinity,
+      maxX = -Infinity,
+      maxY = -Infinity;
     frameRegistry.forEach((f) => {
       minX = Math.min(minX, f.x);
       minY = Math.min(minY, f.y);
@@ -408,13 +479,16 @@ export default function FigmaCanvas() {
     setVisibleFrames((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const adjustZoom = useCallback((delta) => {
-    if (!canvasRef.current) return;
-    const rect = canvasRef.current.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    zoomTo(zoom + delta, cx, cy);
-  }, [zoom, zoomTo]);
+  const adjustZoom = useCallback(
+    (delta) => {
+      if (!canvasRef.current) return;
+      const rect = canvasRef.current.getBoundingClientRect();
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      zoomTo(zoom + delta, cx, cy);
+    },
+    [zoom, zoomTo]
+  );
 
   const skillsByCategory = data.skills.reduce((acc, skill) => {
     if (!acc[skill.category]) acc[skill.category] = [];
@@ -433,14 +507,12 @@ export default function FigmaCanvas() {
   const gridOffsetX = pan.x % gridSize;
   const gridOffsetY = pan.y % gridSize;
 
-  const cursorStyle = isPanning || spaceHeld || isHandTool
-    ? 'grabbing' : 'default';
+  const cursorStyle = isPanning || spaceHeld || isHandTool ? 'grabbing' : 'default';
 
   const zoomPercent = Math.round(zoom * 100);
 
   return (
     <div className="h-screen w-full bg-[#1e1e1e] text-white flex flex-col overflow-hidden font-['Inter',system-ui,sans-serif]">
-
       {/* ======= TOOLBAR ======= */}
       <div className="h-12 bg-[#2c2c2c] border-b border-[#3c3c3c] flex items-center justify-between px-3 shrink-0 z-50">
         <div className="flex items-center gap-3">
@@ -468,20 +540,23 @@ export default function FigmaCanvas() {
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 bg-[#1e1e1e] rounded-md px-2 py-1">
-            <button type="button"
+            <button
+              type="button"
               onClick={() => adjustZoom(-0.1)}
               className="text-[#ababab] hover:text-white transition-colors"
             >
               <ZoomOut size={14} />
             </button>
             <span className="text-xs text-[#ababab] w-8 sm:w-10 text-center">{zoomPercent}%</span>
-            <button type="button"
+            <button
+              type="button"
               onClick={() => adjustZoom(0.1)}
               className="text-[#ababab] hover:text-white transition-colors"
             >
               <ZoomIn size={14} />
             </button>
-            <button type="button"
+            <button
+              type="button"
               onClick={fitAll}
               className="text-[#ababab] hover:text-white transition-colors ml-1"
               title="Zoom to fit"
@@ -490,11 +565,17 @@ export default function FigmaCanvas() {
             </button>
           </div>
 
-          <button type="button" className="hidden sm:flex items-center gap-1.5 bg-[#0d99ff] hover:bg-[#0b87e0] text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
+          <button
+            type="button"
+            className="hidden sm:flex items-center gap-1.5 bg-[#0d99ff] hover:bg-[#0b87e0] text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+          >
             <Play size={12} fill="white" />
             Present
           </button>
-          <button type="button" className="flex items-center gap-1.5 bg-[#0d99ff] hover:bg-[#0b87e0] text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
+          <button
+            type="button"
+            className="flex items-center gap-1.5 bg-[#0d99ff] hover:bg-[#0b87e0] text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+          >
             <Share2 size={12} />
             Share
           </button>
@@ -508,7 +589,6 @@ export default function FigmaCanvas() {
 
       {/* ======= MAIN AREA ======= */}
       <div className="flex flex-1 overflow-hidden">
-
         {/* ======= LAYERS PANEL ======= */}
         <AnimatePresence>
           {showLayers && (
@@ -528,7 +608,8 @@ export default function FigmaCanvas() {
                   <button type="button" className="text-[#ababab] hover:text-white p-0.5">
                     <Search size={12} />
                   </button>
-                  <button type="button"
+                  <button
+                    type="button"
                     onClick={() => setShowLayers(false)}
                     className="md:hidden text-[#ababab] hover:text-white p-0.5 ml-1"
                   >
@@ -599,7 +680,8 @@ export default function FigmaCanvas() {
         >
           {/* Layers toggle (mobile) */}
           {!showLayers && (
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setShowLayers(true)}
               className="md:hidden fixed top-14 left-2 z-30 bg-[#2c2c2c] border border-[#3c3c3c] rounded-md p-1.5 text-[#ababab]"
             >
@@ -617,7 +699,6 @@ export default function FigmaCanvas() {
               left: 0,
             }}
           >
-
             {/* ======= HERO FRAME ======= */}
             {visibleFrames.hero && (
               <CanvasFrame
@@ -630,13 +711,16 @@ export default function FigmaCanvas() {
               >
                 <div className="bg-[#1a1a2e] rounded-lg p-8 md:p-16 relative overflow-hidden">
                   <div className="absolute inset-0 opacity-10">
-                    <div className="absolute inset-0" style={{
-                      backgroundImage: `
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        backgroundImage: `
                         linear-gradient(${FIGMA_PURPLE}22 1px, transparent 1px),
                         linear-gradient(90deg, ${FIGMA_PURPLE}22 1px, transparent 1px)
                       `,
-                      backgroundSize: '40px 40px',
-                    }} />
+                        backgroundSize: '40px 40px',
+                      }}
+                    />
                   </div>
 
                   <div className="absolute top-4 right-4 flex gap-2 opacity-50">
@@ -648,7 +732,11 @@ export default function FigmaCanvas() {
                   <div className="relative z-10 flex flex-col items-center text-center">
                     <div
                       className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden mb-6 shadow-lg"
-                      style={{ borderColor: FIGMA_PURPLE, borderWidth: '3px', borderStyle: 'solid' }}
+                      style={{
+                        borderColor: FIGMA_PURPLE,
+                        borderWidth: '3px',
+                        borderStyle: 'solid',
+                      }}
                     >
                       <img
                         src={data.personal.avatar}
@@ -657,9 +745,7 @@ export default function FigmaCanvas() {
                       />
                     </div>
 
-                    <h1
-                      className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 bg-gradient-to-r from-[#a259ff] via-[#0d99ff] to-[#14ae5c] bg-clip-text text-transparent"
-                    >
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 bg-gradient-to-r from-[#a259ff] via-[#0d99ff] to-[#14ae5c] bg-clip-text text-transparent">
                       {data.personal.name}
                     </h1>
 
@@ -698,8 +784,12 @@ export default function FigmaCanvas() {
                         { value: data.stats.happyClients, label: 'Clients' },
                       ].map((stat) => (
                         <div key={stat.label} className="text-center">
-                          <div className="text-xl md:text-2xl font-bold text-white">{stat.value}+</div>
-                          <div className="text-[10px] uppercase tracking-wider text-[#666] mt-0.5">{stat.label}</div>
+                          <div className="text-xl md:text-2xl font-bold text-white">
+                            {stat.value}+
+                          </div>
+                          <div className="text-[10px] uppercase tracking-wider text-[#666] mt-0.5">
+                            {stat.label}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -720,7 +810,10 @@ export default function FigmaCanvas() {
               >
                 <div className="bg-[#1e1e2e] rounded-lg p-6 md:p-10 relative">
                   <div className="absolute top-3 left-3 flex items-center gap-1.5 text-[10px] text-[#666]">
-                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: FIGMA_BLUE }} />
+                    <div
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: FIGMA_BLUE }}
+                    />
                     Auto Layout
                   </div>
 
@@ -746,8 +839,12 @@ export default function FigmaCanvas() {
                         <div className="text-[10px] uppercase tracking-wider text-[#0d99ff] font-semibold mb-2">
                           // About Me
                         </div>
-                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">{data.personal.name}</h2>
-                        <p className="text-sm text-[#b3b3b3] leading-relaxed">{data.personal.bio}</p>
+                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                          {data.personal.name}
+                        </h2>
+                        <p className="text-sm text-[#b3b3b3] leading-relaxed">
+                          {data.personal.bio}
+                        </p>
                       </div>
 
                       <div className="flex flex-wrap gap-4 pt-3 border-t border-white/5">
@@ -882,15 +979,14 @@ export default function FigmaCanvas() {
 
                     <div className="space-y-8">
                       {data.experience.map((exp, i) => (
-                        <div
-                          key={i}
-                          className="flex gap-4 ml-0"
-                        >
+                        <div key={i} className="flex gap-4 ml-0">
                           <div className="relative shrink-0 mt-1">
                             <div
                               className="w-[15px] h-[15px] rounded-full border-2 bg-[#1e1e2e]"
                               style={{
-                                borderColor: [FIGMA_BLUE, FIGMA_PURPLE, FIGMA_GREEN, FIGMA_ORANGE][i % 4],
+                                borderColor: [FIGMA_BLUE, FIGMA_PURPLE, FIGMA_GREEN, FIGMA_ORANGE][
+                                  i % 4
+                                ],
                               }}
                             />
                           </div>
@@ -942,10 +1038,7 @@ export default function FigmaCanvas() {
                         key={i}
                         className="bg-[#1e1e2e] rounded-lg p-5 border border-[#3c2c3c] hover:border-[#a259ff]/30 transition-colors relative"
                       >
-                        <Quote
-                          size={20}
-                          className="absolute top-3 right-3 text-[#a259ff]/20"
-                        />
+                        <Quote size={20} className="absolute top-3 right-3 text-[#a259ff]/20" />
                         <p className="text-xs text-[#b3b3b3] leading-relaxed mb-4 relative z-10">
                           &ldquo;{testimonial.text}&rdquo;
                         </p>
@@ -956,7 +1049,9 @@ export default function FigmaCanvas() {
                             className="w-8 h-8 rounded-full object-cover"
                           />
                           <div>
-                            <div className="text-xs font-semibold text-white">{testimonial.name}</div>
+                            <div className="text-xs font-semibold text-white">
+                              {testimonial.name}
+                            </div>
                             <div className="text-[10px] text-[#a259ff]">{testimonial.role}</div>
                           </div>
                         </div>
@@ -979,13 +1074,16 @@ export default function FigmaCanvas() {
               >
                 <div className="bg-[#1a2e2a] rounded-lg p-6 md:p-10 relative overflow-hidden">
                   <div className="absolute inset-0 opacity-5">
-                    <div className="absolute inset-0" style={{
-                      backgroundImage: `
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        backgroundImage: `
                         linear-gradient(${FIGMA_GREEN}44 1px, transparent 1px),
                         linear-gradient(90deg, ${FIGMA_GREEN}44 1px, transparent 1px)
                       `,
-                      backgroundSize: '30px 30px',
-                    }} />
+                        backgroundSize: '30px 30px',
+                      }}
+                    />
                   </div>
 
                   <div className="relative z-10">
@@ -996,7 +1094,8 @@ export default function FigmaCanvas() {
 
                     <div className="space-y-6">
                       <p className="text-sm text-[#b3b3b3] leading-relaxed">
-                        Interested in working together? Let&apos;s connect and create something amazing.
+                        Interested in working together? Let&apos;s connect and create something
+                        amazing.
                       </p>
 
                       <div className="space-y-3">
@@ -1060,7 +1159,10 @@ export default function FigmaCanvas() {
                           rows={3}
                           className="w-full bg-[#1e1e2e] border border-[#3c3c3c] rounded-lg px-4 py-2.5 text-xs text-white placeholder-[#666] focus:outline-none focus:border-[#14ae5c] transition-colors resize-none"
                         />
-                        <button type="button" className="flex items-center gap-2 bg-[#14ae5c] hover:bg-[#12994f] text-white text-xs font-medium px-5 py-2.5 rounded-lg transition-colors w-full justify-center">
+                        <button
+                          type="button"
+                          className="flex items-center gap-2 bg-[#14ae5c] hover:bg-[#12994f] text-white text-xs font-medium px-5 py-2.5 rounded-lg transition-colors w-full justify-center"
+                        >
                           <Send size={12} />
                           Send Message
                         </button>
@@ -1083,7 +1185,6 @@ export default function FigmaCanvas() {
                 </p>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -1091,7 +1192,8 @@ export default function FigmaCanvas() {
       {/* ======= BOTTOM BAR ======= */}
       <div className="h-7 bg-[#2c2c2c] border-t border-[#3c3c3c] flex items-center justify-between px-3 shrink-0 text-[10px] text-[#666] z-50">
         <div className="flex items-center gap-3">
-          <button type="button"
+          <button
+            type="button"
             onClick={() => setShowLayers(!showLayers)}
             className="hidden md:flex items-center gap-1 hover:text-[#ababab] transition-colors"
           >

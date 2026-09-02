@@ -1,22 +1,22 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  User, 
-  Cpu, 
-  Briefcase, 
-  FolderGit2, 
-  MessageSquareQuote, 
-  Mail, 
-  Github, 
-  Linkedin, 
-  Twitter, 
-  Globe, 
-  RefreshCw, 
+import {
+  User,
+  Cpu,
+  Briefcase,
+  FolderGit2,
+  MessageSquareQuote,
+  Mail,
+  Github,
+  Linkedin,
+  Twitter,
+  Globe,
+  RefreshCw,
   HelpCircle,
   ExternalLink,
   Sparkles,
-  Maximize2
+  Maximize2,
 } from 'lucide-react';
 import DraggableCard from './DraggableCard';
 
@@ -40,7 +40,7 @@ export default function DragPortfolio() {
   }, []);
 
   const handleReset = () => {
-    setResetKey(prev => prev + 1);
+    setResetKey((prev) => prev + 1);
   };
 
   // Safe accessor to handle potential empty fields gracefully
@@ -58,11 +58,11 @@ export default function DragPortfolio() {
     projects: { x: -420, y: 160 },
     experience: { x: 60, y: 130 },
     testimonials: { x: 500, y: -120 },
-    contact: { x: 520, y: 220 }
+    contact: { x: 520, y: 220 },
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="relative min-h-screen w-full bg-[#030712] text-slate-100 overflow-x-hidden select-none font-sans"
       style={{
@@ -72,7 +72,7 @@ export default function DragPortfolio() {
           linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
           linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
         `,
-        backgroundSize: '100% 100%, 100% 100%, 40px 40px, 40px 40px'
+        backgroundSize: '100% 100%, 100% 100%, 40px 40px, 40px 40px',
       }}
     >
       {/* HUD HEADER CONTROL BAR */}
@@ -84,7 +84,9 @@ export default function DragPortfolio() {
               CARPILOT_CANVAS // v1.0.0
             </h1>
             <p className="text-[11px] font-mono text-slate-400 uppercase tracking-tight">
-              {isMobile ? "📱 RESPONSIVE STACK FLOW ACTIVE" : "🔴 DYNAMIC PHYSICS ACTIVE (DRAG CARDS TO REARRANGE)"}
+              {isMobile
+                ? '📱 RESPONSIVE STACK FLOW ACTIVE'
+                : '🔴 DYNAMIC PHYSICS ACTIVE (DRAG CARDS TO REARRANGE)'}
             </p>
           </div>
         </div>
@@ -92,19 +94,21 @@ export default function DragPortfolio() {
         <div className="flex items-center gap-3">
           <AnimatePresence>
             {showHelper && !isMobile && (
-              <motion.span 
+              <motion.span
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0 }}
                 className="text-[11px] font-mono text-cyan-400/80 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1.5 rounded-xl hidden md:inline-flex items-center gap-1.5"
               >
-                <Sparkles className="w-3 h-3 animate-spin" /> Try overlapping cards to inspect layers!
+                <Sparkles className="w-3 h-3 animate-spin" /> Try overlapping cards to inspect
+                layers!
               </motion.span>
             )}
           </AnimatePresence>
 
           {!isMobile && (
-            <button type="button"
+            <button
+              type="button"
               onClick={handleReset}
               className="flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-200 bg-white/5 border border-white/10 hover:bg-cyan-500 hover:border-cyan-400 hover:text-black rounded-xl transition-all duration-300 shadow-sm shadow-black"
             >
@@ -119,22 +123,27 @@ export default function DragPortfolio() {
       {isMobile && (
         <div className="mx-6 mt-6 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10 text-center">
           <p className="text-xs font-mono text-cyan-400 uppercase tracking-wider">
-            💡 Drag physics disabled on mobile devices to ensure native scrolling stability. Enjoy the vertical stacked layout!
+            💡 Drag physics disabled on mobile devices to ensure native scrolling stability. Enjoy
+            the vertical stacked layout!
           </p>
         </div>
       )}
 
       {/* CANVAS CONTAINER */}
-      <main 
+      <main
         className={`
           relative w-full px-6 py-8
           ${isMobile ? 'flex flex-col gap-6 max-w-2xl mx-auto' : 'min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden'}
         `}
       >
         <AnimatePresence mode="wait">
-          <motion.div 
+          <motion.div
             key={resetKey}
-            className={isMobile ? "w-full flex flex-col gap-6" : "relative w-full h-[700px] flex items-center justify-center"}
+            className={
+              isMobile
+                ? 'w-full flex flex-col gap-6'
+                : 'relative w-full h-[700px] flex items-center justify-center'
+            }
           >
             {/* CARD 1: ABOUT */}
             <DraggableCard
@@ -148,9 +157,12 @@ export default function DragPortfolio() {
               <div className="flex flex-col items-center text-center">
                 <div className="relative group mb-4">
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-400 opacity-60 blur-md group-hover:opacity-100 transition-opacity" />
-                  <img 
-                    src={personal.avatar || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200&h=200"} 
-                    alt={personal.name} 
+                  <img
+                    src={
+                      personal.avatar ||
+                      'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200&h=200'
+                    }
+                    alt={personal.name}
                     className="relative w-20 h-20 rounded-2xl object-cover border-2 border-slate-800"
                   />
                   <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
@@ -172,40 +184,40 @@ export default function DragPortfolio() {
                 {/* Social Connects */}
                 <div className="grid grid-cols-4 gap-2 w-full pt-1.5 border-t border-white/5">
                   {socials.github && (
-                    <a 
-                      href={socials.github} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <a
+                      href={socials.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="p-3 rounded-xl bg-white/5 hover:bg-slate-800 border border-white/5 text-slate-300 hover:text-white flex items-center justify-center transition-all"
                     >
                       <Github className="w-4 h-4" />
                     </a>
                   )}
                   {socials.linkedin && (
-                    <a 
-                      href={socials.linkedin} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <a
+                      href={socials.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="p-3 rounded-xl bg-white/5 hover:bg-slate-800 border border-white/5 text-slate-300 hover:text-white flex items-center justify-center transition-all"
                     >
                       <Linkedin className="w-4 h-4" />
                     </a>
                   )}
                   {socials.twitter && (
-                    <a 
-                      href={socials.twitter} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <a
+                      href={socials.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="p-3 rounded-xl bg-white/5 hover:bg-slate-800 border border-white/5 text-slate-300 hover:text-white flex items-center justify-center transition-all"
                     >
                       <Twitter className="w-4 h-4" />
                     </a>
                   )}
                   {personal.resumeUrl && (
-                    <a 
-                      href={personal.resumeUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <a
+                      href={personal.resumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="p-3 rounded-xl bg-white/5 hover:bg-slate-800 border border-white/5 text-slate-300 hover:text-white flex items-center justify-center transition-all"
                     >
                       <ExternalLink className="w-4 h-4" />
@@ -237,8 +249,8 @@ export default function DragPortfolio() {
                     </div>
                     {/* Glowing Progress bar */}
                     <div className="h-2 w-full rounded-full bg-slate-800/80 overflow-hidden border border-white/5">
-                      <div 
-                        className="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.5)]" 
+                      <div
+                        className="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.5)]"
                         style={{ width: `${skill.proficiency}%` }}
                       />
                     </div>
@@ -263,13 +275,16 @@ export default function DragPortfolio() {
                 <div className="flex flex-col gap-4">
                   {/* Image with zoom and release year tag */}
                   <div className="relative h-40 rounded-xl overflow-hidden border border-white/10 group">
-                    <img 
-                      src={projects[activeProjectIdx].image || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400&h=240"} 
-                      alt={projects[activeProjectIdx].title} 
+                    <img
+                      src={
+                        projects[activeProjectIdx].image ||
+                        'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400&h=240'
+                      }
+                      alt={projects[activeProjectIdx].title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/40 to-transparent" />
-                    
+
                     <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-pink-500/85 text-[10px] font-bold font-mono tracking-wider text-white uppercase border border-pink-400/20">
                       {projects[activeProjectIdx].releaseYear || 'RECENT'}
                     </span>
@@ -288,8 +303,8 @@ export default function DragPortfolio() {
                   {/* Tech stack tags */}
                   <div className="flex flex-wrap gap-1.5">
                     {(projects[activeProjectIdx].techStack || []).slice(0, 3).map((tech) => (
-                      <span 
-                        key={tech} 
+                      <span
+                        key={tech}
                         className="px-2 py-0.5 rounded-lg bg-pink-500/10 border border-pink-500/20 text-pink-400 text-[10px] font-bold font-mono uppercase"
                       >
                         {tech}
@@ -301,23 +316,24 @@ export default function DragPortfolio() {
                   <div className="flex justify-between items-center pt-2 border-t border-white/5">
                     <div className="flex gap-1.5">
                       {projects.map((_, idx) => (
-                        <button type="button"
+                        <button
+                          type="button"
                           key={idx}
                           onClick={() => setActiveProjectIdx(idx)}
                           className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                            idx === activeProjectIdx 
-                              ? 'bg-pink-400 scale-125 shadow-[0_0_6px_rgba(244,114,182,0.6)]' 
+                            idx === activeProjectIdx
+                              ? 'bg-pink-400 scale-125 shadow-[0_0_6px_rgba(244,114,182,0.6)]'
                               : 'bg-slate-700 hover:bg-slate-500'
                           }`}
                         />
                       ))}
                     </div>
-                    
+
                     <div className="flex gap-2">
                       {projects[activeProjectIdx].githubUrl && (
-                        <a 
-                          href={projects[activeProjectIdx].githubUrl} 
-                          target="_blank" 
+                        <a
+                          href={projects[activeProjectIdx].githubUrl}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="text-[11px] font-mono font-bold uppercase text-slate-300 hover:text-pink-400 transition-colors flex items-center gap-1"
                         >
@@ -341,8 +357,8 @@ export default function DragPortfolio() {
             >
               <div className="flex flex-col gap-4">
                 {experience.slice(0, 2).map((exp, idx) => (
-                  <div 
-                    key={exp.id || exp.company} 
+                  <div
+                    key={exp.id || exp.company}
                     className={`relative pl-4 pb-1.5 ${idx === 0 ? 'border-l border-violet-500/30' : ''}`}
                   >
                     {/* Bullet marker */}
@@ -353,18 +369,16 @@ export default function DragPortfolio() {
                     )}
 
                     <div className="flex justify-between items-start gap-1">
-                      <h4 className="font-extrabold text-sm text-white truncate">
-                        {exp.role}
-                      </h4>
+                      <h4 className="font-extrabold text-sm text-white truncate">{exp.role}</h4>
                       <span className="text-[9px] font-bold font-mono text-violet-400 shrink-0 bg-violet-500/10 border border-violet-500/20 px-1.5 py-0.5 rounded">
                         {exp.duration}
                       </span>
                     </div>
-                    
+
                     <p className="text-[11px] font-bold font-mono text-slate-300 uppercase tracking-tight mt-0.5">
                       {exp.company}
                     </p>
-                    
+
                     <p className="text-xs text-slate-400 mt-1.5 leading-relaxed font-normal line-clamp-2">
                       {exp.description}
                     </p>
@@ -392,9 +406,7 @@ export default function DragPortfolio() {
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-extrabold text-xs text-white">
-                        {testimonials[0].name}
-                      </h4>
+                      <h4 className="font-extrabold text-xs text-white">{testimonials[0].name}</h4>
                       <p className="text-[10px] text-slate-400 font-mono">
                         {testimonials[0].designation}, {testimonials[0].company}
                       </p>
@@ -402,7 +414,9 @@ export default function DragPortfolio() {
 
                     <div className="flex gap-0.5">
                       {[...Array(testimonials[0].rating || 5)].map((_, i) => (
-                        <span key={i} className="text-amber-400 text-xs">★</span>
+                        <span key={i} className="text-amber-400 text-xs">
+                          ★
+                        </span>
                       ))}
                     </div>
                   </div>
@@ -421,14 +435,15 @@ export default function DragPortfolio() {
             >
               <div className="flex flex-col gap-4">
                 <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                  Want to collaborate on high-performance projects, optimize UI systems, or just chat web technologies? Drop a line!
+                  Want to collaborate on high-performance projects, optimize UI systems, or just
+                  chat web technologies? Drop a line!
                 </p>
 
                 <div className="p-3.5 rounded-xl bg-slate-900 border border-white/5 text-center">
                   <span className="text-[10px] font-bold font-mono tracking-widest text-cyan-400 uppercase block mb-1">
                     Direct Email Gateway
                   </span>
-                  <a 
+                  <a
                     href={`mailto:${personal.email || 'jane.doe@devflix.io'}`}
                     className="text-sm font-extrabold text-white hover:text-cyan-400 transition-colors break-all font-mono"
                   >

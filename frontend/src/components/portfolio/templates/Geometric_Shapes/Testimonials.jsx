@@ -6,9 +6,12 @@ export default function Testimonials({ testimonials }) {
   if (!testimonials || testimonials.length === 0) return null;
 
   return (
-    <section id="testimonials" className="relative w-full overflow-hidden bg-[#050816] py-24 px-6 sm:px-8 lg:px-12 text-white">
+    <section
+      id="testimonials"
+      className="relative w-full overflow-hidden bg-[#050816] py-24 px-6 sm:px-8 lg:px-12 text-white"
+    >
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:84px_84px] opacity-30 pointer-events-none" />
-      
+
       {/* Floating geometric decorative elements */}
       <motion.div
         animate={{ rotate: -180 }}
@@ -34,7 +37,10 @@ export default function Testimonials({ testimonials }) {
             Testimonials
           </div>
           <h2 className="text-4xl md:text-5xl font-black tracking-tight">
-            Client <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-300 via-purple-400 to-fuchsia-300">Feedback</span>
+            Client{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-300 via-purple-400 to-fuchsia-300">
+              Feedback
+            </span>
           </h2>
         </motion.div>
 
@@ -49,15 +55,15 @@ export default function Testimonials({ testimonials }) {
               className="relative p-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-md group hover:border-violet-400/30 transition-all"
             >
               <Quote className="absolute top-6 right-6 text-violet-400/20 w-12 h-12 rotate-12 group-hover:rotate-0 transition-transform duration-500" />
-              
+
               <p className="text-slate-300 text-sm leading-relaxed mb-8 relative z-10">
                 "{testimonial.text || testimonial.review}"
               </p>
-              
+
               <div className="flex items-center gap-4 border-t border-white/10 pt-6">
                 {testimonial.image && (
-                  <img 
-                    src={testimonial.image} 
+                  <img
+                    src={testimonial.image}
                     alt={testimonial.name}
                     className="w-12 h-12 rounded-full border-2 border-violet-400/30 object-cover"
                   />
@@ -69,7 +75,9 @@ export default function Testimonials({ testimonials }) {
                 )}
                 <div>
                   <h4 className="text-white font-bold text-sm">{testimonial.name}</h4>
-                  <p className="text-xs text-violet-300 uppercase tracking-wider mt-1">{testimonial.position || testimonial.role}</p>
+                  <p className="text-xs text-violet-300 uppercase tracking-wider mt-1">
+                    {testimonial.position || testimonial.role}
+                  </p>
                 </div>
               </div>
             </motion.div>

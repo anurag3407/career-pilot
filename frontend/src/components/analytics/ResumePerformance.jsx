@@ -44,7 +44,13 @@ function safeParseHistory(payload) {
       downloads: Number(item?.downloads ?? item?.downloadCount ?? 0),
       shares: Number(item?.shares ?? item?.shareCount ?? 0),
     }))
-    .filter((row) => row.date && !Number.isNaN(row.views) && !Number.isNaN(row.downloads) && !Number.isNaN(row.shares));
+    .filter(
+      (row) =>
+        row.date &&
+        !Number.isNaN(row.views) &&
+        !Number.isNaN(row.downloads) &&
+        !Number.isNaN(row.shares)
+    );
 
   if (normalizedHistory.length === 0) {
     throw new Error('Performance history is empty or malformed.');
@@ -95,7 +101,10 @@ function PerformanceSkeleton() {
       <div className="h-10 w-32 rounded-full bg-slate-200/80 dark:bg-slate-800/70 animate-pulse" />
       <div className="grid gap-3 sm:grid-cols-3">
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="space-y-3 rounded-3xl bg-slate-100/80 p-4 dark:bg-slate-900/70">
+          <div
+            key={index}
+            className="space-y-3 rounded-3xl bg-slate-100/80 p-4 dark:bg-slate-900/70"
+          >
             <div className="h-4 w-24 rounded-full bg-slate-200/80 dark:bg-slate-800/70 animate-pulse" />
             <div className="h-8 w-full rounded-2xl bg-slate-200/80 dark:bg-slate-800/70 animate-pulse" />
           </div>
@@ -127,11 +136,12 @@ function ResumePerformanceContent({ resumeId }) {
           ? await fetch(`/api/resumes/${resumeId}/performance`, { cache: 'no-store' })
           : null;
 
-        const payload = response && response.ok
-          ? await response.json()
-          : !resumeId
-            ? { history: MOCK_PERFORMANCE_HISTORY, engagement: DEFAULT_SUMMARY.engagement }
-            : null;
+        const payload =
+          response && response.ok
+            ? await response.json()
+            : !resumeId
+              ? { history: MOCK_PERFORMANCE_HISTORY, engagement: DEFAULT_SUMMARY.engagement }
+              : null;
 
         if (!mounted) return;
 
@@ -139,7 +149,10 @@ function ResumePerformanceContent({ resumeId }) {
           throw new Error('Server returned an unexpected response while fetching resume metrics.');
         }
 
-        const parsed = safeParseHistory({ history: payload?.history ?? payload, engagement: payload?.engagement });
+        const parsed = safeParseHistory({
+          history: payload?.history ?? payload,
+          engagement: payload?.engagement,
+        });
         if (mounted) {
           setPerformancePayload(parsed);
           setState({ status: 'ready', error: null });
@@ -147,7 +160,10 @@ function ResumePerformanceContent({ resumeId }) {
       } catch (error) {
         if (!mounted) return;
         setPerformancePayload(null);
-        setState({ status: 'error', error: error instanceof Error ? error.message : 'Unknown tracking error.' });
+        setState({
+          status: 'error',
+          error: error instanceof Error ? error.message : 'Unknown tracking error.',
+        });
       }
     }
 
@@ -172,7 +188,9 @@ function ResumePerformanceContent({ resumeId }) {
     }
 
     return {
-      labels: filteredHistory.map((item) => new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+      labels: filteredHistory.map((item) =>
+        new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      ),
       datasets: [
         {
           label: 'Views',
@@ -214,57 +232,60 @@ function ResumePerformanceContent({ resumeId }) {
     };
   }, [filteredHistory]);
 
-  const chartOptions = useMemo(() => ({
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: {
-      mode: 'index',
-      intersect: false,
-    },
-    plugins: {
-      legend: {
-        labels: {
-          color: 'var(--muted-foreground)',
-          boxWidth: 12,
-          boxHeight: 12,
+  const chartOptions = useMemo(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: 'var(--muted-foreground)',
+            boxWidth: 12,
+            boxHeight: 12,
+          },
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.96)',
+          titleColor: 'var(--foreground)',
+          bodyColor: 'var(--muted-foreground)',
+          borderColor: 'rgba(148, 163, 184, 0.16)',
+          borderWidth: 1,
+          padding: 12,
+          cornerRadius: 16,
+          displayColors: true,
         },
       },
-      tooltip: {
-        backgroundColor: 'rgba(15, 23, 42, 0.96)',
-        titleColor: 'var(--foreground)',
-        bodyColor: 'var(--muted-foreground)',
-        borderColor: 'rgba(148, 163, 184, 0.16)',
-        borderWidth: 1,
-        padding: 12,
-        cornerRadius: 16,
-        displayColors: true,
+      scales: {
+        x: {
+          grid: {
+            display: false,
+          },
+          ticks: {
+            color: 'var(--muted-foreground)',
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 8,
+          },
+        },
+        y: {
+          grid: {
+            color: 'rgba(148, 163, 184, 0.12)',
+          },
+          ticks: {
+            color: 'var(--muted-foreground)',
+            precision: 0,
+            callback: (value) => formatNumber(value),
+          },
+          beginAtZero: true,
+        },
       },
-    },
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          color: 'var(--muted-foreground)',
-          maxRotation: 0,
-          autoSkip: true,
-          maxTicksLimit: 8,
-        },
-      },
-      y: {
-        grid: {
-          color: 'rgba(148, 163, 184, 0.12)',
-        },
-        ticks: {
-          color: 'var(--muted-foreground)',
-          precision: 0,
-          callback: (value) => formatNumber(value),
-        },
-        beginAtZero: true,
-      },
-    },
-  }), []);
+    }),
+    []
+  );
 
   useEffect(() => {
     if (!canvasRef.current || !chartData) {
@@ -319,8 +340,12 @@ function ResumePerformanceContent({ resumeId }) {
   if (!performancePayload || filteredHistory.length === 0) {
     return (
       <div className="rounded-3xl border border-dashed border-border/80 bg-card/70 p-8 text-center text-sm text-muted-foreground">
-        <p className="font-semibold text-foreground">Resume performance tracking is not available yet.</p>
-        <p className="mt-2 text-muted-foreground">Publish your resume or connect analytics to see views, downloads, and shares over time.</p>
+        <p className="font-semibold text-foreground">
+          Resume performance tracking is not available yet.
+        </p>
+        <p className="mt-2 text-muted-foreground">
+          Publish your resume or connect analytics to see views, downloads, and shares over time.
+        </p>
       </div>
     );
   }
@@ -339,7 +364,9 @@ function ResumePerformanceContent({ resumeId }) {
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground">Resume Performance</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                Resume Performance
+              </p>
               <h2 className="mt-3 text-3xl font-semibold text-foreground">Engagement overview</h2>
             </div>
             <div className="inline-flex rounded-full border border-border/80 bg-slate-100/80 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm shadow-slate-900/5 dark:bg-slate-950/70 dark:text-slate-200">
@@ -349,29 +376,48 @@ function ResumePerformanceContent({ resumeId }) {
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <div className="rounded-[1.75rem] border border-border/80 bg-slate-950/5 p-4 dark:bg-slate-950/60">
-              <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Total views</dt>
+              <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                Total views
+              </dt>
               <dd className="mt-3 flex items-center gap-3 text-3xl font-semibold text-foreground">
                 {formatNumber(performancePayload.totals.totalViews)}
                 <ArrowUpRight className="h-5 w-5 text-sky-400" />
               </dd>
             </div>
             <div className="rounded-[1.75rem] border border-border/80 bg-slate-950/5 p-4 dark:bg-slate-950/60">
-              <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Downloads</dt>
-              <dd className="mt-3 text-3xl font-semibold text-foreground">{formatNumber(performancePayload.totals.totalDownloads)}</dd>
+              <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                Downloads
+              </dt>
+              <dd className="mt-3 text-3xl font-semibold text-foreground">
+                {formatNumber(performancePayload.totals.totalDownloads)}
+              </dd>
             </div>
             <div className="rounded-[1.75rem] border border-border/80 bg-slate-950/5 p-4 dark:bg-slate-950/60">
-              <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Shares</dt>
-              <dd className="mt-3 text-3xl font-semibold text-foreground">{formatNumber(performancePayload.totals.totalShares)}</dd>
+              <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                Shares
+              </dt>
+              <dd className="mt-3 text-3xl font-semibold text-foreground">
+                {formatNumber(performancePayload.totals.totalShares)}
+              </dd>
             </div>
           </div>
 
           <div className="mt-7 rounded-[1.75rem] border border-border/80 bg-slate-100/80 p-5 dark:bg-slate-950/70">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Engagement score</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+              Engagement score
+            </p>
             <div className="mt-3 flex items-end gap-3">
-              <span className="text-4xl font-semibold text-foreground">{performancePayload.totals.engagement}%</span>
-              <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">Strong</span>
+              <span className="text-4xl font-semibold text-foreground">
+                {performancePayload.totals.engagement}%
+              </span>
+              <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
+                Strong
+              </span>
             </div>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">Track your resume’s digital performance and compare activity across recent upload cycles.</p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+              Track your resume’s digital performance and compare activity across recent upload
+              cycles.
+            </p>
           </div>
         </motion.div>
 
@@ -381,7 +427,9 @@ function ResumePerformanceContent({ resumeId }) {
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground">Short summary</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                Short summary
+              </p>
               <p className="mt-3 text-xl font-semibold text-foreground">Top channel breakdown</p>
             </div>
             <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-slate-100/80 px-3 py-2 text-xs font-semibold text-slate-700 dark:bg-slate-950/70 dark:text-slate-200">
@@ -392,17 +440,29 @@ function ResumePerformanceContent({ resumeId }) {
           <div className="mt-6 grid gap-4">
             <div className="rounded-[1.5rem] bg-slate-950/5 p-4 dark:bg-slate-950/60">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Most viewed day</span>
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">{selectedDays}-day</span>
+                <span className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                  Most viewed day
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
+                  {selectedDays}-day
+                </span>
               </div>
-              <p className="mt-3 text-2xl font-semibold text-foreground">{formatNumber(filteredHistory[filteredHistory.length - 1].views)} views</p>
+              <p className="mt-3 text-2xl font-semibold text-foreground">
+                {formatNumber(filteredHistory[filteredHistory.length - 1].views)} views
+              </p>
             </div>
             <div className="rounded-[1.5rem] bg-slate-950/5 p-4 dark:bg-slate-950/60">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Download share</span>
-                <span className="text-xs uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">Growth</span>
+                <span className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                  Download share
+                </span>
+                <span className="text-xs uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
+                  Growth
+                </span>
               </div>
-              <p className="mt-3 text-2xl font-semibold text-foreground">{formatNumber(filteredHistory.reduce((acc, item) => acc + item.downloads, 0))}</p>
+              <p className="mt-3 text-2xl font-semibold text-foreground">
+                {formatNumber(filteredHistory.reduce((acc, item) => acc + item.downloads, 0))}
+              </p>
             </div>
           </div>
         </motion.div>
@@ -412,7 +472,9 @@ function ResumePerformanceContent({ resumeId }) {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-sm uppercase tracking-[0.24em] text-muted-foreground">Trend chart</p>
-            <h3 className="mt-3 text-2xl font-semibold text-foreground">Resume activity over time</h3>
+            <h3 className="mt-3 text-2xl font-semibold text-foreground">
+              Resume activity over time
+            </h3>
           </div>
           <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-slate-100/70 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm shadow-slate-900/5 dark:bg-slate-950/70 dark:text-slate-200">
             <Download className="h-4 w-4 text-emerald-400" />
@@ -434,21 +496,50 @@ function ResumePerformanceContent({ resumeId }) {
         </div>
 
         <div className="mt-6 min-h-[320px] rounded-[1.75rem] border border-border/80 bg-slate-950/5 p-4 dark:bg-slate-950/60">
-          <canvas ref={canvasRef} aria-label="Resume performance chart" role="img" className="h-[280px] w-full" />
+          <canvas
+            ref={canvasRef}
+            aria-label="Resume performance chart"
+            role="img"
+            className="h-[280px] w-full"
+          />
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.75rem] border border-border/80 bg-slate-950/5 p-4 dark:bg-slate-950/60">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Average views</p>
-            <p className="mt-3 text-3xl font-semibold text-foreground">{formatNumber(Math.round(filteredHistory.reduce((sum, record) => sum + record.views, 0) / filteredHistory.length))}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+              Average views
+            </p>
+            <p className="mt-3 text-3xl font-semibold text-foreground">
+              {formatNumber(
+                Math.round(
+                  filteredHistory.reduce((sum, record) => sum + record.views, 0) /
+                    filteredHistory.length
+                )
+              )}
+            </p>
           </div>
           <div className="rounded-[1.75rem] border border-border/80 bg-slate-950/5 p-4 dark:bg-slate-950/60">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Peak downloads</p>
-            <p className="mt-3 text-3xl font-semibold text-foreground">{formatNumber(Math.max(...filteredHistory.map((record) => record.downloads)))}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+              Peak downloads
+            </p>
+            <p className="mt-3 text-3xl font-semibold text-foreground">
+              {formatNumber(Math.max(...filteredHistory.map((record) => record.downloads)))}
+            </p>
           </div>
           <div className="rounded-[1.75rem] border border-border/80 bg-slate-950/5 p-4 dark:bg-slate-950/60">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Share rate</p>
-            <p className="mt-3 text-3xl font-semibold text-foreground">{formatNumber(Math.round((performancePayload.totals.totalShares / Math.max(1, performancePayload.totals.totalViews)) * 100))}%</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+              Share rate
+            </p>
+            <p className="mt-3 text-3xl font-semibold text-foreground">
+              {formatNumber(
+                Math.round(
+                  (performancePayload.totals.totalShares /
+                    Math.max(1, performancePayload.totals.totalViews)) *
+                    100
+                )
+              )}
+              %
+            </p>
           </div>
         </div>
       </div>
@@ -474,7 +565,10 @@ class ResumePerformanceErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <PerformanceErrorFallback
-          message={this.state.error?.message ?? 'An unexpected error occurred while rendering the performance tracker.'}
+          message={
+            this.state.error?.message ??
+            'An unexpected error occurred while rendering the performance tracker.'
+          }
           onRetry={() => this.setState({ hasError: false, error: null })}
         />
       );

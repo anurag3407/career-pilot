@@ -1,5 +1,5 @@
-import React from "react";
-import { ArrowRight, Download, Sparkles } from "lucide-react";
+import React from 'react';
+import { ArrowRight, Download, Sparkles } from 'lucide-react';
 
 export default function Hero({ data }) {
   const personal = data?.personal || {};
@@ -26,25 +26,31 @@ export default function Hero({ data }) {
             I am
           </span>
           <span className="mt-2 block text-transparent bg-gradient-to-r from-yellow-300 via-yellow-500 to-red-500 bg-clip-text drop-shadow-[0_0_30px_rgba(250,204,21,0.6)]">
-            {personal.name || "John Doe"}
+            {personal.name || 'John Doe'}
           </span>
         </h1>
 
         <p className="mx-auto mb-10 max-w-2xl text-xl text-gray-300 font-medium uppercase tracking-widest">
-          {personal.title || "Software Engineer"}
+          {personal.title || 'Software Engineer'}
         </p>
 
         <p className="mx-auto mb-12 max-w-2xl text-lg text-gray-400 leading-relaxed">
-          {personal.tagline || "Betting on innovation and hitting the jackpot with code."}
+          {personal.tagline || 'Betting on innovation and hitting the jackpot with code.'}
         </p>
 
         <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
-          <button type="button" className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 to-red-500 px-8 py-4 font-black uppercase tracking-wider text-black transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(250,204,21,0.6)]">
+          <button
+            type="button"
+            className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 to-red-500 px-8 py-4 font-black uppercase tracking-wider text-black transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(250,204,21,0.6)]"
+          >
             See Projects
             <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
           </button>
-          
-          <button type="button" className="group flex items-center gap-3 rounded-full border-2 border-yellow-500/50 bg-black/50 px-8 py-4 font-black uppercase tracking-wider text-yellow-400 backdrop-blur-md transition-all hover:bg-yellow-500/10 hover:shadow-[0_0_30px_rgba(250,204,21,0.2)]">
+
+          <button
+            type="button"
+            className="group flex items-center gap-3 rounded-full border-2 border-yellow-500/50 bg-black/50 px-8 py-4 font-black uppercase tracking-wider text-yellow-400 backdrop-blur-md transition-all hover:bg-yellow-500/10 hover:shadow-[0_0_30px_rgba(250,204,21,0.2)]"
+          >
             Download CV
             <Download size={20} className="transition-transform group-hover:translate-y-1" />
           </button>

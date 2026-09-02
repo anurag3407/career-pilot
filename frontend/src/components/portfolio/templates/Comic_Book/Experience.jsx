@@ -1,7 +1,10 @@
 import React from 'react';
 
 const DotPattern = () => (
-  <svg className="absolute inset-0 w-full h-full opacity-[0.07] pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="absolute inset-0 w-full h-full opacity-[0.07] pointer-events-none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <defs>
       <pattern id="comic-dots-exp" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
         <circle cx="4" cy="4" r="2.5" fill="black" />
@@ -24,10 +27,13 @@ const SpeechBubble = ({ text }) => (
 export default function Experience({ experience }) {
   if (!experience || experience.length === 0) return null;
 
-  const bgColors = ["bg-sky-400", "bg-pink-400", "bg-yellow-400", "bg-green-400"];
+  const bgColors = ['bg-sky-400', 'bg-pink-400', 'bg-yellow-400', 'bg-green-400'];
 
   return (
-    <section id="experience" className="relative w-full overflow-hidden bg-red-500 py-20 px-4 sm:px-8 border-b-4 border-black">
+    <section
+      id="experience"
+      className="relative w-full overflow-hidden bg-red-500 py-20 px-4 sm:px-8 border-b-4 border-black"
+    >
       <DotPattern />
       <div className="relative max-w-5xl mx-auto">
         <div className="flex flex-col items-center gap-6 mb-16 text-center">
@@ -47,12 +53,16 @@ export default function Experience({ experience }) {
             const isLeft = i % 2 === 0;
             const color = bgColors[i % bgColors.length];
             return (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className={`relative flex flex-col md:flex-row gap-6 items-center ${isLeft ? '' : 'md:flex-row-reverse'}`}
               >
-                <div className={`w-full bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] ${isLeft ? 'rotate-1' : '-rotate-1'} transition-transform hover:scale-[1.02] z-10 p-0 flex flex-col`}>
-                  <div className={`${color} border-b-4 border-black p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4`}>
+                <div
+                  className={`w-full bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] ${isLeft ? 'rotate-1' : '-rotate-1'} transition-transform hover:scale-[1.02] z-10 p-0 flex flex-col`}
+                >
+                  <div
+                    className={`${color} border-b-4 border-black p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4`}
+                  >
                     <div>
                       <h3 className="font-black text-black uppercase text-2xl tracking-tight">
                         {exp.title}

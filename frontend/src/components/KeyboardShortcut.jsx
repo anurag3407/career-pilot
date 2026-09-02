@@ -1,15 +1,13 @@
 export default function KeyboardShortcut({ keys = [] }) {
-  const isMac =
-    typeof window !== 'undefined' &&
-    /Mac|iPhone|iPad/.test(navigator.platform)
+  const isMac = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
 
   return (
     <div className="hidden md:flex items-center gap-1">
       {keys.map((key, index) => {
-        let displayKey = key
+        let displayKey = key;
 
         if (key === 'Ctrl') {
-          displayKey = isMac ? '⌘' : 'Ctrl'
+          displayKey = isMac ? '⌘' : 'Ctrl';
         }
 
         return (
@@ -19,8 +17,8 @@ export default function KeyboardShortcut({ keys = [] }) {
           >
             {displayKey}
           </kbd>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

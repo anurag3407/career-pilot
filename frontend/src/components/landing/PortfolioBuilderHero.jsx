@@ -61,26 +61,37 @@ const RotatingText = forwardRef(function RotatingText(
     if (splitBy === 'characters') {
       const words = currentText.split(/(\s+)/);
       let charCount = 0;
-      return words.filter((part) => part.length > 0).map((part) => {
-        const isSpace = /^\s+$/.test(part);
-        const chars = isSpace ? [part] : splitIntoCharacters(part);
-        const startIndex = charCount;
-        charCount += chars.length;
-        return { characters: chars, isSpace, startIndex };
-      });
+      return words
+        .filter((part) => part.length > 0)
+        .map((part) => {
+          const isSpace = /^\s+$/.test(part);
+          const chars = isSpace ? [part] : splitIntoCharacters(part);
+          const startIndex = charCount;
+          charCount += chars.length;
+          return { characters: chars, isSpace, startIndex };
+        });
     }
     if (splitBy === 'words') {
-      return currentText.split(/(\s+)/).filter((word) => word.length > 0).map((word, i) => ({
-        characters: [word], isSpace: /^\s+$/.test(word), startIndex: i,
-      }));
+      return currentText
+        .split(/(\s+)/)
+        .filter((word) => word.length > 0)
+        .map((word, i) => ({
+          characters: [word],
+          isSpace: /^\s+$/.test(word),
+          startIndex: i,
+        }));
     }
     if (splitBy === 'lines') {
       return currentText.split('\n').map((line, i) => ({
-        characters: [line], isSpace: false, startIndex: i,
+        characters: [line],
+        isSpace: false,
+        startIndex: i,
       }));
     }
     return currentText.split(splitBy).map((part, i) => ({
-      characters: [part], isSpace: false, startIndex: i,
+      characters: [part],
+      isSpace: false,
+      startIndex: i,
     }));
   }, [texts, currentTextIndex, splitBy]);
 
@@ -89,51 +100,70 @@ const RotatingText = forwardRef(function RotatingText(
     [elements]
   );
 
-  const getStaggerDelay = useCallback((index, total) => {
-    if (total <= 1 || !staggerDuration) return 0;
-    const stagger = staggerDuration;
-    switch (staggerFrom) {
-      case 'first': return index * stagger;
-      case 'last': return (total - 1 - index) * stagger;
-      case 'center': {
-        const center = (total - 1) / 2;
-        return Math.abs(center - index) * stagger;
-      }
-      case 'random': return Math.random() * (total - 1) * stagger;
-      default:
-        if (typeof staggerFrom === 'number') {
-          const fromIndex = Math.max(0, Math.min(staggerFrom, total - 1));
-          return Math.abs(fromIndex - index) * stagger;
+  const getStaggerDelay = useCallback(
+    (index, total) => {
+      if (total <= 1 || !staggerDuration) return 0;
+      const stagger = staggerDuration;
+      switch (staggerFrom) {
+        case 'first':
+          return index * stagger;
+        case 'last':
+          return (total - 1 - index) * stagger;
+        case 'center': {
+          const center = (total - 1) / 2;
+          return Math.abs(center - index) * stagger;
         }
-        return index * stagger;
-    }
-  }, [staggerFrom, staggerDuration]);
+        case 'random':
+          return Math.random() * (total - 1) * stagger;
+        default:
+          if (typeof staggerFrom === 'number') {
+            const fromIndex = Math.max(0, Math.min(staggerFrom, total - 1));
+            return Math.abs(fromIndex - index) * stagger;
+          }
+          return index * stagger;
+      }
+    },
+    [staggerFrom, staggerDuration]
+  );
 
-  const handleIndexChange = useCallback((newIndex) => {
-    setCurrentTextIndex(newIndex);
-    onNext?.(newIndex);
-  }, [onNext]);
+  const handleIndexChange = useCallback(
+    (newIndex) => {
+      setCurrentTextIndex(newIndex);
+      onNext?.(newIndex);
+    },
+    [onNext]
+  );
 
   const next = useCallback(() => {
-    const nextIndex = currentTextIndex === texts.length - 1 ? (loop ? 0 : currentTextIndex) : currentTextIndex + 1;
+    const nextIndex =
+      currentTextIndex === texts.length - 1 ? (loop ? 0 : currentTextIndex) : currentTextIndex + 1;
     if (nextIndex !== currentTextIndex) handleIndexChange(nextIndex);
   }, [currentTextIndex, texts.length, loop, handleIndexChange]);
 
   const previous = useCallback(() => {
-    const prevIndex = currentTextIndex === 0 ? (loop ? texts.length - 1 : currentTextIndex) : currentTextIndex - 1;
+    const prevIndex =
+      currentTextIndex === 0 ? (loop ? texts.length - 1 : currentTextIndex) : currentTextIndex - 1;
     if (prevIndex !== currentTextIndex) handleIndexChange(prevIndex);
   }, [currentTextIndex, texts.length, loop, handleIndexChange]);
 
-  const jumpTo = useCallback((index) => {
-    const validIndex = Math.max(0, Math.min(index, texts.length - 1));
-    if (validIndex !== currentTextIndex) handleIndexChange(validIndex);
-  }, [texts.length, currentTextIndex, handleIndexChange]);
+  const jumpTo = useCallback(
+    (index) => {
+      const validIndex = Math.max(0, Math.min(index, texts.length - 1));
+      if (validIndex !== currentTextIndex) handleIndexChange(validIndex);
+    },
+    [texts.length, currentTextIndex, handleIndexChange]
+  );
 
   const reset = useCallback(() => {
     if (currentTextIndex !== 0) handleIndexChange(0);
   }, [currentTextIndex, handleIndexChange]);
 
-  useImperativeHandle(ref, () => ({ next, previous, jumpTo, reset }), [next, previous, jumpTo, reset]);
+  useImperativeHandle(ref, () => ({ next, previous, jumpTo, reset }), [
+    next,
+    previous,
+    jumpTo,
+    reset,
+  ]);
 
   useEffect(() => {
     if (!auto || texts.length <= 1) return undefined;
@@ -212,8 +242,7 @@ const ShinyText = ({ text, className = '' }) => (
       style={{
         position: 'absolute',
         inset: 0,
-        background:
-          'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
         backgroundSize: '200% 100%',
         animation: 'shine 2s infinite linear',
         opacity: 0.5,
@@ -249,7 +278,11 @@ const MenuIcon = (props) => (
     className="w-6 h-6"
     {...props}
   >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+    />
   </svg>
 );
 
@@ -485,17 +518,10 @@ const InteractiveDotCanvas = ({
     for (let i = 0; i < dots.length; i++) {
       const dot = dots[i];
       dot.currentOpacity += dot.opacitySpeed;
-      if (
-        dot.currentOpacity >= dot.targetOpacity ||
-        dot.currentOpacity <= opacityMin
-      ) {
+      if (dot.currentOpacity >= dot.targetOpacity || dot.currentOpacity <= opacityMin) {
         dot.opacitySpeed = -dot.opacitySpeed;
-        dot.currentOpacity = Math.max(
-          opacityMin,
-          Math.min(dot.currentOpacity, opacityMax)
-        );
-        dot.targetOpacity =
-          Math.random() * (opacityMax - opacityMin) + opacityMin;
+        dot.currentOpacity = Math.max(opacityMin, Math.min(dot.currentOpacity, opacityMax));
+        dot.targetOpacity = Math.random() * (opacityMax - opacityMin) + opacityMin;
       }
 
       let interactionFactor = 0;
@@ -510,10 +536,7 @@ const InteractiveDotCanvas = ({
         }
       }
 
-      const finalOpacity = Math.min(
-        1,
-        dot.currentOpacity + interactionFactor * opacityBoost
-      );
+      const finalOpacity = Math.min(1, dot.currentOpacity + interactionFactor * opacityBoost);
       const finalRadius = dot.baseRadius + interactionFactor * radiusBoost;
 
       ctx.beginPath();
@@ -646,11 +669,7 @@ const PortfolioBuilderHero = ({
     { value: '4+', label: 'Hosting options' },
   ];
 
-  const valuePills = [
-    'No-code setup',
-    'GitHub import',
-    'Responsive templates',
-  ];
+  const valuePills = ['No-code setup', 'GitHub import', 'Responsive templates'];
 
   const previewHighlights = [
     { label: 'Projects', value: '6', color: 'bg-emerald-400' },
@@ -658,15 +677,16 @@ const PortfolioBuilderHero = ({
     { label: 'Sections', value: '5', color: 'bg-violet-400' },
   ];
 
-  const previewInitials = previewName && previewName !== 'Your Name'
-    ? previewName
-        .split(' ')
-        .filter(Boolean)
-        .map((part) => part[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase()
-    : 'AM';
+  const previewInitials =
+    previewName && previewName !== 'Your Name'
+      ? previewName
+          .split(' ')
+          .filter(Boolean)
+          .map((part) => part[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase()
+      : 'AM';
 
   const displayName = previewName && previewName !== 'Your Name' ? previewName : 'Anurag Mishra';
 
@@ -786,9 +806,7 @@ const PortfolioBuilderHero = ({
           >
             {heroStats.map((stat) => (
               <div key={stat.label}>
-                <div className="text-3xl font-black text-white sm:text-4xl">
-                  {stat.value}
-                </div>
+                <div className="text-3xl font-black text-white sm:text-4xl">{stat.value}</div>
                 <div className="mt-1 text-xs font-medium uppercase tracking-[0.2em] text-slate-500 sm:text-sm">
                   {stat.label}
                 </div>
@@ -809,14 +827,13 @@ const PortfolioBuilderHero = ({
 
           {/* Browser Frame */}
           <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-[#08080a] shadow-2xl shadow-emerald-950/40 backdrop-blur-2xl">
-            
             {/* Safari/Browser Header Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-[#0d0d12] px-4 py-3">
               <div className="flex items-center gap-2">
                 <span className="h-3 w-3 rounded-full bg-rose-500/80" />
                 <span className="h-3 w-3 rounded-full bg-amber-500/80" />
                 <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
-                
+
                 <div className="ml-3 flex items-center gap-2 rounded-lg bg-black/50 px-3 py-1 text-xs font-mono text-slate-300 border border-white/10">
                   <span className="text-emerald-400">🔒</span>
                   <span>https://anurag-mishra-one.vercel.app</span>
@@ -824,7 +841,9 @@ const PortfolioBuilderHero = ({
               </div>
 
               <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-[10px] text-slate-400 uppercase tracking-widest hidden sm:inline">Choose Lens</span>
+                <span className="text-[10px] text-slate-400 uppercase tracking-widest hidden sm:inline">
+                  Choose Lens
+                </span>
                 <span className="rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-[11px] font-bold text-emerald-300">
                   Live Portfolio
                 </span>
@@ -833,7 +852,6 @@ const PortfolioBuilderHero = ({
 
             {/* DUAL-LENS PORTFOLIO CONTAINER (ANURAG MISHRA) */}
             <div className="p-5">
-              
               {/* Header Identity Bar */}
               <div className="flex items-center justify-between pb-4 border-b border-white/10">
                 <div className="flex items-center gap-3">
@@ -853,9 +871,9 @@ const PortfolioBuilderHero = ({
                   </div>
                 </div>
 
-                <a 
-                  href="https://anurag-mishra-one.vercel.app/" 
-                  target="_blank" 
+                <a
+                  href="https://anurag-mishra-one.vercel.app/"
+                  target="_blank"
                   rel="noreferrer"
                   className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white hover:bg-emerald-500/20 hover:border-emerald-500/30 transition-all flex items-center gap-1 font-mono"
                 >
@@ -868,23 +886,23 @@ const PortfolioBuilderHero = ({
                 <button
                   onClick={() => setLens('developer')}
                   className={cn(
-                    "py-2 rounded-lg transition-all flex items-center justify-center gap-2 font-bold",
+                    'py-2 rounded-lg transition-all flex items-center justify-center gap-2 font-bold',
                     lens === 'developer'
-                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-md"
-                      : "text-slate-400 hover:text-slate-200"
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-md'
+                      : 'text-slate-400 hover:text-slate-200'
                   )}
                 >
                   <span>01 · The Build</span>
                   <span className="text-[10px] font-normal text-slate-400">(Developer)</span>
                 </button>
-                
+
                 <button
                   onClick={() => setLens('designer')}
                   className={cn(
-                    "py-2 rounded-lg transition-all flex items-center justify-center gap-2 font-bold",
+                    'py-2 rounded-lg transition-all flex items-center justify-center gap-2 font-bold',
                     lens === 'designer'
-                      ? "bg-purple-500/20 text-purple-300 border border-purple-500/30 shadow-md"
-                      : "text-slate-400 hover:text-slate-200"
+                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30 shadow-md'
+                      : 'text-slate-400 hover:text-slate-200'
                   )}
                 >
                   <span>02 · The Studio</span>
@@ -897,20 +915,33 @@ const PortfolioBuilderHero = ({
                 <div className="space-y-3 font-sans">
                   <div className="p-4 rounded-2xl bg-slate-900/90 border border-emerald-500/30">
                     <div className="flex items-center justify-between mb-2 font-mono text-xs">
-                      <span className="text-emerald-300 font-bold uppercase tracking-wider">Engineering Systems That Scale</span>
+                      <span className="text-emerald-300 font-bold uppercase tracking-wider">
+                        Engineering Systems That Scale
+                      </span>
                       <span className="text-slate-500">Full-Stack & Systems</span>
                     </div>
                     <p className="text-xs text-slate-300 leading-relaxed mb-3">
-                      Building high-performance web applications, distributed AST parsers, AI career tooling, and scalable cloud architectures.
+                      Building high-performance web applications, distributed AST parsers, AI career
+                      tooling, and scalable cloud architectures.
                     </p>
 
                     {/* Code Stack Badges */}
                     <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
-                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">TypeScript</span>
-                      <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">React / Next.js</span>
-                      <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">Node.js</span>
-                      <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20">Rust</span>
-                      <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Python</span>
+                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                        TypeScript
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                        React / Next.js
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                        Node.js
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20">
+                        Rust
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                        Python
+                      </span>
                     </div>
                   </div>
 
@@ -925,7 +956,8 @@ const PortfolioBuilderHero = ({
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
-                      AI-powered career operating system for resume roasters, codebase visualizers, and 3D portfolio generators.
+                      AI-powered career operating system for resume roasters, codebase visualizers,
+                      and 3D portfolio generators.
                     </p>
                   </div>
 
@@ -940,7 +972,8 @@ const PortfolioBuilderHero = ({
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
-                      3D interactive graph canvas parsing module call trees and cross-boundary function relationships in 10s.
+                      3D interactive graph canvas parsing module call trees and cross-boundary
+                      function relationships in 10s.
                     </p>
                   </div>
                 </div>
@@ -951,19 +984,30 @@ const PortfolioBuilderHero = ({
                 <div className="space-y-3 font-sans">
                   <div className="p-4 rounded-2xl bg-purple-950/40 border border-purple-500/30">
                     <div className="flex items-center justify-between mb-2 font-mono text-xs">
-                      <span className="text-purple-300 font-bold uppercase tracking-wider">Designing Things That Mean Something</span>
+                      <span className="text-purple-300 font-bold uppercase tracking-wider">
+                        Designing Things That Mean Something
+                      </span>
                       <span className="text-slate-500">UI/UX & Craft</span>
                     </div>
                     <p className="text-xs text-slate-300 leading-relaxed mb-3">
-                      Creating high-craft digital products, fluid motion micro-interactions, responsive design systems, and typography-driven interfaces.
+                      Creating high-craft digital products, fluid motion micro-interactions,
+                      responsive design systems, and typography-driven interfaces.
                     </p>
 
                     {/* Design Skills */}
                     <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
-                      <span className="px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Design Systems</span>
-                      <span className="px-2 py-0.5 rounded bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/20">Figma / Craft</span>
-                      <span className="px-2 py-0.5 rounded bg-pink-500/10 text-pink-300 border border-pink-500/20">Framer Motion</span>
-                      <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">Typography</span>
+                      <span className="px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                        Design Systems
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/20">
+                        Figma / Craft
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-pink-500/10 text-pink-300 border border-pink-500/20">
+                        Framer Motion
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                        Typography
+                      </span>
                     </div>
                   </div>
 
@@ -978,7 +1022,8 @@ const PortfolioBuilderHero = ({
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
-                      Custom typography-first studio lens with smooth scroll transitions and interactive cursor shaders.
+                      Custom typography-first studio lens with smooth scroll transitions and
+                      interactive cursor shaders.
                     </p>
                   </div>
                 </div>
@@ -990,13 +1035,9 @@ const PortfolioBuilderHero = ({
                   <span className="h-2 w-2 rounded-full bg-emerald-400" />
                   Deployed on Vercel
                 </span>
-                <span className="text-slate-400">
-                  © 2026 Anurag Mishra
-                </span>
+                <span className="text-slate-400">© 2026 Anurag Mishra</span>
               </div>
-
             </div>
-
           </div>
         </MotionDiv>
       </div>

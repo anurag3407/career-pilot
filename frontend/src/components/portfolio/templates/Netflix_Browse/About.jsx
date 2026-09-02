@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { MapPin, Mail } from "lucide-react";
+import { motion } from 'framer-motion';
+import { MapPin, Mail } from 'lucide-react';
 
 export default function About({ personal, socials }) {
   return (
@@ -39,12 +39,8 @@ export default function About({ personal, socials }) {
               Bio
             </span>
           </div>
-          <h3 className="text-white text-2xl md:text-3xl font-black mb-4">
-            {personal.name}
-          </h3>
-          <p className="text-[#e5e5e5] text-base leading-relaxed mb-6">
-            {personal.bio}
-          </p>
+          <h3 className="text-white text-2xl md:text-3xl font-black mb-4">{personal.name}</h3>
+          <p className="text-[#e5e5e5] text-base leading-relaxed mb-6">{personal.bio}</p>
 
           {/* Info chips */}
           <div className="flex flex-wrap gap-3 mb-6">
@@ -61,9 +57,9 @@ export default function About({ personal, socials }) {
           {/* Social links */}
           <div className="flex gap-3">
             {[
-              { href: socials.github, label: "GitHub", icon: "⌥" },
-              { href: socials.linkedin, label: "LinkedIn", icon: "in" },
-              { href: socials.twitter, label: "Twitter", icon: "𝕏" },
+              { href: socials.github, label: 'GitHub', icon: '⌥' },
+              { href: socials.linkedin, label: 'LinkedIn', icon: 'in' },
+              { href: socials.twitter, label: 'Twitter', icon: '𝕏' },
             ].map(({ href, label, icon }) => (
               <a
                 key={label}

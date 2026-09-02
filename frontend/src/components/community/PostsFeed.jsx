@@ -14,7 +14,7 @@ import {
   Search,
   X,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -32,7 +32,7 @@ const CATEGORIES = [
 export default function PostsFeed() {
   const { user } = useAuth();
   const { subscribe, subscribePosts, unsubscribePosts, isConnected } = useSocket();
-  
+
   const [posts, setPosts] = useState([]);
   const [scheduledPosts, setScheduledPosts] = useState([]);
   const [showScheduled, setShowScheduled] = useState(true);
@@ -56,34 +56,37 @@ export default function PostsFeed() {
   }, []);
 
   // Fetch posts helper
-  const fetchPosts = useCallback(async (pageToFetch, isLoadMore) => {
-    try {
-      if (!isLoadMore) {
-        setLoading(true);
-      }
+  const fetchPosts = useCallback(
+    async (pageToFetch, isLoadMore) => {
+      try {
+        if (!isLoadMore) {
+          setLoading(true);
+        }
 
-      const params = {
-        page: pageToFetch,
-        limit: 20,
-        sortBy,
-        ...(selectedCategory !== 'all' && { category: selectedCategory })
-      };
+        const params = {
+          page: pageToFetch,
+          limit: 20,
+          sortBy,
+          ...(selectedCategory !== 'all' && { category: selectedCategory }),
+        };
 
-      const data = await communityApi.getPosts(params);
-      
-      if (isLoadMore) {
-        setPosts(prev => [...prev, ...data.posts]);
-      } else {
-        setPosts(data.posts);
+        const data = await communityApi.getPosts(params);
+
+        if (isLoadMore) {
+          setPosts((prev) => [...prev, ...data.posts]);
+        } else {
+          setPosts(data.posts);
+        }
+
+        setHasMore(data.pagination.hasMore);
+      } catch (error) {
+        toast.error('Failed to load posts');
+      } finally {
+        setLoading(false);
       }
-      
-      setHasMore(data.pagination.hasMore);
-    } catch (error) {
-      toast.error('Failed to load posts');
-    } finally {
-      setLoading(false);
-    }
-  }, [sortBy, selectedCategory]);
+    },
+    [sortBy, selectedCategory]
+  );
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
@@ -111,9 +114,9 @@ export default function PostsFeed() {
     subscribePosts();
 
     const unsubNewPost = subscribe('new_post', ({ post }) => {
-      setPosts(prev => {
+      setPosts((prev) => {
         const postId = post.id || post._id;
-        if (prev.some(p => (p.id || p._id) === postId)) {
+        if (prev.some((p) => (p.id || p._id) === postId)) {
           return prev;
         }
         return [post, ...prev];
@@ -122,23 +125,27 @@ export default function PostsFeed() {
 
     const unsubLikeUpdated = subscribe('post_like_updated', ({ postId, likeCount, likes }) => {
       // Only update if it's from another user's action (prevents duplicate updates from our own likes)
-      setPosts(prev => prev.map(post => {
-        const pId = post.id || post._id;
-        if (pId === postId) {
-          // Check if the like count is different to avoid unnecessary re-renders
-          if (post.likeCount !== likeCount) {
-            return { ...post, likeCount, likes };
+      setPosts((prev) =>
+        prev.map((post) => {
+          const pId = post.id || post._id;
+          if (pId === postId) {
+            // Check if the like count is different to avoid unnecessary re-renders
+            if (post.likeCount !== likeCount) {
+              return { ...post, likeCount, likes };
+            }
           }
-        }
-        return post;
-      }));
+          return post;
+        })
+      );
     });
 
     const unsubCommentAdded = subscribe('comment_added', ({ postId, commentCount }) => {
-      setPosts(prev => prev.map(post => {
-        const pId = post.id || post._id;
-        return pId === postId ? { ...post, commentCount } : post;
-      }));
+      setPosts((prev) =>
+        prev.map((post) => {
+          const pId = post.id || post._id;
+          return pId === postId ? { ...post, commentCount } : post;
+        })
+      );
     });
 
     return () => {
@@ -149,68 +156,58 @@ export default function PostsFeed() {
     };
   }, [subscribe, subscribePosts, unsubscribePosts]);
 
+  const handleCreatePost = async (postData) => {
+    if (isSubmitting) return; // Prevent double-click submissions
 
-const handleCreatePost = async (postData) => {
-  if (isSubmitting) return; // Prevent double-click submissions
+    setIsSubmitting(true);
 
-  setIsSubmitting(true);
+    try {
+      const data = await communityApi.createPost(postData);
 
-  try {
-    const data = await communityApi.createPost(postData);
+      if (data.post.status === 'scheduled') {
+        setScheduledPosts((prev) => {
+          const postId = data.post.id || data.post._id;
 
-    if (data.post.status === 'scheduled') {
-      setScheduledPosts(prev => {
-        const postId = data.post.id || data.post._id;
+          if (prev.some((p) => (p.id || p._id) === postId)) {
+            return prev;
+          }
 
-        if (prev.some(p => (p.id || p._id) === postId)) {
-          return prev;
-        }
+          return [data.post, ...prev].sort(
+            (a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt)
+          );
+        });
 
-        return [data.post, ...prev].sort(
-          (a, b) =>
-            new Date(a.scheduledAt) -
-            new Date(b.scheduledAt)
-        );
-      });
+        setShowEditor(false);
 
-      setShowEditor(false);
+        toast.success('Post scheduled successfully!');
+      } else {
+        // Insert immediately for responsive UX.
+        // Socket listener already has duplicate protection.
+        setPosts((prev) => {
+          const postId = data.post.id || data.post._id;
 
-      toast.success('Post scheduled successfully!');
-    } else {
-      // Insert immediately for responsive UX.
-      // Socket listener already has duplicate protection.
-      setPosts(prev => {
-        const postId =
-          data.post.id || data.post._id;
+          if (prev.some((p) => (p.id || p._id) === postId)) {
+            return prev;
+          }
 
-        if (
-          prev.some(
-            p => (p.id || p._id) === postId
-          )
-        ) {
-          return prev;
-        }
+          return [data.post, ...prev];
+        });
 
-        return [data.post, ...prev];
-      });
+        setShowEditor(false);
 
-      setShowEditor(false);
-
-      toast.success(
-        'Post created successfully!'
-      );
+        toast.success('Post created successfully!');
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
-  } catch (error) {
-    toast.error(error.message);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   const handleCancelScheduled = async (postId) => {
     try {
       await communityApi.cancelScheduledPost(postId);
-      setScheduledPosts(prev => prev.filter(p => (p.id || p._id) !== postId));
+      setScheduledPosts((prev) => prev.filter((p) => (p.id || p._id) !== postId));
       toast.success('Scheduled post cancelled');
     } catch (error) {
       toast.error(error.message || 'Failed to cancel scheduled post');
@@ -219,58 +216,62 @@ const handleCreatePost = async (postData) => {
 
   const handleLikePost = async (postId) => {
     // Optimistic update - immediately show the change
-    setPosts(prev => prev.map(post => {
-      const pId = post.id || post._id;
-      if (pId === postId) {
-        const currentLikes = post.likes || [];
-        const isCurrentlyLiked = currentLikes.some(l => l.uid === user?.uid);
-        
-        if (isCurrentlyLiked) {
-          // Unlike - remove user from likes
-          return {
-            ...post,
-            likes: currentLikes.filter(l => l.uid !== user?.uid),
-            likeCount: Math.max(0, (post.likeCount || currentLikes.length) - 1)
-          };
-        } else {
-          // Like - add user to likes
-          return {
-            ...post,
-            likes: [...currentLikes, { uid: user?.uid, name: user?.displayName || user?.name }],
-            likeCount: (post.likeCount || currentLikes.length) + 1
-          };
+    setPosts((prev) =>
+      prev.map((post) => {
+        const pId = post.id || post._id;
+        if (pId === postId) {
+          const currentLikes = post.likes || [];
+          const isCurrentlyLiked = currentLikes.some((l) => l.uid === user?.uid);
+
+          if (isCurrentlyLiked) {
+            // Unlike - remove user from likes
+            return {
+              ...post,
+              likes: currentLikes.filter((l) => l.uid !== user?.uid),
+              likeCount: Math.max(0, (post.likeCount || currentLikes.length) - 1),
+            };
+          } else {
+            // Like - add user to likes
+            return {
+              ...post,
+              likes: [...currentLikes, { uid: user?.uid, name: user?.displayName || user?.name }],
+              likeCount: (post.likeCount || currentLikes.length) + 1,
+            };
+          }
         }
-      }
-      return post;
-    }));
+        return post;
+      })
+    );
 
     try {
       // Call API in background - socket will confirm the update
       await communityApi.toggleLikePost(postId);
     } catch (error) {
       // Revert on error - toggle back
-      setPosts(prev => prev.map(post => {
-        const pId = post.id || post._id;
-        if (pId === postId) {
-          const currentLikes = post.likes || [];
-          const isCurrentlyLiked = currentLikes.some(l => l.uid === user?.uid);
-          
-          if (isCurrentlyLiked) {
-            return {
-              ...post,
-              likes: currentLikes.filter(l => l.uid !== user?.uid),
-              likeCount: Math.max(0, (post.likeCount || currentLikes.length) - 1)
-            };
-          } else {
-            return {
-              ...post,
-              likes: [...currentLikes, { uid: user?.uid, name: user?.displayName || user?.name }],
-              likeCount: (post.likeCount || currentLikes.length) + 1
-            };
+      setPosts((prev) =>
+        prev.map((post) => {
+          const pId = post.id || post._id;
+          if (pId === postId) {
+            const currentLikes = post.likes || [];
+            const isCurrentlyLiked = currentLikes.some((l) => l.uid === user?.uid);
+
+            if (isCurrentlyLiked) {
+              return {
+                ...post,
+                likes: currentLikes.filter((l) => l.uid !== user?.uid),
+                likeCount: Math.max(0, (post.likeCount || currentLikes.length) - 1),
+              };
+            } else {
+              return {
+                ...post,
+                likes: [...currentLikes, { uid: user?.uid, name: user?.displayName || user?.name }],
+                likeCount: (post.likeCount || currentLikes.length) + 1,
+              };
+            }
           }
-        }
-        return post;
-      }));
+          return post;
+        })
+      );
       toast.error('Failed to like post');
     }
   };
@@ -278,10 +279,12 @@ const handleCreatePost = async (postData) => {
   const handleDeletePost = async (postId) => {
     try {
       await communityApi.deletePost(postId);
-      setPosts(prev => prev.filter(post => {
-        const pId = post.id || post._id;
-        return pId !== postId;
-      }));
+      setPosts((prev) =>
+        prev.filter((post) => {
+          const pId = post.id || post._id;
+          return pId !== postId;
+        })
+      );
       toast.success('Post deleted');
     } catch (error) {
       toast.error(error.message);
@@ -290,10 +293,11 @@ const handleCreatePost = async (postData) => {
 
   // Filter posts by search
   const filteredPosts = searchQuery
-    ? posts.filter(post => 
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.tags?.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     : posts;
 
@@ -319,7 +323,9 @@ const handleCreatePost = async (postData) => {
             <button
               onClick={() => setSortBy('latest')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                sortBy === 'latest' ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
+                sortBy === 'latest'
+                  ? 'bg-card shadow-sm text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <Clock className="w-4 h-4" />
@@ -328,7 +334,9 @@ const handleCreatePost = async (postData) => {
             <button
               onClick={() => setSortBy('popular')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                sortBy === 'popular' ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
+                sortBy === 'popular'
+                  ? 'bg-card shadow-sm text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <Heart className="w-4 h-4" />
@@ -337,7 +345,9 @@ const handleCreatePost = async (postData) => {
             <button
               onClick={() => setSortBy('trending')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                sortBy === 'trending' ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
+                sortBy === 'trending'
+                  ? 'bg-card shadow-sm text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <TrendingUp className="w-4 h-4" />
@@ -368,7 +378,7 @@ const handleCreatePost = async (postData) => {
 
         {/* Category Tabs */}
         <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-          {CATEGORIES.map(cat => (
+          {CATEGORIES.map((cat) => (
             <button
               key={cat.value}
               onClick={() => setSelectedCategory(cat.value)}
@@ -392,21 +402,22 @@ const handleCreatePost = async (postData) => {
           {scheduledPosts.length > 0 && (
             <div className="border border-sky-500/20 rounded-xl overflow-hidden">
               <button
-                onClick={() => setShowScheduled(prev => !prev)}
+                onClick={() => setShowScheduled((prev) => !prev)}
                 className="w-full flex items-center justify-between px-4 py-3 bg-sky-500/10 hover:bg-sky-500/15 transition-colors"
               >
                 <div className="flex items-center gap-2 text-sky-400 text-sm font-medium">
                   <Clock className="w-4 h-4" />
                   Scheduled Posts ({scheduledPosts.length})
                 </div>
-                {showScheduled
-                  ? <ChevronUp className="w-4 h-4 text-sky-400" />
-                  : <ChevronDown className="w-4 h-4 text-sky-400" />
-                }
+                {showScheduled ? (
+                  <ChevronUp className="w-4 h-4 text-sky-400" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-sky-400" />
+                )}
               </button>
               {showScheduled && (
                 <div className="divide-y divide-neutral-800/50 bg-neutral-900/50">
-                  {scheduledPosts.map(post => {
+                  {scheduledPosts.map((post) => {
                     const postId = post.id || post._id;
                     return (
                       <PostCard
@@ -442,7 +453,7 @@ const handleCreatePost = async (postData) => {
             ))
           ) : filteredPosts.length > 0 ? (
             <>
-              {filteredPosts.map(post => {
+              {filteredPosts.map((post) => {
                 const postId = post.id || post._id;
                 return (
                   <PostCard
@@ -454,12 +465,14 @@ const handleCreatePost = async (postData) => {
                     onCancelSchedule={handleCancelScheduled}
                     onCommentAdded={() => {
                       // Update comment count in local state
-                      setPosts(prev => prev.map(p => {
-                        const pId = p.id || p._id;
-                        return pId === postId 
-                          ? { ...p, commentCount: (p.commentCount || 0) + 1 }
-                          : p;
-                      }));
+                      setPosts((prev) =>
+                        prev.map((p) => {
+                          const pId = p.id || p._id;
+                          return pId === postId
+                            ? { ...p, commentCount: (p.commentCount || 0) + 1 }
+                            : p;
+                        })
+                      );
                     }}
                   />
                 );
@@ -492,10 +505,7 @@ const handleCreatePost = async (postData) => {
 
       {/* Post Editor Modal */}
       {showEditor && (
-        <PostEditor
-          onClose={() => setShowEditor(false)}
-          onSubmit={handleCreatePost}
-        />
+        <PostEditor onClose={() => setShowEditor(false)} onSubmit={handleCreatePost} />
       )}
     </div>
   );

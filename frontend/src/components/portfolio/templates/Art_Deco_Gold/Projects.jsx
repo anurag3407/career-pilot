@@ -10,10 +10,7 @@ const isSafeUrl = (url) => {
   try {
     const parsed = new URL(url);
 
-    return (
-      parsed.protocol === 'http:' ||
-      parsed.protocol === 'https:'
-    );
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
   } catch {
     return false;
   }
@@ -47,9 +44,7 @@ export default function Projects({ data }) {
               const hasLiveUrl = isSafeUrl(project?.liveUrl);
               const hasGithubUrl = isSafeUrl(project?.githubUrl);
 
-              const techStack = Array.isArray(project?.techStack)
-                ? project.techStack
-                : [];
+              const techStack = Array.isArray(project?.techStack) ? project.techStack : [];
 
               return (
                 <motion.article
@@ -87,8 +82,7 @@ export default function Projects({ data }) {
                     </h3>
 
                     <p className="text-sm leading-relaxed text-amber-100/80">
-                      {project?.description ||
-                        'No description available.'}
+                      {project?.description || 'No description available.'}
                     </p>
 
                     <div className="mt-6 flex flex-wrap gap-2">
@@ -136,9 +130,7 @@ export default function Projects({ data }) {
           </div>
         ) : (
           <div className="rounded-[2rem] border border-amber-200/20 bg-slate-900/80 p-8 text-center shadow-[0_30px_80px_rgba(15,23,42,0.3)]">
-            <p className="text-amber-100/80">
-              No projects available.
-            </p>
+            <p className="text-amber-100/80">No projects available.</p>
           </div>
         )}
       </div>

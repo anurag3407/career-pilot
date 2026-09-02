@@ -4,7 +4,7 @@ import { Github, Linkedin, Twitter } from 'lucide-react';
 
 const lavaVariants = {
   initial: { width: '0%' },
-  hover: { width: '100%', transition: { duration: 0.7, ease: 'easeInOut' } }
+  hover: { width: '100%', transition: { duration: 0.7, ease: 'easeInOut' } },
 };
 
 export default function Hero({ personal, socials }) {
@@ -29,20 +29,48 @@ export default function Hero({ personal, socials }) {
 
         <div className="mt-9 flex flex-nowrap items-center gap-4 md:gap-5">
           {[
-            { icon: Github, url: socials.github, label: 'GitHub', toneClass: 'border-orange-500/35 bg-stone-900/70 text-orange-200', waveGradient: 'linear-gradient(90deg, #7f1d1d, #b91c1c, #f97316)' },
-            { icon: Linkedin, url: socials.linkedin, label: 'LinkedIn', toneClass: 'border-orange-500/35 bg-stone-900/70 text-orange-200', waveGradient: 'linear-gradient(90deg, #9a3412, #ea580c, #f59e0b)' },
-            { icon: Twitter, url: socials.twitter, label: 'Twitter', toneClass: 'border-orange-500/35 bg-stone-900/70 text-orange-200', waveGradient: 'linear-gradient(90deg, #b45309, #f97316, #facc15)' },
-          ].map((item, idx) => (
-            item.url && (
-              <motion.a
-                key={idx} href={item.url} target="_blank" rel="noreferrer" initial="initial" whileHover="hover"
-                className={`lava-btn relative inline-flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full overflow-hidden border p-0 ${item.toneClass}`}
-              >
-                <motion.span variants={lavaVariants} className="wave-fill absolute left-0 top-0 bottom-0" style={{ width: '0%', backgroundImage: item.waveGradient }} />
-                <item.icon className="relative z-10 block h-5 w-5 md:h-6 md:w-6 shrink-0" />
-              </motion.a>
-            )
-          ))}
+            {
+              icon: Github,
+              url: socials.github,
+              label: 'GitHub',
+              toneClass: 'border-orange-500/35 bg-stone-900/70 text-orange-200',
+              waveGradient: 'linear-gradient(90deg, #7f1d1d, #b91c1c, #f97316)',
+            },
+            {
+              icon: Linkedin,
+              url: socials.linkedin,
+              label: 'LinkedIn',
+              toneClass: 'border-orange-500/35 bg-stone-900/70 text-orange-200',
+              waveGradient: 'linear-gradient(90deg, #9a3412, #ea580c, #f59e0b)',
+            },
+            {
+              icon: Twitter,
+              url: socials.twitter,
+              label: 'Twitter',
+              toneClass: 'border-orange-500/35 bg-stone-900/70 text-orange-200',
+              waveGradient: 'linear-gradient(90deg, #b45309, #f97316, #facc15)',
+            },
+          ].map(
+            (item, idx) =>
+              item.url && (
+                <motion.a
+                  key={idx}
+                  href={item.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  initial="initial"
+                  whileHover="hover"
+                  className={`lava-btn relative inline-flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full overflow-hidden border p-0 ${item.toneClass}`}
+                >
+                  <motion.span
+                    variants={lavaVariants}
+                    className="wave-fill absolute left-0 top-0 bottom-0"
+                    style={{ width: '0%', backgroundImage: item.waveGradient }}
+                  />
+                  <item.icon className="relative z-10 block h-5 w-5 md:h-6 md:w-6 shrink-0" />
+                </motion.a>
+              )
+          )}
         </div>
       </div>
     </section>

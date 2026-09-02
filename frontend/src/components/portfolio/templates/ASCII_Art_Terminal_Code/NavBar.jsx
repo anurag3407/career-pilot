@@ -4,26 +4,26 @@ import { Terminal, Menu, X } from 'lucide-react';
 import { usePortfolio, TERMINAL_THEMES } from './PortfolioContext';
 
 const NAV_LINKS = [
-  { id: 'hero',         label: '$ whoami'   },
-  { id: 'about',        label: '$ about'    },
-  { id: 'skills',       label: '$ skills'   },
-  { id: 'projects',     label: '$ projects' },
-  { id: 'experience',   label: '$ git log'  },
-  { id: 'testimonials', label: '$ logs'     },
-  { id: 'contact',      label: '$ connect'  },
+  { id: 'hero', label: '$ whoami' },
+  { id: 'about', label: '$ about' },
+  { id: 'skills', label: '$ skills' },
+  { id: 'projects', label: '$ projects' },
+  { id: 'experience', label: '$ git log' },
+  { id: 'testimonials', label: '$ logs' },
+  { id: 'contact', label: '$ connect' },
 ];
 
 export default function NavBar() {
   const { personal, theme, themeId, setThemeId } = usePortfolio();
-  const [active,     setActive]     = useState('hero');
-  const [scrolled,   setScrolled]   = useState(false);
+  const [active, setActive] = useState('hero');
+  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 60);
-      const sections = NAV_LINKS.map(l => document.getElementById(l.id)).filter(Boolean);
-      const current  = sections.find(s => {
+      const sections = NAV_LINKS.map((l) => document.getElementById(l.id)).filter(Boolean);
+      const current = sections.find((s) => {
         const r = s.getBoundingClientRect();
         return r.top <= 100 && r.bottom > 100;
       });
@@ -49,9 +49,9 @@ export default function NavBar() {
         aria-label="Main navigation"
       >
         <div className="max-w-6xl mx-auto px-4 h-12 flex items-center justify-between font-mono text-xs">
-
           {/* Logo */}
-          <button type="button"
+          <button
+            type="button"
             onClick={() => scrollTo('hero')}
             id="nav-logo"
             aria-label="Go to top"
@@ -67,22 +67,27 @@ export default function NavBar() {
 
           {/* Desktop links */}
           <div className="hidden md:flex items-center gap-1" role="list">
-            {NAV_LINKS.map(link => (
-              <button type="button"
+            {NAV_LINKS.map((link) => (
+              <button
+                type="button"
                 key={link.id}
                 id={`nav-${link.id}`}
                 onClick={() => scrollTo(link.id)}
                 role="listitem"
                 aria-current={active === link.id ? 'page' : undefined}
                 className="px-3 py-1 transition-colors border text-xs"
-                style={active === link.id ? {
-                  color: theme.primaryBright,
-                  borderColor: `${theme.border}99`,
-                  backgroundColor: `${theme.primaryGlow}`,
-                } : {
-                  color: theme.primaryDim,
-                  borderColor: 'transparent',
-                }}
+                style={
+                  active === link.id
+                    ? {
+                        color: theme.primaryBright,
+                        borderColor: `${theme.border}99`,
+                        backgroundColor: `${theme.primaryGlow}`,
+                      }
+                    : {
+                        color: theme.primaryDim,
+                        borderColor: 'transparent',
+                      }
+                }
               >
                 {link.label}
               </button>
@@ -91,7 +96,6 @@ export default function NavBar() {
 
           {/* Right side: Color Picker + Mobile toggle */}
           <div className="flex items-center gap-2">
-
             {/* ── Terminal Color Picker ── */}
             <div
               className="flex items-center gap-1.5 px-2 py-1 rounded border font-mono text-xs"
@@ -100,11 +104,15 @@ export default function NavBar() {
               role="group"
               aria-label="Terminal color themes"
             >
-              <span style={{ color: theme.primaryDim }} className="text-[10px] hidden sm:inline tracking-widest">
+              <span
+                style={{ color: theme.primaryDim }}
+                className="text-[10px] hidden sm:inline tracking-widest"
+              >
                 theme:
               </span>
-              {Object.values(TERMINAL_THEMES).map(t => (
-                <button type="button"
+              {Object.values(TERMINAL_THEMES).map((t) => (
+                <button
+                  type="button"
                   key={t.id}
                   id={`theme-btn-${t.id}`}
                   onClick={() => setThemeId(t.id)}
@@ -129,9 +137,10 @@ export default function NavBar() {
             </div>
 
             {/* Mobile hamburger */}
-            <button type="button"
+            <button
+              type="button"
               id="nav-mobile-toggle"
-              onClick={() => setMobileOpen(o => !o)}
+              onClick={() => setMobileOpen((o) => !o)}
               className="md:hidden transition-colors p-1"
               style={{ color: theme.primaryDim }}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
@@ -158,15 +167,17 @@ export default function NavBar() {
             aria-label="Mobile navigation"
           >
             <div className="px-4 py-3 space-y-0.5">
-              {NAV_LINKS.map(link => (
-                <button type="button"
+              {NAV_LINKS.map((link) => (
+                <button
+                  type="button"
                   key={link.id}
                   id={`nav-mobile-${link.id}`}
                   onClick={() => scrollTo(link.id)}
                   className="w-full text-left px-3 py-2 transition-colors"
-                  style={active === link.id
-                    ? { color: theme.primaryBright, backgroundColor: theme.primaryGlow }
-                    : { color: theme.primaryDim }
+                  style={
+                    active === link.id
+                      ? { color: theme.primaryBright, backgroundColor: theme.primaryGlow }
+                      : { color: theme.primaryDim }
                   }
                 >
                   {link.label}

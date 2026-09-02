@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react';
 
 const AXES = [
   { key: 'activity', label: 'Activity' },
@@ -7,13 +7,13 @@ const AXES = [
   { key: 'documentation', label: 'Documentation' },
   { key: 'ciCd', label: 'CI/CD' },
   { key: 'popularity', label: 'Popularity' },
-]
+];
 
-const VIEWBOX_SIZE = 420
-const CENTER = VIEWBOX_SIZE / 2
-const OUTER_RADIUS = 145
+const VIEWBOX_SIZE = 420;
+const CENTER = VIEWBOX_SIZE / 2;
+const OUTER_RADIUS = 145;
 // The rings just help give the chart some scale.
-const INNER_STEPS = [0.2, 0.4, 0.6, 0.8, 1]
+const INNER_STEPS = [0.2, 0.4, 0.6, 0.8, 1];
 
 const DEFAULT_REPOS = [
   {
@@ -40,20 +40,20 @@ const DEFAULT_REPOS = [
       popularity: 74,
     },
   },
-]
+];
 
 function clampScore(value) {
-  const parsed = Number(value)
+  const parsed = Number(value);
 
   if (!Number.isFinite(parsed)) {
-    return 0
+    return 0;
   }
 
   if (parsed <= 1) {
-    return Math.min(Math.max(parsed * 100, 0), 100)
+    return Math.min(Math.max(parsed * 100, 0), 100);
   }
 
-  return Math.min(Math.max(parsed, 0), 100)
+  return Math.min(Math.max(parsed, 0), 100);
 }
 
 function getPoint(angle, radius) {
@@ -61,77 +61,77 @@ function getPoint(angle, radius) {
   return {
     x: CENTER + Math.cos(angle) * radius,
     y: CENTER - Math.sin(angle) * radius,
-  }
+  };
 }
 
 function buildPolygonPoints(values) {
   // One point per axis, based on the repo's scores.
   return AXES.map((axis, index) => {
-    const angle = Math.PI / 2 - (index * (Math.PI * 2)) / AXES.length
-    const radius = (values[index] / 100) * OUTER_RADIUS
-    return getPoint(angle, radius)
-  })
+    const angle = Math.PI / 2 - (index * (Math.PI * 2)) / AXES.length;
+    const radius = (values[index] / 100) * OUTER_RADIUS;
+    return getPoint(angle, radius);
+  });
 }
 
 function pointsToString(points) {
-  return points.map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(' ')
+  return points.map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(' ');
 }
 
 function polygonPath(radius) {
   const points = AXES.map((axis, index) => {
-    const angle = Math.PI / 2 - (index * (Math.PI * 2)) / AXES.length
-    return getPoint(angle, radius)
-  })
+    const angle = Math.PI / 2 - (index * (Math.PI * 2)) / AXES.length;
+    return getPoint(angle, radius);
+  });
 
-  return pointsToString(points)
+  return pointsToString(points);
 }
 
 function formatMetricValue(value) {
-  return `${value.toFixed(1)} / 100`
+  return `${value.toFixed(1)} / 100`;
 }
 
 function normalizeRepo(repo, index) {
-  const fallback = DEFAULT_REPOS[index] || DEFAULT_REPOS[0]
-  const source = repo || fallback
+  const fallback = DEFAULT_REPOS[index] || DEFAULT_REPOS[0];
+  const source = repo || fallback;
 
   return {
     name: source.name || fallback.name,
     color: source.color || fallback.color,
     values: AXES.map((axis) => clampScore(source.values?.[axis.key] ?? 0)),
-  }
+  };
 }
 
 export default function RepoRadarChart({ repos = DEFAULT_REPOS, className = '' }) {
-  const [hoveredPoint, setHoveredPoint] = useState(null)
+  const [hoveredPoint, setHoveredPoint] = useState(null);
 
   // to keep the chart steady even if the caller only passes one repo.
   const normalizedRepos = useMemo(
     () => [normalizeRepo(repos[0], 0), normalizeRepo(repos[1], 1)],
-    [repos],
-  )
+    [repos]
+  );
 
   const gridPolygons = useMemo(
     () => INNER_STEPS.map((step) => polygonPath(OUTER_RADIUS * step)),
-    [],
-  )
+    []
+  );
 
   const repoPolygons = useMemo(
     () => normalizedRepos.map((repo) => buildPolygonPoints(repo.values)),
-    [normalizedRepos],
-  )
+    [normalizedRepos]
+  );
 
   const axisPoints = useMemo(() => {
     return AXES.map((axis, index) => {
-      const angle = Math.PI / 2 - (index * (Math.PI * 2)) / AXES.length
-      const point = getPoint(angle, OUTER_RADIUS + 20)
+      const angle = Math.PI / 2 - (index * (Math.PI * 2)) / AXES.length;
+      const point = getPoint(angle, OUTER_RADIUS + 20);
 
       return {
         ...axis,
         ...point,
         angle,
-      }
-    })
-  }, [])
+      };
+    });
+  }, []);
 
   return (
     <div
@@ -151,7 +151,10 @@ export default function RepoRadarChart({ repos = DEFAULT_REPOS, className = '' }
 
         <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           {normalizedRepos.map((repo) => (
-            <div key={repo.name} className="flex items-center gap-2 rounded-full border border-border/70 bg-background/70 px-2.5 py-1">
+            <div
+              key={repo.name}
+              className="flex items-center gap-2 rounded-full border border-border/70 bg-background/70 px-2.5 py-1"
+            >
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: repo.color }} />
               <span>{repo.name}</span>
             </div>
@@ -169,7 +172,14 @@ export default function RepoRadarChart({ repos = DEFAULT_REPOS, className = '' }
           <defs>
             {/* Soft fills make the overlap easier to read. */}
             {normalizedRepos.map((repo) => (
-              <linearGradient key={repo.name} id={`repo-radar-fill-${repo.name.replace(/\s+/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
+              <linearGradient
+                key={repo.name}
+                id={`repo-radar-fill-${repo.name.replace(/\s+/g, '-').toLowerCase()}`}
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
                 <stop offset="0%" stopColor={repo.color} stopOpacity="0.36" />
                 <stop offset="100%" stopColor={repo.color} stopOpacity="0.08" />
               </linearGradient>
@@ -197,8 +207,8 @@ export default function RepoRadarChart({ repos = DEFAULT_REPOS, className = '' }
             ))}
 
             {AXES.map((axis, index) => {
-              const angle = Math.PI / 2 - (index * (Math.PI * 2)) / AXES.length
-              const endpoint = getPoint(angle, OUTER_RADIUS)
+              const angle = Math.PI / 2 - (index * (Math.PI * 2)) / AXES.length;
+              const endpoint = getPoint(angle, OUTER_RADIUS);
 
               return (
                 <g key={axis.key}>
@@ -213,19 +223,25 @@ export default function RepoRadarChart({ repos = DEFAULT_REPOS, className = '' }
                   <text
                     x={axisPoints[index].x}
                     y={axisPoints[index].y}
-                    textAnchor={axisPoints[index].x > CENTER + 5 ? 'start' : axisPoints[index].x < CENTER - 5 ? 'end' : 'middle'}
+                    textAnchor={
+                      axisPoints[index].x > CENTER + 5
+                        ? 'start'
+                        : axisPoints[index].x < CENTER - 5
+                          ? 'end'
+                          : 'middle'
+                    }
                     dominantBaseline="middle"
                     className="fill-muted-foreground text-[11px] font-medium"
                   >
                     {axis.label}
                   </text>
                 </g>
-              )
+              );
             })}
 
             {normalizedRepos.map((repo, repoIndex) => {
-              const polygon = repoPolygons[repoIndex]
-              const gradientId = `repo-radar-fill-${repo.name.replace(/\s+/g, '-').toLowerCase()}`
+              const polygon = repoPolygons[repoIndex];
+              const gradientId = `repo-radar-fill-${repo.name.replace(/\s+/g, '-').toLowerCase()}`;
 
               return (
                 <g key={repo.name}>
@@ -240,15 +256,19 @@ export default function RepoRadarChart({ repos = DEFAULT_REPOS, className = '' }
                   />
 
                   {polygon.map((point, pointIndex) => {
-                    const axis = AXES[pointIndex]
-                    const value = repo.values[pointIndex]
+                    const axis = AXES[pointIndex];
+                    const value = repo.values[pointIndex];
 
                     return (
                       <circle
                         key={`${repo.name}-${axis.key}`}
                         cx={point.x}
                         cy={point.y}
-                        r={hoveredPoint?.repoName === repo.name && hoveredPoint?.axisKey === axis.key ? 6 : 4}
+                        r={
+                          hoveredPoint?.repoName === repo.name && hoveredPoint?.axisKey === axis.key
+                            ? 6
+                            : 4
+                        }
                         fill={repo.color}
                         stroke="var(--background)"
                         strokeWidth="2"
@@ -280,10 +300,10 @@ export default function RepoRadarChart({ repos = DEFAULT_REPOS, className = '' }
                         onMouseLeave={() => setHoveredPoint(null)}
                         onBlur={() => setHoveredPoint(null)}
                       />
-                    )
+                    );
                   })}
                 </g>
-              )
+              );
             })}
           </g>
         </svg>
@@ -297,7 +317,10 @@ export default function RepoRadarChart({ repos = DEFAULT_REPOS, className = '' }
             }}
           >
             <div className="flex items-center gap-2 font-semibold">
-              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: hoveredPoint.repoColor }} />
+              <span
+                className="h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: hoveredPoint.repoColor }}
+              />
               <span>{hoveredPoint.repoName}</span>
             </div>
             <div className="mt-1 text-muted-foreground">
@@ -307,5 +330,5 @@ export default function RepoRadarChart({ repos = DEFAULT_REPOS, className = '' }
         )}
       </div>
     </div>
-  )
+  );
 }

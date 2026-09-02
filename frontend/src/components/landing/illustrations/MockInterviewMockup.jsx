@@ -19,26 +19,26 @@ export default function MockInterviewMockup() {
               <motion.div
                 key={i}
                 animate={{
-                  height: ["20%", "80%", "30%", "100%", "40%", "20%"]
+                  height: ['20%', '80%', '30%', '100%', '40%', '20%'],
                 }}
                 transition={{
                   duration: 1.5,
                   repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: i * 0.1
+                  ease: 'easeInOut',
+                  delay: i * 0.1,
                 }}
                 className="w-2 bg-primary rounded-full"
-                style={{ height: "20%" }}
+                style={{ height: '20%' }}
               />
             ))}
           </div>
         </div>
 
         {/* AI Avatar / Status */}
-        <motion.div 
+        <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, type: "spring" }}
+          transition={{ duration: 0.5, type: 'spring' }}
           className="relative z-10 flex flex-col items-center gap-6"
         >
           {/* Avatar Ring */}
@@ -48,7 +48,15 @@ export default function MockInterviewMockup() {
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20" />
               <div className="h-12 w-12 text-primary">
                 {/* SVG Mic Icon */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
                   <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
                   <line x1="12" x2="12" y1="19" y2="22" />
@@ -68,7 +76,7 @@ export default function MockInterviewMockup() {
         </motion.div>
 
         {/* Control Bar */}
-        <motion.div 
+        <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}

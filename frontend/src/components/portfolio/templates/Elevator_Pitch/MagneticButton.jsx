@@ -18,7 +18,10 @@ export const MagneticButton = ({ children, href }) => {
     y.set(middleY * 0.3);
   };
 
-  const reset = () => { x.set(0); y.set(0); };
+  const reset = () => {
+    x.set(0);
+    y.set(0);
+  };
 
   return (
     <motion.a
@@ -28,7 +31,7 @@ export const MagneticButton = ({ children, href }) => {
       ref={ref}
       onMouseMove={handleMouse}
       onMouseLeave={reset}
-      style={{ x: springX, y: springY, willChange: "transform" }}
+      style={{ x: springX, y: springY, willChange: 'transform' }}
       className="p-3 md:p-4 rounded-full bg-zinc-800/50 border border-zinc-700 hover:bg-zinc-700 hover:border-emerald-500/50 transition-colors text-zinc-300 hover:text-emerald-400 relative overflow-hidden group shadow-[0_0_0_rgba(16,185,129,0)] hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]"
     >
       <span className="relative z-10">{children}</span>

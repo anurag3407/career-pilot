@@ -1,6 +1,6 @@
-import { Fragment } from 'react'
-import { useResume } from '../../../context/ResumeContext'
-import Section from './Section'
+import { Fragment } from 'react';
+import { useResume } from '../../../context/ResumeContext';
+import Section from './Section';
 
 /**
  * OrderedSections — renders a template's body sections in the user-chosen
@@ -41,7 +41,7 @@ import Section from './Section'
  */
 
 // Default render order for the standard body sections (summary handled separately).
-export const KNOWN_ORDER = ['education', 'experience', 'projects', 'skills', 'certifications']
+export const KNOWN_ORDER = ['education', 'experience', 'projects', 'skills', 'certifications'];
 
 // Templates that render via <OrderedSections/> and therefore honor the user's
 // drag-and-drop section order + custom sections. Add a template's id here as it
@@ -120,31 +120,35 @@ export const ORDER_AWARE_TEMPLATE_IDS = new Set([
   'DesignerPortfolio',
   'Federal',
   'BoldGrid',
-])
+]);
 
 export function CustomSectionBlock({ section, sectionProps = {}, bodyStyle = {} }) {
-  if (!section) return null
-  const { title, kind, items = [], body } = section
+  if (!section) return null;
+  const { title, kind, items = [], body } = section;
 
-  let content = null
+  let content = null;
   if (kind === 'paragraph') {
-    content = body ? <p style={{ margin: 0, ...bodyStyle }}>{body}</p> : null
+    content = body ? <p style={{ margin: 0, ...bodyStyle }}>{body}</p> : null;
   } else if (kind === 'quotes') {
     content = (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2mm' }}>
         {items.map((q, i) => (
-          <blockquote key={i} style={{ margin: 0, fontStyle: 'italic', ...bodyStyle }}>“{q}”</blockquote>
+          <blockquote key={i} style={{ margin: 0, fontStyle: 'italic', ...bodyStyle }}>
+            “{q}”
+          </blockquote>
         ))}
       </div>
-    )
+    );
   } else if (kind === 'books') {
     content = (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1mm' }}>
         {items.map((b, i) => (
-          <div key={i} style={{ fontStyle: 'italic', ...bodyStyle }}>{b}</div>
+          <div key={i} style={{ fontStyle: 'italic', ...bodyStyle }}>
+            {b}
+          </div>
         ))}
       </div>
-    )
+    );
   } else {
     // 'list' (default)
     content = (
@@ -153,15 +157,15 @@ export function CustomSectionBlock({ section, sectionProps = {}, bodyStyle = {} 
           <li key={i}>{it}</li>
         ))}
       </ul>
-    )
+    );
   }
 
-  if (!content) return null
+  if (!content) return null;
   return (
     <Section title={title || 'Section'} {...sectionProps}>
       {content}
     </Section>
-  )
+  );
 }
 
 export default function OrderedSections({
@@ -172,49 +176,58 @@ export default function OrderedSections({
   header,
   footer,
 }) {
-  const { sectionOrder = [], customSections = [] } = useResume()
+  const { sectionOrder = [], customSections = [] } = useResume();
 
-  const emitted = new Set()
-  const out = []
+  const emitted = new Set();
+  const out = [];
 
   const pushNode = (key) => {
-    if (key === 'summary' || emitted.has(key)) return
-    const node = nodes[key]
-    if (!node) { emitted.add(key); return }
-    emitted.add(key)
-    out.push(<Fragment key={key}>{node}</Fragment>)
-  }
+    if (key === 'summary' || emitted.has(key)) return;
+    const node = nodes[key];
+    if (!node) {
+      emitted.add(key);
+      return;
+    }
+    emitted.add(key);
+    out.push(<Fragment key={key}>{node}</Fragment>);
+  };
 
-  const customById = new Map(customSections.map((s) => [s.id, s]))
+  const customById = new Map(customSections.map((s) => [s.id, s]));
   const pushCustom = (section) => {
-    if (!section || emitted.has(section.id)) return
-    emitted.add(section.id)
-    const block = renderCustomSection
-      ? renderCustomSection(section, sectionProps, customBodyStyle)
-      : <CustomSectionBlock section={section} sectionProps={sectionProps} bodyStyle={customBodyStyle} />
-    if (block) out.push(<Fragment key={section.id}>{block}</Fragment>)
-  }
+    if (!section || emitted.has(section.id)) return;
+    emitted.add(section.id);
+    const block = renderCustomSection ? (
+      renderCustomSection(section, sectionProps, customBodyStyle)
+    ) : (
+      <CustomSectionBlock
+        section={section}
+        sectionProps={sectionProps}
+        bodyStyle={customBodyStyle}
+      />
+    );
+    if (block) out.push(<Fragment key={section.id}>{block}</Fragment>);
+  };
 
   // 1. Optional fixed header slot (decorative — photo band, KPI strip, cover)
-  if (header) out.push(<Fragment key="__header">{header}</Fragment>)
+  if (header) out.push(<Fragment key="__header">{header}</Fragment>);
 
   // 2. Fixed lead: summary
-  if (nodes.summary) out.push(<Fragment key="summary">{nodes.summary}</Fragment>)
+  if (nodes.summary) out.push(<Fragment key="summary">{nodes.summary}</Fragment>);
 
   // 3. User-chosen order (known nodes + custom ids)
   for (const key of sectionOrder) {
-    if (Object.prototype.hasOwnProperty.call(nodes, key)) pushNode(key)
-    else if (customById.has(key)) pushCustom(customById.get(key))
+    if (Object.prototype.hasOwnProperty.call(nodes, key)) pushNode(key);
+    else if (customById.has(key)) pushCustom(customById.get(key));
   }
 
   // 4. Any known nodes not yet emitted, in default sequence
-  for (const key of KNOWN_ORDER) pushNode(key)
+  for (const key of KNOWN_ORDER) pushNode(key);
 
   // 5. Any remaining custom sections (already order-sorted by normalization)
-  for (const section of customSections) pushCustom(section)
+  for (const section of customSections) pushCustom(section);
 
   // 6. Optional fixed footer slot (callout strip — engagements, board roles…)
-  if (footer) out.push(<Fragment key="__footer">{footer}</Fragment>)
+  if (footer) out.push(<Fragment key="__footer">{footer}</Fragment>);
 
-  return <>{out}</>
+  return <>{out}</>;
 }

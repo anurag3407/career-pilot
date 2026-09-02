@@ -8,10 +8,14 @@ export default function Contact({ personal, socials }) {
 
   const getIcon = (name) => {
     switch (name.toLowerCase()) {
-      case 'github': return <Github size={24} />;
-      case 'linkedin': return <Linkedin size={24} />;
-      case 'twitter': return <Twitter size={24} />;
-      default: return <ExternalLink size={24} />;
+      case 'github':
+        return <Github size={24} />;
+      case 'linkedin':
+        return <Linkedin size={24} />;
+      case 'twitter':
+        return <Twitter size={24} />;
+      default:
+        return <ExternalLink size={24} />;
     }
   };
 
@@ -26,16 +30,19 @@ export default function Contact({ personal, socials }) {
         </div>
 
         <div className="relative z-10 w-full max-w-2xl mx-auto space-y-8">
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-widest manga-title text-white" style={{ textShadow: '4px 4px 0px #ff0000' }}>
+          <h2
+            className="text-5xl md:text-7xl font-black uppercase tracking-widest manga-title text-white"
+            style={{ textShadow: '4px 4px 0px #ff0000' }}
+          >
             CONTACT
           </h2>
-          
+
           <p className="text-xl md:text-2xl font-bold bg-white text-black p-4 border-4 border-white transform rotate-1 inline-block">
             READY FOR THE NEXT ARC?
           </p>
 
           <div className="flex flex-col items-center space-y-4">
-            <a 
+            <a
               href={`mailto:${personal.email}`}
               className="group relative inline-flex items-center justify-center px-8 py-4 text-2xl font-black uppercase tracking-widest text-black bg-white border-4 border-white overflow-hidden transition-transform hover:scale-105"
             >
@@ -65,14 +72,14 @@ export default function Contact({ personal, socials }) {
 
           <div className="mt-12 text-sm font-bold uppercase tracking-widest text-gray-400">
             <p>Episode 1 - End.</p>
-            <p className="mt-2">© {new Date().getFullYear()} {personal.name}</p>
+            <p className="mt-2">
+              © {new Date().getFullYear()} {personal.name}
+            </p>
           </div>
         </div>
-        
+
         {/* Manga corner decoration */}
-        <div className="absolute bottom-4 right-4 text-6xl font-black opacity-20">
-          END
-        </div>
+        <div className="absolute bottom-4 right-4 text-6xl font-black opacity-20">END</div>
       </div>
     </section>
   );

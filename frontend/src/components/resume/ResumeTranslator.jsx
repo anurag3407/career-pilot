@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { Languages, Loader2, Copy, Check, Download } from 'lucide-react'
-import toast from 'react-hot-toast'
-import { enhanceApi } from '../../services/api'
+import { useState } from 'react';
+import { Languages, Loader2, Copy, Check, Download } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { enhanceApi } from '../../services/api';
 
 /**
  * ResumeTranslator — translates the current resume into a target language.
@@ -14,99 +14,101 @@ import { enhanceApi } from '../../services/api'
  *   onTranslated(text) — optional callback when the user accepts the translation
  */
 const LANGUAGES = [
-  { code: 'es',    label: 'Spanish' },
-  { code: 'fr',    label: 'French' },
-  { code: 'de',    label: 'German' },
-  { code: 'it',    label: 'Italian' },
-  { code: 'pt',    label: 'Portuguese' },
-  { code: 'zh',    label: 'Mandarin Chinese' },
-  { code: 'ja',    label: 'Japanese' },
-  { code: 'ko',    label: 'Korean' },
-  { code: 'hi',    label: 'Hindi' },
-  { code: 'ar',    label: 'Arabic' },
-  { code: 'ru',    label: 'Russian' },
-  { code: 'nl',    label: 'Dutch' },
-  { code: 'pl',    label: 'Polish' },
-  { code: 'tr',    label: 'Turkish' },
-  { code: 'sv',    label: 'Swedish' },
-  { code: 'da',    label: 'Danish' },
-  { code: 'no',    label: 'Norwegian' },
-  { code: 'fi',    label: 'Finnish' },
-  { code: 'el',    label: 'Greek' },
-  { code: 'cs',    label: 'Czech' },
-  { code: 'ro',    label: 'Romanian' },
-  { code: 'hu',    label: 'Hungarian' },
-  { code: 'th',    label: 'Thai' },
-  { code: 'vi',    label: 'Vietnamese' },
-  { code: 'id',    label: 'Indonesian' },
-  { code: 'ms',    label: 'Malay' },
-  { code: 'tl',    label: 'Filipino' },
-  { code: 'uk',    label: 'Ukrainian' },
-  { code: 'he',    label: 'Hebrew' },
-  { code: 'bn',    label: 'Bengali' },
-]
+  { code: 'es', label: 'Spanish' },
+  { code: 'fr', label: 'French' },
+  { code: 'de', label: 'German' },
+  { code: 'it', label: 'Italian' },
+  { code: 'pt', label: 'Portuguese' },
+  { code: 'zh', label: 'Mandarin Chinese' },
+  { code: 'ja', label: 'Japanese' },
+  { code: 'ko', label: 'Korean' },
+  { code: 'hi', label: 'Hindi' },
+  { code: 'ar', label: 'Arabic' },
+  { code: 'ru', label: 'Russian' },
+  { code: 'nl', label: 'Dutch' },
+  { code: 'pl', label: 'Polish' },
+  { code: 'tr', label: 'Turkish' },
+  { code: 'sv', label: 'Swedish' },
+  { code: 'da', label: 'Danish' },
+  { code: 'no', label: 'Norwegian' },
+  { code: 'fi', label: 'Finnish' },
+  { code: 'el', label: 'Greek' },
+  { code: 'cs', label: 'Czech' },
+  { code: 'ro', label: 'Romanian' },
+  { code: 'hu', label: 'Hungarian' },
+  { code: 'th', label: 'Thai' },
+  { code: 'vi', label: 'Vietnamese' },
+  { code: 'id', label: 'Indonesian' },
+  { code: 'ms', label: 'Malay' },
+  { code: 'tl', label: 'Filipino' },
+  { code: 'uk', label: 'Ukrainian' },
+  { code: 'he', label: 'Hebrew' },
+  { code: 'bn', label: 'Bengali' },
+];
 
 export default function ResumeTranslator({ resumeText, onTranslated }) {
-  const [open, setOpen] = useState(false)
-  const [target, setTarget] = useState('es')
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState(null) // { translatedText, targetLanguage }
-  const [copied, setCopied] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [target, setTarget] = useState('es');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null); // { translatedText, targetLanguage }
+  const [copied, setCopied] = useState(false);
 
   const handleTranslate = async () => {
     if (!resumeText || !resumeText.trim()) {
-      toast.error('No resume text to translate')
-      return
+      toast.error('No resume text to translate');
+      return;
     }
-    setLoading(true)
-    setResult(null)
-    const toastId = toast.loading(`Translating to ${LANGUAGES.find(l => l.code === target)?.label || target}…`)
+    setLoading(true);
+    setResult(null);
+    const toastId = toast.loading(
+      `Translating to ${LANGUAGES.find((l) => l.code === target)?.label || target}…`
+    );
     try {
-      const res = await enhanceApi.translateResume(resumeText, target)
-      const text = res?.data?.translatedText || res?.translatedText
+      const res = await enhanceApi.translateResume(resumeText, target);
+      const text = res?.data?.translatedText || res?.translatedText;
       if (!text) {
-        toast.error('Empty response', { id: toastId })
-        return
+        toast.error('Empty response', { id: toastId });
+        return;
       }
-      setResult({ translatedText: text, targetLanguage: target })
-      toast.success('Translation ready', { id: toastId })
+      setResult({ translatedText: text, targetLanguage: target });
+      toast.success('Translation ready', { id: toastId });
     } catch (err) {
-      toast.error(err.message || 'Translation failed', { id: toastId })
+      toast.error(err.message || 'Translation failed', { id: toastId });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleCopy = async () => {
-    if (!result) return
+    if (!result) return;
     try {
-      await navigator.clipboard.writeText(result.translatedText)
-      setCopied(true)
-      toast.success('Copied to clipboard')
-      setTimeout(() => setCopied(false), 1500)
+      await navigator.clipboard.writeText(result.translatedText);
+      setCopied(true);
+      toast.success('Copied to clipboard');
+      setTimeout(() => setCopied(false), 1500);
     } catch {
-      toast.error('Copy failed')
+      toast.error('Copy failed');
     }
-  }
+  };
 
   const handleDownload = () => {
-    if (!result) return
-    const blob = new Blob([result.translatedText], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `resume_${result.targetLanguage}.txt`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
-  }
+    if (!result) return;
+    const blob = new Blob([result.translatedText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `resume_${result.targetLanguage}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="rounded-lg border border-border bg-card p-3">
       <button
         type="button"
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-sky-500"
       >
         <Languages className="w-4 h-4" />
@@ -118,11 +120,13 @@ export default function ResumeTranslator({ resumeText, onTranslated }) {
           <div className="flex flex-wrap items-center gap-2">
             <select
               value={target}
-              onChange={e => setTarget(e.target.value)}
+              onChange={(e) => setTarget(e.target.value)}
               className="px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/50"
             >
-              {LANGUAGES.map(l => (
-                <option key={l.code} value={l.label}>{l.label}</option>
+              {LANGUAGES.map((l) => (
+                <option key={l.code} value={l.label}>
+                  {l.label}
+                </option>
               ))}
             </select>
             <button
@@ -183,5 +187,5 @@ export default function ResumeTranslator({ resumeText, onTranslated }) {
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,8 +1,16 @@
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowLeft, ChevronRight } from 'lucide-react'
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 
-export default function HubLayout({ icon: Icon, title, description, color = 'primary', breadcrumb, children, stats }) {
+export default function HubLayout({
+  icon: Icon,
+  title,
+  description,
+  color = 'primary',
+  breadcrumb,
+  children,
+  stats,
+}) {
   return (
     <div className="min-h-screen bg-background">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -31,11 +39,17 @@ export default function HubLayout({ icon: Icon, title, description, color = 'pri
           className="mb-10 p-8 glass rounded-3xl glow border-border/50 relative overflow-hidden"
         >
           {/* Decorative gradient blob */}
-          <div className={`absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-${color}/10 rounded-full blur-3xl animate-pulse pointer-events-none`} />
-          <div className={`absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-${color}/5 rounded-full blur-2xl pointer-events-none`} />
+          <div
+            className={`absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-${color}/10 rounded-full blur-3xl animate-pulse pointer-events-none`}
+          />
+          <div
+            className={`absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-${color}/5 rounded-full blur-2xl pointer-events-none`}
+          />
 
           <div className="relative flex items-start gap-5">
-            <div className={`w-16 h-16 rounded-2xl bg-${color}/15 border border-${color}/20 flex items-center justify-center shrink-0`}>
+            <div
+              className={`w-16 h-16 rounded-2xl bg-${color}/15 border border-${color}/20 flex items-center justify-center shrink-0`}
+            >
               <Icon className={`w-8 h-8 text-${color}`} />
             </div>
             <div className="flex-1 min-w-0">
@@ -53,7 +67,9 @@ export default function HubLayout({ icon: Icon, title, description, color = 'pri
             <div className="relative flex flex-wrap gap-6 mt-6 pt-6 border-t border-border/50">
               {stats.map((stat, idx) => (
                 <div key={idx} className="flex items-center gap-2.5">
-                  <div className={`w-9 h-9 rounded-lg ${stat.bg || 'bg-muted'} flex items-center justify-center`}>
+                  <div
+                    className={`w-9 h-9 rounded-lg ${stat.bg || 'bg-muted'} flex items-center justify-center`}
+                  >
                     <stat.icon className={`w-4.5 h-4.5 ${stat.color || 'text-muted-foreground'}`} />
                   </div>
                   <div>
@@ -76,11 +92,9 @@ export default function HubLayout({ icon: Icon, title, description, color = 'pri
             <span className="w-1.5 h-6 rounded-full bg-primary" />
             Tools
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {children}
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">{children}</div>
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

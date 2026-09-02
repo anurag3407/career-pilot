@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function BoardingPass() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Boarding Pass Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Aviation boarding pass layout where each project is a flight. Departure = tech stack, Arrival = live site. Boarding pass tear-off stub design with barcodes.
+            Aviation boarding pass layout where each project is a flight. Departure = tech stack,
+            Arrival = live site. Boarding pass tear-off stub design with barcodes.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

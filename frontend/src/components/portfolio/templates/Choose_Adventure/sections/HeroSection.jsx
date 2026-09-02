@@ -20,7 +20,11 @@ export default function HeroSection({ data, onBegin }) {
               left: `${Math.random() * 100}%`,
             }}
             animate={{ opacity: [0.2, 0.8, 0.2], scale: [1, 1.5, 1] }}
-            transition={{ duration: 2 + Math.random() * 3, repeat: Infinity, delay: Math.random() * 2 }}
+            transition={{
+              duration: 2 + Math.random() * 3,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
           />
         ))}
       </div>
@@ -43,7 +47,12 @@ export default function HeroSection({ data, onBegin }) {
             className="w-full h-full object-cover"
             onError={(e) => {
               e.target.style.display = 'none';
-              e.target.parentElement.classList.add('bg-violet-800', 'flex', 'items-center', 'justify-center');
+              e.target.parentElement.classList.add(
+                'bg-violet-800',
+                'flex',
+                'items-center',
+                'justify-center'
+              );
             }}
           />
         </motion.div>
@@ -96,7 +105,10 @@ export default function HeroSection({ data, onBegin }) {
             { value: `${stats.projectsCompleted}+`, label: 'Projects' },
             { value: `${stats.happyClients}+`, label: 'Clients' },
           ].map((s) => (
-            <div key={s.label} className="bg-violet-950/50 border border-violet-800/40 rounded-xl py-3">
+            <div
+              key={s.label}
+              className="bg-violet-950/50 border border-violet-800/40 rounded-xl py-3"
+            >
               <p className="text-2xl font-bold text-white">{s.value}</p>
               <p className="text-xs text-violet-400 mt-0.5">{s.label}</p>
             </div>

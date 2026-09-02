@@ -22,10 +22,16 @@ const AboutSection = () => {
           <div className="relative p-4 border border-zinc-200 aspect-square flex items-center justify-center">
             <WireframeCorners />
             <div className="absolute top-2 left-2 text-[10px] text-zinc-400 font-mono">IMG_SRC</div>
-            <div className="absolute bottom-2 right-2 text-[10px] text-zinc-400 font-mono">1:1 RATIO</div>
+            <div className="absolute bottom-2 right-2 text-[10px] text-zinc-400 font-mono">
+              1:1 RATIO
+            </div>
 
             <div className="w-full h-full border border-zinc-100 p-2">
-              <img src={avatar} alt="Avatar" className="w-full h-full object-cover grayscale opacity-90 hover:opacity-100 hover:grayscale-0 transition-all duration-700" />
+              <img
+                src={avatar}
+                alt="Avatar"
+                className="w-full h-full object-cover grayscale opacity-90 hover:opacity-100 hover:grayscale-0 transition-all duration-700"
+              />
             </div>
           </div>
         </FadeIn>

@@ -13,31 +13,31 @@ export const pwaOptions = {
         src: 'pwa-192x192.jpg',
         sizes: '192x192',
         type: 'image/jpeg',
-        purpose: 'any'
+        purpose: 'any',
       },
       {
         src: 'pwa-512x512.jpg',
         sizes: '512x512',
         type: 'image/jpeg',
-        purpose: 'any'
+        purpose: 'any',
       },
       {
         src: 'pwa-192x192.jpg',
         sizes: '192x192',
         type: 'image/jpeg',
-        purpose: 'maskable'
+        purpose: 'maskable',
       },
       {
         src: 'pwa-512x512.jpg',
         sizes: '512x512',
         type: 'image/jpeg',
-        purpose: 'maskable'
-      }
-    ]
+        purpose: 'maskable',
+      },
+    ],
   },
   workbox: {
     globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,json}'],
     globIgnores: ['templates/**/*', 'template-previews/**/*'],
-    maximumFileSizeToCacheInBytes: 5000000
-  }
-}
+    maximumFileSizeToCacheInBytes: 5000000,
+  },
+};

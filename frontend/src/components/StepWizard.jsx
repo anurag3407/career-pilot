@@ -25,7 +25,8 @@ export default function StepWizard({ steps = [], currentStep = 0, onStepChange }
                   className={cn(
                     'w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 border-2 cursor-pointer',
                     isCompleted && 'bg-green-500 border-green-500 text-white',
-                    isCurrent && 'bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/30',
+                    isCurrent &&
+                      'bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/30',
                     !isCompleted && !isCurrent && 'bg-card border-border text-muted-foreground'
                   )}
                 >
@@ -45,10 +46,12 @@ export default function StepWizard({ steps = [], currentStep = 0, onStepChange }
                 </motion.button>
 
                 <div className="text-center px-1 max-w-[80px]">
-                  <p className={cn(
-                    'text-xs font-semibold leading-tight',
-                    isCurrent ? 'text-foreground' : 'text-muted-foreground'
-                  )}>
+                  <p
+                    className={cn(
+                      'text-xs font-semibold leading-tight',
+                      isCurrent ? 'text-foreground' : 'text-muted-foreground'
+                    )}
+                  >
                     {step.title}
                   </p>
                   {step.description && (
@@ -77,33 +80,33 @@ export default function StepWizard({ steps = [], currentStep = 0, onStepChange }
 
       {/* Navigation */}
       <div className="flex justify-between">
-          <button
-            onClick={() => onStepChange?.(currentStep - 1)}
-            disabled={isFirst}
-            className={cn(
-              'inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black tracking-wide transition-all duration-300',
-              isFirst
-                ? 'opacity-40 cursor-not-allowed bg-card border-2 border-border text-muted-foreground'
-                : 'bg-card border-2 border-border text-foreground hover:bg-muted hover:border-primary/50 cursor-pointer'
-            )}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Previous
-          </button>
+        <button
+          onClick={() => onStepChange?.(currentStep - 1)}
+          disabled={isFirst}
+          className={cn(
+            'inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black tracking-wide transition-all duration-300',
+            isFirst
+              ? 'opacity-40 cursor-not-allowed bg-card border-2 border-border text-muted-foreground'
+              : 'bg-card border-2 border-border text-foreground hover:bg-muted hover:border-primary/50 cursor-pointer'
+          )}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Previous
+        </button>
 
-          <button
-            onClick={() => onStepChange?.(currentStep + 1)}
-            disabled={isLast}
-            className={cn(
-              'inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black tracking-wide transition-all duration-300',
-              isLast
-                ? 'opacity-40 cursor-not-allowed bg-primary text-primary-foreground'
-                : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 cursor-pointer'
-            )}
-          >
-            Next
-            <ChevronRight className="w-4 h-4" />
-          </button>
+        <button
+          onClick={() => onStepChange?.(currentStep + 1)}
+          disabled={isLast}
+          className={cn(
+            'inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black tracking-wide transition-all duration-300',
+            isLast
+              ? 'opacity-40 cursor-not-allowed bg-primary text-primary-foreground'
+              : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 cursor-pointer'
+          )}
+        >
+          Next
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );

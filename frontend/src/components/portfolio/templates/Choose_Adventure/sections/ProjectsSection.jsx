@@ -116,7 +116,8 @@ export default function ProjectsSection({ data, onChoice }) {
           </div>
 
           <div className="flex items-center justify-between px-6 pb-5">
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setActiveIndex((p) => Math.max(0, p - 1))}
               disabled={activeIndex === 0}
               className="flex items-center gap-1 text-xs text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -126,7 +127,8 @@ export default function ProjectsSection({ data, onChoice }) {
             </button>
             <div className="flex gap-1.5">
               {projects.map((p, i) => (
-                <button type="button"
+                <button
+                  type="button"
                   key={i}
                   onClick={() => setActiveIndex(i)}
                   aria-label={`View project: ${p.title}`}
@@ -135,7 +137,8 @@ export default function ProjectsSection({ data, onChoice }) {
                 />
               ))}
             </div>
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setActiveIndex((p) => Math.min(projects.length - 1, p + 1))}
               disabled={activeIndex === projects.length - 1}
               className="flex items-center gap-1 text-xs text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -156,7 +159,10 @@ export default function ProjectsSection({ data, onChoice }) {
               onClick={() => onChoice(choice.next)}
               className="w-full flex items-center gap-3 text-left px-5 py-4 rounded-xl border border-violet-700/40 hover:border-violet-400/70 bg-violet-950/30 hover:bg-violet-900/40 text-violet-200 hover:text-white transition-all duration-200 group"
             >
-              <ChevronRight size={14} className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0" />
+              <ChevronRight
+                size={14}
+                className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0"
+              />
               <span className="text-sm">{choice.label}</span>
             </motion.button>
           ))}

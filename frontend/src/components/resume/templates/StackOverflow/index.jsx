@@ -1,19 +1,19 @@
-import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
-import ExperienceRow from '../../shared/ExperienceRow'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import Section from '../../shared/Section';
+import ExperienceRow from '../../shared/ExperienceRow';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * StackOverflow — reputation-driven engineer template. Score chips and a
  * tag-cloud skills section. Two-column.
  */
 export default function StackOverflow() {
-  const { personal, experience, education, projects, skills, certifications } = useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   // Synthetic reputation score (gold/silver/bronze badges)
-  const goldCount = Math.min(skills.length, 4)
-  const silverCount = Math.min(skills.length - 4, 8)
-  const bronzeCount = Math.max(0, skills.length - 12)
+  const goldCount = Math.min(skills.length, 4);
+  const silverCount = Math.min(skills.length - 4, 8);
+  const bronzeCount = Math.max(0, skills.length - 12);
 
   const nodes = {
     summary: personal.summary ? (
@@ -22,42 +22,53 @@ export default function StackOverflow() {
       </Section>
     ) : null,
 
-    experience: experience.length > 0 ? (
-      <Section title="Developer Story" accent="#0074cc" uppercase={false}>
-        {experience.map((e, i) => (
-          <ExperienceRow
-            key={i}
-            exp={e}
-            roleColor="#0c0d0e"
-            companyColor="#0074cc"
-            periodColor="#6a737c"
-            bulletColor="#232629"
-            fontSize="10pt"
-          />
-        ))}
-      </Section>
-    ) : null,
+    experience:
+      experience.length > 0 ? (
+        <Section title="Developer Story" accent="#0074cc" uppercase={false}>
+          {experience.map((e, i) => (
+            <ExperienceRow
+              key={i}
+              exp={e}
+              roleColor="#0c0d0e"
+              companyColor="#0074cc"
+              periodColor="#6a737c"
+              bulletColor="#232629"
+              fontSize="10pt"
+            />
+          ))}
+        </Section>
+      ) : null,
 
-    projects: projects.length > 0 ? (
-      <Section title="Featured Projects" accent="#0074cc" uppercase={false}>
-        {projects.map((p, i) => (
-          <div key={i} style={{ marginBottom: '3mm' }}>
-            <strong>{p.title}</strong>
-            {p.description && <div style={{ color: '#232629' }}>{p.description}</div>}
-            {p.techStack.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm', marginTop: '1mm' }}>
-                {p.techStack.map((t) => (
-                  <span key={t} style={{ fontSize: '8pt', padding: '0.4mm 1.5mm', background: '#e1ecf4', color: '#39739d', borderRadius: 2 }}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </Section>
-    ) : null,
-  }
+    projects:
+      projects.length > 0 ? (
+        <Section title="Featured Projects" accent="#0074cc" uppercase={false}>
+          {projects.map((p, i) => (
+            <div key={i} style={{ marginBottom: '3mm' }}>
+              <strong>{p.title}</strong>
+              {p.description && <div style={{ color: '#232629' }}>{p.description}</div>}
+              {p.techStack.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm', marginTop: '1mm' }}>
+                  {p.techStack.map((t) => (
+                    <span
+                      key={t}
+                      style={{
+                        fontSize: '8pt',
+                        padding: '0.4mm 1.5mm',
+                        background: '#e1ecf4',
+                        color: '#39739d',
+                        borderRadius: 2,
+                      }}
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </Section>
+      ) : null,
+  };
 
   return (
     <div
@@ -108,8 +119,12 @@ export default function StackOverflow() {
           {personal.email && <div>{personal.email}</div>}
           {personal.phone && <div>{personal.phone}</div>}
           {personal.location && <div>{personal.location}</div>}
-          {personal.github && <div style={{ color: '#0074cc' }}>{personal.github.replace(/^https?:\/\//, '')}</div>}
-          {personal.linkedin && <div style={{ color: '#0074cc' }}>{personal.linkedin.replace(/^https?:\/\//, '')}</div>}
+          {personal.github && (
+            <div style={{ color: '#0074cc' }}>{personal.github.replace(/^https?:\/\//, '')}</div>
+          )}
+          {personal.linkedin && (
+            <div style={{ color: '#0074cc' }}>{personal.linkedin.replace(/^https?:\/\//, '')}</div>
+          )}
         </div>
 
         <SideTitle>Reputation</SideTitle>
@@ -160,7 +175,10 @@ export default function StackOverflow() {
             {certifications.map((c, i) => (
               <div key={i} style={{ marginBottom: '2mm', fontSize: '9pt' }}>
                 <strong>{c.name}</strong>
-                <div style={{ color: '#6a737c', fontSize: '8.5pt' }}>{c.issuer}{c.year ? ` · ${c.year}` : ''}</div>
+                <div style={{ color: '#6a737c', fontSize: '8.5pt' }}>
+                  {c.issuer}
+                  {c.year ? ` · ${c.year}` : ''}
+                </div>
               </div>
             ))}
           </>
@@ -177,7 +195,7 @@ export default function StackOverflow() {
         />
       </main>
     </div>
-  )
+  );
 }
 
 function SideTitle({ children }) {
@@ -196,15 +214,25 @@ function SideTitle({ children }) {
     >
       {children}
     </h2>
-  )
+  );
 }
 
 function BadgeRow({ color, label, count }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '2mm' }}>
-      <span style={{ width: 10, height: 10, borderRadius: '50%', background: color, display: 'inline-block' }} />
+      <span
+        style={{
+          width: 10,
+          height: 10,
+          borderRadius: '50%',
+          background: color,
+          display: 'inline-block',
+        }}
+      />
       <span style={{ fontSize: '9pt', color: '#232629' }}>{label}</span>
-      <span style={{ marginLeft: 'auto', fontSize: '9pt', fontWeight: 600, color: '#6a737c' }}>{count}</span>
+      <span style={{ marginLeft: 'auto', fontSize: '9pt', fontWeight: 600, color: '#6a737c' }}>
+        {count}
+      </span>
     </div>
-  )
+  );
 }

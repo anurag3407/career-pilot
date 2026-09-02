@@ -1,49 +1,36 @@
-import React from "react";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Github,
-  Linkedin,
-  Send,
-} from "lucide-react";
+import React from 'react';
+import { Mail, Phone, MapPin, Github, Linkedin, Send } from 'lucide-react';
 
 export default function Contact({ personal, socials }) {
   return (
     <section className="relative overflow-hidden bg-[#070b14] py-20 px-6 md:px-12">
-      
       {/* Neon Background Effects */}
       <div className="absolute top-10 left-10 h-40 w-40 rounded-full bg-cyan-500/20 blur-3xl"></div>
       <div className="absolute bottom-10 right-10 h-52 w-52 rounded-full bg-pink-500/20 blur-3xl"></div>
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        
         {/* Heading */}
         <div className="mb-14 text-center">
-          <p className="mb-3 tracking-[0.3em] text-cyan-400 uppercase text-sm">
-            Contact Interface
-          </p>
+          <p className="mb-3 tracking-[0.3em] text-cyan-400 uppercase text-sm">Contact Interface</p>
 
           <h2 className="text-4xl md:text-6xl font-extrabold text-white">
             Let’s Build The
             <span className="bg-gradient-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-              {" "}
+              {' '}
               Future
             </span>
           </h2>
 
           <p className="mt-5 text-gray-400 max-w-2xl mx-auto">
-            Ready to collaborate on futuristic digital experiences, innovative
-            products, and next-gen solutions.
+            Ready to collaborate on futuristic digital experiences, innovative products, and
+            next-gen solutions.
           </p>
         </div>
 
         {/* Main Grid */}
         <div className="grid gap-10 lg:grid-cols-2">
-          
           {/* Contact Info */}
           <div className="space-y-6">
-            
             <div className="rounded-3xl border border-cyan-400/20 bg-white/5 p-6 backdrop-blur-xl shadow-[0_0_30px_rgba(0,255,255,0.08)]">
               <div className="flex items-center gap-4">
                 <div className="rounded-xl bg-cyan-500/10 p-3 text-cyan-400">
@@ -53,7 +40,7 @@ export default function Contact({ personal, socials }) {
                 <div>
                   <p className="text-sm text-gray-400">Email</p>
                   <h3 className="text-lg font-semibold text-white">
-                    {personal?.email || "cyberpunk@example.com"}
+                    {personal?.email || 'cyberpunk@example.com'}
                   </h3>
                 </div>
               </div>
@@ -68,7 +55,7 @@ export default function Contact({ personal, socials }) {
                 <div>
                   <p className="text-sm text-gray-400">Phone</p>
                   <h3 className="text-lg font-semibold text-white">
-                    {personal?.phone || "+91 98765 43210"}
+                    {personal?.phone || '+91 98765 43210'}
                   </h3>
                 </div>
               </div>
@@ -83,7 +70,7 @@ export default function Contact({ personal, socials }) {
                 <div>
                   <p className="text-sm text-gray-400">Location</p>
                   <h3 className="text-lg font-semibold text-white">
-                    {personal?.location || "Neo Tokyo, Cyber District"}
+                    {personal?.location || 'Neo Tokyo, Cyber District'}
                   </h3>
                 </div>
               </div>
@@ -117,13 +104,9 @@ export default function Contact({ personal, socials }) {
 
           {/* Contact Form */}
           <div className="rounded-3xl border border-cyan-400/20 bg-white/5 p-8 backdrop-blur-xl shadow-[0_0_40px_rgba(0,255,255,0.08)]">
-            
             <form className="space-y-6">
-              
               <div>
-                <label className="mb-2 block text-sm text-cyan-300">
-                  Your Name
-                </label>
+                <label className="mb-2 block text-sm text-cyan-300">Your Name</label>
 
                 <input
                   type="text"
@@ -133,9 +116,7 @@ export default function Contact({ personal, socials }) {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm text-pink-300">
-                  Email Address
-                </label>
+                <label className="mb-2 block text-sm text-pink-300">Email Address</label>
 
                 <input
                   type="email"
@@ -145,9 +126,7 @@ export default function Contact({ personal, socials }) {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm text-purple-300">
-                  Message
-                </label>
+                <label className="mb-2 block text-sm text-purple-300">Message</label>
 
                 <textarea
                   rows="5"

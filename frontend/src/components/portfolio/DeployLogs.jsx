@@ -1,36 +1,31 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react';
 
 const LOG_COLORS = {
   info: 'text-white',
   warning: 'text-yellow-400',
   error: 'text-red-500',
   success: 'text-green-400',
-}
+};
 
 export default function DeployLogs({ logs = [] }) {
-  const logsEndRef = useRef(null)
+  const logsEndRef = useRef(null);
 
   useEffect(() => {
     logsEndRef.current?.scrollIntoView({
       behavior: 'smooth',
-    })
-  }, [logs])
+    });
+  }, [logs]);
 
   const copyLogs = () => {
-    const text = logs
-      .map((log) => `[${log.type.toUpperCase()}] ${log.message}`)
-      .join('\n')
+    const text = logs.map((log) => `[${log.type.toUpperCase()}] ${log.message}`).join('\n');
 
-    navigator.clipboard.writeText(text)
-  }
+    navigator.clipboard.writeText(text);
+  };
 
   return (
     <div className="bg-black border border-gray-800 rounded-xl p-4 h-80 overflow-y-auto font-mono text-sm">
-      
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-white font-semibold">
-          Deployment Logs
-        </h2>
+        <h2 className="text-white font-semibold">Deployment Logs</h2>
 
         <button
           onClick={copyLogs}
@@ -42,10 +37,7 @@ export default function DeployLogs({ logs = [] }) {
 
       <div className="space-y-2">
         {logs.map((log, index) => (
-          <div
-            key={index}
-            className={LOG_COLORS[log.type] || 'text-white'}
-          >
+          <div key={index} className={LOG_COLORS[log.type] || 'text-white'}>
             [{log.type.toUpperCase()}] {log.message}
           </div>
         ))}
@@ -53,5 +45,5 @@ export default function DeployLogs({ logs = [] }) {
         <div ref={logsEndRef} />
       </div>
     </div>
-  )
+  );
 }

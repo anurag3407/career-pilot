@@ -1,8 +1,8 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Star, ExternalLink, Github } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Star, ExternalLink, Github } from 'lucide-react';
 
-const GlassCard = ({ children, className = "" }) => (
+const GlassCard = ({ children, className = '' }) => (
   <div
     className={`rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${className}`}
   >
@@ -12,7 +12,7 @@ const GlassCard = ({ children, className = "" }) => (
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 };
 
 const stagger = {
@@ -35,7 +35,10 @@ export default function Projects({ data }) {
           <h2 className="text-3xl font-black text-white">Projects</h2>
         </motion.div>
 
-        <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div
+          variants={stagger}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           {(data.projects || []).map((project, index) => (
             <motion.div key={index} variants={fadeUp}>
               <GlassCard className="overflow-hidden h-full flex flex-col">
@@ -54,24 +57,37 @@ export default function Projects({ data }) {
                 </div>
                 <div className="p-5 flex flex-col flex-1">
                   <h3 className="text-white font-bold text-lg mb-2">{project.title}</h3>
-                  <p className="text-white/60 text-sm leading-relaxed mb-4 flex-1">{project.description}</p>
+                  <p className="text-white/60 text-sm leading-relaxed mb-4 flex-1">
+                    {project.description}
+                  </p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.techStack.map((tech) => (
-                      <span key={tech} className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10 text-white/60 text-xs">
+                      <span
+                        key={tech}
+                        className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10 text-white/60 text-xs"
+                      >
                         {tech}
                       </span>
                     ))}
                   </div>
                   <div className="flex gap-3 pt-2">
                     {project.liveUrl && (
-                      <a href={project.liveUrl} target="_blank" rel="noreferrer"
-                        className="flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 transition-colors">
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                      >
                         <ExternalLink size={13} /> Live
                       </a>
                     )}
                     {project.githubUrl && (
-                      <a href={project.githubUrl} target="_blank" rel="noreferrer"
-                        className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/80 transition-colors">
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/80 transition-colors"
+                      >
                         <Github size={13} /> Code
                       </a>
                     )}

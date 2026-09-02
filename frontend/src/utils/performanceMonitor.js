@@ -4,29 +4,29 @@ const metrics = new Map();
 
 export const startMeasure = (label) => {
   try {
-    if (!label || typeof label !== "string") {
-      throw new Error("Valid label is required");
+    if (!label || typeof label !== 'string') {
+      throw new Error('Valid label is required');
     }
 
-    if (typeof performance === "undefined") {
+    if (typeof performance === 'undefined') {
       return false;
     }
 
     performance.mark(`${label}-start`);
     return true;
   } catch (error) {
-    console.error("Performance monitoring start failed:", error);
+    console.error('Performance monitoring start failed:', error);
     return false;
   }
 };
 
 export const endMeasure = (label) => {
   try {
-    if (!label || typeof label !== "string") {
-      throw new Error("Valid label is required");
+    if (!label || typeof label !== 'string') {
+      throw new Error('Valid label is required');
     }
 
-    if (typeof performance === "undefined") {
+    if (typeof performance === 'undefined') {
       return null;
     }
 
@@ -47,7 +47,7 @@ export const endMeasure = (label) => {
 
     return duration;
   } catch (error) {
-    console.error("Performance monitoring end failed:", error);
+    console.error('Performance monitoring end failed:', error);
     return null;
   }
 };
@@ -59,7 +59,7 @@ export const getMetrics = () => {
 export const clearMetrics = () => {
   metrics.clear();
 
-  if (typeof performance !== "undefined") {
+  if (typeof performance !== 'undefined') {
     performance.clearMarks();
     performance.clearMeasures();
   }

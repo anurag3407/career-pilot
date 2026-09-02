@@ -102,12 +102,15 @@ export default function InlineElementEditor({
   }, [color, onCommit, slug, value]);
 
   // Enter to save for single-line text inputs
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Enter' && kind === 'text' && !e.shiftKey) {
-      e.preventDefault();
-      onCommit({ slug, value: valueRef.current, color });
-    }
-  }, [kind, onCommit, slug, color]);
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === 'Enter' && kind === 'text' && !e.shiftKey) {
+        e.preventDefault();
+        onCommit({ slug, value: valueRef.current, color });
+      }
+    },
+    [kind, onCommit, slug, color]
+  );
 
   // Popover positioning with simple viewport clamping
   const POPOVER_W = 320;
@@ -193,9 +196,7 @@ export default function InlineElementEditor({
       </div>
 
       {/* Error */}
-      {error && (
-        <div className="text-[10px] text-red-400 font-mono">{error}</div>
-      )}
+      {error && <div className="text-[10px] text-red-400 font-mono">{error}</div>}
 
       {/* Actions */}
       <div className="flex items-center gap-2 pt-1">
@@ -217,8 +218,7 @@ export default function InlineElementEditor({
             </>
           ) : (
             <>
-              <Wand2 className="h-3.5 w-3.5" />
-              ✨ AI Enhance
+              <Wand2 className="h-3.5 w-3.5" />✨ AI Enhance
             </>
           )}
         </button>

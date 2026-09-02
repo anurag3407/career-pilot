@@ -20,19 +20,19 @@ const getFileIcon = (fileName) => {
 
 export default function AnalyzerNode({ data, selected }) {
   return (
-    <div className={`
+    <div
+      className={`
       relative rounded-lg border bg-[#0f172a] shadow-lg transition-all duration-200
       ${selected ? 'border-blue-500 shadow-blue-500/20 shadow-xl scale-105' : 'border-slate-700 hover:border-slate-500'}
       min-w-[150px]
-    `}>
+    `}
+    >
       <Handle type="target" position={Position.Top} className="!bg-slate-500 !w-2 !h-2" />
-      
+
       <div className="p-3">
         <div className="flex items-center gap-2 mb-1">
           {getFileIcon(data.fileName)}
-          <span className="text-sm font-medium text-slate-200 font-mono">
-            {data.fileName}
-          </span>
+          <span className="text-sm font-medium text-slate-200 font-mono">{data.fileName}</span>
         </div>
         <div className="text-[10px] text-slate-500 font-mono truncate max-w-[180px]">
           {data.relativePath}

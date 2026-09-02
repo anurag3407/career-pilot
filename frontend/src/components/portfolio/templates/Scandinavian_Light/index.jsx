@@ -11,7 +11,7 @@ import Contact from './Contact';
 const FONT_STYLESHEET_ID = 'scandinavian-light-fonts';
 const FONT_HREF =
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap';
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 
 export default function ScandinavianLight() {
   useEffect(() => {

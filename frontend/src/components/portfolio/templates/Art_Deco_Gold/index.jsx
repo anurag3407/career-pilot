@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 import fallbackData from '../../../../data/dummy_data.json';
 import Hero from './Hero';
@@ -28,10 +28,7 @@ const normalizeSkills = (skills, fallbackSkills) => {
     .filter((skill) => skill && skill.name)
     .map((skill) => ({
       name: skill.name,
-      level:
-        typeof skill.level === 'number'
-          ? Math.min(100, Math.max(0, skill.level))
-          : 80,
+      level: typeof skill.level === 'number' ? Math.min(100, Math.max(0, skill.level)) : 80,
       category: skill.category || 'Skill',
     }));
 };
@@ -99,15 +96,9 @@ export default function ArtDecoGold({ portfolioData }) {
     ...(source.stats || {}),
   };
 
-  const skills = normalizeSkills(
-    source.skills,
-    fallbackData.skills
-  );
+  const skills = normalizeSkills(source.skills, fallbackData.skills);
 
-  const projects = normalizeProjects(
-    source.projects,
-    fallbackData.projects
-  );
+  const projects = normalizeProjects(source.projects, fallbackData.projects);
 
   const experience =
     Array.isArray(source.experience) && source.experience.length

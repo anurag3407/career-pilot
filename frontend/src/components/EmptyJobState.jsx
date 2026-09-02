@@ -36,12 +36,12 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
   const glowColor = isAll
     ? 'rgba(77,150,255,0.13)'
     : filterStatus === 'offered'
-    ? 'rgba(0,200,83,0.12)'
-    : filterStatus === 'interviewing'
-    ? 'rgba(255,217,61,0.10)'
-    : filterStatus === 'rejected'
-    ? 'rgba(255,61,113,0.10)'
-    : 'rgba(99,87,255,0.11)';
+      ? 'rgba(0,200,83,0.12)'
+      : filterStatus === 'interviewing'
+        ? 'rgba(255,217,61,0.10)'
+        : filterStatus === 'rejected'
+          ? 'rgba(255,61,113,0.10)'
+          : 'rgba(99,87,255,0.11)';
 
   return (
     <div className="ejs-root">
@@ -266,7 +266,11 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
 
       {/* Ghost cards */}
       <div className="ejs-ghosts">
-        {[['80%','58%'],['65%','45%'],['75%','52%']].map(([w1,w2], i) => (
+        {[
+          ['80%', '58%'],
+          ['65%', '45%'],
+          ['75%', '52%'],
+        ].map(([w1, w2], i) => (
           <div className="ejs-gc" key={i}>
             <div className="gcl" style={{ width: w1 }} />
             <div className="gcl" style={{ width: w2 }} />
@@ -285,16 +289,20 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
 
       {/* Solar system */}
       <div className="ejs-solar">
-        <div className="ejs-orbit ejs-o1"><div className="ejs-planet" /></div>
-        <div className="ejs-orbit ejs-o2"><div className="ejs-planet" /></div>
-        <div className="ejs-orbit ejs-o3"><div className="ejs-planet" /></div>
+        <div className="ejs-orbit ejs-o1">
+          <div className="ejs-planet" />
+        </div>
+        <div className="ejs-orbit ejs-o2">
+          <div className="ejs-planet" />
+        </div>
+        <div className="ejs-orbit ejs-o3">
+          <div className="ejs-planet" />
+        </div>
         <div className="ejs-sun">{isAll ? '🗂️' : current.emoji}</div>
       </div>
 
       {/* Text */}
-      <h3 className="ejs-h">
-        {isAll ? 'Your pipeline is empty' : current.headline}
-      </h3>
+      <h3 className="ejs-h">{isAll ? 'Your pipeline is empty' : current.headline}</h3>
       <p className="ejs-p">
         {isAll
           ? "You haven't tracked any jobs yet. Find roles you love, add them here, and never lose track of where you stand."
@@ -326,8 +334,12 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
       {/* Stat chips */}
       {isAll && (
         <div className="ejs-chips">
-          <div className="ejs-chip"><b>5</b> stages to track</div>
-          <div className="ejs-chip"><b>∞</b> applications</div>
+          <div className="ejs-chip">
+            <b>5</b> stages to track
+          </div>
+          <div className="ejs-chip">
+            <b>∞</b> applications
+          </div>
           <div className="ejs-chip">Free forever</div>
         </div>
       )}

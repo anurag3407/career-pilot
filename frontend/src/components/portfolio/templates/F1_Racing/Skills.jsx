@@ -6,9 +6,12 @@ export default function Skills({ data }) {
   let skills = data?.skills;
   if (!skills || skills.length === 0) return null;
   if (typeof skills === 'string') {
-    skills = skills.split(',').map(s => ({ name: s.trim() })).filter(s => s.name);
+    skills = skills
+      .split(',')
+      .map((s) => ({ name: s.trim() }))
+      .filter((s) => s.name);
   } else if (Array.isArray(skills)) {
-    skills = skills.map(s => typeof s === 'string' ? { name: s } : s);
+    skills = skills.map((s) => (typeof s === 'string' ? { name: s } : s));
   }
 
   // Icons mapping based on skill index or type if available
@@ -19,7 +22,10 @@ export default function Skills({ data }) {
   };
 
   return (
-    <section id="skills" className="relative py-20 bg-[#121216] border-y border-neutral-900 text-white overflow-hidden selection:bg-[#E10600] selection:text-white">
+    <section
+      id="skills"
+      className="relative py-20 bg-[#121216] border-y border-neutral-900 text-white overflow-hidden selection:bg-[#E10600] selection:text-white"
+    >
       {/* Background Decor */}
       <div className="absolute inset-0 opacity-[0.02] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none -z-10" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#E10600]/5 blur-[150px] rounded-full pointer-events-none -z-10" />
@@ -87,7 +93,7 @@ export default function Skills({ data }) {
                       initial={{ width: 0 }}
                       whileInView={{ width: `${skillLevel}%` }}
                       viewport={{ once: true }}
-                      transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                      transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
                       className="bg-gradient-to-r from-[#00cc52] to-[#00ff66] h-full relative"
                     >
                       <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/30 skew-x-12 -translate-x-2" />

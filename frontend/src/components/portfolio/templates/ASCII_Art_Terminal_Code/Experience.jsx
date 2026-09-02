@@ -56,7 +56,7 @@ function CommitNode({ job, index, isLast, inView }) {
         <div className="text-xs text-green-700 mb-2">
           <span className="text-green-800">Author: </span>
           <span className="text-green-500">{job.company}</span>
-          <span className="text-green-800">  Date: </span>
+          <span className="text-green-800"> Date: </span>
           <span className="text-green-600">{job.period}</span>
         </div>
 
@@ -64,9 +64,7 @@ function CommitNode({ job, index, isLast, inView }) {
         <div className="text-sm text-white mb-2">
           <span className="text-green-500">feat: </span>
           <span>{job.role}</span>
-          {year && (
-            <span className="ml-2 text-xs text-green-800">@ {job.company}</span>
-          )}
+          {year && <span className="ml-2 text-xs text-green-800">@ {job.company}</span>}
         </div>
 
         {/* Description as diff-style block */}
@@ -102,7 +100,6 @@ export default function Experience() {
       aria-label="Experience"
     >
       <div className="max-w-4xl mx-auto space-y-6">
-
         {/* Command header */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}

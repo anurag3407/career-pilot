@@ -1,6 +1,6 @@
-import { useId } from "react";
+import { useId } from 'react';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface DotPatternProps {
   width?: any;
@@ -31,8 +31,8 @@ export function DotPattern({
     <svg
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute inset-0 h-full w-full fill-slate-500/50 md:fill-slate-500/70",
-        className,
+        'pointer-events-none absolute inset-0 h-full w-full fill-slate-500/50 md:fill-slate-500/70',
+        className
       )}
       {...props}
     >

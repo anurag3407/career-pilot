@@ -7,19 +7,15 @@ export default function Hero() {
   const { personal } = usePortfolio();
 
   return (
-    <section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden z-20 py-20"
-    >
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden z-20 py-20">
       {/* Monochromatic background glow effects (no blues) */}
       <div className="absolute inset-0 bg-black flex items-center justify-center pointer-events-none z-0">
         <div className="absolute w-[600px] h-[600px] rounded-full bg-white/[0.02] blur-[130px] animate-pulse" />
         <div className="absolute w-[500px] h-[500px] rounded-full bg-white/[0.015] blur-[120px]" />
       </div>
 
-      <div 
-        className="relative z-10 max-w-5xl mx-auto px-6 text-center flex flex-col items-center justify-center select-none"
-      >
-        <motion.div 
+      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center flex flex-col items-center justify-center select-none">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -29,7 +25,7 @@ export default function Hero() {
           <span>Canvas Portfolio</span>
         </motion.div>
 
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
@@ -38,7 +34,7 @@ export default function Hero() {
           {personal.name}
         </motion.h1>
 
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.4 }}
@@ -47,7 +43,7 @@ export default function Hero() {
           {personal.title}
         </motion.p>
 
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
@@ -56,14 +52,15 @@ export default function Hero() {
           {personal.tagline || 'A blank canvas waiting to be painted with ideas, code, and design.'}
         </motion.p>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
           className="flex flex-wrap items-center justify-center gap-4"
         >
           {/* Premium White/Black luxury button */}
-          <button type="button" 
+          <button
+            type="button"
             onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
             className="px-8 py-3.5 rounded-xl bg-white hover:bg-slate-200 text-black font-semibold transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_35px_rgba(255,255,255,0.25)] flex items-center gap-2 cursor-pointer group"
           >

@@ -3,21 +3,20 @@ import { Send, User, Bot, Loader2, ShieldAlert } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useAnalyzerStore } from '../../stores/useAnalyzerStore';
 
-
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 export default function ChatPanel() {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null);
-  
-  const { 
-    messages, 
-    addMessage, 
-    sessionId, 
-    isInterviewMode, 
+
+  const {
+    messages,
+    addMessage,
+    sessionId,
+    isInterviewMode,
     isStreaming,
     setIsStreaming,
-    setMessages
+    setMessages,
   } = useAnalyzerStore();
 
   const scrollToBottom = () => {
@@ -47,13 +46,13 @@ export default function ChatPanel() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           sessionId,
           messages: [...messages, userMessage],
-          isInterviewMode
-        })
+          isInterviewMode,
+        }),
       });
 
       if (!response.ok) throw new Error('Chat failed');
@@ -68,17 +67,17 @@ export default function ChatPanel() {
 
         const chunk = decoder.decode(value, { stream: true });
         const lines = chunk.split('\n');
-        
+
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const dataStr = line.slice(6);
             if (dataStr === '[DONE]') continue;
-            
+
             try {
               const data = JSON.parse(dataStr);
               if (data.text) {
                 streamContent += data.text;
-                setMessages(prev => {
+                setMessages((prev) => {
                   const newMsgs = [...prev];
                   newMsgs[newMsgs.length - 1] = { role: 'assistant', content: streamContent };
                   return newMsgs;
@@ -94,9 +93,12 @@ export default function ChatPanel() {
       }
     } catch (error) {
       console.error('Chat stream error:', error);
-      setMessages(prev => {
+      setMessages((prev) => {
         const newMsgs = [...prev];
-        newMsgs[newMsgs.length - 1] = { role: 'assistant', content: 'Error: Failed to connect to AI engine.' };
+        newMsgs[newMsgs.length - 1] = {
+          role: 'assistant',
+          content: 'Error: Failed to connect to AI engine.',
+        };
         return newMsgs;
       });
     } finally {
@@ -126,26 +128,38 @@ export default function ChatPanel() {
           <div className="flex flex-col items-center justify-center h-full text-center text-slate-500 space-y-4">
             <Bot className="w-12 h-12 text-slate-700" />
             <p className="max-w-[250px]">
-              {isInterviewMode 
-                ? "I am ready to grill you on this architecture. Send a message to begin."
+              {isInterviewMode
+                ? 'I am ready to grill you on this architecture. Send a message to begin.'
                 : "Ask me anything about this repository's structure, patterns, or architecture."}
             </p>
           </div>
         )}
-        
+
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-              msg.role === 'user' ? 'bg-blue-600' : isInterviewMode ? 'bg-red-900/50 text-red-500' : 'bg-slate-800 text-blue-400'
-            }`}>
-              {msg.role === 'user' ? <User className="w-4 h-4 text-white" /> : <Bot className="w-4 h-4" />}
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                msg.role === 'user'
+                  ? 'bg-blue-600'
+                  : isInterviewMode
+                    ? 'bg-red-900/50 text-red-500'
+                    : 'bg-slate-800 text-blue-400'
+              }`}
+            >
+              {msg.role === 'user' ? (
+                <User className="w-4 h-4 text-white" />
+              ) : (
+                <Bot className="w-4 h-4" />
+              )}
             </div>
-            
-            <div className={`max-w-[85%] rounded-2xl p-4 ${
-              msg.role === 'user' 
-                ? 'bg-blue-600 text-white rounded-tr-none' 
-                : 'bg-slate-800/50 text-slate-200 rounded-tl-none border border-slate-700'
-            }`}>
+
+            <div
+              className={`max-w-[85%] rounded-2xl p-4 ${
+                msg.role === 'user'
+                  ? 'bg-blue-600 text-white rounded-tr-none'
+                  : 'bg-slate-800/50 text-slate-200 rounded-tl-none border border-slate-700'
+              }`}
+            >
               {msg.role === 'assistant' ? (
                 <div className="prose prose-invert prose-sm max-w-none">
                   <ReactMarkdown>{msg.content}</ReactMarkdown>
@@ -167,7 +181,7 @@ export default function ChatPanel() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={!sessionId || isStreaming}
-            placeholder={!sessionId ? "Ingest a repository first..." : "Ask about the codebase..."}
+            placeholder={!sessionId ? 'Ingest a repository first...' : 'Ask about the codebase...'}
             className="w-full bg-[#1e293b] border border-slate-700 rounded-full py-3 pl-4 pr-12 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-blue-500 disabled:opacity-50"
           />
           <button
@@ -175,7 +189,11 @@ export default function ChatPanel() {
             disabled={!input.trim() || !sessionId || isStreaming}
             className="absolute right-2 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 transition-colors"
           >
-            {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            {isStreaming ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
           </button>
         </div>
       </form>

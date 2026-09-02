@@ -76,8 +76,7 @@ export const useGithubConfigStore = create(
           oauthConnectedAt: connectedAt || null,
         }),
 
-      disconnectOauth: () =>
-        set({ oauthConnected: false, oauthLogin: '', oauthConnectedAt: null }),
+      disconnectOauth: () => set({ oauthConnected: false, oauthLogin: '', oauthConnectedAt: null }),
 
       /**
        * Returns the plaintext PAT for the current request, or null if absent.

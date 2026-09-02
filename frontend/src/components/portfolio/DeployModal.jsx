@@ -1,6 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Globe, Copy, Check, ExternalLink, Loader2, Sparkles, AlertCircle, Terminal } from 'lucide-react';
+import {
+  X,
+  Globe,
+  Copy,
+  Check,
+  ExternalLink,
+  Loader2,
+  Sparkles,
+  AlertCircle,
+  Terminal,
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 
@@ -11,30 +21,54 @@ import { useAuth } from '../../hooks/useAuth';
 // We defined some custom metadata here for each hosting platform.
 // Adding a "tag" adds that handcrafted touch that makes standard cards feel alive.
 const PROVIDERS = [
-  { id: 'github', name: 'GitHub Pages', desc: 'Deploy to your GitHub account repository free.', icon: '⚡', tag: 'EASY & FREE', needsToken: true },
-  { id: 'cloudflare', name: 'Cloudflare Pages', desc: 'Fast, secure hosting with global CDN.', icon: '☁️', tag: 'RECOMMENDED', needsToken: false },
-  { id: 'netlify', name: 'Netlify', desc: 'Instant serverless deploys and form handling.', icon: '◈', tag: 'STABLE', needsToken: true },
+  {
+    id: 'github',
+    name: 'GitHub Pages',
+    desc: 'Deploy to your GitHub account repository free.',
+    icon: '⚡',
+    tag: 'EASY & FREE',
+    needsToken: true,
+  },
+  {
+    id: 'cloudflare',
+    name: 'Cloudflare Pages',
+    desc: 'Fast, secure hosting with global CDN.',
+    icon: '☁️',
+    tag: 'RECOMMENDED',
+    needsToken: false,
+  },
+  {
+    id: 'netlify',
+    name: 'Netlify',
+    desc: 'Instant serverless deploys and form handling.',
+    icon: '◈',
+    tag: 'STABLE',
+    needsToken: true,
+  },
 ];
 
 // High fidelity build console log stream.
 // Standard boring spinning circles look too AI-generated. A developer terminal
 // streaming realistic telemetry lines makes this flow look incredibly bespoke.
 const BUILD_LOGS = [
-  { text: "⚡ npm run build:portfolio --minify=esbuild", type: "command" },
-  { text: "vite v7.3.3 building client environment for production...", type: "info" },
-  { text: "(node:8240) [DEP0040] DeprecationWarning: The punycode module is deprecated.", type: "warn" },
-  { text: "✓ 284 modules transformed and tree-shaken.", type: "success" },
-  { text: "rendering chunks & compiling routes...", type: "info" },
-  { text: "dist/index.html                     1.32 kB │ gzip:   0.66 kB", type: "log" },
-  { text: "dist/assets/index-CJMNWdNk.css    143.95 kB │ gzip:  19.09 kB", type: "log" },
-  { text: "dist/assets/index-B55MMtHS.js   1868.60 kB │ gzip: 571.47 kB", type: "log" },
-  { text: "✓ production bundle successfully built in 1.84s", type: "success" },
-  { text: "🚀 initializing handshake with deployment edge gateway...", type: "info" },
-  { text: "✓ secure token handshake with edge: 100% verified", type: "success" },
-  { text: "uploading static assets to globally distributed CDN...", type: "info" },
-  { text: "caching files across 280+ POPs worldwide...", type: "info" },
-  { text: "configuring DNS subdomains and securing SSL/TLS...", type: "info" },
-  { text: "✓ pipeline deployment successfully finalized!", type: "success" }
+  { text: '⚡ npm run build:portfolio --minify=esbuild', type: 'command' },
+  { text: 'vite v7.3.3 building client environment for production...', type: 'info' },
+  {
+    text: '(node:8240) [DEP0040] DeprecationWarning: The punycode module is deprecated.',
+    type: 'warn',
+  },
+  { text: '✓ 284 modules transformed and tree-shaken.', type: 'success' },
+  { text: 'rendering chunks & compiling routes...', type: 'info' },
+  { text: 'dist/index.html                     1.32 kB │ gzip:   0.66 kB', type: 'log' },
+  { text: 'dist/assets/index-CJMNWdNk.css    143.95 kB │ gzip:  19.09 kB', type: 'log' },
+  { text: 'dist/assets/index-B55MMtHS.js   1868.60 kB │ gzip: 571.47 kB', type: 'log' },
+  { text: '✓ production bundle successfully built in 1.84s', type: 'success' },
+  { text: '🚀 initializing handshake with deployment edge gateway...', type: 'info' },
+  { text: '✓ secure token handshake with edge: 100% verified', type: 'success' },
+  { text: 'uploading static assets to globally distributed CDN...', type: 'info' },
+  { text: 'caching files across 280+ POPs worldwide...', type: 'info' },
+  { text: 'configuring DNS subdomains and securing SSL/TLS...', type: 'info' },
+  { text: '✓ pipeline deployment successfully finalized!', type: 'success' },
 ];
 
 function TokenStatusChip({ status }) {
@@ -54,13 +88,23 @@ function TokenStatusChip({ status }) {
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30" title={status.reason}>
+    <span
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30"
+      title={status.reason}
+    >
       <AlertCircle className="w-2.5 h-2.5" /> failed
     </span>
   );
 }
 
-export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", templateId = "default", aiDraft, onDeploySuccess }) {
+export default function DeployModal({
+  isOpen,
+  onClose,
+  portfolioTitle = 'My Portfolio',
+  templateId = 'default',
+  aiDraft,
+  onDeploySuccess,
+}) {
   // Step workflow: select -> loading -> success -> error
   const [step, setStep] = useState('select');
   const { getToken } = useAuth();
@@ -84,25 +128,25 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
 
   // Clear timers/confetti on unmount to keep everything clean and prevent leakages
   useEffect(() => {
-  return () => {
-    if (logTimerRef.current) {
-      clearTimeout(logTimerRef.current);
-      logTimerRef.current = null;
-    }
+    return () => {
+      if (logTimerRef.current) {
+        clearTimeout(logTimerRef.current);
+        logTimerRef.current = null;
+      }
 
-    if (confettiIntervalRef.current) {
-      clearInterval(confettiIntervalRef.current);
-      confettiIntervalRef.current = null;
-    }
+      if (confettiIntervalRef.current) {
+        clearInterval(confettiIntervalRef.current);
+        confettiIntervalRef.current = null;
+      }
 
-    if (deployTimeoutRef.current) {
-      clearTimeout(deployTimeoutRef.current);
-      deployTimeoutRef.current = null;
-    }
+      if (deployTimeoutRef.current) {
+        clearTimeout(deployTimeoutRef.current);
+        deployTimeoutRef.current = null;
+      }
 
-    confetti.reset();
-  };
-}, []);
+      confetti.reset();
+    };
+  }, []);
 
   // Handle auto-scrolling to the bottom of our retro build terminal
   useEffect(() => {
@@ -122,9 +166,9 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
           const timestamp = new Date().toTimeString().split(' ')[0];
           const nextLog = {
             ...BUILD_LOGS[logIndex],
-            timestamp
+            timestamp,
           };
-          setVisibleLogs(prev => [...prev, nextLog]);
+          setVisibleLogs((prev) => [...prev, nextLog]);
           logIndex++;
           // Stagger each log by roughly 220ms so it completes within the 3.5s simulation window
           logTimerRef.current = setTimeout(streamLogs, 220);
@@ -167,12 +211,12 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
       confetti({
         ...defaults,
         particleCount,
-        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
       });
       confetti({
         ...defaults,
         particleCount,
-        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
       });
     }, 250);
   };
@@ -210,7 +254,10 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
         toast.error(data.reason || 'Token is invalid.');
       }
     } catch (err) {
-      setTokenStatuses((prev) => ({ ...prev, [providerId]: { valid: false, reason: err.message } }));
+      setTokenStatuses((prev) => ({
+        ...prev,
+        [providerId]: { valid: false, reason: err.message },
+      }));
       toast.error(err.message || 'Token check failed.');
     }
   };
@@ -225,11 +272,12 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
 
     // Start the terminal animation, then fire the real deploy in parallel
     const doRealDeploy = async () => {
-      const slug = portfolioTitle
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '') || 'portfolio';
+      const slug =
+        portfolioTitle
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '') || 'portfolio';
 
       try {
         const result = await portfolioApi.deploy({
@@ -250,7 +298,6 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
           toast.success('Your portfolio is live! 🚀');
           if (onDeploySuccess) onDeploySuccess();
         }, 3600);
-
       } catch (err) {
         console.error('Deploy error:', err);
         // Wait for animation before showing error
@@ -279,55 +326,56 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   };
 
   const handleClose = () => {
-  setStep('select');
-  setDeployedUrl('');
-  setErrorMessage('');
+    setStep('select');
+    setDeployedUrl('');
+    setErrorMessage('');
 
-  if (logTimerRef.current) {
-    clearTimeout(logTimerRef.current);
-    logTimerRef.current = null;
-  }
+    if (logTimerRef.current) {
+      clearTimeout(logTimerRef.current);
+      logTimerRef.current = null;
+    }
 
-  if (confettiIntervalRef.current) {
-    clearInterval(confettiIntervalRef.current);
-    confettiIntervalRef.current = null;
-  }
+    if (confettiIntervalRef.current) {
+      clearInterval(confettiIntervalRef.current);
+      confettiIntervalRef.current = null;
+    }
 
-  if (deployTimeoutRef.current) {
-    clearTimeout(deployTimeoutRef.current);
-    deployTimeoutRef.current = null;
-  }
+    if (deployTimeoutRef.current) {
+      clearTimeout(deployTimeoutRef.current);
+      deployTimeoutRef.current = null;
+    }
 
-  confetti.reset();
-  onClose();
-};
+    confetti.reset();
+    onClose();
+  };
 
   // Deploy button is enabled only when the selected provider's token is validated
   const selectedProviderMeta = PROVIDERS.find((p) => p.id === selectedProvider);
-  const isTokenValidated = !selectedProviderMeta?.needsToken || tokenStatuses[selectedProvider]?.valid === true;
+  const isTokenValidated =
+    !selectedProviderMeta?.needsToken || tokenStatuses[selectedProvider]?.valid === true;
 
   const seoChecks = [
-  {
-    label: "Portfolio Title",
-    passed: portfolioTitle && portfolioTitle.trim().length > 5,
-  },
-  {
-    label: "Template Selected",
-    passed: templateId && templateId !== "default",
-  },
-  {
-    label: "Portfolio Content",
-    passed: aiDraft && Object.keys(aiDraft).length > 0,
-  },
-  {
-    label: "SEO Friendly Title",
-    passed: portfolioTitle?.length >= 10,
-  },
-];
+    {
+      label: 'Portfolio Title',
+      passed: portfolioTitle && portfolioTitle.trim().length > 5,
+    },
+    {
+      label: 'Template Selected',
+      passed: templateId && templateId !== 'default',
+    },
+    {
+      label: 'Portfolio Content',
+      passed: aiDraft && Object.keys(aiDraft).length > 0,
+    },
+    {
+      label: 'SEO Friendly Title',
+      passed: portfolioTitle?.length >= 10,
+    },
+  ];
 
-const seoScore = Math.round(
-  (seoChecks.filter((item) => item.passed).length / seoChecks.length) * 100
-);
+  const seoScore = Math.round(
+    (seoChecks.filter((item) => item.passed).length / seoChecks.length) * 100
+  );
 
   if (!isOpen) return null;
 
@@ -352,7 +400,7 @@ const seoScore = Math.round(
           initial={{ opacity: 0, scale: 0.96, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 15 }}
-          transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
+          transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
           className="relative w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10"
         >
           {/* Tilted Asymmetrical Hand-crafted Ribbon Stamp */}
@@ -367,7 +415,9 @@ const seoScore = Math.round(
                 <Globe className="w-5 h-5 text-indigo-400" />
               </div>
               <div className="text-left">
-                <h3 className="font-bold text-lg text-zinc-100 font-sans tracking-tight">Deploy Portfolio</h3>
+                <h3 className="font-bold text-lg text-zinc-100 font-sans tracking-tight">
+                  Deploy Portfolio
+                </h3>
                 <p className="text-xs text-zinc-400 mt-0.5 max-w-[220px] truncate">
                   Configuring: <span className="font-mono text-indigo-400">{portfolioTitle}</span>
                 </p>
@@ -396,12 +446,12 @@ const seoScore = Math.round(
                 >
                   <p className="text-xs text-zinc-400 text-left leading-relaxed">
                     <div className="flex items-center gap-2">
-  <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-bold uppercase">
-    Readiness Score: {seoScore}%
-  </span>
-</div>
-                    
-                    Choose your cloud deployment target. We will compile your clean production assets, bundle stylesheets, and provision a live SSL subdomain.
+                      <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-bold uppercase">
+                        Readiness Score: {seoScore}%
+                      </span>
+                    </div>
+                    Choose your cloud deployment target. We will compile your clean production
+                    assets, bundle stylesheets, and provision a live SSL subdomain.
                   </p>
 
                   {/* Provider Cards */}
@@ -424,39 +474,55 @@ const seoScore = Math.round(
                             onClick={() => setSelectedProvider(provider.id)}
                             className="w-full flex items-start gap-4 p-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer"
                           >
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold shrink-0 transition-transform group-hover:scale-105 ${
-                              isSelected ? 'bg-indigo-500/20 text-indigo-400' : 'bg-zinc-800 text-zinc-400'
-                            }`}>
+                            <div
+                              className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold shrink-0 transition-transform group-hover:scale-105 ${
+                                isSelected
+                                  ? 'bg-indigo-500/20 text-indigo-400'
+                                  : 'bg-zinc-800 text-zinc-400'
+                              }`}
+                            >
                               {provider.icon}
                             </div>
 
                             <div className="flex-1 min-w-0 text-left">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <h4 className="font-semibold text-sm text-zinc-100">{provider.name}</h4>
+                                <h4 className="font-semibold text-sm text-zinc-100">
+                                  {provider.name}
+                                </h4>
                                 {provider.tag && (
-                                  <span className={`text-[8px] font-bold font-mono px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                                    isSelected
-                                      ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
-                                      : 'bg-zinc-800 text-zinc-500 group-hover:text-zinc-400'
-                                  }`}>
+                                  <span
+                                    className={`text-[8px] font-bold font-mono px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                                      isSelected
+                                        ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+                                        : 'bg-zinc-800 text-zinc-500 group-hover:text-zinc-400'
+                                    }`}
+                                  >
                                     {provider.tag}
                                   </span>
                                 )}
                                 <TokenStatusChip status={tokenStatus} />
                               </div>
-                              <p className="text-xs text-zinc-400 mt-1 leading-normal group-hover:text-zinc-300 transition-colors">{provider.desc}</p>
+                              <p className="text-xs text-zinc-400 mt-1 leading-normal group-hover:text-zinc-300 transition-colors">
+                                {provider.desc}
+                              </p>
                             </div>
                           </button>
 
                           {/* Token input + check button — shown only when this provider is selected and needs a token */}
                           {isSelected && provider.needsToken && (
-                            <div className="px-4 pb-4 flex gap-2" onClick={(e) => e.stopPropagation()}>
+                            <div
+                              className="px-4 pb-4 flex gap-2"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <input
                                 type="password"
                                 placeholder={`Paste your ${provider.name} token…`}
                                 value={tokenInputs[provider.id] ?? ''}
                                 onChange={(e) =>
-                                  setTokenInputs((prev) => ({ ...prev, [provider.id]: e.target.value }))
+                                  setTokenInputs((prev) => ({
+                                    ...prev,
+                                    [provider.id]: e.target.value,
+                                  }))
                                 }
                                 className="flex-1 text-xs rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-100 placeholder-zinc-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
                               />
@@ -473,7 +539,10 @@ const seoScore = Math.round(
 
                           {/* Cloudflare: server-side token — show check button with no input */}
                           {isSelected && !provider.needsToken && (
-                            <div className="px-4 pb-4 flex justify-end" onClick={(e) => e.stopPropagation()}>
+                            <div
+                              className="px-4 pb-4 flex justify-end"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <button
                                 type="button"
                                 disabled={tokenStatus === 'checking'}
@@ -499,62 +568,56 @@ const seoScore = Math.round(
                           Dev Insight
                         </h5>
                         <p className="text-[11px] text-amber-200/80 leading-relaxed font-sans">
-                          GitHub Pages requires no custom configuration. If you need blazing fast global CDNs, <strong className="text-amber-400 font-medium">Cloudflare</strong> is our go-to!
+                          GitHub Pages requires no custom configuration. If you need blazing fast
+                          global CDNs,{' '}
+                          <strong className="text-amber-400 font-medium">Cloudflare</strong> is our
+                          go-to!
                         </p>
                       </div>
                     </div>
                   </div>
 
                   {/* SEO Optimization Assistant */}
-<div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-4 space-y-3">
-  <div className="flex items-center justify-between">
-    <h4 className="text-sm font-semibold text-zinc-100">
-      SEO Optimization Assistant
-    </h4>
+                  <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-semibold text-zinc-100">
+                        SEO Optimization Assistant
+                      </h4>
 
-    <span className="text-xs font-bold text-indigo-400">
-      {seoScore}/100
-    </span>
-  </div>
+                      <span className="text-xs font-bold text-indigo-400">{seoScore}/100</span>
+                    </div>
 
-  <div className="space-y-2">
-    {seoChecks.map((check, index) => (
-      <div
-        key={index}
-        className="flex items-center justify-between text-xs"
-      >
-        <span className="text-zinc-300">{check.label}</span>
+                    <div className="space-y-2">
+                      {seoChecks.map((check, index) => (
+                        <div key={index} className="flex items-center justify-between text-xs">
+                          <span className="text-zinc-300">{check.label}</span>
 
-        <span
-          className={
-            check.passed
-              ? "text-emerald-400"
-              : "text-amber-400"
-          }
-        >
-          {check.passed ? "✓" : "⚠"}
-        </span>
-      </div>
-    ))}
-  </div>
+                          <span className={check.passed ? 'text-emerald-400' : 'text-amber-400'}>
+                            {check.passed ? '✓' : '⚠'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
 
-  <div className="pt-2 border-t border-zinc-800">
-    <p className="text-[11px] text-zinc-400">
-      Improve portfolio discoverability by using descriptive titles,
-      complete content sections, and SEO-friendly metadata.
-    </p>
-  </div>
-</div>
+                    <div className="pt-2 border-t border-zinc-800">
+                      <p className="text-[11px] text-zinc-400">
+                        Improve portfolio discoverability by using descriptive titles, complete
+                        content sections, and SEO-friendly metadata.
+                      </p>
+                    </div>
+                  </div>
 
                   {/* Submit Action */}
                   <button
                     onClick={handleDeploy}
                     disabled={!isTokenValidated}
-                    title={!isTokenValidated ? 'Verify your token first by clicking "Check"' : undefined}
+                    title={
+                      !isTokenValidated ? 'Verify your token first by clicking "Check"' : undefined
+                    }
                     className="w-full mt-2 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-zinc-100 rounded-2xl font-semibold shadow-xl shadow-indigo-950/20 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
                   >
                     <Sparkles className="w-4 h-4 text-indigo-200" />
-                    Deploy with {PROVIDERS.find(p => p.id === selectedProvider)?.name}
+                    Deploy with {PROVIDERS.find((p) => p.id === selectedProvider)?.name}
                   </button>
 
                   <div className="text-[10px] text-zinc-600 text-center italic font-mono pt-1">
@@ -575,7 +638,9 @@ const seoScore = Math.round(
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center gap-2">
                       <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
-                      <span className="text-xs font-semibold text-zinc-200">Deploying your portfolio...</span>
+                      <span className="text-xs font-semibold text-zinc-200">
+                        Deploying your portfolio...
+                      </span>
                     </div>
                     {/* Simulated builder progress percentage */}
                     <span className="text-xs font-bold text-indigo-400 font-mono">
@@ -602,11 +667,12 @@ const seoScore = Math.round(
                     {/* Terminal Logs Output */}
                     <div className="p-4 overflow-y-auto flex-1 font-mono text-[10px] leading-relaxed text-zinc-300 space-y-1.5 select-text custom-scrollbar">
                       {visibleLogs.map((log, index) => {
-                        let colorClass = "text-zinc-400";
-                        if (log.type === "command") colorClass = "text-sky-400 font-semibold";
-                        else if (log.type === "info") colorClass = "text-amber-400/90";
-                        else if (log.type === "success") colorClass = "text-emerald-400 font-semibold";
-                        else if (log.type === "warn") colorClass = "text-rose-400/90 italic";
+                        let colorClass = 'text-zinc-400';
+                        if (log.type === 'command') colorClass = 'text-sky-400 font-semibold';
+                        else if (log.type === 'info') colorClass = 'text-amber-400/90';
+                        else if (log.type === 'success')
+                          colorClass = 'text-emerald-400 font-semibold';
+                        else if (log.type === 'warn') colorClass = 'text-rose-400/90 italic';
 
                         return (
                           <div key={index} className="flex items-start gap-2 break-all">
@@ -618,7 +684,9 @@ const seoScore = Math.round(
                       {/* Active Cursor / Caret */}
                       {visibleLogs.length < BUILD_LOGS.length && (
                         <div className="flex items-center gap-1">
-                          <span className="text-zinc-600 select-none">[{new Date().toTimeString().split(' ')[0]}]</span>
+                          <span className="text-zinc-600 select-none">
+                            [{new Date().toTimeString().split(' ')[0]}]
+                          </span>
                           <span className="inline-block w-1.5 h-3 bg-emerald-400 animate-pulse" />
                         </div>
                       )}
@@ -655,16 +723,21 @@ const seoScore = Math.round(
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="text-xl font-black text-zinc-100 tracking-tight">Woohoo! Portfolio is Live! 🎉</h4>
+                    <h4 className="text-xl font-black text-zinc-100 tracking-tight">
+                      Woohoo! Portfolio is Live! 🎉
+                    </h4>
                     <p className="text-xs text-zinc-400 px-4 leading-relaxed font-sans">
-                      Your stunning personal portfolio has been successfully compiled and deployed to the edge. Go show off your craft!
+                      Your stunning personal portfolio has been successfully compiled and deployed
+                      to the edge. Go show off your craft!
                     </p>
                   </div>
 
                   {/* Handcrafted URL Container */}
                   <div className="w-full bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex items-center justify-between gap-3 text-left">
                     <div className="flex-1 min-w-0">
-                      <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-wider">DEPLOYED SITE URL</div>
+                      <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-wider">
+                        DEPLOYED SITE URL
+                      </div>
                       <span className="text-xs font-semibold text-indigo-400 truncate block mt-0.5 select-all font-mono">
                         {deployedUrl}
                       </span>
@@ -708,7 +781,9 @@ const seoScore = Math.round(
                     <span>STATUS: LIVE & SECURE</span>
                     <span className="flex items-center gap-1">
                       <span>Engineered with ☕ by</span>
-                      <span className="font-bold text-zinc-300 underline decoration-indigo-500 decoration-2 underline-offset-2">Anurag</span>
+                      <span className="font-bold text-zinc-300 underline decoration-indigo-500 decoration-2 underline-offset-2">
+                        Anurag
+                      </span>
                     </span>
                   </div>
                 </motion.div>
@@ -728,9 +803,12 @@ const seoScore = Math.round(
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="text-lg font-bold text-zinc-100 tracking-tight">Pipeline Build Failed</h4>
+                    <h4 className="text-lg font-bold text-zinc-100 tracking-tight">
+                      Pipeline Build Failed
+                    </h4>
                     <p className="text-xs text-zinc-400 px-4 leading-relaxed font-sans">
-                      {errorMessage || "An unexpected compile error occurred while bundling portfolio sources."}
+                      {errorMessage ||
+                        'An unexpected compile error occurred while bundling portfolio sources.'}
                     </p>
                   </div>
 
@@ -753,7 +831,7 @@ const seoScore = Math.round(
 
                   {/* Dev debugging annotation */}
                   <div className="text-[9px] text-rose-400/80 font-mono bg-rose-950/10 border border-rose-950/30 p-2 rounded-lg w-full text-left">
-                    ERR_CODE: pipeline_rate_limit_exceeded <br/>
+                    ERR_CODE: pipeline_rate_limit_exceeded <br />
                     TIP: Edge CDN gateways are busy. Trying again usually resolves the issue.
                   </div>
                 </motion.div>

@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -138,11 +138,15 @@ export default function VSCodeTheme() {
               <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
               <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
               <span className="h-3 w-3 rounded-full bg-[#28c840]" />
-              <span className="ml-3 hidden text-[#858585] sm:inline">Career Pilot - VS Code Portfolio</span>
+              <span className="ml-3 hidden text-[#858585] sm:inline">
+                Career Pilot - VS Code Portfolio
+              </span>
             </div>
             <div className="hidden min-w-0 max-w-xl flex-1 items-center gap-2 rounded-md border border-[#3c3c3c] bg-[#252526] px-3 py-1 text-[#858585] md:flex">
               <Search className="h-3.5 w-3.5" />
-              <span className="truncate">{data.personal.name} / {data.personal.title}</span>
+              <span className="truncate">
+                {data.personal.name} / {data.personal.title}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-[#858585]">
               <Monitor className="h-4 w-4" />
@@ -156,7 +160,9 @@ export default function VSCodeTheme() {
                 key={id}
                 href={`#${id}`}
                 className={`flex min-w-max items-center gap-2 border-r border-[#1e1e1e] px-4 py-2 font-mono text-xs transition hover:bg-[#2d2d2d] ${
-                  index === 0 ? 'border-t-2 border-t-[#007acc] bg-[#1e1e1e] text-white' : 'text-[#a9a9a9]'
+                  index === 0
+                    ? 'border-t-2 border-t-[#007acc] bg-[#1e1e1e] text-white'
+                    : 'text-[#a9a9a9]'
                 }`}
               >
                 {React.createElement(icon, { className: `h-3.5 w-3.5 ${accent}` })}
@@ -267,19 +273,24 @@ export default function VSCodeTheme() {
                     </div>
                     <div className="px-2 py-5 sm:px-4">
                       <CodeLine number="01">
-                        <span className="text-[#c586c0]">const</span> <span className="text-[#4fc1ff]">developer</span> = {'{'}
+                        <span className="text-[#c586c0]">const</span>{' '}
+                        <span className="text-[#4fc1ff]">developer</span> = {'{'}
                       </CodeLine>
                       <CodeLine number="02">
-                        &nbsp;&nbsp;<span className="text-[#9cdcfe]">name</span>: <span className="text-[#ce9178]">"{data.personal.name}"</span>,
+                        &nbsp;&nbsp;<span className="text-[#9cdcfe]">name</span>:{' '}
+                        <span className="text-[#ce9178]">"{data.personal.name}"</span>,
                       </CodeLine>
                       <CodeLine number="03">
-                        &nbsp;&nbsp;<span className="text-[#9cdcfe]">title</span>: <span className="text-[#ce9178]">"{data.personal.title}"</span>,
+                        &nbsp;&nbsp;<span className="text-[#9cdcfe]">title</span>:{' '}
+                        <span className="text-[#ce9178]">"{data.personal.title}"</span>,
                       </CodeLine>
                       <CodeLine number="04">
-                        &nbsp;&nbsp;<span className="text-[#9cdcfe]">location</span>: <span className="text-[#ce9178]">"{data.personal.location}"</span>,
+                        &nbsp;&nbsp;<span className="text-[#9cdcfe]">location</span>:{' '}
+                        <span className="text-[#ce9178]">"{data.personal.location}"</span>,
                       </CodeLine>
                       <CodeLine number="05">
-                        &nbsp;&nbsp;<span className="text-[#9cdcfe]">tagline</span>: <span className="text-[#ce9178]">"{data.personal.tagline}"</span>,
+                        &nbsp;&nbsp;<span className="text-[#9cdcfe]">tagline</span>:{' '}
+                        <span className="text-[#ce9178]">"{data.personal.tagline}"</span>,
                       </CodeLine>
                       <CodeLine number="06">{'};'}</CodeLine>
                     </div>
@@ -291,7 +302,9 @@ export default function VSCodeTheme() {
                       {data.personal.name}
                     </h1>
                     <p className="mt-4 text-xl text-[#4fc1ff] sm:text-2xl">{data.personal.title}</p>
-                    <p className="mt-5 max-w-3xl text-base leading-8 text-[#cccccc] sm:text-lg">{data.personal.bio}</p>
+                    <p className="mt-5 max-w-3xl text-base leading-8 text-[#cccccc] sm:text-lg">
+                      {data.personal.bio}
+                    </p>
 
                     <div className="mt-8 flex flex-wrap gap-3">
                       <a
@@ -325,15 +338,24 @@ export default function VSCodeTheme() {
                       Terminal
                     </div>
                     <div className="space-y-3 p-4 font-mono text-sm">
-                      <p><span className="text-[#89d185]">$</span> whoami</p>
+                      <p>
+                        <span className="text-[#89d185]">$</span> whoami
+                      </p>
                       <p className="text-[#dcdcaa]">{data.personal.name}</p>
-                      <p><span className="text-[#89d185]">$</span> npm run stats</p>
+                      <p>
+                        <span className="text-[#89d185]">$</span> npm run stats
+                      </p>
                       <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
                         {Object.entries(data.stats).map(([key, value]) => {
                           const meta = statMeta[key] || { label: key, icon: Star };
                           return (
-                            <div key={key} className="flex items-center gap-3 rounded border border-[#30363d] bg-[#0d1117] p-3">
-                              {React.createElement(meta.icon, { className: 'h-5 w-5 text-[#4fc1ff]' })}
+                            <div
+                              key={key}
+                              className="flex items-center gap-3 rounded border border-[#30363d] bg-[#0d1117] p-3"
+                            >
+                              {React.createElement(meta.icon, {
+                                className: 'h-5 w-5 text-[#4fc1ff]',
+                              })}
                               <div>
                                 <p className="text-xl font-semibold text-white">{value}+</p>
                                 <p className="text-xs text-[#858585]">{meta.label}</p>
@@ -342,7 +364,9 @@ export default function VSCodeTheme() {
                           );
                         })}
                       </div>
-                      <p><span className="text-[#89d185]">$</span> status --availability</p>
+                      <p>
+                        <span className="text-[#89d185]">$</span> status --availability
+                      </p>
                       <p className="flex items-center gap-2 text-[#89d185]">
                         <CheckCircle2 className="h-4 w-4" />
                         ready for ambitious builds
@@ -351,7 +375,11 @@ export default function VSCodeTheme() {
                   </div>
 
                   <div className="mt-5 overflow-hidden rounded-lg border border-[#3c3c3c] bg-[#0d1117]">
-                    <img src={data.personal.avatar} alt={data.personal.name} className="h-72 w-full object-cover" />
+                    <img
+                      src={data.personal.avatar}
+                      alt={data.personal.name}
+                      className="h-72 w-full object-cover"
+                    />
                     <div className="border-t border-[#30363d] p-4">
                       <div className="flex items-center gap-2 text-sm text-[#cccccc]">
                         <MapPin className="h-4 w-4 text-[#4fc1ff]" />
@@ -364,7 +392,11 @@ export default function VSCodeTheme() {
             </section>
 
             <div className="space-y-0">
-              <motion.section id="about" className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10" {...fadeUp}>
+              <motion.section
+                id="about"
+                className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10"
+                {...fadeUp}
+              >
                 <SectionTitle file="about.md" title="About" icon={FileText} />
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                   <div className="rounded-lg border border-[#3c3c3c] bg-[#252526] p-6">
@@ -372,7 +404,10 @@ export default function VSCodeTheme() {
                     <p className="text-lg leading-8 text-[#d4d4d4]">{data.personal.bio}</p>
                     <div className="mt-6 flex flex-wrap gap-2">
                       {featuredSkills.map((skill) => (
-                        <span key={skill.name} className="rounded border border-[#3c3c3c] bg-[#1e1e1e] px-3 py-1.5 font-mono text-xs text-[#4ec9b0]">
+                        <span
+                          key={skill.name}
+                          className="rounded border border-[#3c3c3c] bg-[#1e1e1e] px-3 py-1.5 font-mono text-xs text-[#4ec9b0]"
+                        >
                           {skill.name}
                         </span>
                       ))}
@@ -387,7 +422,10 @@ export default function VSCodeTheme() {
                         ['projects', `${data.stats.projectsCompleted}+ completed`],
                         ['clients', `${data.stats.happyClients}+ happy clients`],
                       ].map(([label, value]) => (
-                        <div key={label} className="flex items-start justify-between gap-4 border-b border-[#30363d] pb-3">
+                        <div
+                          key={label}
+                          className="flex items-start justify-between gap-4 border-b border-[#30363d] pb-3"
+                        >
                           <span className="font-mono text-sm text-[#9cdcfe]">{label}</span>
                           <span className="text-right text-sm text-[#dcdcaa]">{value}</span>
                         </div>
@@ -397,19 +435,31 @@ export default function VSCodeTheme() {
                 </div>
               </motion.section>
 
-              <motion.section id="skills" className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10" {...stagger}>
+              <motion.section
+                id="skills"
+                className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10"
+                {...stagger}
+              >
                 <SectionTitle file="skills.json" title="Skills" icon={FileJson} />
                 <div className="grid gap-5 lg:grid-cols-2">
                   {Object.entries(skillsByCategory).map(([category, skills]) => {
                     const skillIcon = skillIcons[category] || Code2;
                     return (
-                      <motion.div key={category} className="rounded-lg border border-[#3c3c3c] bg-[#252526] p-5" variants={item}>
+                      <motion.div
+                        key={category}
+                        className="rounded-lg border border-[#3c3c3c] bg-[#252526] p-5"
+                        variants={item}
+                      >
                         <div className="mb-5 flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            {React.createElement(skillIcon, { className: 'h-5 w-5 text-[#4fc1ff]' })}
+                            {React.createElement(skillIcon, {
+                              className: 'h-5 w-5 text-[#4fc1ff]',
+                            })}
                             <h3 className="font-mono text-lg text-white">{category}</h3>
                           </div>
-                          <span className="font-mono text-xs text-[#858585]">{skills.length} modules</span>
+                          <span className="font-mono text-xs text-[#858585]">
+                            {skills.length} modules
+                          </span>
                         </div>
                         <div className="space-y-4">
                           {skills.map((skill) => (
@@ -436,7 +486,11 @@ export default function VSCodeTheme() {
                 </div>
               </motion.section>
 
-              <motion.section id="projects" className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10" {...stagger}>
+              <motion.section
+                id="projects"
+                className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10"
+                {...stagger}
+              >
                 <SectionTitle file="projects.ts" title="Projects" icon={Code2} />
                 <div className="grid gap-6 lg:grid-cols-2">
                   {data.projects.map((project, index) => (
@@ -446,7 +500,11 @@ export default function VSCodeTheme() {
                       variants={item}
                     >
                       <div className="relative h-56 overflow-hidden bg-[#0d1117]">
-                        <img src={project.image} alt={project.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                        />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e1e] via-[#1e1e1e]/20 to-transparent" />
                         <div className="absolute left-4 top-4 rounded bg-[#007acc] px-2 py-1 font-mono text-xs text-white">
                           project_{String(index + 1).padStart(2, '0')}
@@ -457,17 +515,30 @@ export default function VSCodeTheme() {
                         <p className="mt-3 leading-7 text-[#cccccc]">{project.description}</p>
                         <div className="mt-5 flex flex-wrap gap-2">
                           {project.techStack.map((tech) => (
-                            <span key={tech} className="rounded border border-[#3c3c3c] bg-[#1e1e1e] px-2.5 py-1 font-mono text-xs text-[#ce9178]">
+                            <span
+                              key={tech}
+                              className="rounded border border-[#3c3c3c] bg-[#1e1e1e] px-2.5 py-1 font-mono text-xs text-[#ce9178]"
+                            >
                               {tech}
                             </span>
                           ))}
                         </div>
                         <div className="mt-6 flex flex-wrap gap-3">
-                          <a href={project.liveUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded bg-[#007acc] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1188d8]">
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-2 rounded bg-[#007acc] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1188d8]"
+                          >
                             <Globe2 className="h-4 w-4" />
                             Live
                           </a>
-                          <a href={project.githubUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded border border-[#3c3c3c] bg-[#1e1e1e] px-4 py-2 text-sm font-semibold text-[#cccccc] transition hover:border-[#007acc] hover:text-white">
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-2 rounded border border-[#3c3c3c] bg-[#1e1e1e] px-4 py-2 text-sm font-semibold text-[#cccccc] transition hover:border-[#007acc] hover:text-white"
+                          >
                             <Github className="h-4 w-4" />
                             Code
                           </a>
@@ -478,7 +549,11 @@ export default function VSCodeTheme() {
                 </div>
               </motion.section>
 
-              <motion.section id="experience" className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10" {...fadeUp}>
+              <motion.section
+                id="experience"
+                className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10"
+                {...fadeUp}
+              >
                 <SectionTitle file="experience.tsx" title="Experience" icon={Briefcase} />
                 <div className="relative space-y-5 lg:pl-8">
                   <div className="absolute left-3 top-3 hidden h-[calc(100%-1.5rem)] w-px bg-[#3c3c3c] lg:block" />
@@ -505,15 +580,29 @@ export default function VSCodeTheme() {
                 </div>
               </motion.section>
 
-              <motion.section id="testimonials" className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10" {...stagger}>
+              <motion.section
+                id="testimonials"
+                className="scroll-mt-24 border-b border-[#2d2d2d] px-5 py-12 sm:px-8 lg:px-10"
+                {...stagger}
+              >
                 <SectionTitle file="testimonials.yml" title="Testimonials" icon={Quote} />
                 <div className="grid gap-5 lg:grid-cols-2">
                   {data.testimonials.map((testimonial) => (
-                    <motion.figure key={testimonial.name} className="rounded-lg border border-[#3c3c3c] bg-[#252526] p-6" variants={item}>
+                    <motion.figure
+                      key={testimonial.name}
+                      className="rounded-lg border border-[#3c3c3c] bg-[#252526] p-6"
+                      variants={item}
+                    >
                       <Quote className="mb-4 h-7 w-7 text-[#4fc1ff]" />
-                      <blockquote className="leading-7 text-[#d4d4d4]">{testimonial.text}</blockquote>
+                      <blockquote className="leading-7 text-[#d4d4d4]">
+                        {testimonial.text}
+                      </blockquote>
                       <figcaption className="mt-6 flex items-center gap-3">
-                        <img src={testimonial.avatar} alt={testimonial.name} className="h-12 w-12 rounded-full object-cover" />
+                        <img
+                          src={testimonial.avatar}
+                          alt={testimonial.name}
+                          className="h-12 w-12 rounded-full object-cover"
+                        />
                         <div>
                           <p className="font-semibold text-white">{testimonial.name}</p>
                           <p className="text-sm text-[#858585]">{testimonial.role}</p>
@@ -524,12 +613,18 @@ export default function VSCodeTheme() {
                 </div>
               </motion.section>
 
-              <motion.section id="contact" className="scroll-mt-24 px-5 py-12 sm:px-8 lg:px-10" {...fadeUp}>
+              <motion.section
+                id="contact"
+                className="scroll-mt-24 px-5 py-12 sm:px-8 lg:px-10"
+                {...fadeUp}
+              >
                 <SectionTitle file="contact.html" title="Contact" icon={Mail} />
                 <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
                   <div className="rounded-lg border border-[#3c3c3c] bg-[#252526] p-6">
                     <p className="font-mono text-sm text-[#6a9955]">// open channels</p>
-                    <h3 className="mt-3 text-2xl font-semibold text-white">Build something with {data.personal.name}</h3>
+                    <h3 className="mt-3 text-2xl font-semibold text-white">
+                      Build something with {data.personal.name}
+                    </h3>
                     <p className="mt-3 leading-7 text-[#cccccc]">{data.personal.tagline}</p>
                     <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                       {socials.map(({ key, label, icon }) => {
@@ -543,7 +638,9 @@ export default function VSCodeTheme() {
                             rel={key === 'email' ? undefined : 'noreferrer'}
                             className="flex min-w-0 items-center gap-3 rounded border border-[#3c3c3c] bg-[#1e1e1e] p-3 text-sm text-[#cccccc] transition hover:border-[#007acc] hover:text-white"
                           >
-                            {React.createElement(icon, { className: 'h-4 w-4 shrink-0 text-[#4fc1ff]' })}
+                            {React.createElement(icon, {
+                              className: 'h-4 w-4 shrink-0 text-[#4fc1ff]',
+                            })}
                             <span className="font-semibold">{label}</span>
                             <ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0 text-[#858585]" />
                           </a>

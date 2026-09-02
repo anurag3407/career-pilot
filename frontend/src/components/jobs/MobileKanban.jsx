@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useMemo, memo } from "react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { toast } from "react-hot-toast";
+import { useState, useEffect, useCallback, useMemo, memo } from 'react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { toast } from 'react-hot-toast';
 import {
   Briefcase,
   MapPin,
@@ -13,11 +13,11 @@ import {
   Sparkles,
   WifiOff,
   GripVertical,
-} from "lucide-react";
-import { cn } from "../../lib/utils";
-import { jobTrackerApi } from "../../services/api";
+} from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { jobTrackerApi } from '../../services/api';
 
-import { SkeletonTracker } from "../ui/Skeleton";
+import { SkeletonTracker } from '../ui/Skeleton';
 import {
   calculateJobStats,
   getQueuedStatusUpdates,
@@ -26,48 +26,48 @@ import {
   removeQueuedStatusUpdates,
   saveJobTrackerSnapshot,
   saveJobTrackerStats,
-} from "../../utils/jobTrackerOffline";
+} from '../../utils/jobTrackerOffline';
 
 const STATUS_COLUMNS = [
-  { value: "saved", label: "Saved", color: "bg-muted-foreground" },
-  { value: "applied", label: "Applied", color: "bg-blue-500" },
-  { value: "interviewing", label: "Interviewing", color: "bg-yellow-500" },
-  { value: "offered", label: "Offered", color: "bg-green-500" },
-  { value: "rejected", label: "Rejected", color: "bg-red-500" },
+  { value: 'saved', label: 'Saved', color: 'bg-muted-foreground' },
+  { value: 'applied', label: 'Applied', color: 'bg-blue-500' },
+  { value: 'interviewing', label: 'Interviewing', color: 'bg-yellow-500' },
+  { value: 'offered', label: 'Offered', color: 'bg-green-500' },
+  { value: 'rejected', label: 'Rejected', color: 'bg-red-500' },
 ];
 
 const STATUS_ICONS = {
-  saved: "📌",
-  applied: "✉️",
-  interviewing: "🎤",
-  offered: "🎉",
-  rejected: "❌",
+  saved: '📌',
+  applied: '✉️',
+  interviewing: '🎤',
+  offered: '🎉',
+  rejected: '❌',
 };
 
 function formatDate(date) {
-  if (!date) return "N/A";
-  return new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  if (!date) return 'N/A';
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 }
 
 function formatDateTime(date) {
-  if (!date) return "not synced yet";
-  return new Date(date).toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
+  if (!date) return 'not synced yet';
+  return new Date(date).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
   });
 }
 
 function isNetworkError(error) {
   return (
     !navigator.onLine ||
-    error?.name === "TypeError" ||
-    error?.message?.toLowerCase().includes("failed to fetch")
+    error?.name === 'TypeError' ||
+    error?.message?.toLowerCase().includes('failed to fetch')
   );
 }
 
@@ -75,11 +75,7 @@ function isUnrecoverableStatusUpdateError(error) {
   return [400, 404, 422].includes(error?.status);
 }
 
-const JobCard = memo(function JobCard({
-  job,
-  index,
-  onDelete,
-}) {
+const JobCard = memo(function JobCard({ job, index, onDelete }) {
   return (
     <Draggable key={job.id} draggableId={job.id} index={index}>
       {(provided, snapshot) => (
@@ -88,10 +84,10 @@ const JobCard = memo(function JobCard({
           {...provided.draggableProps}
           style={provided.draggableProps.style}
           className={cn(
-            "bg-card rounded-xl border shadow-sm transition-all",
+            'bg-card rounded-xl border shadow-sm transition-all',
             snapshot.isDragging
-              ? "shadow-2xl shadow-primary/20 scale-[1.02] z-50 border-primary ring-2 ring-primary/20"
-              : "border-border/60 hover:border-primary/40"
+              ? 'shadow-2xl shadow-primary/20 scale-[1.02] z-50 border-primary ring-2 ring-primary/20'
+              : 'border-border/60 hover:border-primary/40'
           )}
         >
           <div className="p-4">
@@ -107,7 +103,7 @@ const JobCard = memo(function JobCard({
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <h4 className="font-bold text-foreground text-sm leading-tight line-clamp-2">
-                    {job.title || "Untitled Position"}
+                    {job.title || 'Untitled Position'}
                   </h4>
                   <button
                     onClick={() => onDelete(job.id)}
@@ -119,7 +115,7 @@ const JobCard = memo(function JobCard({
                 </div>
 
                 <p className="text-primary font-semibold text-xs mt-1 tracking-wide">
-                  {job.company || "Unknown Company"}
+                  {job.company || 'Unknown Company'}
                 </p>
 
                 <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 text-[11px] font-medium text-muted-foreground">
@@ -173,11 +169,11 @@ const JobCard = memo(function JobCard({
 function StatsRow({ stats, onRefresh }) {
   const items = useMemo(
     () => [
-      { label: "Total", value: stats?.total ?? 0 },
-      { label: "Saved", value: stats?.saved ?? 0 },
-      { label: "Applied", value: stats?.applied ?? 0 },
-      { label: "Interview", value: stats?.interviewing ?? 0 },
-      { label: "Offered", value: stats?.offered ?? 0 },
+      { label: 'Total', value: stats?.total ?? 0 },
+      { label: 'Saved', value: stats?.saved ?? 0 },
+      { label: 'Applied', value: stats?.applied ?? 0 },
+      { label: 'Interview', value: stats?.interviewing ?? 0 },
+      { label: 'Offered', value: stats?.offered ?? 0 },
     ],
     [stats]
   );
@@ -191,12 +187,8 @@ function StatsRow({ stats, onRefresh }) {
           onClick={onRefresh}
           className="shrink-0 flex flex-col items-center justify-center bg-background/50 border border-border/60 rounded-xl px-4 py-2.5 min-w-[68px] min-h-[56px]"
         >
-          <span className="text-lg font-bold text-foreground leading-none">
-            {item.value}
-          </span>
-          <span className="text-[10px] font-medium text-muted-foreground mt-0.5">
-            {item.label}
-          </span>
+          <span className="text-lg font-bold text-foreground leading-none">{item.value}</span>
+          <span className="text-[10px] font-medium text-muted-foreground mt-0.5">{item.label}</span>
         </button>
       ))}
     </div>
@@ -207,9 +199,7 @@ function EmptyKanban() {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4">
       <Briefcase className="w-16 h-16 text-muted-foreground/60 mx-auto mb-4" />
-      <h3 className="text-lg font-semibold text-foreground mb-1">
-        No Tracked Jobs Yet
-      </h3>
+      <h3 className="text-lg font-semibold text-foreground mb-1">No Tracked Jobs Yet</h3>
       <p className="text-sm text-muted-foreground text-center mb-6 max-w-xs">
         Start tracking jobs from the job search page to see them here
       </p>
@@ -224,13 +214,7 @@ function EmptyKanban() {
   );
 }
 
-function OfflineBanner({
-  isOffline,
-  pendingSyncCount,
-  lastSyncedAt,
-  isSyncing,
-  onSync,
-}) {
+function OfflineBanner({ isOffline, pendingSyncCount, lastSyncedAt, isSyncing, onSync }) {
   if (!isOffline && pendingSyncCount === 0) return null;
 
   return (
@@ -239,12 +223,12 @@ function OfflineBanner({
         <WifiOff className="w-5 h-5 text-amber-500 shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground">
-            {isOffline ? "Offline mode" : "Pending sync"}
+            {isOffline ? 'Offline mode' : 'Pending sync'}
           </p>
           <p className="text-xs text-muted-foreground truncate">
             {isOffline
               ? `Showing data from ${formatDateTime(lastSyncedAt)}`
-              : `${pendingSyncCount} update${pendingSyncCount > 1 ? "s" : ""} waiting to sync`}
+              : `${pendingSyncCount} update${pendingSyncCount > 1 ? 's' : ''} waiting to sync`}
           </p>
         </div>
         {!isOffline && (
@@ -254,7 +238,7 @@ function OfflineBanner({
             disabled={isSyncing}
             className="shrink-0 flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-600 px-3 py-2 rounded-lg text-xs font-bold min-h-[36px] transition-colors disabled:opacity-50"
           >
-            <RefreshCw className={cn("w-3.5 h-3.5", isSyncing && "animate-spin")} />
+            <RefreshCw className={cn('w-3.5 h-3.5', isSyncing && 'animate-spin')} />
             Sync
           </button>
         )}
@@ -268,12 +252,12 @@ function FilterBar({ columns, activeFilter, onFilterChange }) {
     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4">
       <button
         type="button"
-        onClick={() => onFilterChange("all")}
+        onClick={() => onFilterChange('all')}
         className={cn(
-          "shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors min-h-[40px]",
-          activeFilter === "all"
-            ? "bg-primary text-primary-foreground"
-            : "bg-muted text-foreground hover:bg-muted/80"
+          'shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors min-h-[40px]',
+          activeFilter === 'all'
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-muted text-foreground hover:bg-muted/80'
         )}
       >
         All
@@ -284,10 +268,10 @@ function FilterBar({ columns, activeFilter, onFilterChange }) {
           type="button"
           onClick={() => onFilterChange(col.value)}
           className={cn(
-            "shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors min-h-[40px] flex items-center gap-1.5",
+            'shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors min-h-[40px] flex items-center gap-1.5',
             activeFilter === col.value
-              ? "bg-primary text-primary-foreground"
-              : "bg-muted text-foreground hover:bg-muted/80"
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-muted text-foreground hover:bg-muted/80'
           )}
         >
           <span>{STATUS_ICONS[col.value]}</span>
@@ -317,26 +301,17 @@ function KanbanColumn({ column, jobs, onDelete }) {
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={cn(
-              "flex flex-col gap-3 p-3 min-h-[120px] transition-colors",
-              snapshot.isDraggingOver
-                ? "bg-primary/5"
-                : ""
+              'flex flex-col gap-3 p-3 min-h-[120px] transition-colors',
+              snapshot.isDraggingOver ? 'bg-primary/5' : ''
             )}
           >
             {jobs.length === 0 && !snapshot.isDraggingOver && (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <p className="text-xs font-medium text-muted-foreground">
-                  Drop jobs here
-                </p>
+                <p className="text-xs font-medium text-muted-foreground">Drop jobs here</p>
               </div>
             )}
             {jobs.map((job, index) => (
-              <JobCard
-                key={job.id}
-                job={job}
-                index={index}
-                onDelete={onDelete}
-              />
+              <JobCard key={job.id} job={job} index={index} onDelete={onDelete} />
             ))}
             {provided.placeholder}
           </div>
@@ -364,14 +339,14 @@ export default function MobileKanban({
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(initialJobs === undefined);
   const [isOffline, setIsOffline] = useState(
-    typeof navigator !== "undefined" ? !navigator.onLine : false
+    typeof navigator !== 'undefined' ? !navigator.onLine : false
   );
   const [lastSyncedAt, setLastSyncedAt] = useState(null);
   const [pendingSyncCount, setPendingSyncCount] = useState(0);
-  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterStatus, setFilterStatus] = useState('all');
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const currentUserId = window.Clerk?.user?.id || "anonymous";
+  const currentUserId = window.Clerk?.user?.id || 'anonymous';
 
   const loadCachedTrackerData = useCallback(() => {
     const snapshot = loadJobTrackerSnapshot(currentUserId);
@@ -403,16 +378,16 @@ export default function MobileKanban({
       persistTrackerSnapshot(jobs, calculateJobStats(jobs));
       setIsOffline(false);
     } catch (error) {
-      console.error("Error fetching jobs:", error);
+      console.error('Error fetching jobs:', error);
       const hasCachedData = loadCachedTrackerData();
       if (hasCachedData) {
         setIsOffline(true);
-        toast("Showing saved Job Tracker data while offline", {
-          id: "mobile-kanban-offline-cache",
+        toast('Showing saved Job Tracker data while offline', {
+          id: 'mobile-kanban-offline-cache',
         });
       } else {
-        toast.error("Failed to load tracked jobs", {
-          id: "mobile-kanban-load-error",
+        toast.error('Failed to load tracked jobs', {
+          id: 'mobile-kanban-load-error',
         });
       }
     } finally {
@@ -427,7 +402,7 @@ export default function MobileKanban({
       setStats(data.stats);
       saveJobTrackerStats(currentUserId, data.stats);
     } catch (error) {
-      console.error("Error fetching stats:", error);
+      console.error('Error fetching stats:', error);
       const snapshot = loadJobTrackerSnapshot(currentUserId);
       if (snapshot?.stats) {
         setStats(snapshot.stats);
@@ -462,22 +437,20 @@ export default function MobileKanban({
     };
 
     setPendingSyncCount(getQueuedStatusUpdates(currentUserId).length);
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
     updateConnectionState();
 
     return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
   }, [currentUserId, isControlled]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const queueOfflineStatusChange = useCallback(
     (jobId, newStatus, jobsSnapshot) => {
       const updatedJobs = jobsSnapshot.map((job) =>
-        job.id === jobId
-          ? { ...job, status: newStatus, updatedAt: new Date().toISOString() }
-          : job
+        job.id === jobId ? { ...job, status: newStatus, updatedAt: new Date().toISOString() } : job
       );
       const offlineStats = calculateJobStats(updatedJobs);
       const queue = queueStatusUpdate(currentUserId, jobId, newStatus);
@@ -487,7 +460,7 @@ export default function MobileKanban({
       setPendingSyncCount(queue.length);
       setIsOffline(true);
       persistTrackerSnapshot(updatedJobs, offlineStats);
-      toast.success("Status saved offline. It will sync when you reconnect.", {
+      toast.success('Status saved offline. It will sync when you reconnect.', {
         id: `mobile-kanban-offline-update-${jobId}`,
       });
     },
@@ -513,7 +486,7 @@ export default function MobileKanban({
         await jobTrackerApi.updateStatus(update.jobId, update.status);
         syncedIds.push(update.id);
       } catch (error) {
-        console.error("Error syncing offline job update:", error);
+        console.error('Error syncing offline job update:', error);
         if (isNetworkError(error)) {
           stoppedForNetwork = true;
           break;
@@ -535,12 +508,12 @@ export default function MobileKanban({
     setIsSyncing(false);
 
     if (failedCount) {
-      toast.error("Some offline updates could not be synced and will be retried");
+      toast.error('Some offline updates could not be synced and will be retried');
     } else if (discardedCount) {
-      toast.error("Some offline updates could not be applied");
+      toast.error('Some offline updates could not be applied');
     } else if (syncedIds.length && !stoppedForNetwork) {
-      toast.success("Offline Job Tracker changes synced", {
-        id: "mobile-kanban-offline-sync",
+      toast.success('Offline Job Tracker changes synced', {
+        id: 'mobile-kanban-offline-sync',
       });
     }
   };
@@ -556,11 +529,11 @@ export default function MobileKanban({
         const updatedJobs = trackedJobs.filter((job) => job.id !== jobId);
         setTrackedJobs(updatedJobs);
         persistTrackerSnapshot(updatedJobs, calculateJobStats(updatedJobs));
-        toast.success("Job removed from tracker");
+        toast.success('Job removed from tracker');
         if (!isControlled) fetchStats();
       } catch (error) {
-        console.error("Error deleting job:", error);
-        toast.error("Failed to remove job", {
+        console.error('Error deleting job:', error);
+        toast.error('Failed to remove job', {
           id: `mobile-kanban-delete-error-${jobId}`,
         });
       }
@@ -574,10 +547,7 @@ export default function MobileKanban({
 
       if (!destination) return;
 
-      if (
-        destination.droppableId === source.droppableId &&
-        destination.index === source.index
-      ) {
+      if (destination.droppableId === source.droppableId && destination.index === source.index) {
         return;
       }
 
@@ -602,14 +572,14 @@ export default function MobileKanban({
 
       try {
         await jobTrackerApi.updateStatus(draggableId, newStatus);
-        toast.success("Status updated!");
+        toast.success('Status updated!');
         if (!isControlled) fetchStats();
       } catch (error) {
-        console.error("Error updating status:", error);
+        console.error('Error updating status:', error);
         if (isNetworkError(error)) {
           queueOfflineStatusChange(draggableId, newStatus, previousJobs);
         } else {
-          toast.error("Failed to update status");
+          toast.error('Failed to update status');
           const previousStats = calculateJobStats(previousJobs);
           setTrackedJobs(previousJobs);
           setStats(previousStats);
@@ -628,7 +598,7 @@ export default function MobileKanban({
   );
 
   const filteredColumns = useMemo(() => {
-    if (filterStatus === "all") return STATUS_COLUMNS;
+    if (filterStatus === 'all') return STATUS_COLUMNS;
     return STATUS_COLUMNS.filter((col) => col.value === filterStatus);
   }, [filterStatus]);
 
@@ -644,14 +614,14 @@ export default function MobileKanban({
 
   if (loading) {
     return (
-      <div className={cn("", className)}>
+      <div className={cn('', className)}>
         <SkeletonTracker />
       </div>
     );
   }
 
   return (
-    <div className={cn("flex flex-col gap-4 pb-8", className)}>
+    <div className={cn('flex flex-col gap-4 pb-8', className)}>
       <OfflineBanner
         isOffline={isOffline}
         pendingSyncCount={pendingSyncCount}
@@ -664,9 +634,7 @@ export default function MobileKanban({
         }}
       />
 
-      {stats && (
-        <StatsRow stats={stats} onRefresh={fetchStats} />
-      )}
+      {stats && <StatsRow stats={stats} onRefresh={fetchStats} />}
 
       <FilterBar
         columns={STATUS_COLUMNS}

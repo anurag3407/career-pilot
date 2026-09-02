@@ -14,10 +14,10 @@ export default function CartographerAntiquityMapRoom() {
   return (
     <div className="w-full min-h-screen bg-[#f4ebd8] text-[#3e2723] font-serif overflow-x-hidden relative selection:bg-[#8d6e63] selection:text-[#f4ebd8]">
       {/* Background texture layer */}
-      <div 
+      <div
         className="absolute inset-0 z-0 pointer-events-none opacity-20"
         style={{
-          backgroundImage: `url('https://www.transparenttextures.com/patterns/aged-paper.png')`
+          backgroundImage: `url('https://www.transparenttextures.com/patterns/aged-paper.png')`,
         }}
       ></div>
 

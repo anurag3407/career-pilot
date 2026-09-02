@@ -14,12 +14,12 @@ import Contact from './Contact';
 // ----------------------------------------------------------------------
 function DesktopJourneyShell({ isMobile }) {
   const containerRef = useRef(null);
-  
+
   // 7 Fixed Slides total
   const totalSlides = 7;
   const containerHeight = `${totalSlides * 100}vh`;
   const trackWidth = `${totalSlides * 100}vw`;
-  
+
   // Translation math: Move left by (Total Slides - 1) viewports
   const endTranslation = `-${(totalSlides - 1) * 100}vw`;
 
@@ -37,7 +37,6 @@ function DesktopJourneyShell({ isMobile }) {
       className="relative bg-zinc-950 font-sans text-zinc-100 selection:bg-zinc-100 selection:text-zinc-950 overscroll-none"
     >
       <div className="sticky top-0 flex h-[100dvh] w-full items-center overflow-hidden bg-zinc-950 pointer-events-none">
-        
         {/* Top Progress Bar */}
         <motion.div
           className="absolute top-0 left-0 z-50 h-1 origin-left bg-zinc-100"
@@ -73,7 +72,7 @@ function DesktopJourneyShell({ isMobile }) {
 // MOBILE: Native Vertical Stack (Guaranteed perfect scrolling)
 // ----------------------------------------------------------------------
 function MobileJourneyShell({ isMobile }) {
-  // We use standard HTML flow for mobile. No scroll-jacking. No translation. 
+  // We use standard HTML flow for mobile. No scroll-jacking. No translation.
   // It just scrolls up and down naturally like a normal website.
   return (
     <div className="flex flex-col w-full min-h-screen bg-zinc-950 text-zinc-100 selection:bg-zinc-100 selection:text-zinc-950 font-sans overflow-x-hidden">
@@ -87,7 +86,6 @@ function MobileJourneyShell({ isMobile }) {
     </div>
   );
 }
-
 
 // --- MAIN EXPORT COMPONENT ---
 

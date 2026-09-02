@@ -1,13 +1,6 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  ArrowRight,
-  Sparkles,
-  FileText,
-  Briefcase,
-  Bot,
-  Star,
-} from "lucide-react";
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Sparkles, FileText, Briefcase, Bot, Star } from 'lucide-react';
 import {
   motion,
   useMotionValue,
@@ -16,13 +9,13 @@ import {
   useScroll,
   useTransform,
   useReducedMotion,
-} from "framer-motion";
-import AnimatedCounter from "./AnimatedCounter";
-import DotPattern from "./dot-pattern-1";
-import { PatternText } from "./pattern-text";
+} from 'framer-motion';
+import AnimatedCounter from './AnimatedCounter';
+import DotPattern from './dot-pattern-1';
+import { PatternText } from './pattern-text';
 
-const DeferredWorldMap = lazy(() => import("./WorldMap"));
-const DeferredFeaturesCard = lazy(() => import("./FeaturesCard"));
+const DeferredWorldMap = lazy(() => import('./WorldMap'));
+const DeferredFeaturesCard = lazy(() => import('./FeaturesCard'));
 
 const worldMapDots = [
   {
@@ -59,22 +52,13 @@ const worldMapDots = [
   },
 ];
 
-const trustLogos = [
-  "Google",
-  "Stripe",
-  "Notion",
-  "Vercel",
-  "Airbnb",
-  "Linear",
-  "Figma",
-  "OpenAI",
-];
+const trustLogos = ['Google', 'Stripe', 'Notion', 'Vercel', 'Airbnb', 'Linear', 'Figma', 'OpenAI'];
 
 const stats = [
-  { value: "10K+", label: "Active Jobs" },
-  { value: "95%", label: "ATS Success" },
-  { value: "2.5x", label: "Faster Hiring" },
-  { value: "50K+", label: "Users" },
+  { value: '10K+', label: 'Active Jobs' },
+  { value: '95%', label: 'ATS Success' },
+  { value: '2.5x', label: 'Faster Hiring' },
+  { value: '50K+', label: 'Users' },
 ];
 
 // Stagger orchestration for the headline column
@@ -86,19 +70,18 @@ const container = {
 };
 
 const rise = {
-  hidden: { opacity: 0, y: 28, filter: "blur(8px)" },
+  hidden: { opacity: 0, y: 28, filter: 'blur(8px)' },
   show: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
+    filter: 'blur(0px)',
     transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
 export default function HeroSection() {
   const deferredContentRef = useRef(null);
-  const [shouldLoadDeferredContent, setShouldLoadDeferredContent] =
-    useState(false);
+  const [shouldLoadDeferredContent, setShouldLoadDeferredContent] = useState(false);
   const prefersReduced = useReducedMotion();
 
   // Pointer spotlight that follows the cursor across the hero
@@ -111,7 +94,7 @@ export default function HeroSection() {
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start start", "end start"],
+    offset: ['start start', 'end start'],
   });
   const contentY = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
@@ -130,7 +113,7 @@ export default function HeroSection() {
       return undefined;
     }
 
-    if (typeof IntersectionObserver === "undefined") {
+    if (typeof IntersectionObserver === 'undefined') {
       setShouldLoadDeferredContent(true);
       return undefined;
     }
@@ -142,7 +125,7 @@ export default function HeroSection() {
           observer.disconnect();
         }
       },
-      { rootMargin: "240px 0px" }
+      { rootMargin: '240px 0px' }
     );
 
     observer.observe(target);
@@ -233,9 +216,8 @@ export default function HeroSection() {
             variants={rise}
             className="mx-auto mt-7 max-w-2xl text-lg font-medium leading-relaxed text-muted-foreground md:text-xl"
           >
-            The intelligent job search platform that enhances your resume with
-            AI, matches you with perfect opportunities, and tracks your
-            applications—all in one place.
+            The intelligent job search platform that enhances your resume with AI, matches you with
+            perfect opportunities, and tracks your applications—all in one place.
           </motion.p>
 
           {/* CTAs */}
@@ -269,10 +251,10 @@ export default function HeroSection() {
           >
             <div className="flex -space-x-2">
               {[
-                "from-sky-400 to-blue-600",
-                "from-violet-400 to-purple-600",
-                "from-pink-400 to-rose-600",
-                "from-emerald-400 to-teal-600",
+                'from-sky-400 to-blue-600',
+                'from-violet-400 to-purple-600',
+                'from-pink-400 to-rose-600',
+                'from-emerald-400 to-teal-600',
               ].map((g, i) => (
                 <span
                   key={i}
@@ -283,10 +265,7 @@ export default function HeroSection() {
             <span className="flex items-center gap-1">
               <span className="flex">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-4 w-4 fill-amber-400 text-amber-400"
-                  />
+                  <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                 ))}
               </span>
               <span className="font-semibold text-foreground">4.9/5</span>
@@ -327,7 +306,7 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-border bg-border/60 md:grid-cols-4"
         >
@@ -353,8 +332,8 @@ export default function HeroSection() {
               Global <span className="gradient-text-animated">Connectivity</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-base font-medium text-muted-foreground md:text-lg">
-              Connect with opportunities worldwide. Work remotely from anywhere
-              or find on-site roles across continents.
+              Connect with opportunities worldwide. Work remotely from anywhere or find on-site
+              roles across continents.
             </p>
           </div>
 
@@ -363,10 +342,7 @@ export default function HeroSection() {
             <div className="relative min-h-80 p-4">
               {shouldLoadDeferredContent ? (
                 <Suspense fallback={<DeferredContentShell className="min-h-80" />}>
-                  <DeferredWorldMap
-                    dots={worldMapDots}
-                    lineColor="var(--primary)"
-                  />
+                  <DeferredWorldMap dots={worldMapDots} lineColor="var(--primary)" />
                 </Suspense>
               ) : (
                 <DeferredContentShell className="min-h-80" />
@@ -377,9 +353,7 @@ export default function HeroSection() {
 
         <div className="mt-10">
           {shouldLoadDeferredContent ? (
-            <Suspense
-              fallback={<DeferredContentShell className="min-h-[780px]" />}
-            >
+            <Suspense fallback={<DeferredContentShell className="min-h-[780px]" />}>
               <DeferredFeaturesCard />
             </Suspense>
           ) : (
@@ -416,27 +390,27 @@ function ProductPreview({ prefersReduced }) {
   const previewCards = [
     {
       icon: FileText,
-      title: "AI Resume Score",
-      meta: "ATS Optimized",
-      value: "98",
-      tint: "from-sky-500/20 to-blue-500/5",
-      bar: "98%",
+      title: 'AI Resume Score',
+      meta: 'ATS Optimized',
+      value: '98',
+      tint: 'from-sky-500/20 to-blue-500/5',
+      bar: '98%',
     },
     {
       icon: Briefcase,
-      title: "Matched Roles",
-      meta: "Updated live",
-      value: "247",
-      tint: "from-violet-500/20 to-purple-500/5",
-      bar: "82%",
+      title: 'Matched Roles',
+      meta: 'Updated live',
+      value: '247',
+      tint: 'from-violet-500/20 to-purple-500/5',
+      bar: '82%',
     },
     {
       icon: Bot,
-      title: "Mock Interview",
-      meta: "Avg. confidence",
-      value: "A+",
-      tint: "from-pink-500/20 to-rose-500/5",
-      bar: "91%",
+      title: 'Mock Interview',
+      meta: 'Avg. confidence',
+      value: 'A+',
+      tint: 'from-pink-500/20 to-rose-500/5',
+      bar: '91%',
     },
   ];
 
@@ -455,7 +429,7 @@ function ProductPreview({ prefersReduced }) {
         ref={ref}
         onPointerMove={onMove}
         onPointerLeave={onLeave}
-        style={{ rotateX: sRotX, rotateY: sRotY, transformStyle: "preserve-3d" }}
+        style={{ rotateX: sRotX, rotateY: sRotY, transformStyle: 'preserve-3d' }}
         className="relative overflow-hidden rounded-3xl border border-border bg-card/70 p-2 shadow-2xl backdrop-blur-xl"
       >
         {/* Window chrome */}
@@ -476,24 +450,20 @@ function ProductPreview({ prefersReduced }) {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9 + i * 0.15, duration: 0.6 }}
-              style={{ transform: "translateZ(40px)" }}
+              style={{ transform: 'translateZ(40px)' }}
               className={`relative overflow-hidden rounded-2xl border border-border bg-linear-to-br ${c.tint} p-4 text-left`}
             >
               <div className="flex items-center justify-between">
                 <c.icon className="h-5 w-5 text-primary" />
-                <span className="text-2xl font-black text-foreground">
-                  {c.value}
-                </span>
+                <span className="text-2xl font-black text-foreground">{c.value}</span>
               </div>
-              <p className="mt-3 text-sm font-bold text-foreground">
-                {c.title}
-              </p>
+              <p className="mt-3 text-sm font-bold text-foreground">{c.title}</p>
               <p className="text-xs text-muted-foreground">{c.meta}</p>
               <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: c.bar }}
-                  transition={{ delay: 1.2 + i * 0.15, duration: 1, ease: "easeOut" }}
+                  transition={{ delay: 1.2 + i * 0.15, duration: 1, ease: 'easeOut' }}
                   className="h-full rounded-full bg-linear-to-r from-primary to-secondary"
                 />
               </div>
@@ -505,7 +475,7 @@ function ProductPreview({ prefersReduced }) {
   );
 }
 
-function DeferredContentShell({ className = "" }) {
+function DeferredContentShell({ className = '' }) {
   return (
     <div
       className={`w-full animate-pulse rounded-3xl border border-dashed border-border/60 bg-muted/20 ${className}`}

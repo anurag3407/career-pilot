@@ -45,7 +45,7 @@ export default function AnimeMangaTemplate({ data }) {
           -webkit-text-stroke: 1px black;
         }
       `}</style>
-      
+
       {/* Decorative background speed lines */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
         <div className="w-full h-full manga-screentone" />
@@ -55,7 +55,7 @@ export default function AnimeMangaTemplate({ data }) {
         <div className="manga-panel p-4 md:p-8 relative overflow-hidden">
           <Hero data={data} />
         </div>
-        
+
         <div className="manga-panel p-4 md:p-8">
           <About data={data} />
         </div>
@@ -65,9 +65,9 @@ export default function AnimeMangaTemplate({ data }) {
         </div>
 
         <Skills skills={data.skills} />
-        
+
         <Experience experience={data.experience} />
-        
+
         <div className="manga-panel p-4 md:p-8">
           <Projects projects={data.projects} />
         </div>

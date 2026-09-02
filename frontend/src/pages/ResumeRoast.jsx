@@ -97,9 +97,7 @@ export default function ResumeRoast() {
             <Flame className="w-3.5 h-3.5" />
             BYOK · Zero cost to you
           </div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight">
-            🔥 Resume Roast
-          </h1>
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight">🔥 Resume Roast</h1>
           <p className="mt-2 text-muted-foreground max-w-xl mx-auto">
             Brutally honest. Surprisingly helpful. 100% free — uses your own AI key.
             <br />
@@ -145,7 +143,10 @@ export default function ResumeRoast() {
                 🔥 Roast another
               </Button>
               <Link to="/hub/resume">
-                <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg"
+                >
                   🛠 Fix this with the Builder
                 </Button>
               </Link>

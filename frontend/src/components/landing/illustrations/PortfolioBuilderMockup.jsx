@@ -30,7 +30,7 @@ export default function PortfolioBuilderMockup() {
         {/* Template Grid */}
         <div className="grid grid-cols-2 gap-4 flex-1">
           {/* Template 1 (Active) */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -48,7 +48,7 @@ export default function PortfolioBuilderMockup() {
           </motion.div>
 
           {/* Template 2 */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -64,23 +64,23 @@ export default function PortfolioBuilderMockup() {
             </div>
             <div className="h-3 w-20 bg-muted rounded mt-2 mx-1" />
           </motion.div>
-          
+
           {/* Settings Panel */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             className="col-span-2 rounded-xl border border-border bg-card p-4 flex items-center gap-4 mt-2"
           >
-             <div className="flex-1 space-y-2">
-               <div className="h-3 w-24 bg-foreground/20 rounded" />
-               <div className="flex gap-2">
-                 <div className="h-6 w-6 rounded-full bg-primary" />
-                 <div className="h-6 w-6 rounded-full bg-secondary" />
-                 <div className="h-6 w-6 rounded-full bg-foreground" />
-               </div>
-             </div>
-             <div className="h-8 w-24 bg-muted rounded-lg" />
+            <div className="flex-1 space-y-2">
+              <div className="h-3 w-24 bg-foreground/20 rounded" />
+              <div className="flex gap-2">
+                <div className="h-6 w-6 rounded-full bg-primary" />
+                <div className="h-6 w-6 rounded-full bg-secondary" />
+                <div className="h-6 w-6 rounded-full bg-foreground" />
+              </div>
+            </div>
+            <div className="h-8 w-24 bg-muted rounded-lg" />
           </motion.div>
         </div>
       </div>

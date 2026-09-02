@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { motion as Motion, useInView } from "framer-motion";
-import { Briefcase, FolderOpen, Users, Cpu } from "lucide-react";
+import React, { useEffect, useRef, useState } from 'react';
+import { motion as Motion, useInView } from 'framer-motion';
+import { Briefcase, FolderOpen, Users, Cpu } from 'lucide-react';
 
 function AnimatedCounter({ target, duration = 2000 }) {
   const [count, setCount] = useState(0);
@@ -37,34 +37,34 @@ export default function StatsBar({ data }) {
     {
       icon: Briefcase,
       value: stats.yearsExperience,
-      suffix: "+",
-      label: "YEARS EXPERIENCE",
-      color: "#ff2bd6",
-      glow: "#ff2bd6",
+      suffix: '+',
+      label: 'YEARS EXPERIENCE',
+      color: '#ff2bd6',
+      glow: '#ff2bd6',
     },
     {
       icon: FolderOpen,
       value: stats.projectsCompleted,
-      suffix: "+",
-      label: "PROJECTS COMPLETED",
-      color: "#00d4ff",
-      glow: "#00d4ff",
+      suffix: '+',
+      label: 'PROJECTS COMPLETED',
+      color: '#00d4ff',
+      glow: '#00d4ff',
     },
     {
       icon: Users,
       value: stats.happyClients,
-      suffix: "+",
-      label: "HAPPY CLIENTS",
-      color: "#ffd000",
-      glow: "#ffd000",
+      suffix: '+',
+      label: 'HAPPY CLIENTS',
+      color: '#ffd000',
+      glow: '#ffd000',
     },
     {
       icon: Cpu,
       value: skills.length,
-      suffix: "",
-      label: "TECHNOLOGIES",
-      color: "#39ff14",
-      glow: "#39ff14",
+      suffix: '',
+      label: 'TECHNOLOGIES',
+      color: '#39ff14',
+      glow: '#39ff14',
     },
   ];
 
@@ -74,15 +74,17 @@ export default function StatsBar({ data }) {
       <div
         className="absolute top-0 left-0 right-0 h-px"
         style={{
-          background: "linear-gradient(90deg, transparent, #ff2bd6, #00d4ff, #ffd000, #39ff14, transparent)",
-          boxShadow: "0 0 10px #00d4ff",
+          background:
+            'linear-gradient(90deg, transparent, #ff2bd6, #00d4ff, #ffd000, #39ff14, transparent)',
+          boxShadow: '0 0 10px #00d4ff',
         }}
       />
       <div
         className="absolute bottom-0 left-0 right-0 h-px"
         style={{
-          background: "linear-gradient(90deg, transparent, #39ff14, #ffd000, #00d4ff, #ff2bd6, transparent)",
-          boxShadow: "0 0 10px #ff2bd6",
+          background:
+            'linear-gradient(90deg, transparent, #39ff14, #ffd000, #00d4ff, #ff2bd6, transparent)',
+          boxShadow: '0 0 10px #ff2bd6',
         }}
       />
 
@@ -101,7 +103,7 @@ export default function StatsBar({ data }) {
                 style={{
                   borderColor: `${item.color}50`,
                   background: `${item.color}05`,
-                  backdropFilter: "blur(10px)",
+                  backdropFilter: 'blur(10px)',
                   boxShadow: `0 0 15px ${item.color}15`,
                 }}
                 onMouseEnter={(e) => {

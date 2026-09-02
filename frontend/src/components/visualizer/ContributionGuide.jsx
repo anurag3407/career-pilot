@@ -61,7 +61,8 @@ const ContributionGuide = () => {
         <Loader2 className="w-12 h-12 text-emerald-500 animate-spin mb-4" />
         <h2 className="text-xl font-bold text-white mb-2">Generating Contribution Guide</h2>
         <p className="text-slate-400 max-w-md text-center">
-          Analyzing project architecture, README, and open issues to create a customized onboarding guide...
+          Analyzing project architecture, README, and open issues to create a customized onboarding
+          guide...
         </p>
       </div>
     );
@@ -72,7 +73,7 @@ const ContributionGuide = () => {
       <div className="flex flex-col items-center justify-center h-96">
         <GitPullRequest className="w-16 h-16 text-slate-500 mb-4" />
         <p className="text-slate-400 mb-4">No contribution guide available.</p>
-        <button 
+        <button
           onClick={fetchGuide}
           className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
         >
@@ -94,23 +95,23 @@ const ContributionGuide = () => {
             <p className="text-sm text-slate-400">AI-generated onboarding documentation</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={fetchGuide}
             className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 transition-colors"
             title="Regenerate"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
-          <button 
+          <button
             onClick={handleCopy}
             className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition-colors text-sm font-medium"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
             Copy
           </button>
-          <button 
+          <button
             onClick={handleDownload}
             className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white transition-colors text-sm font-bold"
           >
@@ -121,9 +122,7 @@ const ContributionGuide = () => {
       </div>
 
       <div className="bg-[#0a0f1c] border border-white/10 rounded-2xl p-8 prose prose-invert prose-emerald max-w-none prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10 prose-headings:text-slate-200 prose-a:text-emerald-400">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {guide}
-        </ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{guide}</ReactMarkdown>
       </div>
     </div>
   );

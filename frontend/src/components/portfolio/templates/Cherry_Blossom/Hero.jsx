@@ -1,6 +1,6 @@
-import React from "react";
-import { Github, Linkedin, Twitter, Mail, MapPin } from "lucide-react";
-import { motion } from "framer-motion";
+import React from 'react';
+import { Github, Linkedin, Twitter, Mail, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Hero({ data }) {
   const { personal, socials } = data;
@@ -21,13 +21,9 @@ export default function Hero({ data }) {
             {personal.name}
           </h1>
 
-          <h2 className="mt-4 text-2xl text-rose-600 font-medium">
-            {personal.title}
-          </h2>
+          <h2 className="mt-4 text-2xl text-rose-600 font-medium">{personal.title}</h2>
 
-          <p className="mt-6 text-gray-600 leading-relaxed text-lg">
-            {personal.bio}
-          </p>
+          <p className="mt-6 text-gray-600 leading-relaxed text-lg">{personal.bio}</p>
 
           <div className="flex items-center gap-2 mt-6 text-gray-500">
             <MapPin size={18} />

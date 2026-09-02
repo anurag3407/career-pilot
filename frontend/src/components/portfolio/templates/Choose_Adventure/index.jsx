@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -31,10 +31,13 @@ export default function ChooseAdventurePortfolio() {
 
   const [scene, setScene] = useState('hero');
 
-  const navigate = useCallback((next) => {
-    if (!(next in SECTIONS) || next === scene) return;
-    setScene(next);
-  }, [scene]);
+  const navigate = useCallback(
+    (next) => {
+      if (!(next in SECTIONS) || next === scene) return;
+      setScene(next);
+    },
+    [scene]
+  );
 
   const reset = useCallback(() => {
     setScene('hero');
@@ -43,54 +46,19 @@ export default function ChooseAdventurePortfolio() {
   const renderScene = () => {
     switch (scene) {
       case 'hero':
-        return (
-          <HeroSection
-            data={data}
-            onBegin={() => navigate('about')}
-          />
-        );
+        return <HeroSection data={data} onBegin={() => navigate('about')} />;
       case 'about':
-        return (
-          <AboutSection
-            data={data}
-            onChoice={navigate}
-          />
-        );
+        return <AboutSection data={data} onChoice={navigate} />;
       case 'skills':
-        return (
-          <SkillsSection
-            data={data}
-            onChoice={navigate}
-          />
-        );
+        return <SkillsSection data={data} onChoice={navigate} />;
       case 'projects':
-        return (
-          <ProjectsSection
-            data={data}
-            onChoice={navigate}
-          />
-        );
+        return <ProjectsSection data={data} onChoice={navigate} />;
       case 'experience':
-        return (
-          <ExperienceSection
-            data={data}
-            onChoice={navigate}
-          />
-        );
+        return <ExperienceSection data={data} onChoice={navigate} />;
       case 'testimonials':
-        return (
-          <TestimonialsSection
-            data={data}
-            onChoice={navigate}
-          />
-        );
+        return <TestimonialsSection data={data} onChoice={navigate} />;
       case 'contact':
-        return (
-          <ContactSection
-            data={data}
-            onReset={reset}
-          />
-        );
+        return <ContactSection data={data} onReset={reset} />;
       default:
         return null;
     }
@@ -105,7 +73,8 @@ export default function ChooseAdventurePortfolio() {
           </span>
           <div className="hidden sm:flex items-center gap-1">
             {['about', 'skills', 'projects', 'experience', 'testimonials', 'contact'].map((s) => (
-              <button type="button"
+              <button
+                type="button"
                 key={s}
                 onClick={() => navigate(s)}
                 className={`px-3 py-1 rounded-lg text-xs transition-colors capitalize ${scene === s ? 'bg-violet-800/50 text-white' : 'text-slate-500 hover:text-slate-200'}`}
@@ -114,7 +83,8 @@ export default function ChooseAdventurePortfolio() {
               </button>
             ))}
           </div>
-          <button type="button"
+          <button
+            type="button"
             onClick={reset}
             className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
           >
@@ -124,11 +94,7 @@ export default function ChooseAdventurePortfolio() {
       )}
 
       <AnimatePresence mode="wait">
-        <motion.div
-          key={scene}
-          {...PAGE_TRANSITION}
-          className={scene !== 'hero' ? 'pt-10' : ''}
-        >
+        <motion.div key={scene} {...PAGE_TRANSITION} className={scene !== 'hero' ? 'pt-10' : ''}>
           {renderScene()}
         </motion.div>
       </AnimatePresence>
@@ -137,7 +103,8 @@ export default function ChooseAdventurePortfolio() {
         <div className="fixed bottom-4 right-4 z-50 font-mono">
           <div className="flex gap-1">
             {['about', 'skills', 'projects', 'experience', 'testimonials', 'contact'].map((s) => (
-              <button type="button"
+              <button
+                type="button"
                 key={s}
                 onClick={() => navigate(s)}
                 aria-label={`Go to ${s}`}

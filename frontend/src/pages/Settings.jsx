@@ -1,101 +1,108 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Bell, Mail, MessageSquare, FileText, Save, Sparkles, Github } from 'lucide-react'
-import { notificationApi } from '../services/api'
-import Button from '../components/Button'
-import toast from 'react-hot-toast'
-import { SkeletonList } from '../components/ui/Skeleton'
-import AIProviderSetup from '../components/settings/AIProviderSetup'
-import GithubTokenCard from '../components/settings/GithubTokenCard'
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bell, Mail, MessageSquare, FileText, Save, Sparkles, Github } from 'lucide-react';
+import { notificationApi } from '../services/api';
+import Button from '../components/Button';
+import toast from 'react-hot-toast';
+import { SkeletonList } from '../components/ui/Skeleton';
+import AIProviderSetup from '../components/settings/AIProviderSetup';
+import GithubTokenCard from '../components/settings/GithubTokenCard';
 
 const tabs = [
   { id: 'ai-providers', label: 'AI Providers', icon: Sparkles },
   { id: 'integrations', label: 'Integrations', icon: Github },
   { id: 'notifications', label: 'Notifications', icon: Bell },
-]
+];
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState('ai-providers')
+  const [activeTab, setActiveTab] = useState('ai-providers');
   const [preferences, setPreferences] = useState({
     jobAlerts: true,
     directMessages: true,
     proposalUpdates: true,
-  })
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    loadPreferences()
-  }, [])
+    loadPreferences();
+  }, []);
 
   const loadPreferences = async () => {
     try {
-      const data = await notificationApi.getPreferences()
-      setPreferences(data.preferences)
+      const data = await notificationApi.getPreferences();
+      setPreferences(data.preferences);
     } catch (error) {
-      toast.error('Failed to load preferences')
+      toast.error('Failed to load preferences');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleSave = async () => {
-    setSaving(true)
+    setSaving(true);
     try {
-      await notificationApi.updatePreferences(preferences)
-      toast.success('Preferences saved!')
+      await notificationApi.updatePreferences(preferences);
+      toast.success('Preferences saved!');
     } catch (error) {
-      toast.error('Failed to save preferences')
+      toast.error('Failed to save preferences');
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   const Toggle = ({ value, onChange }) => (
     <button
       role="switch"
       aria-checked={value}
       onClick={() => onChange(!value)}
-      className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${value ? 'bg-indigo-500' : 'bg-muted'
-        }`}
+      className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${
+        value ? 'bg-indigo-500' : 'bg-muted'
+      }`}
     >
-      <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${value ? 'left-7' : 'left-1'
-        }`} />
+      <span
+        className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
+          value ? 'left-7' : 'left-1'
+        }`}
+      />
     </button>
-  )
+  );
 
-  if (loading) return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="space-y-6"
-        >
-          <div className="space-y-2 mb-8">
-            <div className="h-9 bg-muted rounded-lg w-1/3 animate-pulse" />
-            <div className="h-4 bg-muted rounded-lg w-2/3 animate-pulse" />
-          </div>
-          <div className="p-6 rounded-2xl bg-card border border-border space-y-6">
-            <div className="h-5 bg-muted rounded-lg w-1/4 animate-pulse" />
-            <SkeletonList count={3} />
-          </div>
-        </motion.div>
+  if (loading)
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-6"
+          >
+            <div className="space-y-2 mb-8">
+              <div className="h-9 bg-muted rounded-lg w-1/3 animate-pulse" />
+              <div className="h-4 bg-muted rounded-lg w-2/3 animate-pulse" />
+            </div>
+            <div className="p-6 rounded-2xl bg-card border border-border space-y-6">
+              <div className="h-5 bg-muted rounded-lg w-1/4 animate-pulse" />
+              <SkeletonList count={3} />
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </div>
-  )
+    );
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-3xl font-bold text-foreground mb-1">Settings</h1>
-          <p className="text-muted-foreground mb-8">Manage notifications and AI provider configuration</p>
+          <p className="text-muted-foreground mb-8">
+            Manage notifications and AI provider configuration
+          </p>
 
           {/* Tab Navigation */}
           <div className="flex gap-1 p-1 rounded-xl bg-muted/50 border border-border mb-8 w-fit">
-            {tabs.map(tab => (
+            {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -133,7 +140,9 @@ export default function Settings() {
                       <Mail className="w-5 h-5 text-indigo-400" />
                       <div>
                         <p className="text-foreground font-medium">Job Alerts</p>
-                        <p className="text-muted-foreground text-sm">Get notified when new jobs match your alerts</p>
+                        <p className="text-muted-foreground text-sm">
+                          Get notified when new jobs match your alerts
+                        </p>
                       </div>
                     </div>
                     <Toggle
@@ -148,7 +157,9 @@ export default function Settings() {
                       <MessageSquare className="w-5 h-5 text-purple-400" />
                       <div>
                         <p className="text-foreground font-medium">Direct Messages</p>
-                        <p className="text-muted-foreground text-sm">Get notified when you receive a DM</p>
+                        <p className="text-muted-foreground text-sm">
+                          Get notified when you receive a DM
+                        </p>
                       </div>
                     </div>
                     <Toggle
@@ -163,7 +174,9 @@ export default function Settings() {
                       <FileText className="w-5 h-5 text-green-400" />
                       <div>
                         <p className="text-foreground font-medium">Proposal Updates</p>
-                        <p className="text-muted-foreground text-sm">Get notified on fellowship proposal changes</p>
+                        <p className="text-muted-foreground text-sm">
+                          Get notified on fellowship proposal changes
+                        </p>
                       </div>
                     </div>
                     <Toggle
@@ -214,8 +227,8 @@ export default function Settings() {
                     GitHub Integration
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Connect GitHub to power the GitHub-Powered Portfolio Builder
-                    and unlock private repos + 5,000 req/hr.
+                    Connect GitHub to power the GitHub-Powered Portfolio Builder and unlock private
+                    repos + 5,000 req/hr.
                   </p>
                 </div>
                 <GithubTokenCard />
@@ -225,5 +238,5 @@ export default function Settings() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

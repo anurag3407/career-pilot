@@ -68,7 +68,8 @@ export default function Experience({ experience }) {
               <span className="text-[#C41E3A] not-italic">History</span>
             </h2>
             <p className="text-[0.8rem] text-[#1a1a1a]/60 leading-relaxed max-w-xs">
-              A curated chronological record of roles, responsibilities, and key achievements across various organizations.
+              A curated chronological record of roles, responsibilities, and key achievements across
+              various organizations.
             </p>
           </motion.div>
 

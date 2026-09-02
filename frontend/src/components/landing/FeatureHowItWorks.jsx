@@ -3,36 +3,40 @@ import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
 export default function FeatureHowItWorks({
-  heading = "How it works",
-  subheading = "A simple, streamlined process to get you from zero to hired.",
+  heading = 'How it works',
+  subheading = 'A simple, streamlined process to get you from zero to hired.',
   steps = [
     {
-      title: "Upload or Import",
-      description: "Start by uploading your existing resume, importing your LinkedIn profile, or starting from scratch with our intuitive editor.",
-      illustration: null
+      title: 'Upload or Import',
+      description:
+        'Start by uploading your existing resume, importing your LinkedIn profile, or starting from scratch with our intuitive editor.',
+      illustration: null,
     },
     {
-      title: "AI Analysis & Enhancement",
-      description: "Our AI scans your content against millions of successful applications, rewriting bullets and suggesting keywords.",
-      illustration: null
+      title: 'AI Analysis & Enhancement',
+      description:
+        'Our AI scans your content against millions of successful applications, rewriting bullets and suggesting keywords.',
+      illustration: null,
     },
     {
-      title: "Review & Customize",
-      description: "Pick from dozens of premium, ATS-friendly templates. Adjust colors, typography, and spacing with one click.",
-      illustration: null
+      title: 'Review & Customize',
+      description:
+        'Pick from dozens of premium, ATS-friendly templates. Adjust colors, typography, and spacing with one click.',
+      illustration: null,
     },
     {
-      title: "Export & Apply",
-      description: "Download a pixel-perfect PDF and start applying with confidence. Your data is always saved for future updates.",
-      illustration: null
-    }
-  ]
+      title: 'Export & Apply',
+      description:
+        'Download a pixel-perfect PDF and start applying with confidence. Your data is always saved for future updates.',
+      illustration: null,
+    },
+  ],
 }) {
   return (
     <section className="bg-background py-24 sm:py-32 relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 max-w-5xl relative z-10">
         <div className="text-center mb-20">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -40,7 +44,7 @@ export default function FeatureHowItWorks({
           >
             {heading}
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -59,15 +63,15 @@ export default function FeatureHowItWorks({
             {steps.map((step, idx) => {
               const isEven = idx % 2 === 0;
               return (
-                <motion.div 
+                <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ once: true, margin: '-100px' }}
                   transition={{ duration: 0.6 }}
                   className={cn(
-                    "relative flex flex-col md:flex-row items-center gap-8 md:gap-16",
-                    isEven ? "md:flex-row" : "md:flex-row-reverse"
+                    'relative flex flex-col md:flex-row items-center gap-8 md:gap-16',
+                    isEven ? 'md:flex-row' : 'md:flex-row-reverse'
                   )}
                 >
                   {/* Number Indicator */}
@@ -76,17 +80,26 @@ export default function FeatureHowItWorks({
                   </div>
 
                   {/* Text Content */}
-                  <div className={cn("flex-1 pl-20 md:pl-0", isEven ? "md:text-right md:pr-12" : "md:text-left md:pl-12")}>
+                  <div
+                    className={cn(
+                      'flex-1 pl-20 md:pl-0',
+                      isEven ? 'md:text-right md:pr-12' : 'md:text-left md:pl-12'
+                    )}
+                  >
                     <h3 className="text-2xl font-semibold text-foreground mb-4">{step.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed text-lg">{step.description}</p>
+                    <p className="text-muted-foreground leading-relaxed text-lg">
+                      {step.description}
+                    </p>
                   </div>
 
                   {/* Illustration/Image Content */}
-                  <div className={cn("flex-1 w-full pl-20 md:pl-0", isEven ? "md:pl-12" : "md:pr-12")}>
+                  <div
+                    className={cn('flex-1 w-full pl-20 md:pl-0', isEven ? 'md:pl-12' : 'md:pr-12')}
+                  >
                     <div className="relative rounded-2xl overflow-hidden border border-border bg-card/50 backdrop-blur-sm aspect-[4/3] flex items-center justify-center group hover:border-primary/50 transition-colors">
                       {/* Subtle hover glow */}
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-secondary/0 group-hover:from-primary/10 group-hover:to-secondary/10 transition-colors duration-500" />
-                      
+
                       {step.illustration ? (
                         step.illustration
                       ) : (

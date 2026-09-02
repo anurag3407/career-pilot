@@ -37,7 +37,6 @@ export default function Skills() {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(10,9,14,0.9),rgba(10,9,14,0.9)),url('https://www.transparenttextures.com/patterns/black-scales.png')] pointer-events-none opacity-50" />
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
-        
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-16 relative">
           <div className="flex items-center gap-4 mb-3">
@@ -66,17 +65,25 @@ export default function Skills() {
         {/* Skills grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
           {data.map((skillGroup, index) => {
-            const categoryIcon = index % 3 === 0 ? <Zap className="w-5 h-5 text-sky-400" /> : 
-                                 index % 3 === 1 ? <Flame className="w-5 h-5 text-rose-400" /> : 
-                                 <Wand2 className="w-5 h-5 text-purple-400" />;
-            
-            const badgeColor = index % 3 === 0 ? "border-sky-500/50 bg-sky-950/30 text-sky-400" :
-                               index % 3 === 1 ? "border-rose-500/50 bg-rose-950/30 text-rose-400" :
-                               "border-purple-500/50 bg-purple-950/30 text-purple-400";
-            
+            const categoryIcon =
+              index % 3 === 0 ? (
+                <Zap className="w-5 h-5 text-sky-400" />
+              ) : index % 3 === 1 ? (
+                <Flame className="w-5 h-5 text-rose-400" />
+              ) : (
+                <Wand2 className="w-5 h-5 text-purple-400" />
+              );
+
+            const badgeColor =
+              index % 3 === 0
+                ? 'border-sky-500/50 bg-sky-950/30 text-sky-400'
+                : index % 3 === 1
+                  ? 'border-rose-500/50 bg-rose-950/30 text-rose-400'
+                  : 'border-purple-500/50 bg-purple-950/30 text-purple-400';
+
             return (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="bg-[#121118]/90 border border-[#2b221a] hover:border-amber-500/50 rounded-xl p-6 shadow-[0_8px_24px_rgba(0,0,0,0.6)] relative group transition-all duration-300"
               >
                 {/* Decorative Elements */}
@@ -94,7 +101,7 @@ export default function Skills() {
 
                 <div className="flex flex-wrap gap-3">
                   {(skillGroup.items || skillGroup.technologies || []).map((skill, i) => (
-                    <span 
+                    <span
                       key={i}
                       className={`font-fantasy-game text-[10px] px-3 py-1.5 border rounded uppercase tracking-wider flex items-center gap-1 ${badgeColor} hover:scale-105 transition-transform cursor-default shadow-[inset_0_0_8px_rgba(0,0,0,0.5)]`}
                     >

@@ -3,9 +3,36 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 const depthPresets = {
   soft: { x: 55, y: 80, scale: 0.9, rotateX: 10, rotateY: 8, rotateZ: -1, blur: '16px', z: -100 },
-  medium: { x: 80, y: 120, scale: 0.82, rotateX: 16, rotateY: 12, rotateZ: -2, blur: '22px', z: -140 },
-  heavy: { x: 105, y: 160, scale: 0.74, rotateX: 22, rotateY: 18, rotateZ: -3, blur: '30px', z: -190 },
-  extreme: { x: 130, y: 190, scale: 0.68, rotateX: 27, rotateY: 24, rotateZ: -4, blur: '36px', z: -250 },
+  medium: {
+    x: 80,
+    y: 120,
+    scale: 0.82,
+    rotateX: 16,
+    rotateY: 12,
+    rotateZ: -2,
+    blur: '22px',
+    z: -140,
+  },
+  heavy: {
+    x: 105,
+    y: 160,
+    scale: 0.74,
+    rotateX: 22,
+    rotateY: 18,
+    rotateZ: -3,
+    blur: '30px',
+    z: -190,
+  },
+  extreme: {
+    x: 130,
+    y: 190,
+    scale: 0.68,
+    rotateX: 27,
+    rotateY: 24,
+    rotateZ: -4,
+    blur: '36px',
+    z: -250,
+  },
 };
 
 export const ScrollReveal = ({

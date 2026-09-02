@@ -1,23 +1,26 @@
 import React from 'react';
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import { Briefcase, Calendar, MapPin, Activity } from 'lucide-react';
 
 export default function Experience() {
   const { portfolioData: data } = usePortfolio();
-  
+
   if (!data?.experience || data.experience.length === 0) return null;
 
   return (
-    <section id="experience" className="relative w-full bg-[#030e1a] py-24 px-6 md:px-16 font-mono text-cyan-50 border-t border-cyan-900/50">
+    <section
+      id="experience"
+      className="relative w-full bg-[#030e1a] py-24 px-6 md:px-16 font-mono text-cyan-50 border-t border-cyan-900/50"
+    >
       {/* Blueprint Grid Background */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none opacity-[0.1]"
         style={{
           backgroundImage: `
             linear-gradient(to right, #0ea5e9 1px, transparent 1px),
             linear-gradient(to bottom, #0ea5e9 1px, transparent 1px)
           `,
-          backgroundSize: '40px 40px'
+          backgroundSize: '40px 40px',
         }}
       ></div>
 
@@ -29,7 +32,10 @@ export default function Experience() {
             <span>Elevation: Work History</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-light uppercase tracking-tight text-cyan-50">
-            Professional <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Milestones</span>
+            Professional{' '}
+            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+              Milestones
+            </span>
           </h2>
         </div>
 
@@ -55,7 +61,9 @@ export default function Experience() {
 
                 <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6 border-b border-cyan-900/30 pb-6">
                   <div>
-                    <h3 className="text-xl md:text-2xl font-bold text-cyan-300 tracking-wide uppercase">{exp.role}</h3>
+                    <h3 className="text-xl md:text-2xl font-bold text-cyan-300 tracking-wide uppercase">
+                      {exp.role}
+                    </h3>
                     <div className="text-cyan-500 mt-1 flex items-center gap-2">
                       <Briefcase className="w-4 h-4" />
                       <span className="text-sm tracking-wider">{exp.company}</span>
@@ -77,12 +85,17 @@ export default function Experience() {
 
                 <div className="space-y-3">
                   {exp.description && (
-                    <p className="text-sm md:text-base text-cyan-100/70 leading-relaxed mb-4">{exp.description}</p>
+                    <p className="text-sm md:text-base text-cyan-100/70 leading-relaxed mb-4">
+                      {exp.description}
+                    </p>
                   )}
                   {exp.highlights && exp.highlights.length > 0 && (
                     <ul className="space-y-2">
                       {exp.highlights.map((highlight, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm text-cyan-200/60 leading-relaxed">
+                        <li
+                          key={idx}
+                          className="flex items-start gap-3 text-sm text-cyan-200/60 leading-relaxed"
+                        >
                           <Activity className="w-4 h-4 text-cyan-700 mt-0.5 shrink-0" />
                           <span>{highlight}</span>
                         </li>

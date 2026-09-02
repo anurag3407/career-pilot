@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
@@ -197,10 +197,7 @@ function Hero() {
           </a>
         </motion.div>
 
-        <motion.div
-          variants={fadeUp}
-          className="mt-16 animate-bounce"
-        >
+        <motion.div variants={fadeUp} className="mt-16 animate-bounce">
           <ChevronDown size={24} className="text-purple-400/60 mx-auto" />
         </motion.div>
       </motion.div>
@@ -247,14 +244,16 @@ function About() {
               </div>
 
               <div className="md:col-span-2">
-                <p className="text-gray-300 leading-relaxed text-lg mb-6">
-                  {data.personal.bio}
-                </p>
+                <p className="text-gray-300 leading-relaxed text-lg mb-6">{data.personal.bio}</p>
 
                 <div className="grid grid-cols-3 gap-4">
                   {[
                     { value: `${data.stats.yearsExperience}+`, label: 'Years', icon: Briefcase },
-                    { value: `${data.stats.projectsCompleted}+`, label: 'Projects', icon: FolderOpen },
+                    {
+                      value: `${data.stats.projectsCompleted}+`,
+                      label: 'Projects',
+                      icon: FolderOpen,
+                    },
                     { value: `${data.stats.happyClients}+`, label: 'Clients', icon: Star },
                   ].map(({ value, label, icon: Icon }) => (
                     <div
@@ -296,10 +295,7 @@ function Skills() {
           <div className="flex-1 h-px bg-gradient-to-r from-purple-500/40 to-transparent" />
         </motion.div>
 
-        <motion.div
-          variants={stagger}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
+        <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {categories.map((cat) => (
             <motion.div key={cat} variants={fadeUp}>
               <VaultCard className="p-6">
@@ -476,10 +472,7 @@ function Testimonials() {
           <div className="flex-1 h-px bg-gradient-to-r from-purple-500/40 to-transparent" />
         </motion.div>
 
-        <motion.div
-          variants={stagger}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
+        <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {(data.testimonials || []).map((t, index) => (
             <motion.div key={index} variants={fadeUp}>
               <VaultCard className="p-6 h-full flex flex-col">
@@ -552,7 +545,10 @@ function Contact() {
               placeholder="Your Message"
               className="w-full px-4 py-3 rounded-lg bg-purple-500/5 border border-purple-500/20 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500/50 transition-all mb-4 resize-none"
             />
-            <button type="button" className="w-full py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+            <button
+              type="button"
+              className="w-full py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+            >
               <Send size={16} className="inline mr-2" />
               Send Message
             </button>

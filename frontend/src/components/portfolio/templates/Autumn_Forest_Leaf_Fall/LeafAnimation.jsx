@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 
 const leaves = [
   // SVG paths for different types of leaves
-  "M10,0 C15,5 20,10 15,15 C10,20 5,15 0,10 C5,5 5,0 10,0 Z", // Basic leaf
-  "M10,0 C12,4 18,6 18,10 C18,15 10,20 10,20 C10,20 2,15 2,10 C2,6 8,4 10,0 Z", // Pointy leaf
-  "M10,0 C16,2 20,8 15,14 C10,20 8,16 5,12 C2,8 4,2 10,0 Z" // Round leaf
+  'M10,0 C15,5 20,10 15,15 C10,20 5,15 0,10 C5,5 5,0 10,0 Z', // Basic leaf
+  'M10,0 C12,4 18,6 18,10 C18,15 10,20 10,20 C10,20 2,15 2,10 C2,6 8,4 10,0 Z', // Pointy leaf
+  'M10,0 C16,2 20,8 15,14 C10,20 8,16 5,12 C2,8 4,2 10,0 Z', // Round leaf
 ];
 
 const colors = ['#d97706', '#ea580c', '#c2410c', '#b45309', '#a16207'];
@@ -17,13 +17,13 @@ export default function LeafAnimation() {
     // Only access window after mount to avoid SSR issues
     setWindowDimensions({
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     });
 
     const handleResize = () => {
       setWindowDimensions({
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
       });
     };
 
@@ -64,7 +64,7 @@ export default function LeafAnimation() {
             transition={{
               duration: duration,
               repeat: Infinity,
-              ease: "linear",
+              ease: 'linear',
               delay: delay,
             }}
           >

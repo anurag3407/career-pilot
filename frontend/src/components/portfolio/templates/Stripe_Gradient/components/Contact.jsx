@@ -1,36 +1,29 @@
-import {
-  Github,
-  Linkedin,
-  Twitter,
-  Mail,
-  ArrowRight,
-} from "lucide-react";
+import { Github, Linkedin, Twitter, Mail, ArrowRight } from 'lucide-react';
 
-import { motion } from "framer-motion";
-import data from "../../../../../data/dummy_data.json";
+import { motion } from 'framer-motion';
+import data from '../../../../../data/dummy_data.json';
 
 export default function Contact() {
   const socials = [
     {
       icon: Github,
       link: data.socials.github,
-      label: "GitHub",
+      label: 'GitHub',
     },
     {
       icon: Linkedin,
       link: data.socials.linkedin,
-      label: "LinkedIn",
+      label: 'LinkedIn',
     },
     {
       icon: Twitter,
       link: data.socials.twitter,
-      label: "Twitter",
+      label: 'Twitter',
     },
   ];
 
   return (
     <section className="relative py-32 px-6 overflow-hidden">
-
       {/* Background Glow */}
       <div className="absolute inset-0 -z-10">
         <div
@@ -49,7 +42,6 @@ export default function Contact() {
       </div>
 
       <div className="max-w-5xl mx-auto">
-
         <motion.div
           initial={{
             opacity: 0,
@@ -74,7 +66,6 @@ export default function Contact() {
             text-center
           "
         >
-
           <span
             className="
               inline-block
@@ -101,9 +92,7 @@ export default function Contact() {
             "
           >
             Let's Build
-            <span className="text-indigo-400">
-              {" "}Something Amazing
-            </span>
+            <span className="text-indigo-400"> Something Amazing</span>
           </h2>
 
           <p
@@ -115,9 +104,7 @@ export default function Contact() {
               mx-auto
             "
           >
-            Looking for a developer,
-            collaborator, or open-source
-            contributor? I'd love to hear
+            Looking for a developer, collaborator, or open-source contributor? I'd love to hear
             about your project.
           </p>
 
@@ -185,14 +172,11 @@ export default function Contact() {
                   "
                 >
                   <Icon size={18} />
-                  <span>
-                    {social.label}
-                  </span>
+                  <span>{social.label}</span>
                 </motion.a>
               );
             })}
           </div>
-
         </motion.div>
       </div>
     </section>

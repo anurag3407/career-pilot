@@ -1,7 +1,7 @@
-import { useRef, useEffect } from "react";
-import createGlobe from "cobe";
-import { cn } from "@/lib/utils";
-import { useTheme } from "../../hooks/useTheme";
+import { useRef, useEffect } from 'react';
+import createGlobe from 'cobe';
+import { cn } from '@/lib/utils';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function Globe({ className }) {
   const canvasRef = useRef(null);
@@ -18,10 +18,10 @@ export default function Globe({ className }) {
         width = canvasRef.current.offsetWidth;
       }
     };
-    window.addEventListener("resize", onResize);
+    window.addEventListener('resize', onResize);
     onResize();
 
-    const isDark = theme === "dark";
+    const isDark = theme === 'dark';
 
     const globe = createGlobe(canvasRef.current, {
       devicePixelRatio: 2,
@@ -56,15 +56,15 @@ export default function Globe({ className }) {
 
     return () => {
       globe.destroy();
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener('resize', onResize);
     };
   }, [theme]);
 
   return (
     <canvas
       ref={canvasRef}
-      style={{ width: 600, height: 600, maxWidth: "100%", aspectRatio: 1 }}
-      className={cn("", className)}
+      style={{ width: 600, height: 600, maxWidth: '100%', aspectRatio: 1 }}
+      className={cn('', className)}
     />
   );
 }

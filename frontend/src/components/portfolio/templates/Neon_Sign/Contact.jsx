@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { motion as Motion } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, Send, MessageSquare } from "lucide-react";
+import React, { useState } from 'react';
+import { motion as Motion } from 'framer-motion';
+import { Github, Linkedin, Twitter, Mail, Send, MessageSquare } from 'lucide-react';
 
 export default function Contact({ data }) {
   const { socials, personal } = data;
@@ -8,32 +8,32 @@ export default function Contact({ data }) {
 
   const socialLinks = [
     {
-      key: "github",
+      key: 'github',
       icon: Github,
-      label: "GITHUB",
+      label: 'GITHUB',
       url: socials.github,
-      color: "#b026ff",
+      color: '#b026ff',
     },
     {
-      key: "linkedin",
+      key: 'linkedin',
       icon: Linkedin,
-      label: "LINKEDIN",
+      label: 'LINKEDIN',
       url: socials.linkedin,
-      color: "#00d4ff",
+      color: '#00d4ff',
     },
     {
-      key: "twitter",
+      key: 'twitter',
       icon: Twitter,
-      label: "TWITTER",
+      label: 'TWITTER',
       url: socials.twitter,
-      color: "#00ffff",
+      color: '#00ffff',
     },
     {
-      key: "email",
+      key: 'email',
       icon: Mail,
-      label: "EMAIL",
+      label: 'EMAIL',
       url: `mailto:${socials.email}`,
-      color: "#ff2bd6",
+      color: '#ff2bd6',
     },
   ];
 
@@ -56,15 +56,15 @@ export default function Contact({ data }) {
           <div
             className="inline-block px-6 py-3 rounded border-2 border-cyan-400 mb-4"
             style={{
-              background: "rgba(0,212,255,0.05)",
-              boxShadow: "0 0 20px #00d4ff, 0 0 40px #00d4ff40",
+              background: 'rgba(0,212,255,0.05)',
+              boxShadow: '0 0 20px #00d4ff, 0 0 40px #00d4ff40',
             }}
           >
             <h2
               className="text-3xl md:text-4xl font-black uppercase tracking-widest text-cyan-300"
               style={{
                 fontFamily: "'Courier New', monospace",
-                textShadow: "0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff",
+                textShadow: '0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff',
               }}
             >
               ✉ CONTACT ✉
@@ -73,8 +73,8 @@ export default function Contact({ data }) {
           <div
             className="w-40 h-1 mx-auto mt-2 rounded-full"
             style={{
-              background: "linear-gradient(90deg, transparent, #00d4ff, transparent)",
-              boxShadow: "0 0 10px #00d4ff",
+              background: 'linear-gradient(90deg, transparent, #00d4ff, transparent)',
+              boxShadow: '0 0 10px #00d4ff',
             }}
           />
         </Motion.div>
@@ -92,32 +92,34 @@ export default function Contact({ data }) {
             <div
               className="rounded-2xl border-2 border-pink-500 p-8 relative overflow-hidden"
               style={{
-                background: "rgba(255,43,214,0.04)",
-                backdropFilter: "blur(10px)",
-                boxShadow: "0 0 30px #ff2bd620",
+                background: 'rgba(255,43,214,0.04)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 0 30px #ff2bd620',
               }}
             >
               {/* Neon corner dots */}
-              {["top-3 left-3", "top-3 right-3", "bottom-3 left-3", "bottom-3 right-3"].map((pos, i) => (
-                <div
-                  key={i}
-                  className={`absolute ${pos} w-2 h-2 rounded-full bg-pink-400`}
-                  style={{ boxShadow: "0 0 6px #ff2bd6, 0 0 12px #ff2bd6" }}
-                />
-              ))}
+              {['top-3 left-3', 'top-3 right-3', 'bottom-3 left-3', 'bottom-3 right-3'].map(
+                (pos, i) => (
+                  <div
+                    key={i}
+                    className={`absolute ${pos} w-2 h-2 rounded-full bg-pink-400`}
+                    style={{ boxShadow: '0 0 6px #ff2bd6, 0 0 12px #ff2bd6' }}
+                  />
+                )
+              )}
 
               <div className="flex items-start gap-3 mb-4">
                 <MessageSquare
                   size={24}
                   className="text-pink-400 mt-1 shrink-0"
-                  style={{ filter: "drop-shadow(0 0 8px #ff2bd6)" }}
+                  style={{ filter: 'drop-shadow(0 0 8px #ff2bd6)' }}
                 />
                 <div>
                   <h3
                     className="text-xl font-black uppercase tracking-wide text-pink-300 mb-2"
                     style={{
                       fontFamily: "'Courier New', monospace",
-                      textShadow: "0 0 10px #ff2bd6",
+                      textShadow: '0 0 10px #ff2bd6',
                     }}
                   >
                     LET'S BUILD SOMETHING
@@ -126,8 +128,8 @@ export default function Contact({ data }) {
                     className="text-gray-400 text-sm leading-relaxed"
                     style={{ fontFamily: "'Courier New', monospace" }}
                   >
-                    Have a project in mind? I'm always open to new opportunities,
-                    collaborations, and exciting challenges. Let's make something amazing.
+                    Have a project in mind? I'm always open to new opportunities, collaborations,
+                    and exciting challenges. Let's make something amazing.
                   </p>
                 </div>
               </div>
@@ -139,18 +141,19 @@ export default function Contact({ data }) {
                 className="mt-4 flex items-center justify-center gap-3 w-full py-3 rounded-lg border-2 border-pink-400 text-pink-300 font-black text-sm uppercase tracking-widest cursor-pointer transition-all"
                 style={{
                   fontFamily: "'Courier New', monospace",
-                  background: "rgba(255,43,214,0.08)",
-                  boxShadow: "0 0 15px #ff2bd640",
-                  textShadow: "0 0 8px #ff2bd6",
+                  background: 'rgba(255,43,214,0.08)',
+                  boxShadow: '0 0 15px #ff2bd640',
+                  textShadow: '0 0 8px #ff2bd6',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 0 30px #ff2bd6, inset 0 0 20px rgba(255,43,214,0.1)";
+                  e.currentTarget.style.boxShadow =
+                    '0 0 30px #ff2bd6, inset 0 0 20px rgba(255,43,214,0.1)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "0 0 15px #ff2bd640";
+                  e.currentTarget.style.boxShadow = '0 0 15px #ff2bd640';
                 }}
               >
-                <Send size={16} style={{ filter: "drop-shadow(0 0 4px #ff2bd6)" }} />
+                <Send size={16} style={{ filter: 'drop-shadow(0 0 4px #ff2bd6)' }} />
                 SEND A MESSAGE
               </Motion.a>
             </div>
@@ -181,8 +184,8 @@ export default function Contact({ data }) {
                     size={28}
                     style={{
                       color,
-                      filter: `drop-shadow(0 0 ${hoveredSocial === key ? "12px" : "6px"} ${color})`,
-                      transition: "filter 0.3s",
+                      filter: `drop-shadow(0 0 ${hoveredSocial === key ? '12px' : '6px'} ${color})`,
+                      transition: 'filter 0.3s',
                     }}
                   />
                   <span
@@ -190,8 +193,8 @@ export default function Contact({ data }) {
                     style={{
                       fontFamily: "'Courier New', monospace",
                       color,
-                      textShadow: `0 0 ${hoveredSocial === key ? "10px" : "4px"} ${color}`,
-                      transition: "text-shadow 0.3s",
+                      textShadow: `0 0 ${hoveredSocial === key ? '10px' : '4px'} ${color}`,
+                      transition: 'text-shadow 0.3s',
                     }}
                   >
                     {label}
@@ -213,17 +216,17 @@ export default function Contact({ data }) {
             <div
               className="rounded-2xl border-4 border-orange-400 p-8 flex flex-col items-center justify-center gap-4 relative overflow-hidden"
               style={{
-                background: "rgba(255,140,0,0.04)",
-                boxShadow: "0 0 30px #ff8c00, 0 0 60px #ff8c0030",
-                minHeight: "200px",
+                background: 'rgba(255,140,0,0.04)',
+                boxShadow: '0 0 30px #ff8c00, 0 0 60px #ff8c0030',
+                minHeight: '200px',
               }}
             >
               <Motion.div
                 animate={{
                   textShadow: [
-                    "0 0 10px #ff8c00, 0 0 20px #ff8c00, 0 0 40px #ff8c00",
-                    "0 0 20px #ff8c00, 0 0 40px #ff8c00, 0 0 80px #ff8c00",
-                    "0 0 10px #ff8c00, 0 0 20px #ff8c00, 0 0 40px #ff8c00",
+                    '0 0 10px #ff8c00, 0 0 20px #ff8c00, 0 0 40px #ff8c00',
+                    '0 0 20px #ff8c00, 0 0 40px #ff8c00, 0 0 80px #ff8c00',
+                    '0 0 10px #ff8c00, 0 0 20px #ff8c00, 0 0 40px #ff8c00',
                   ],
                 }}
                 transition={{ duration: 1.5, repeat: Infinity }}
@@ -234,7 +237,7 @@ export default function Contact({ data }) {
               </Motion.div>
               <div
                 className="text-orange-400 text-xs font-black tracking-[0.4em] uppercase"
-                style={{ fontFamily: "'Courier New', monospace", textShadow: "0 0 8px #ff8c00" }}
+                style={{ fontFamily: "'Courier New', monospace", textShadow: '0 0 8px #ff8c00' }}
               >
                 FOR OPPORTUNITIES
               </div>
@@ -243,7 +246,7 @@ export default function Contact({ data }) {
                 animate={{ opacity: [1, 0, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
                 className="w-3 h-3 rounded-full bg-orange-400"
-                style={{ boxShadow: "0 0 10px #ff8c00" }}
+                style={{ boxShadow: '0 0 10px #ff8c00' }}
               />
             </div>
 
@@ -251,16 +254,16 @@ export default function Contact({ data }) {
             <div
               className="rounded-2xl border border-cyan-500 p-6 relative overflow-hidden"
               style={{
-                background: "rgba(0,212,255,0.04)",
-                backdropFilter: "blur(10px)",
-                boxShadow: "0 0 20px #00d4ff20",
+                background: 'rgba(0,212,255,0.04)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 0 20px #00d4ff20',
               }}
             >
               <h4
                 className="text-cyan-300 font-black text-xs tracking-widest uppercase mb-4"
                 style={{
                   fontFamily: "'Courier New', monospace",
-                  textShadow: "0 0 6px #00d4ff",
+                  textShadow: '0 0 6px #00d4ff',
                 }}
               >
                 DIRECT CONTACT
@@ -268,9 +271,19 @@ export default function Contact({ data }) {
 
               <div className="flex flex-col gap-3">
                 {[
-                  { icon: Mail, label: socials.email, href: `mailto:${socials.email}`, color: "#ff2bd6" },
-                  { icon: Github, label: "GitHub Profile", href: socials.github, color: "#b026ff" },
-                  { icon: Linkedin, label: "LinkedIn Profile", href: socials.linkedin, color: "#00d4ff" },
+                  {
+                    icon: Mail,
+                    label: socials.email,
+                    href: `mailto:${socials.email}`,
+                    color: '#ff2bd6',
+                  },
+                  { icon: Github, label: 'GitHub Profile', href: socials.github, color: '#b026ff' },
+                  {
+                    icon: Linkedin,
+                    label: 'LinkedIn Profile',
+                    href: socials.linkedin,
+                    color: '#00d4ff',
+                  },
                 ].map(({ icon: Icon, label, href, color }, i) => (
                   <Motion.a
                     key={i}
@@ -281,10 +294,7 @@ export default function Contact({ data }) {
                     className="flex items-center gap-3 py-2 px-3 rounded-lg border border-white/5 hover:border-white/15 transition-all duration-300 cursor-pointer group"
                     style={{ background: `${color}05` }}
                   >
-                    <Icon
-                      size={16}
-                      style={{ color, filter: `drop-shadow(0 0 4px ${color})` }}
-                    />
+                    <Icon size={16} style={{ color, filter: `drop-shadow(0 0 4px ${color})` }} />
                     <span
                       className="text-gray-400 group-hover:text-gray-200 text-xs font-medium transition-colors truncate"
                       style={{ fontFamily: "'Courier New', monospace" }}
@@ -302,15 +312,12 @@ export default function Contact({ data }) {
                 className="text-gray-600 text-xs tracking-widest uppercase"
                 style={{ fontFamily: "'Courier New', monospace" }}
               >
-                crafted with{" "}
-                <span className="text-pink-500" style={{ textShadow: "0 0 6px #ff2bd6" }}>
+                crafted with{' '}
+                <span className="text-pink-500" style={{ textShadow: '0 0 6px #ff2bd6' }}>
                   ♥
-                </span>{" "}
-                by{" "}
-                <span
-                  className="text-cyan-500"
-                  style={{ textShadow: "0 0 6px #00d4ff" }}
-                >
+                </span>{' '}
+                by{' '}
+                <span className="text-cyan-500" style={{ textShadow: '0 0 6px #00d4ff' }}>
                   {personal.name}
                 </span>
               </p>

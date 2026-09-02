@@ -5,34 +5,33 @@ import { projectVisualizerApi } from '../../services/api';
 
 const syntaxHighlight = (code) => {
   if (!code) return '';
-  
+
   // Basic Regex highlighters
-  let html = code
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-    
+  let html = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
   // Keywords (cyan)
-  const keywords = /\b(const|let|var|function|class|import|export|return|if|else|for|while|async|await|try|catch|switch|case|default|break|continue|new|this|typeof|instanceof)\b/g;
+  const keywords =
+    /\b(const|let|var|function|class|import|export|return|if|else|for|while|async|await|try|catch|switch|case|default|break|continue|new|this|typeof|instanceof)\b/g;
   html = html.replace(keywords, '<span class="text-cyan-400">$1</span>');
-  
+
   // Strings (green)
   const strings = /(&quot;.*?&quot;|&#39;.*?&#39;|`.*?`)/g;
   html = html.replace(strings, '<span class="text-green-400">$1</span>');
-  
+
   // Numbers (orange)
   const numbers = /\b(\d+)\b/g;
   html = html.replace(numbers, '<span class="text-orange-400">$1</span>');
-  
+
   // Comments (muted)
   const comments = /(\/\/.*|\/\*[\s\S]*?\*\/)/g;
   html = html.replace(comments, '<span class="text-slate-500 italic">$1</span>');
-  
+
   return html;
 };
 
 const EnhancedFileViewer = () => {
-  const { selectedFile, sessionId, setInspectorOpen, setSelectedFile } = useProjectVisualizerStore();
+  const { selectedFile, sessionId, setInspectorOpen, setSelectedFile } =
+    useProjectVisualizerStore();
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -40,12 +39,15 @@ const EnhancedFileViewer = () => {
 
   useEffect(() => {
     if (!selectedFile || !sessionId) return;
-    
+
     const fetchContent = async () => {
       setLoading(true);
       setError(null);
       try {
-        const text = await projectVisualizerApi.getFileContent(sessionId, selectedFile.relativePath);
+        const text = await projectVisualizerApi.getFileContent(
+          sessionId,
+          selectedFile.relativePath
+        );
         setContent(text);
       } catch (err) {
         setError('Failed to load file content.');
@@ -54,7 +56,7 @@ const EnhancedFileViewer = () => {
         setLoading(false);
       }
     };
-    
+
     fetchContent();
   }, [selectedFile, sessionId]);
 
@@ -75,7 +77,7 @@ const EnhancedFileViewer = () => {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-white/10 bg-[#0f172a]">
         <div className="flex items-center gap-3 overflow-hidden">
-          <button 
+          <button
             onClick={handleBack}
             className="p-1 hover:bg-white/10 rounded mr-1 text-slate-400 hover:text-white"
             title="Back to Module"
@@ -92,7 +94,7 @@ const EnhancedFileViewer = () => {
             </span>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2 shrink-0 ml-4">
           <button
             onClick={handleCopy}
@@ -125,7 +127,9 @@ const EnhancedFileViewer = () => {
             {/* Line Numbers */}
             <div className="flex flex-col items-end px-4 py-4 select-none border-r border-white/5 bg-[#0a0f1c] text-slate-600">
               {content.split('\n').map((_, i) => (
-                <span key={i} className="px-1">{i + 1}</span>
+                <span key={i} className="px-1">
+                  {i + 1}
+                </span>
               ))}
             </div>
             {/* Code */}

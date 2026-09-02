@@ -31,7 +31,7 @@ describe('No dangerouslySetInnerHTML in portfolio templates', () => {
   test('scans all template files and checks for dangerouslySetInnerHTML', () => {
     const templatesDir = path.resolve(__dirname, '../components/portfolio/templates');
     const files = getFilesRecursively(templatesDir);
-    
+
     // Ensure we actually found template files
     expect(files.length).toBeGreaterThan(0);
 
@@ -40,18 +40,21 @@ describe('No dangerouslySetInnerHTML in portfolio templates', () => {
     files.forEach((file) => {
       const relativePath = path.relative(templatesDir, file).replace(/\\/g, '/');
       const content = fs.readFileSync(file, 'utf8');
-      
+
       if (content.includes('dangerouslySetInnerHTML')) {
-        const isWhitelisted = WHITELISTED_FILES.some(whiteFile => {
+        const isWhitelisted = WHITELISTED_FILES.some((whiteFile) => {
           return relativePath === whiteFile || file.endsWith(whiteFile);
         });
-        
+
         if (!isWhitelisted) {
           violations.push(relativePath);
         }
       }
     });
 
-    expect(violations, `Found dangerouslySetInnerHTML in the following files: ${violations.join(', ')}`).toEqual([]);
+    expect(
+      violations,
+      `Found dangerouslySetInnerHTML in the following files: ${violations.join(', ')}`
+    ).toEqual([]);
   });
 });

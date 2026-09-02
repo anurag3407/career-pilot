@@ -1,14 +1,5 @@
-import React from "react";
-import {
-  Sparkles,
-  Crown,
-  Download,
-  ArrowRight,
-  Star,
-  Coins,
-  Trophy,
-  Gem,
-} from "lucide-react";
+import React from 'react';
+import { Sparkles, Crown, Download, ArrowRight, Star, Coins, Trophy, Gem } from 'lucide-react';
 
 export default function ResumeCTA() {
   return (
@@ -34,7 +25,6 @@ export default function ResumeCTA() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <div className="relative overflow-hidden rounded-[42px] border border-yellow-400/20 bg-white/[0.04] p-10 shadow-[0_0_80px_rgba(255,215,0,0.08)] backdrop-blur-2xl md:p-16">
-          
           {/* Neon Border */}
           <div className="absolute inset-0 rounded-[42px] border border-yellow-400/10"></div>
 
@@ -64,15 +54,17 @@ export default function ResumeCTA() {
             </h2>
 
             <p className="mx-auto mt-8 max-w-3xl text-lg leading-relaxed text-gray-300 md:text-xl">
-              Step into the spotlight with a dazzling Vegas-inspired resume
-              designed to attract recruiters, unlock opportunities, and make
-              your professional brand unforgettable.
+              Step into the spotlight with a dazzling Vegas-inspired resume designed to attract
+              recruiters, unlock opportunities, and make your professional brand unforgettable.
             </p>
           </div>
 
           {/* CTA Buttons */}
           <div className="mt-16 flex flex-col items-center justify-center gap-5 sm:flex-row">
-            <button type="button" className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 px-9 py-4 text-lg font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-105 hover:shadow-[0_0_35px_rgba(250,204,21,0.6)]">
+            <button
+              type="button"
+              className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 px-9 py-4 text-lg font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-105 hover:shadow-[0_0_35px_rgba(250,204,21,0.6)]"
+            >
               Download Resume
               <Download
                 size={22}
@@ -80,7 +72,10 @@ export default function ResumeCTA() {
               />
             </button>
 
-            <button type="button" className="group flex items-center gap-3 rounded-full border border-yellow-400/40 bg-white/5 px-9 py-4 text-lg font-black uppercase tracking-wide text-yellow-300 backdrop-blur-md transition-all duration-300 hover:border-yellow-300 hover:bg-yellow-400 hover:text-black">
+            <button
+              type="button"
+              className="group flex items-center gap-3 rounded-full border border-yellow-400/40 bg-white/5 px-9 py-4 text-lg font-black uppercase tracking-wide text-yellow-300 backdrop-blur-md transition-all duration-300 hover:border-yellow-300 hover:bg-yellow-400 hover:text-black"
+            >
               Explore Portfolio
               <ArrowRight
                 size={22}
@@ -94,18 +89,18 @@ export default function ResumeCTA() {
             {[
               {
                 icon: Trophy,
-                value: "99%",
-                label: "Interview Success",
+                value: '99%',
+                label: 'Interview Success',
               },
               {
                 icon: Crown,
-                value: "24/7",
-                label: "Career Support",
+                value: '24/7',
+                label: 'Career Support',
               },
               {
                 icon: Star,
-                value: "50+",
-                label: "Luxury Templates",
+                value: '50+',
+                label: 'Luxury Templates',
               },
             ].map((item, index) => {
               const Icon = item.icon;
@@ -119,13 +114,9 @@ export default function ResumeCTA() {
                     <Icon className="text-white" size={30} />
                   </div>
 
-                  <h3 className="text-5xl font-black text-yellow-400">
-                    {item.value}
-                  </h3>
+                  <h3 className="text-5xl font-black text-yellow-400">{item.value}</h3>
 
-                  <p className="mt-3 text-lg text-gray-400">
-                    {item.label}
-                  </p>
+                  <p className="mt-3 text-lg text-gray-400">{item.label}</p>
                 </div>
               );
             })}

@@ -1,15 +1,34 @@
 @keyframes submarine-sonar-sweep {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 @keyframes biolume-bubble-rise {
-  0% { transform: translateY(100%) scale(0.6); opacity: 0; }
-  50% { opacity: 0.35; }
-  100% { transform: translateY(-20%) scale(1.1); opacity: 0; }
+  0% {
+    transform: translateY(100%) scale(0.6);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateY(-20%) scale(1.1);
+    opacity: 0;
+  }
 }
 @keyframes hydro-glitch-text {
-  0%, 100% { text-shadow: 0 0 2px rgba(34,211,238,0.3); }
-  50% { text-shadow: 0 0 8px rgba(34,211,238,0.7), 0 0 16px rgba(34,211,238,0.2); }
+  0%,
+  100% {
+    text-shadow: 0 0 2px rgba(34, 211, 238, 0.3);
+  }
+  50% {
+    text-shadow:
+      0 0 8px rgba(34, 211, 238, 0.7),
+      0 0 16px rgba(34, 211, 238, 0.2);
+  }
 }
 .hydro-sonar-sweep {
   animation: submarine-sonar-sweep 6s linear infinite;

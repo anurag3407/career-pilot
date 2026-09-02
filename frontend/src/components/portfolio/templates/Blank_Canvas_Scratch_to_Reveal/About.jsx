@@ -41,10 +41,7 @@ export default function About() {
         >
           {/* Left Column: Avatar & Guide Marks */}
           <div className="lg:col-span-5 flex justify-center">
-            <motion.div
-              variants={itemVariants}
-              className="relative p-6"
-            >
+            <motion.div variants={itemVariants} className="relative p-6">
               {/* Technical Drawing Guide Borders */}
               <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-white/20" />
               <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-white/20" />
@@ -75,7 +72,9 @@ export default function About() {
           {/* Right Column: Bio & Stats */}
           <div className="lg:col-span-7 flex flex-col justify-center text-left">
             <motion.div variants={itemVariants} className="mb-4">
-              <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">[[ 01 // The Story ]]</span>
+              <span className="text-xs font-mono tracking-widest text-slate-400 uppercase">
+                [[ 01 // The Story ]]
+              </span>
             </motion.div>
 
             <motion.h2
@@ -101,30 +100,34 @@ export default function About() {
                 {
                   value: `${stats.yearsExperience}+`,
                   label: 'Years Active',
-                  icon: Briefcase
+                  icon: Briefcase,
                 },
                 {
                   value: `${stats.projectsCompleted}+`,
                   label: 'Works Shipped',
-                  icon: Award
+                  icon: Award,
                 },
                 {
                   value: `${stats.happyClients}+`,
                   label: 'Collaborators',
-                  icon: Users
-                }
+                  icon: Users,
+                },
               ].map((stat, index) => {
                 const Icon = stat.icon;
                 return (
                   <div key={index} className="flex flex-col">
                     <div className="flex items-center gap-1.5 text-slate-400 mb-1">
                       <Icon className="w-4 h-4 text-white/60" />
-                      <span className="text-xs font-mono font-light tracking-wide uppercase hidden sm:inline">{stat.label}</span>
+                      <span className="text-xs font-mono font-light tracking-wide uppercase hidden sm:inline">
+                        {stat.label}
+                      </span>
                     </div>
                     <span className="text-2xl md:text-4xl font-extrabold font-outfit text-white leading-none mb-1">
                       {stat.value}
                     </span>
-                    <span className="text-[10px] sm:hidden text-slate-400 uppercase tracking-widest">{stat.label}</span>
+                    <span className="text-[10px] sm:hidden text-slate-400 uppercase tracking-widest">
+                      {stat.label}
+                    </span>
                   </div>
                 );
               })}

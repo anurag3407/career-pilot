@@ -1,6 +1,6 @@
 import React from 'react';
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import { Leaf, Code } from "lucide-react";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import { Leaf, Code } from 'lucide-react';
 
 export default function Skills() {
   const { portfolioData: data } = usePortfolio();
@@ -21,7 +21,10 @@ export default function Skills() {
           <Code className="w-3 h-3" />
         </div>
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          My <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">Digital Ecosystem</span>
+          My{' '}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">
+            Digital Ecosystem
+          </span>
         </h2>
         <div className="w-20 h-1 bg-green-600 rounded-full mx-auto mb-16" />
 

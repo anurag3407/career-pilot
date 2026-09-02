@@ -6,14 +6,11 @@ const DragHandle = () => {
     >
       <div className="grid grid-cols-2 gap-1">
         {[...Array(6)].map((_, index) => (
-          <span
-            key={index}
-            className="w-1 h-1 bg-gray-500 rounded-full"
-          ></span>
+          <span key={index} className="w-1 h-1 bg-gray-500 rounded-full"></span>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DragHandle
+export default DragHandle;

@@ -7,8 +7,7 @@
  * - Console.warn/error still allowed for debugging
  */
 
-const isProduction = () =>
-  typeof process !== 'undefined' && process.env?.NODE_ENV === 'production';
+const isProduction = () => typeof process !== 'undefined' && process.env?.NODE_ENV === 'production';
 
 const logger = {
   /**
@@ -50,7 +49,6 @@ const logger = {
         tags: { source: 'career-pilot-frontend' },
       });
     }
-
   },
 
   /**

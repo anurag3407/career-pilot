@@ -1,27 +1,35 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
+import {
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 
 const C = {
-  bg:     "#FAFAFA",
-  bgAlt:  "#F4F4F5",
-  dark:   "#18181B",
-  mid:    "#52525B",
-  muted:  "#A1A1AA",
-  accent: "#2563EB",
-  border: "#E4E4E7",
-  white:  "#FFFFFF",
+  bg: '#FAFAFA',
+  bgAlt: '#F4F4F5',
+  dark: '#18181B',
+  mid: '#52525B',
+  muted: '#A1A1AA',
+  accent: '#2563EB',
+  border: '#E4E4E7',
+  white: '#FFFFFF',
 };
 
 const SECTIONS = [
-  { id: "hero",         label: "Hello" },
-  { id: "about",        label: "About" },
-  { id: "skills",       label: "Skills" },
-  { id: "projects",     label: "Projects" },
-  { id: "experience",   label: "Experience" },
-  { id: "testimonials", label: "Testimonials" },
-  { id: "contact",      label: "Contact" },
+  { id: 'hero', label: 'Hello' },
+  { id: 'about', label: 'About' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'testimonials', label: 'Testimonials' },
+  { id: 'contact', label: 'Contact' },
 ];
 
 function GlobalStyles() {
@@ -158,7 +166,7 @@ function GlobalStyles() {
 }
 
 function useActiveSection() {
-  const [active, setActive] = useState("hero");
+  const [active, setActive] = useState('hero');
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -177,15 +185,20 @@ function useActiveSection() {
   return active;
 }
 
-function FadeIn({ children, delay = 0, className = "", style = {} }) {
+function FadeIn({ children, delay = 0, className = '', style = {} }) {
   const { portfolioData: data } = usePortfolio();
 
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: '-80px' });
   return (
-    <motion.div ref={ref} className={className} style={style}
-      initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}>
+    <motion.div
+      ref={ref}
+      className={className}
+      style={style}
+      initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay, ease: 'easeOut' }}
+    >
       {children}
     </motion.div>
   );
@@ -197,15 +210,17 @@ function SkillBar({ name, level, category }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
-    <div ref={ref} className="ops-card" style={{ padding: "14px 18px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+    <div ref={ref} className="ops-card" style={{ padding: '14px 18px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
         <span style={{ fontSize: 13, fontWeight: 600 }}>{name}</span>
         <span style={{ fontSize: 12, color: C.accent, fontWeight: 600 }}>{level}%</span>
       </div>
       <div className="ops-skill-track">
-        <div className="ops-skill-fill" style={{ width: inView ? `${level}%` : "0%" }} />
+        <div className="ops-skill-fill" style={{ width: inView ? `${level}%` : '0%' }} />
       </div>
-      <div style={{ marginTop: 6 }}><span className="ops-tag">{category}</span></div>
+      <div style={{ marginTop: 6 }}>
+        <span className="ops-tag">{category}</span>
+      </div>
     </div>
   );
 }
@@ -215,21 +230,21 @@ export default function OnePageScroll() {
 
   const active = useActiveSection();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [contactState, setContactState] = useState("idle");
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [contactState, setContactState] = useState('idle');
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
 
-  const email = data.socials?.email || data.personal?.email || "";
-  const resumeUrl = data.personal?.resumeUrl || "#contact";
+  const email = data.socials?.email || data.personal?.email || '';
+  const resumeUrl = data.personal?.resumeUrl || '#contact';
 
   const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setContactState("sending");
-    setTimeout(() => setContactState("done"), 1500);
+    setContactState('sending');
+    setTimeout(() => setContactState('done'), 1500);
   };
 
   return (
@@ -239,7 +254,14 @@ export default function OnePageScroll() {
       {/* Side dot navigation */}
       <div className="ops-dot-nav">
         {SECTIONS.map(({ id, label }) => (
-          <button type="button" key={id} className={`ops-dot ${active === id ? "active" : ""}`} onClick={() => scrollTo(id)} title={label} aria-label={label}>
+          <button
+            type="button"
+            key={id}
+            className={`ops-dot ${active === id ? 'active' : ''}`}
+            onClick={() => scrollTo(id)}
+            title={label}
+            aria-label={label}
+          >
             <span className="ops-dot-tooltip">{label}</span>
           </button>
         ))}
@@ -247,55 +269,183 @@ export default function OnePageScroll() {
 
       {/* Top nav */}
       <nav className="ops-nav">
-        <button type="button" onClick={() => scrollTo("hero")} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, color: C.dark, fontFamily: "'Inter',sans-serif" }}>
-          {data.personal.name.split(" ")[0]}
+        <button
+          type="button"
+          onClick={() => scrollTo('hero')}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: 16,
+            fontWeight: 700,
+            color: C.dark,
+            fontFamily: "'Inter',sans-serif",
+          }}
+        >
+          {data.personal.name.split(' ')[0]}
         </button>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button type="button" className="ops-btn ops-btn-outline" onClick={() => scrollTo("contact")} style={{ fontSize: 12, padding: "8px 16px" }}>Say Hi</button>
-          <a href={resumeUrl} className="ops-btn ops-btn-primary" style={{ fontSize: 12, padding: "8px 16px" }}>Resume</a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            type="button"
+            className="ops-btn ops-btn-outline"
+            onClick={() => scrollTo('contact')}
+            style={{ fontSize: 12, padding: '8px 16px' }}
+          >
+            Say Hi
+          </button>
+          <a
+            href={resumeUrl}
+            className="ops-btn ops-btn-primary"
+            style={{ fontSize: 12, padding: '8px 16px' }}
+          >
+            Resume
+          </a>
         </div>
       </nav>
 
       {/* ── HERO ── */}
       <section id="hero" className="ops-sec">
-        <div className="ops-max" style={{ textAlign: "center" }}>
-          <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: 4, textTransform: "uppercase", color: C.accent }}>Available for work</span>
+        <div className="ops-max" style={{ textAlign: 'center' }}>
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                letterSpacing: 4,
+                textTransform: 'uppercase',
+                color: C.accent,
+              }}
+            >
+              Available for work
+            </span>
           </motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-            style={{ fontSize: "clamp(2.5rem,9vw,6rem)", fontWeight: 800, lineHeight: 1, marginBottom: 12, letterSpacing: -2, marginTop: 16 }}>
+          <motion.h1
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            style={{
+              fontSize: 'clamp(2.5rem,9vw,6rem)',
+              fontWeight: 800,
+              lineHeight: 1,
+              marginBottom: 12,
+              letterSpacing: -2,
+              marginTop: 16,
+            }}
+          >
             {data.personal.name}
           </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-            style={{ fontSize: "clamp(.9rem,2.5vw,1.2rem)", color: C.mid, marginBottom: 20, fontWeight: 400 }}>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{
+              fontSize: 'clamp(.9rem,2.5vw,1.2rem)',
+              color: C.mid,
+              marginBottom: 20,
+              fontWeight: 400,
+            }}
+          >
             {data.personal.title}
           </motion.p>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.35 }}
-            style={{ fontSize: 16, lineHeight: 1.75, color: C.mid, maxWidth: 480, margin: "0 auto 36px" }}>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            style={{
+              fontSize: 16,
+              lineHeight: 1.75,
+              color: C.mid,
+              maxWidth: 480,
+              margin: '0 auto 36px',
+            }}
+          >
             {data.personal.bio}
           </motion.p>
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }}
-            style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginBottom: 48 }}>
-            <button type="button" className="ops-btn ops-btn-primary" onClick={() => scrollTo("projects")}>View Projects</button>
-            <button type="button" className="ops-btn ops-btn-outline" onClick={() => scrollTo("contact")}>Get In Touch</button>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 12,
+              justifyContent: 'center',
+              marginBottom: 48,
+            }}
+          >
+            <button
+              type="button"
+              className="ops-btn ops-btn-primary"
+              onClick={() => scrollTo('projects')}
+            >
+              View Projects
+            </button>
+            <button
+              type="button"
+              className="ops-btn ops-btn-outline"
+              onClick={() => scrollTo('contact')}
+            >
+              Get In Touch
+            </button>
           </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
-            <div className="ops-stats" style={{ margin: "0 auto" }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.65 }}
+          >
+            <div className="ops-stats" style={{ margin: '0 auto' }}>
               {[
-                { val: `${data.stats.yearsExperience}+`, label: "Years" },
-                { val: `${data.stats.projectsCompleted}+`, label: "Projects" },
-                { val: `${data.stats.happyClients}+`, label: "Clients" },
+                { val: `${data.stats.yearsExperience}+`, label: 'Years' },
+                { val: `${data.stats.projectsCompleted}+`, label: 'Projects' },
+                { val: `${data.stats.happyClients}+`, label: 'Clients' },
               ].map(({ val, label }, i) => (
-                <div key={i} style={{ textAlign: "center", padding: "16px 8px", borderRight: i < 2 ? `1px solid ${C.border}` : "none" }}>
-                  <div style={{ fontSize: "clamp(1.4rem,4vw,2rem)", fontWeight: 800, color: C.accent }}>{val}</div>
-                  <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: 2, marginTop: 2 }}>{label}</div>
+                <div
+                  key={i}
+                  style={{
+                    textAlign: 'center',
+                    padding: '16px 8px',
+                    borderRight: i < 2 ? `1px solid ${C.border}` : 'none',
+                  }}
+                >
+                  <div
+                    style={{ fontSize: 'clamp(1.4rem,4vw,2rem)', fontWeight: 800, color: C.accent }}
+                  >
+                    {val}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: C.muted,
+                      textTransform: 'uppercase',
+                      letterSpacing: 2,
+                      marginTop: 2,
+                    }}
+                  >
+                    {label}
+                  </div>
                 </div>
               ))}
             </div>
           </motion.div>
         </div>
-        <button type="button" onClick={() => scrollTo("about")} style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", background: "none", border: "none", cursor: "pointer" }}>
-          <motion.div animate={{ y: [0,6,0] }} transition={{ duration: 1.8, repeat: Infinity }}>
+        <button
+          type="button"
+          onClick={() => scrollTo('about')}
+          style={{
+            position: 'absolute',
+            bottom: 24,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.8, repeat: Infinity }}>
             <ChevronDown size={20} style={{ color: C.muted }} />
           </motion.div>
         </button>
@@ -310,24 +460,80 @@ export default function OnePageScroll() {
           </FadeIn>
           <div className="ops-about-grid">
             <FadeIn>
-              <div style={{ textAlign: "center" }}>
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: 160, height: 160, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}`, marginBottom: 16 }} />
-                <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
-                  {data.socials.github   && <a href={data.socials.github}   className="ops-social" target="_blank" rel="noreferrer"><Github   size={16} /></a>}
-                  {data.socials.linkedin && <a href={data.socials.linkedin} className="ops-social" target="_blank" rel="noreferrer"><Linkedin size={16} /></a>}
-                  {data.socials.twitter  && <a href={data.socials.twitter}  className="ops-social" target="_blank" rel="noreferrer"><Twitter  size={16} /></a>}
-                  {email                 && <a href={`mailto:${email}`}     className="ops-social"><Mail     size={16} /></a>}
+              <div style={{ textAlign: 'center' }}>
+                <img
+                  src={data.personal.avatar}
+                  alt={data.personal.name}
+                  style={{
+                    width: 160,
+                    height: 160,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: `3px solid ${C.accent}`,
+                    marginBottom: 16,
+                  }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 10 }}>
+                  {data.socials.github && (
+                    <a
+                      href={data.socials.github}
+                      className="ops-social"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Github size={16} />
+                    </a>
+                  )}
+                  {data.socials.linkedin && (
+                    <a
+                      href={data.socials.linkedin}
+                      className="ops-social"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Linkedin size={16} />
+                    </a>
+                  )}
+                  {data.socials.twitter && (
+                    <a
+                      href={data.socials.twitter}
+                      className="ops-social"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Twitter size={16} />
+                    </a>
+                  )}
+                  {email && (
+                    <a href={`mailto:${email}`} className="ops-social">
+                      <Mail size={16} />
+                    </a>
+                  )}
                 </div>
               </div>
             </FadeIn>
             <FadeIn delay={0.15}>
-              <p style={{ fontSize: 16, lineHeight: 1.8, color: C.mid, marginBottom: 24 }}>{data.personal.bio}</p>
+              <p style={{ fontSize: 16, lineHeight: 1.8, color: C.mid, marginBottom: 24 }}>
+                {data.personal.bio}
+              </p>
               {data.personal.tagline && (
-                <div style={{ padding: "14px 18px", borderRadius: 8, background: `rgba(37,99,235,.06)`, borderLeft: `3px solid ${C.accent}`, marginBottom: 24 }}>
-                  <p style={{ fontSize: 15, fontStyle: "italic", color: C.accent }}>"{data.personal.tagline}"</p>
+                <div
+                  style={{
+                    padding: '14px 18px',
+                    borderRadius: 8,
+                    background: `rgba(37,99,235,.06)`,
+                    borderLeft: `3px solid ${C.accent}`,
+                    marginBottom: 24,
+                  }}
+                >
+                  <p style={{ fontSize: 15, fontStyle: 'italic', color: C.accent }}>
+                    "{data.personal.tagline}"
+                  </p>
                 </div>
               )}
-              <a href={resumeUrl} className="ops-btn ops-btn-primary"><span>Download CV</span></a>
+              <a href={resumeUrl} className="ops-btn ops-btn-primary">
+                <span>Download CV</span>
+              </a>
             </FadeIn>
           </div>
         </div>
@@ -342,7 +548,13 @@ export default function OnePageScroll() {
           </FadeIn>
           <div className="ops-skills-grid">
             {data.skills.map((skill, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.04 }}
+              >
                 <SkillBar {...skill} />
               </motion.div>
             ))}
@@ -359,17 +571,52 @@ export default function OnePageScroll() {
           </FadeIn>
           <div className="ops-proj-grid">
             {data.projects.map((proj, i) => (
-              <motion.div key={i} className="ops-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
+              <motion.div
+                key={i}
+                className="ops-card"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+              >
                 <img src={proj.image} alt={proj.title} className="ops-proj-img" />
-                <div style={{ padding: "16px 18px 20px" }}>
+                <div style={{ padding: '16px 18px 20px' }}>
                   <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{proj.title}</h3>
-                  <p style={{ fontSize: 12, lineHeight: 1.6, color: C.mid, marginBottom: 12 }}>{proj.description}</p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 14 }}>
-                    {proj.techStack.slice(0, 4).map((t, j) => <span key={j} className="ops-tag">{t}</span>)}
+                  <p style={{ fontSize: 12, lineHeight: 1.6, color: C.mid, marginBottom: 12 }}>
+                    {proj.description}
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 14 }}>
+                    {proj.techStack.slice(0, 4).map((t, j) => (
+                      <span key={j} className="ops-tag">
+                        {t}
+                      </span>
+                    ))}
                   </div>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    {proj.liveUrl   && <a href={proj.liveUrl}   target="_blank" rel="noreferrer" className="ops-btn ops-btn-primary"  style={{ fontSize: 10, padding: "6px 12px" }}><ExternalLink size={10} /><span>Live</span></a>}
-                    {proj.githubUrl && <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="ops-btn ops-btn-outline" style={{ fontSize: 10, padding: "6px 12px" }}><Github       size={10} /><span>Code</span></a>}
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {proj.liveUrl && (
+                      <a
+                        href={proj.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="ops-btn ops-btn-primary"
+                        style={{ fontSize: 10, padding: '6px 12px' }}
+                      >
+                        <ExternalLink size={10} />
+                        <span>Live</span>
+                      </a>
+                    )}
+                    {proj.githubUrl && (
+                      <a
+                        href={proj.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="ops-btn ops-btn-outline"
+                        style={{ fontSize: 10, padding: '6px 12px' }}
+                      >
+                        <Github size={10} />
+                        <span>Code</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -387,11 +634,31 @@ export default function OnePageScroll() {
           </FadeIn>
           <div className="ops-exp-grid">
             {data.experience.map((exp, i) => (
-              <motion.div key={i} className="ops-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
-                style={{ padding: "20px 24px" }}>
-                <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 2, color: C.accent, marginBottom: 6, textTransform: "uppercase" }}>{exp.period}</div>
+              <motion.div
+                key={i}
+                className="ops-card"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                style={{ padding: '20px 24px' }}
+              >
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 600,
+                    letterSpacing: 2,
+                    color: C.accent,
+                    marginBottom: 6,
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {exp.period}
+                </div>
                 <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4 }}>{exp.role}</h3>
-                <div style={{ fontSize: 13, color: C.mid, fontWeight: 500, marginBottom: 12 }}>{exp.company}</div>
+                <div style={{ fontSize: 13, color: C.mid, fontWeight: 500, marginBottom: 12 }}>
+                  {exp.company}
+                </div>
                 <p style={{ fontSize: 13, lineHeight: 1.65, color: C.mid }}>{exp.description}</p>
               </motion.div>
             ))}
@@ -408,11 +675,30 @@ export default function OnePageScroll() {
           </FadeIn>
           <div className="ops-testi-grid">
             {data.testimonials.map((t, i) => (
-              <motion.div key={i} className="ops-card" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
-                style={{ padding: "24px" }}>
-                <p style={{ fontSize: 14, lineHeight: 1.75, color: C.mid, marginBottom: 20 }}>"{t.text}"</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.border}` }} />
+              <motion.div
+                key={i}
+                className="ops-card"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                style={{ padding: '24px' }}
+              >
+                <p style={{ fontSize: 14, lineHeight: 1.75, color: C.mid, marginBottom: 20 }}>
+                  "{t.text}"
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <img
+                    src={t.avatar}
+                    alt={t.name}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: `2px solid ${C.border}`,
+                    }}
+                  />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>
@@ -434,34 +720,161 @@ export default function OnePageScroll() {
           <div className="ops-contact-grid">
             <FadeIn>
               <p style={{ fontSize: 15, lineHeight: 1.8, color: C.mid, marginBottom: 28 }}>
-                I'm open to new projects and collaborations. Send me a message and I'll get back to you shortly.
+                I'm open to new projects and collaborations. Send me a message and I'll get back to
+                you shortly.
               </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                {email && <a href={`mailto:${email}`} style={{ display: "flex", alignItems: "center", gap: 12, color: C.dark, textDecoration: "none", fontSize: 14, fontWeight: 500 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: 8, background: `rgba(37,99,235,.08)`, border: `1px solid rgba(37,99,235,.15)`, display: "flex", alignItems: "center", justifyContent: "center" }}><Mail size={16} color={C.accent} /></div>
-                  {email}</a>}
-                {data.socials.github && <a href={data.socials.github} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 12, color: C.dark, textDecoration: "none", fontSize: 14, fontWeight: 500 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: 8, background: C.bgAlt, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}><Github size={16} /></div>
-                  GitHub</a>}
-                {data.socials.linkedin && <a href={data.socials.linkedin} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 12, color: C.dark, textDecoration: "none", fontSize: 14, fontWeight: 500 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: 8, background: C.bgAlt, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}><Linkedin size={16} /></div>
-                  LinkedIn</a>}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {email && (
+                  <a
+                    href={`mailto:${email}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      color: C.dark,
+                      textDecoration: 'none',
+                      fontSize: 14,
+                      fontWeight: 500,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 8,
+                        background: `rgba(37,99,235,.08)`,
+                        border: `1px solid rgba(37,99,235,.15)`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Mail size={16} color={C.accent} />
+                    </div>
+                    {email}
+                  </a>
+                )}
+                {data.socials.github && (
+                  <a
+                    href={data.socials.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      color: C.dark,
+                      textDecoration: 'none',
+                      fontSize: 14,
+                      fontWeight: 500,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 8,
+                        background: C.bgAlt,
+                        border: `1px solid ${C.border}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Github size={16} />
+                    </div>
+                    GitHub
+                  </a>
+                )}
+                {data.socials.linkedin && (
+                  <a
+                    href={data.socials.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      color: C.dark,
+                      textDecoration: 'none',
+                      fontSize: 14,
+                      fontWeight: 500,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 8,
+                        background: C.bgAlt,
+                        border: `1px solid ${C.border}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Linkedin size={16} />
+                    </div>
+                    LinkedIn
+                  </a>
+                )}
               </div>
             </FadeIn>
             <FadeIn delay={0.15}>
-              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <input className="ops-input" placeholder="Your Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
-                <input className="ops-input" type="email" placeholder="Your Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
-                <textarea className="ops-input" placeholder="Your Message" rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required style={{ resize: "vertical" }} />
+              <form
+                onSubmit={handleSubmit}
+                style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
+              >
+                <input
+                  className="ops-input"
+                  placeholder="Your Name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                />
+                <input
+                  className="ops-input"
+                  type="email"
+                  placeholder="Your Email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  required
+                />
+                <textarea
+                  className="ops-input"
+                  placeholder="Your Message"
+                  rows={5}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  required
+                  style={{ resize: 'vertical' }}
+                />
                 <AnimatePresence mode="wait">
-                  {contactState === "done" ? (
-                    <motion.div key="done" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                      style={{ padding: "14px", borderRadius: 8, background: "rgba(37,99,235,.06)", border: `1px solid rgba(37,99,235,.15)`, textAlign: "center" }}>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: C.accent }}>✓ Message Sent!</span>
+                  {contactState === 'done' ? (
+                    <motion.div
+                      key="done"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{
+                        padding: '14px',
+                        borderRadius: 8,
+                        background: 'rgba(37,99,235,.06)',
+                        border: `1px solid rgba(37,99,235,.15)`,
+                        textAlign: 'center',
+                      }}
+                    >
+                      <span style={{ fontSize: 13, fontWeight: 600, color: C.accent }}>
+                        ✓ Message Sent!
+                      </span>
                     </motion.div>
                   ) : (
-                    <button type="submit" className="ops-btn ops-btn-primary" disabled={contactState === "sending"} style={{ justifyContent: "center" }}>
-                      <span>{contactState === "sending" ? "Sending…" : "Send Message"}</span>
+                    <button
+                      type="submit"
+                      className="ops-btn ops-btn-primary"
+                      disabled={contactState === 'sending'}
+                      style={{ justifyContent: 'center' }}
+                    >
+                      <span>{contactState === 'sending' ? 'Sending…' : 'Send Message'}</span>
                     </button>
                   )}
                 </AnimatePresence>

@@ -36,7 +36,10 @@ export default function Hero() {
   ];
 
   return (
-    <section id="home" className="relative min-h-[90vh] flex flex-col justify-center items-center px-4 py-20 text-center overflow-hidden">
+    <section
+      id="home"
+      className="relative min-h-[90vh] flex flex-col justify-center items-center px-4 py-20 text-center overflow-hidden"
+    >
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -49,7 +52,7 @@ export default function Hero() {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 backdrop-blur-md text-purple-300 text-sm font-medium mb-6 shadow-lg shadow-purple-500/5"
         >
           <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-          {personal.tagline || "Available for Opportunities"}
+          {personal.tagline || 'Available for Opportunities'}
         </motion.div>
 
         {/* Heading */}

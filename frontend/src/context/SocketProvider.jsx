@@ -19,7 +19,6 @@ export function SocketProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-
   /**
    * Pushes a new notification to the state stack.
    *
@@ -47,18 +46,14 @@ export function SocketProvider({ children }) {
    * @param {string} id - The notification ID.
    */
   const markRead = useCallback((id) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   }, []);
 
   /**
    * Marks all notifications as read.
    */
   const markAllRead = useCallback(() => {
-    setNotifications((prev) =>
-     prev.map((n) => ({ ...n, read: true }))
-    );
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   }, []);
 
   /**
@@ -67,9 +62,7 @@ export function SocketProvider({ children }) {
    * @param {string} id - The notification ID.
    */
   const dismissNotification = useCallback((id) => {
-    setNotifications((prev) =>
-      prev.filter((n) => n.id !== id)
-    );
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
   /**
@@ -94,31 +87,25 @@ export function SocketProvider({ children }) {
           const handleDisconnect = () => setIsConnected(false);
           const handleOnlineUsers = ({ users }) => setOnlineUsers(users);
           const handleUserOnline = ({ uid, name }) => {
-            setOnlineUsers(prev => {
-              if (!prev.some(u => u.uid === uid)) {
+            setOnlineUsers((prev) => {
+              if (!prev.some((u) => u.uid === uid)) {
                 return [...prev, { uid, name, status: 'online' }];
               }
               return prev;
             });
           };
           const handleUserOffline = ({ uid }) => {
-            setOnlineUsers(prev => prev.filter(u => u.uid !== uid));
+            setOnlineUsers((prev) => prev.filter((u) => u.uid !== uid));
           };
           const handleStatusChanged = ({ uid, status }) => {
-            setOnlineUsers(prev =>
-              prev.map(u => u.uid === uid ? { ...u, status } : u)
-            );
+            setOnlineUsers((prev) => prev.map((u) => (u.uid === uid ? { ...u, status } : u)));
           };
 
+          const handleNotification = (data) => pushNotification('notification', data);
 
-          const handleNotification = (data) =>
-            pushNotification('notification', data);
+          const handleJobAlertNewJobs = (data) => pushNotification('job_alert_new_jobs', data);
 
-          const handleJobAlertNewJobs = (data) =>
-             pushNotification('job_alert_new_jobs', data);
-
-          const handleJobAlertEmailSent = (data) =>
-            pushNotification('job_alert_email_sent', data);
+          const handleJobAlertEmailSent = (data) => pushNotification('job_alert_email_sent', data);
 
           const handleJobAlertEmailFailed = (data) =>
             pushNotification('job_alert_email_failed', data);
@@ -179,14 +166,17 @@ export function SocketProvider({ children }) {
    * @param {Function} callback - The event handler callback function.
    * @returns {Function} An unsubscribe function to remove the listener.
    */
-  const subscribe = useCallback((event, callback) => {
-    const currentSocket = getSocket();
-    if (currentSocket) {
-      currentSocket.on(event, callback);
-      return () => currentSocket.off(event, callback);
-    }
-    return () => {};
-  }, [socket]);
+  const subscribe = useCallback(
+    (event, callback) => {
+      const currentSocket = getSocket();
+      if (currentSocket) {
+        currentSocket.on(event, callback);
+        return () => currentSocket.off(event, callback);
+      }
+      return () => {};
+    },
+    [socket]
+  );
 
   /**
    * Emits a socket event with data to the server.
@@ -194,12 +184,15 @@ export function SocketProvider({ children }) {
    * @param {string} event - The socket event name.
    * @param {object} data - The message payload to emit.
    */
-  const emit = useCallback((event, data) => {
-    const currentSocket = getSocket();
-    if (currentSocket?.connected) {
-      currentSocket.emit(event, data);
-    }
-  }, [socket]);
+  const emit = useCallback(
+    (event, data) => {
+      const currentSocket = getSocket();
+      if (currentSocket?.connected) {
+        currentSocket.emit(event, data);
+      }
+    },
+    [socket]
+  );
 
   const value = {
     socket,
@@ -213,12 +206,8 @@ export function SocketProvider({ children }) {
     clearNotifications,
     subscribe,
     emit,
-    ...socketEvents
+    ...socketEvents,
   };
 
-  return (
-    <SocketContext.Provider value={value}>
-      {children}
-    </SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 }

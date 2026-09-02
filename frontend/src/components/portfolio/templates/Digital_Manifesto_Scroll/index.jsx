@@ -1,14 +1,24 @@
-import React, { useState, useRef, useEffect } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
-  Github, Linkedin, Twitter, Mail, ExternalLink, MapPin,
-  ChevronDown, ChevronUp, Menu, X, GraduationCap, Award,
-} from "lucide-react";
-import { usePortfolio } from "../../../../context/PortfolioContext";
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  ExternalLink,
+  MapPin,
+  ChevronDown,
+  ChevronUp,
+  Menu,
+  X,
+  GraduationCap,
+  Award,
+} from 'lucide-react';
+import { usePortfolio } from '../../../../context/PortfolioContext';
 
 /* ─── Constants ─── */
-const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
-const SKILL_CATS = ["Frontend", "Backend", "Tools", "Design", "Database", "DevOps"];
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+const SKILL_CATS = ['Frontend', 'Backend', 'Tools', 'Design', 'Database', 'DevOps'];
 
 /* ═══════════════════════════════════════════════════════════
    Global Styles — all CSS scoped with `dms-` prefix
@@ -527,7 +537,7 @@ function Reveal({ children, delay = 0 }) {
   const { portfolioData: dummyData } = usePortfolio();
 
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: '-60px' });
   return (
     <motion.div
       ref={ref}
@@ -570,7 +580,7 @@ function SkillBar({ name, level, delay = 0 }) {
           className="dms-skill-bar-fill"
           initial={{ width: 0 }}
           animate={inView ? { width: `${level}%` } : {}}
-          transition={{ duration: 1, delay, ease: "easeOut" }}
+          transition={{ duration: 1, delay, ease: 'easeOut' }}
         />
       </div>
     </div>
@@ -610,7 +620,7 @@ export default function DigitalManifestoScroll() {
 
   let skills = dummyData.skills;
   if (portfolioData?.skills?.length > 0) {
-    if (typeof portfolioData.skills[0] === "string") {
+    if (typeof portfolioData.skills[0] === 'string') {
       skills = portfolioData.skills.map((s, i) => ({
         name: s,
         level: 75 + ((i * 13) % 20), // Deterministic pseudo-random 75-95%
@@ -624,24 +634,20 @@ export default function DigitalManifestoScroll() {
   let projects = dummyData.projects;
   if (portfolioData?.projects?.length > 0) {
     projects = portfolioData.projects.map((p, i) => ({
-      title: p.title || p.name || "Project",
-      description: p.description || "",
+      title: p.title || p.name || 'Project',
+      description: p.description || '',
       techStack: p.technologies || p.techStack || [],
       image: p.image || dummyData.projects[i % dummyData.projects.length]?.image,
-      liveUrl: p.liveUrl || p.link || "#",
-      githubUrl: p.githubUrl || "#",
+      liveUrl: p.liveUrl || p.link || '#',
+      githubUrl: p.githubUrl || '#',
     }));
   }
 
   const experience =
-    portfolioData?.experience?.length > 0
-      ? portfolioData.experience
-      : dummyData.experience;
+    portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
 
   const testimonials =
-    portfolioData?.testimonials?.length > 0
-      ? portfolioData.testimonials
-      : dummyData.testimonials;
+    portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
 
   // Conditional sections (only render when real user data provides them)
   const education = portfolioData?.education || [];
@@ -649,7 +655,7 @@ export default function DigitalManifestoScroll() {
 
   // Group skills by category
   const groupedSkills = skills.reduce((acc, skill) => {
-    const cat = skill.category || "Other";
+    const cat = skill.category || 'Other';
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(skill);
     return acc;
@@ -657,51 +663,59 @@ export default function DigitalManifestoScroll() {
 
   /* ─── Section ordering & alternating backgrounds ─── */
   const sectionOrder = [
-    "about", "skills", "experience",
-    ...(education.length > 0 ? ["education"] : []),
-    "projects",
-    ...(certifications.length > 0 ? ["certifications"] : []),
-    "testimonials", "contact",
+    'about',
+    'skills',
+    'experience',
+    ...(education.length > 0 ? ['education'] : []),
+    'projects',
+    ...(certifications.length > 0 ? ['certifications'] : []),
+    'testimonials',
+    'contact',
   ];
   const isAlt = (id) => sectionOrder.indexOf(id) % 2 === 1;
 
   /* ─── Chapter numbering (dynamic based on present sections) ─── */
   const chapterDefs = [
-    { id: "about", title: "THE IDENTITY" },
-    { id: "skills", title: "THE ARSENAL" },
-    { id: "experience", title: "THE JOURNEY" },
-    ...(education.length > 0 ? [{ id: "education", title: "THE FOUNDATION" }] : []),
-    { id: "projects", title: "THE WORKS" },
-    ...(certifications.length > 0 ? [{ id: "certifications", title: "THE CREDENTIALS" }] : []),
-    { id: "testimonials", title: "THE VOICES" },
-    { id: "contact", title: "THE SIGNAL" },
+    { id: 'about', title: 'THE IDENTITY' },
+    { id: 'skills', title: 'THE ARSENAL' },
+    { id: 'experience', title: 'THE JOURNEY' },
+    ...(education.length > 0 ? [{ id: 'education', title: 'THE FOUNDATION' }] : []),
+    { id: 'projects', title: 'THE WORKS' },
+    ...(certifications.length > 0 ? [{ id: 'certifications', title: 'THE CREDENTIALS' }] : []),
+    { id: 'testimonials', title: 'THE VOICES' },
+    { id: 'contact', title: 'THE SIGNAL' },
   ];
   const ch = {};
-  chapterDefs.forEach((c, i) => { ch[c.id] = { num: ROMAN[i], title: c.title }; });
+  chapterDefs.forEach((c, i) => {
+    ch[c.id] = { num: ROMAN[i], title: c.title };
+  });
 
   /* ─── Scroll tracking ─── */
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const scrollProgress =
-    typeof document !== "undefined" && document.documentElement.scrollHeight > window.innerHeight
-      ? Math.min(100, (scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100)
+    typeof document !== 'undefined' && document.documentElement.scrollHeight > window.innerHeight
+      ? Math.min(
+          100,
+          (scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+        )
       : 0;
 
   const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
   };
 
   const navLinks = [
-    { id: "about", label: "About" },
-    { id: "skills", label: "Skills" },
-    { id: "experience", label: "Experience" },
-    { id: "projects", label: "Projects" },
-    { id: "contact", label: "Contact" },
+    { id: 'about', label: 'About' },
+    { id: 'skills', label: 'Skills' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'contact', label: 'Contact' },
   ];
 
   /* ═══════════════════════════════════════════════════════════
@@ -715,10 +729,10 @@ export default function DigitalManifestoScroll() {
       <div className="dms-progress" style={{ width: `${scrollProgress}%` }} />
 
       {/* ── Navigation ── */}
-      <nav className={`dms-nav${scrollY > 80 ? " dms-nav-scrolled" : ""}`}>
+      <nav className={`dms-nav${scrollY > 80 ? ' dms-nav-scrolled' : ''}`}>
         <div className="dms-nav-inner">
-          <button type="button" className="dms-nav-brand" onClick={() => scrollTo("hero")}>
-            {personal.name?.split(" ")[0] || "Manifesto"}
+          <button type="button" className="dms-nav-brand" onClick={() => scrollTo('hero')}>
+            {personal.name?.split(' ')[0] || 'Manifesto'}
           </button>
           <ul className="dms-nav-links">
             {navLinks.map((l) => (
@@ -729,7 +743,12 @@ export default function DigitalManifestoScroll() {
               </li>
             ))}
           </ul>
-          <button type="button" className="dms-nav-toggle" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+          <button
+            type="button"
+            className="dms-nav-toggle"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
+          >
             <Menu size={24} />
           </button>
         </div>
@@ -745,7 +764,12 @@ export default function DigitalManifestoScroll() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <button type="button" className="dms-mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+            <button
+              type="button"
+              className="dms-mobile-close"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close menu"
+            >
               <X size={28} />
             </button>
             {navLinks.map((l, i) => (
@@ -772,19 +796,29 @@ export default function DigitalManifestoScroll() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-          style={{ position: "relative", zIndex: 1 }}
+          style={{ position: 'relative', zIndex: 1 }}
         >
           <p className="dms-hero-pre">A DIGITAL MANIFESTO BY</p>
           <h1 className="dms-hero-name">{personal.name}</h1>
           <div className="dms-hero-rule" />
           <p className="dms-hero-title">{personal.title}</p>
-          {personal.tagline && (
-            <p className="dms-hero-tagline">&ldquo;{personal.tagline}&rdquo;</p>
-          )}
-          
+          {personal.tagline && <p className="dms-hero-tagline">&ldquo;{personal.tagline}&rdquo;</p>}
+
           <div className="dms-hero-actions">
-            <button type="button" className="dms-btn dms-btn-primary" onClick={() => scrollTo("projects")}>View Portfolio</button>
-            <button type="button" className="dms-btn dms-btn-outline" onClick={() => scrollTo("contact")}>Get In Touch</button>
+            <button
+              type="button"
+              className="dms-btn dms-btn-primary"
+              onClick={() => scrollTo('projects')}
+            >
+              View Portfolio
+            </button>
+            <button
+              type="button"
+              className="dms-btn dms-btn-outline"
+              onClick={() => scrollTo('contact')}
+            >
+              Get In Touch
+            </button>
           </div>
 
           <div className="dms-hero-stats">
@@ -807,7 +841,7 @@ export default function DigitalManifestoScroll() {
       {/* ══════════════════════════════════════════════════════
           CHAPTER I — ABOUT
          ══════════════════════════════════════════════════════ */}
-      <section className={`dms-section${isAlt("about") ? " dms-section-alt" : ""}`} id="about">
+      <section className={`dms-section${isAlt('about') ? ' dms-section-alt' : ''}`} id="about">
         <div className="dms-container">
           <Reveal>
             <Chapter number={ch.about.num} title={ch.about.title} />
@@ -816,7 +850,7 @@ export default function DigitalManifestoScroll() {
             <div className="dms-about-grid">
               <img src={personal.avatar} alt={personal.name} className="dms-about-avatar" />
               <div className="dms-about-content">
-                <h3>Hello, I&rsquo;m {personal.name?.split(" ")[0]}</h3>
+                <h3>Hello, I&rsquo;m {personal.name?.split(' ')[0]}</h3>
                 <p className="dms-about-bio">{personal.bio}</p>
                 {personal.location && (
                   <div className="dms-about-location">
@@ -832,7 +866,7 @@ export default function DigitalManifestoScroll() {
       {/* ══════════════════════════════════════════════════════
           CHAPTER II — SKILLS
          ══════════════════════════════════════════════════════ */}
-      <section className={`dms-section${isAlt("skills") ? " dms-section-alt" : ""}`} id="skills">
+      <section className={`dms-section${isAlt('skills') ? ' dms-section-alt' : ''}`} id="skills">
         <div className="dms-container">
           <Reveal>
             <Chapter number={ch.skills.num} title={ch.skills.title} />
@@ -844,7 +878,12 @@ export default function DigitalManifestoScroll() {
                   <div className="dms-skill-group-title">{category}</div>
                   <div className="dms-skill-bars">
                     {catSkills.map((skill, si) => (
-                      <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={si * 0.06} />
+                      <SkillBar
+                        key={skill.name}
+                        name={skill.name}
+                        level={skill.level}
+                        delay={si * 0.06}
+                      />
                     ))}
                   </div>
                 </div>
@@ -857,7 +896,10 @@ export default function DigitalManifestoScroll() {
       {/* ══════════════════════════════════════════════════════
           CHAPTER III — EXPERIENCE
          ══════════════════════════════════════════════════════ */}
-      <section className={`dms-section${isAlt("experience") ? " dms-section-alt" : ""}`} id="experience">
+      <section
+        className={`dms-section${isAlt('experience') ? ' dms-section-alt' : ''}`}
+        id="experience"
+      >
         <div className="dms-container">
           <Reveal>
             <Chapter number={ch.experience.num} title={ch.experience.title} />
@@ -885,7 +927,10 @@ export default function DigitalManifestoScroll() {
           EDUCATION (Conditional — only if portfolioData provides it)
          ══════════════════════════════════════════════════════ */}
       {education.length > 0 && (
-        <section className={`dms-section${isAlt("education") ? " dms-section-alt" : ""}`} id="education">
+        <section
+          className={`dms-section${isAlt('education') ? ' dms-section-alt' : ''}`}
+          id="education"
+        >
           <div className="dms-container">
             <Reveal>
               <Chapter number={ch.education.num} title={ch.education.title} />
@@ -894,7 +939,9 @@ export default function DigitalManifestoScroll() {
               {education.map((edu, i) => (
                 <Reveal key={i} delay={i * 0.1}>
                   <div className="dms-edu-card">
-                    <div className="dms-edu-icon"><GraduationCap size={22} /></div>
+                    <div className="dms-edu-icon">
+                      <GraduationCap size={22} />
+                    </div>
                     <div>
                       <div className="dms-edu-degree">{edu.degree || edu.title}</div>
                       <div className="dms-edu-school">{edu.school || edu.institution}</div>
@@ -911,7 +958,10 @@ export default function DigitalManifestoScroll() {
       {/* ══════════════════════════════════════════════════════
           CHAPTER IV — PROJECTS
          ══════════════════════════════════════════════════════ */}
-      <section className={`dms-section${isAlt("projects") ? " dms-section-alt" : ""}`} id="projects">
+      <section
+        className={`dms-section${isAlt('projects') ? ' dms-section-alt' : ''}`}
+        id="projects"
+      >
         <div className="dms-container">
           <Reveal>
             <Chapter number={ch.projects.num} title={ch.projects.title} />
@@ -931,18 +981,30 @@ export default function DigitalManifestoScroll() {
                     {project.techStack?.length > 0 && (
                       <div className="dms-project-tags">
                         {project.techStack.map((tech, ti) => (
-                          <span key={ti} className="dms-project-tag">{tech}</span>
+                          <span key={ti} className="dms-project-tag">
+                            {tech}
+                          </span>
                         ))}
                       </div>
                     )}
                     <div className="dms-project-links">
-                      {project.liveUrl && project.liveUrl !== "#" && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="dms-project-link">
+                      {project.liveUrl && project.liveUrl !== '#' && (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="dms-project-link"
+                        >
                           <ExternalLink size={14} /> Live Demo
                         </a>
                       )}
-                      {project.githubUrl && project.githubUrl !== "#" && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="dms-project-link">
+                      {project.githubUrl && project.githubUrl !== '#' && (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="dms-project-link"
+                        >
                           <Github size={14} /> Source
                         </a>
                       )}
@@ -959,7 +1021,10 @@ export default function DigitalManifestoScroll() {
           CERTIFICATIONS (Conditional)
          ══════════════════════════════════════════════════════ */}
       {certifications.length > 0 && (
-        <section className={`dms-section${isAlt("certifications") ? " dms-section-alt" : ""}`} id="certifications">
+        <section
+          className={`dms-section${isAlt('certifications') ? ' dms-section-alt' : ''}`}
+          id="certifications"
+        >
           <div className="dms-container">
             <Reveal>
               <Chapter number={ch.certifications.num} title={ch.certifications.title} />
@@ -973,7 +1038,9 @@ export default function DigitalManifestoScroll() {
                       <div className="dms-cert-name">{cert.name || cert.title}</div>
                       {(cert.issuer || cert.organization || cert.year) && (
                         <div className="dms-cert-issuer">
-                          {[cert.issuer || cert.organization, cert.year].filter(Boolean).join(' · ')}
+                          {[cert.issuer || cert.organization, cert.year]
+                            .filter(Boolean)
+                            .join(' · ')}
                         </div>
                       )}
                     </div>
@@ -988,7 +1055,10 @@ export default function DigitalManifestoScroll() {
       {/* ══════════════════════════════════════════════════════
           CHAPTER V — TESTIMONIALS
          ══════════════════════════════════════════════════════ */}
-      <section className={`dms-section${isAlt("testimonials") ? " dms-section-alt" : ""}`} id="testimonials">
+      <section
+        className={`dms-section${isAlt('testimonials') ? ' dms-section-alt' : ''}`}
+        id="testimonials"
+      >
         <div className="dms-container">
           <Reveal>
             <Chapter number={ch.testimonials.num} title={ch.testimonials.title} />
@@ -1016,7 +1086,7 @@ export default function DigitalManifestoScroll() {
       {/* ══════════════════════════════════════════════════════
           CHAPTER VI — CONTACT
          ══════════════════════════════════════════════════════ */}
-      <section className={`dms-section${isAlt("contact") ? " dms-section-alt" : ""}`} id="contact">
+      <section className={`dms-section${isAlt('contact') ? ' dms-section-alt' : ''}`} id="contact">
         <div className="dms-container">
           <Reveal>
             <Chapter number={ch.contact.num} title={ch.contact.title} />
@@ -1042,22 +1112,44 @@ export default function DigitalManifestoScroll() {
               </div>
               <div className="dms-socials">
                 {socials.github && (
-                  <a href={socials.github} target="_blank" rel="noopener noreferrer" className="dms-social-link" aria-label="GitHub">
+                  <a
+                    href={socials.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="dms-social-link"
+                    aria-label="GitHub"
+                  >
                     <Github size={20} />
                   </a>
                 )}
                 {socials.linkedin && (
-                  <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="dms-social-link" aria-label="LinkedIn">
+                  <a
+                    href={socials.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="dms-social-link"
+                    aria-label="LinkedIn"
+                  >
                     <Linkedin size={20} />
                   </a>
                 )}
                 {socials.twitter && (
-                  <a href={socials.twitter} target="_blank" rel="noopener noreferrer" className="dms-social-link" aria-label="Twitter">
+                  <a
+                    href={socials.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="dms-social-link"
+                    aria-label="Twitter"
+                  >
                     <Twitter size={20} />
                   </a>
                 )}
                 {socials.email && (
-                  <a href={`mailto:${socials.email}`} className="dms-social-link" aria-label="Email">
+                  <a
+                    href={`mailto:${socials.email}`}
+                    className="dms-social-link"
+                    aria-label="Email"
+                  >
                     <Mail size={20} />
                   </a>
                 )}
@@ -1080,7 +1172,7 @@ export default function DigitalManifestoScroll() {
           <motion.button
             key="back-top"
             className="dms-back-top"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}

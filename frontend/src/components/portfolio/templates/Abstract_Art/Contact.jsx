@@ -31,7 +31,6 @@ export default function Contact({ data }) {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          
           {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -43,29 +42,32 @@ export default function Contact({ data }) {
             <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 ml-2">Name</label>
-                <input 
-                  type="text" 
-                  placeholder="Your Name" 
+                <input
+                  type="text"
+                  placeholder="Your Name"
                   className="w-full bg-white/80 border-none rounded-2xl px-6 py-4 focus:ring-4 focus:ring-teal-100 outline-none transition-all placeholder:text-gray-400 text-gray-800"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 ml-2">Email</label>
-                <input 
-                  type="email" 
-                  placeholder="you@example.com" 
+                <input
+                  type="email"
+                  placeholder="you@example.com"
                   className="w-full bg-white/80 border-none rounded-2xl px-6 py-4 focus:ring-4 focus:ring-purple-100 outline-none transition-all placeholder:text-gray-400 text-gray-800"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 ml-2">Message</label>
-                <textarea 
+                <textarea
                   rows="4"
-                  placeholder="Your artistic vision..." 
+                  placeholder="Your artistic vision..."
                   className="w-full bg-white/80 border-none rounded-2xl px-6 py-4 focus:ring-4 focus:ring-pink-100 outline-none transition-all placeholder:text-gray-400 text-gray-800 resize-none"
                 ></textarea>
               </div>
-              <button type="button" className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-purple-500 text-white font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+              <button
+                type="button"
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-purple-500 text-white font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+              >
                 <span>Send Message</span>
                 <Send className="w-5 h-5" />
               </button>
@@ -85,7 +87,9 @@ export default function Contact({ data }) {
                 <Mail className="w-7 h-7 text-teal-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 uppercase tracking-widest font-semibold mb-1">Email</p>
+                <p className="text-sm text-gray-500 uppercase tracking-widest font-semibold mb-1">
+                  Email
+                </p>
                 <p className="text-xl text-gray-800 font-medium">{email}</p>
               </div>
             </div>
@@ -95,19 +99,23 @@ export default function Contact({ data }) {
                 <MapPin className="w-7 h-7 text-purple-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 uppercase tracking-widest font-semibold mb-1">Location</p>
+                <p className="text-sm text-gray-500 uppercase tracking-widest font-semibold mb-1">
+                  Location
+                </p>
                 <p className="text-xl text-gray-800 font-medium">{location}</p>
               </div>
             </div>
 
             {/* Socials */}
             <div className="pt-8 mt-8 border-t border-gray-200">
-              <p className="text-sm text-gray-500 uppercase tracking-widest font-semibold mb-6">Socials</p>
+              <p className="text-sm text-gray-500 uppercase tracking-widest font-semibold mb-6">
+                Socials
+              </p>
               <div className="flex gap-4">
                 {[Github, Linkedin, Twitter].map((Icon, idx) => (
-                  <a 
+                  <a
                     key={idx}
-                    href="#" 
+                    href="#"
                     className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-pink-400 hover:text-pink-500 hover:bg-pink-50 transition-all"
                   >
                     <Icon className="w-5 h-5" />
@@ -116,7 +124,6 @@ export default function Contact({ data }) {
               </div>
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>

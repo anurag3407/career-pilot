@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function MuseumGallery() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Museum Gallery Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Art museum layout with projects displayed in ornate gold frames on gallery walls. Placard descriptions beside each piece. Gallery room navigation.
+            Art museum layout with projects displayed in ornate gold frames on gallery walls.
+            Placard descriptions beside each piece. Gallery room navigation.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

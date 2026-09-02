@@ -5,7 +5,10 @@ export default function Skills({ skills }) {
   if (!skills || skills.length === 0) return null;
 
   return (
-    <section id="skills" className="relative isolate overflow-hidden bg-[#030406] px-4 py-20 text-stone-100 sm:px-6 lg:px-8 border-y border-stone-800/50">
+    <section
+      id="skills"
+      className="relative isolate overflow-hidden bg-[#030406] px-4 py-20 text-stone-100 sm:px-6 lg:px-8 border-y border-stone-800/50"
+    >
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_50%_50%,rgba(112,24,54,0.1),transparent_60%)]" />
       <div className="absolute inset-0 -z-10 opacity-[0.05] [background-image:linear-gradient(rgba(245,230,190,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(245,230,190,0.6)_1px,transparent_1px)] [background-size:24px_24px]" />
 
@@ -22,8 +25,8 @@ export default function Skills({ skills }) {
 
         <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
           {skills.map((skill, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="group relative flex items-center gap-3 border border-stone-500/20 bg-stone-950/55 px-5 py-3 shadow-lg shadow-black/50 backdrop-blur-md transition-all hover:-translate-y-1 hover:border-emerald-200/30 hover:bg-black/80"
             >
               <div className="absolute inset-0 -z-10 bg-gradient-to-r from-emerald-900/0 via-emerald-900/10 to-emerald-900/0 opacity-0 transition-opacity group-hover:opacity-100" />

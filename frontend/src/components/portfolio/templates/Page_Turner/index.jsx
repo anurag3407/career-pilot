@@ -1,20 +1,20 @@
-import React, { useRef } from 'react'
-import HTMLFlipBook from 'react-pageflip'
-import { motion, useBookSize, useWheelFlip } from './shared'
-import HeroPage from './HeroPage'
-import AboutPage from './AboutPage'
-import SkillsPage from './SkillsPage'
-import ProjectsPage from './ProjectsPage'
-import ExperiencePage from './ExperiencePage'
-import TestimonialsPage from './TestimonialsPage'
-import ContactPage from './ContactPage'
-import BackCoverPage from './BackCoverPage'
+import React, { useRef } from 'react';
+import HTMLFlipBook from 'react-pageflip';
+import { motion, useBookSize, useWheelFlip } from './shared';
+import HeroPage from './HeroPage';
+import AboutPage from './AboutPage';
+import SkillsPage from './SkillsPage';
+import ProjectsPage from './ProjectsPage';
+import ExperiencePage from './ExperiencePage';
+import TestimonialsPage from './TestimonialsPage';
+import ContactPage from './ContactPage';
+import BackCoverPage from './BackCoverPage';
 
 export default function PageTurner() {
-  const bookRef = useRef(null)
-  const { width, height } = useBookSize()
+  const bookRef = useRef(null);
+  const { width, height } = useBookSize();
 
-  useWheelFlip(bookRef)
+  useWheelFlip(bookRef);
 
   return (
     <div className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.12),_transparent_35%),linear-gradient(180deg,#0f172a_0%,#111827_100%)]">
@@ -32,7 +32,7 @@ export default function PageTurner() {
           drawShadow={true}
           showCover={true}
           size="fixed"
-          
+
           flippingTime={650}
           usePortrait={true}
           startZIndex={0}
@@ -57,5 +57,5 @@ export default function PageTurner() {
         </HTMLFlipBook>
       </motion.div>
     </div>
-  )
+  );
 }

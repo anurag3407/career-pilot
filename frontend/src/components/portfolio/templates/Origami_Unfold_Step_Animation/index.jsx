@@ -1,73 +1,89 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, animate } from 'framer-motion';
-import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin, Compass, Briefcase, Award, GraduationCap, RotateCcw } from 'lucide-react';
+import {
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  ExternalLink,
+  MapPin,
+  Compass,
+  Briefcase,
+  Award,
+  GraduationCap,
+  RotateCcw,
+} from 'lucide-react';
 
 export default function Origami_Unfold_Step_Animation({ data: localData, portfolioData }) {
   // 🔒 Safe fallback data for preview and development
   const localDefault = {
     personal: {
-      name: "Alex Morgan",
-      title: "Lead Creative Technologist",
-      email: "alex@example.com",
-      phone: "+1 (555) 123-4567",
-      location: "San Francisco, CA",
-      bio: "Passionate full-stack developer and visual designer with 8+ years of experience blending physical computing, CSS 3D art, and robust web applications. Pushing the boundary of canvas animations.",
-      avatar: "",
-      website: "https://alexmorgan.dev",
-      tagline: "Unrolling the future of interactive interface design, one fold at a time."
+      name: 'Alex Morgan',
+      title: 'Lead Creative Technologist',
+      email: 'alex@example.com',
+      phone: '+1 (555) 123-4567',
+      location: 'San Francisco, CA',
+      bio: 'Passionate full-stack developer and visual designer with 8+ years of experience blending physical computing, CSS 3D art, and robust web applications. Pushing the boundary of canvas animations.',
+      avatar: '',
+      website: 'https://alexmorgan.dev',
+      tagline: 'Unrolling the future of interactive interface design, one fold at a time.',
     },
     skills: [
-      { name: "React / Next.js", level: 95 },
-      { name: "WebGL / Three.js", level: 90 },
-      { name: "Framer Motion", level: 98 },
-      { name: "CSS 3D Art", level: 92 },
-      { name: "Tailwind CSS", level: 95 },
-      { name: "Node.js & Python", level: 88 }
+      { name: 'React / Next.js', level: 95 },
+      { name: 'WebGL / Three.js', level: 90 },
+      { name: 'Framer Motion', level: 98 },
+      { name: 'CSS 3D Art', level: 92 },
+      { name: 'Tailwind CSS', level: 95 },
+      { name: 'Node.js & Python', level: 88 },
     ],
     experience: [
       {
-        role: "Senior Creative Technologist",
-        company: "Spectacle Interfaces",
-        period: "2023 - Present",
-        description: "Leading frontend animation architectures. Pioneered Awwwards-winning 3D web portals and custom rendering engines using React, Framer Motion, and raw webGL shader matrices."
+        role: 'Senior Creative Technologist',
+        company: 'Spectacle Interfaces',
+        period: '2023 - Present',
+        description:
+          'Leading frontend animation architectures. Pioneered Awwwards-winning 3D web portals and custom rendering engines using React, Framer Motion, and raw webGL shader matrices.',
       },
       {
-        role: "Interactive Developer",
-        company: "Studio Origami Lab",
-        period: "2020 - 2023",
-        description: "Created modular tactile web layouts representing traditional craft and paper aesthetics. Built micro-interactions and smooth physical physics models."
-      }
+        role: 'Interactive Developer',
+        company: 'Studio Origami Lab',
+        period: '2020 - 2023',
+        description:
+          'Created modular tactile web layouts representing traditional craft and paper aesthetics. Built micro-interactions and smooth physical physics models.',
+      },
     ],
     projects: [
       {
-        title: "Tactile Paper Canvas Engine",
-        description: "A framework simulating the physics of paper, folding, creases, and physical texture in vanilla WebGL.",
-        techStack: ["React", "WebGL", "Framer Motion"],
-        liveUrl: "#",
-        githubUrl: "#"
+        title: 'Tactile Paper Canvas Engine',
+        description:
+          'A framework simulating the physics of paper, folding, creases, and physical texture in vanilla WebGL.',
+        techStack: ['React', 'WebGL', 'Framer Motion'],
+        liveUrl: '#',
+        githubUrl: '#',
       },
       {
-        title: "Virtual Design Desk OS",
-        description: "An interactive browser-based operating system designed like a physical wooden drafting table with floating paper modules.",
-        techStack: ["Next.js", "Zustand", "Framer Motion"],
-        liveUrl: "#",
-        githubUrl: "#"
-      }
+        title: 'Virtual Design Desk OS',
+        description:
+          'An interactive browser-based operating system designed like a physical wooden drafting table with floating paper modules.',
+        techStack: ['Next.js', 'Zustand', 'Framer Motion'],
+        liveUrl: '#',
+        githubUrl: '#',
+      },
     ],
     testimonials: [
       {
-        name: "Devon Sinclair",
-        role: "Creative Director at Studio Origami Lab",
-        text: "Alex's work is a masterclass in merging code with sensory design. The animations feel heavy, physical, and alive."
-      }
+        name: 'Devon Sinclair',
+        role: 'Creative Director at Studio Origami Lab',
+        text: "Alex's work is a masterclass in merging code with sensory design. The animations feel heavy, physical, and alive.",
+      },
     ],
     socials: {
-      github: "https://github.com",
-      linkedin: "https://linkedin.com",
-      twitter: "https://twitter.com",
-      email: "alex@example.com"
-    }
+      github: 'https://github.com',
+      linkedin: 'https://linkedin.com',
+      twitter: 'https://twitter.com',
+      email: 'alex@example.com',
+    },
   };
 
   // Resolve data source
@@ -75,21 +91,33 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
   const incoming = portfolioData || localData || context?.portfolioData || {};
 
   // Safe merging helper
-  const personal = { ...localDefault.personal, ...incoming.personal, ...(incoming.personalInfo || {}) };
-  const experience = incoming.experience && incoming.experience.length > 0 ? incoming.experience : localDefault.experience;
-  const projects = incoming.projects && incoming.projects.length > 0 ? incoming.projects : localDefault.projects;
-  const skills = incoming.skills && incoming.skills.length > 0 ? incoming.skills : localDefault.skills;
-  const testimonials = incoming.testimonials && incoming.testimonials.length > 0 ? incoming.testimonials : localDefault.testimonials;
+  const personal = {
+    ...localDefault.personal,
+    ...incoming.personal,
+    ...(incoming.personalInfo || {}),
+  };
+  const experience =
+    incoming.experience && incoming.experience.length > 0
+      ? incoming.experience
+      : localDefault.experience;
+  const projects =
+    incoming.projects && incoming.projects.length > 0 ? incoming.projects : localDefault.projects;
+  const skills =
+    incoming.skills && incoming.skills.length > 0 ? incoming.skills : localDefault.skills;
+  const testimonials =
+    incoming.testimonials && incoming.testimonials.length > 0
+      ? incoming.testimonials
+      : localDefault.testimonials;
   const socials = { ...localDefault.socials, ...incoming.socials };
 
   // Generate random fiber positions once on render to avoid layout shifts
-  const [fibers] = useState(() => 
+  const [fibers] = useState(() =>
     Array.from({ length: 45 }).map((_, i) => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
       length: Math.random() * 25 + 12,
       angle: Math.random() * 360,
-      opacity: Math.random() * 0.15 + 0.05
+      opacity: Math.random() * 0.15 + 0.05,
     }))
   );
 
@@ -101,11 +129,11 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
     let t1, t2, t3, t4, t5;
 
     // Start Timeline Sequence
-    t1 = setTimeout(() => setStage('entry'), 200);       // Scroll enters anchored on the left
-    t2 = setTimeout(() => setStage('unrolling'), 1200);  // Unroll horizontally left-to-right
+    t1 = setTimeout(() => setStage('entry'), 200); // Scroll enters anchored on the left
+    t2 = setTimeout(() => setStage('unrolling'), 1200); // Unroll horizontally left-to-right
     t3 = setTimeout(() => setStage('flattening'), 2300); // 3D crease flattening fold release
-    t4 = setTimeout(() => setStage('expanding'), 3100);  // Vertical canvas expansion
-    t5 = setTimeout(() => setStage('reveal'), 3900);     // Printed content fades/slides in
+    t4 = setTimeout(() => setStage('expanding'), 3100); // Vertical canvas expansion
+    t5 = setTimeout(() => setStage('reveal'), 3900); // Printed content fades/slides in
 
     return () => {
       clearTimeout(t1);
@@ -124,19 +152,19 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
       animate(4.5, 3.2, {
         duration: 1.0,
         ease: 'easeOut',
-        onUpdate: (latest) => setSurfaceScale(latest)
+        onUpdate: (latest) => setSurfaceScale(latest),
       });
     } else if (stage === 'flattening') {
       animate(surfaceScale, 1.8, {
         duration: 0.8,
         ease: 'easeOut',
-        onUpdate: (latest) => setSurfaceScale(latest)
+        onUpdate: (latest) => setSurfaceScale(latest),
       });
     } else if (stage === 'expanding' || stage === 'reveal') {
       animate(surfaceScale, 1.1, {
         duration: 1.0,
         ease: 'easeOut',
-        onUpdate: (latest) => setSurfaceScale(latest)
+        onUpdate: (latest) => setSurfaceScale(latest),
       });
     }
   }, [stage]);
@@ -152,7 +180,8 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
   };
 
   // 📐 Jagged paper clip-path edges simulation
-  const jaggedClipPath = "polygon(0% 1.2%, 10% 0.5%, 20% 1.4%, 30% 0.7%, 40% 1.2%, 50% 0.6%, 60% 1.5%, 70% 0.8%, 80% 1.3%, 90% 0.7%, 100% 1.2%, 99.2% 10%, 100% 20%, 98.8% 30%, 99.4% 40%, 99% 50%, 98.6% 60%, 99.5% 70%, 99.1% 80%, 99.6% 90%, 100% 98.8%, 90% 99.3%, 80% 98.6%, 70% 99.4%, 60% 98.9%, 50% 99.5%, 40% 98.7%, 30% 99.3%, 20% 98.8%, 10% 99.4%, 0% 98.8%, 0.8% 90%, 0.4% 80%, 1.2% 70%, 0.5% 60%, 1% 50%, 0.7% 40%, 1.3% 30%, 0.6% 20%, 1.1% 10%)";
+  const jaggedClipPath =
+    'polygon(0% 1.2%, 10% 0.5%, 20% 1.4%, 30% 0.7%, 40% 1.2%, 50% 0.6%, 60% 1.5%, 70% 0.8%, 80% 1.3%, 90% 0.7%, 100% 1.2%, 99.2% 10%, 100% 20%, 98.8% 30%, 99.4% 40%, 99% 50%, 98.6% 60%, 99.5% 70%, 99.1% 80%, 99.6% 90%, 100% 98.8%, 90% 99.3%, 80% 98.6%, 70% 99.4%, 60% 98.9%, 50% 99.5%, 40% 98.7%, 30% 99.3%, 20% 98.8%, 10% 99.4%, 0% 98.8%, 0.8% 90%, 0.4% 80%, 1.2% 70%, 0.5% 60%, 1% 50%, 0.7% 40%, 1.3% 30%, 0.6% 20%, 1.1% 10%)';
 
   return (
     <div className="relative min-h-screen w-full bg-[#11100e] text-[#0c0805] font-serif overflow-hidden flex items-center justify-start select-none">
@@ -171,13 +200,18 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
           background: rgba(43, 27, 17, 0.45);
         }
       `}</style>
-      
+
       {/* 🛠️ SVG Textures and Shadows Filters */}
       <svg className="absolute w-0 h-0" width="0" height="0">
         <defs>
           <filter id="kraft-paper-texture" x="0%" y="0%" width="100%" height="100%">
             <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" />
-            <feDiffuseLighting in="noise" lightingColor="#f9ebd8" surfaceScale={surfaceScale} result="light">
+            <feDiffuseLighting
+              in="noise"
+              lightingColor="#f9ebd8"
+              surfaceScale={surfaceScale}
+              result="light"
+            >
               <feDistantLight azimuth="55" elevation="45" />
             </feDiffuseLighting>
             <feBlend mode="multiply" in="SourceGraphic" in2="light" result="blend" />
@@ -186,7 +220,7 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
       </svg>
 
       {/* 📐 Drafting Table Backdrop Grid */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none opacity-30"
         style={{
           backgroundImage: `
@@ -194,13 +228,14 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
             linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px)
           `,
-          backgroundSize: '100% 100%, 40px 40px, 40px 40px'
+          backgroundSize: '100% 100%, 40px 40px, 40px 40px',
         }}
       />
 
       <div className="absolute top-4 right-4 flex items-center gap-2 text-neutral-400 font-mono text-xs z-50">
-        <button type="button" 
-          onClick={handleReplay} 
+        <button
+          type="button"
+          onClick={handleReplay}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-neutral-900/60 border border-neutral-800 hover:bg-neutral-800 hover:text-white transition-all pointer-events-auto cursor-pointer"
         >
           <RotateCcw size={12} /> Replay Scroll
@@ -214,7 +249,7 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
           width: '100vw',
           height: '100vh',
           perspective: 1500,
-          transformStyle: 'preserve-3d'
+          transformStyle: 'preserve-3d',
         }}
       >
         {/* 📜 THE ROLLED BLUEPRINT SCROLL CANVAS */}
@@ -223,15 +258,21 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
           style={{
             clipPath: stage === 'reveal' ? 'none' : jaggedClipPath,
             transformOrigin: 'left center',
-            transformStyle: 'preserve-3d'
+            transformStyle: 'preserve-3d',
           }}
           initial="hidden"
           animate={
-            stage === 'hidden' ? 'hidden' :
-            stage === 'entry' ? 'entry' :
-            stage === 'unrolling' ? 'unrolling' :
-            stage === 'flattening' ? 'flattening' :
-            stage === 'expanding' ? 'expanding' : 'reveal'
+            stage === 'hidden'
+              ? 'hidden'
+              : stage === 'entry'
+                ? 'entry'
+                : stage === 'unrolling'
+                  ? 'unrolling'
+                  : stage === 'flattening'
+                    ? 'flattening'
+                    : stage === 'expanding'
+                      ? 'expanding'
+                      : 'reveal'
           }
           variants={{
             hidden: {
@@ -240,7 +281,7 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
               width: 60,
               height: 220,
               opacity: 0,
-              scale: 0.98
+              scale: 0.98,
             },
             entry: {
               x: 0,
@@ -249,7 +290,7 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
               height: 220,
               opacity: 1,
               scale: 1,
-              transition: { type: 'spring', stiffness: 90, damping: 13 }
+              transition: { type: 'spring', stiffness: 90, damping: 13 },
             },
             unrolling: {
               x: 0,
@@ -258,7 +299,7 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
               height: 220,
               opacity: 1,
               scale: 1,
-              transition: { duration: 1.1, ease: 'easeInOut' }
+              transition: { duration: 1.1, ease: 'easeInOut' },
             },
             flattening: {
               x: 0,
@@ -267,7 +308,7 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
               height: 220,
               opacity: 1,
               scale: 1,
-              transition: { duration: 0.4 }
+              transition: { duration: 0.4 },
             },
             expanding: {
               x: 0,
@@ -276,7 +317,7 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
               height: '100vh',
               opacity: 1,
               scale: 1,
-              transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] }
+              transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] },
             },
             reveal: {
               x: 0,
@@ -284,27 +325,30 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
               width: '100vw',
               height: '100vh',
               opacity: 1,
-              scale: 1
-            }
+              scale: 1,
+            },
           }}
         >
           {/* 📜 TEXTURED PAPER BACKGROUND (Filtered separately so text remains crisp and readable) */}
-          <div 
+          <div
             className="absolute inset-0 w-full h-full pointer-events-none"
             style={{
               backgroundColor: '#f0dfcc',
               filter: 'url(#kraft-paper-texture)',
-              zIndex: 0
+              zIndex: 0,
             }}
           />
 
           {/* 🌾 Scattered Vintage Paper Fibers Overlay */}
-          <div className="absolute inset-0 pointer-events-none opacity-6 mix-blend-multiply" style={{ zIndex: 1 }}>
+          <div
+            className="absolute inset-0 pointer-events-none opacity-6 mix-blend-multiply"
+            style={{ zIndex: 1 }}
+          >
             <svg className="w-full h-full">
               {fibers.map((fiber, idx) => (
                 <path
                   key={idx}
-                  d={`M ${fiber.x} ${fiber.y} Q ${fiber.x + Math.sin(fiber.angle) * fiber.length / 2} ${fiber.y + Math.cos(fiber.angle) * fiber.length / 2}, ${fiber.x + Math.sin(fiber.angle) * fiber.length} ${fiber.y + Math.cos(fiber.angle) * fiber.length}`}
+                  d={`M ${fiber.x} ${fiber.y} Q ${fiber.x + (Math.sin(fiber.angle) * fiber.length) / 2} ${fiber.y + (Math.cos(fiber.angle) * fiber.length) / 2}, ${fiber.x + Math.sin(fiber.angle) * fiber.length} ${fiber.y + Math.cos(fiber.angle) * fiber.length}`}
                   stroke="#4c3624"
                   strokeWidth="0.4"
                   fill="none"
@@ -317,50 +361,84 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
           </div>
 
           {/* 🪵 Aging Vignette shading */}
-          <div 
-            className="absolute inset-0 pointer-events-none" 
+          <div
+            className="absolute inset-0 pointer-events-none"
             style={{
-              backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.08) 100%)',
+              backgroundImage:
+                'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.08) 100%)',
               mixBlendMode: 'multiply',
-              zIndex: 2
+              zIndex: 2,
             }}
           />
 
           {/* 3D ACCORDION CREASE SYSTEM (Simulating fold lines release) */}
-          <div className="absolute inset-0 w-full h-full flex transform-style-3d pointer-events-none" style={{ zIndex: 3 }}>
+          <div
+            className="absolute inset-0 w-full h-full flex transform-style-3d pointer-events-none"
+            style={{ zIndex: 3 }}
+          >
             {/* Panel 1 (Left 33.3%) */}
-            <motion.div 
+            <motion.div
               className="h-full border-r border-[#6b5643]/10 transform-style-3d"
               style={{ width: '33.33%', transformOrigin: 'right center' }}
-              animate={stage === 'flattening' ? { rotateY: [12, 0] } : stage === 'unrolling' ? { rotateY: 12 } : { rotateY: 0 }}
+              animate={
+                stage === 'flattening'
+                  ? { rotateY: [12, 0] }
+                  : stage === 'unrolling'
+                    ? { rotateY: 12 }
+                    : { rotateY: 0 }
+              }
               transition={{ duration: 0.8, ease: 'easeOut' }}
             />
             {/* Panel 2 (Middle 33.3%) */}
-            <motion.div 
+            <motion.div
               className="h-full border-r border-[#6b5643]/10 transform-style-3d"
               style={{ width: '33.33%', transformOrigin: 'center center' }}
-              animate={stage === 'flattening' ? { rotateY: [-16, 0] } : stage === 'unrolling' ? { rotateY: -16 } : { rotateY: 0 }}
+              animate={
+                stage === 'flattening'
+                  ? { rotateY: [-16, 0] }
+                  : stage === 'unrolling'
+                    ? { rotateY: -16 }
+                    : { rotateY: 0 }
+              }
               transition={{ duration: 0.8, ease: 'easeOut' }}
             />
             {/* Panel 3 (Right 33.3%) */}
-            <motion.div 
+            <motion.div
               className="h-full transform-style-3d"
               style={{ width: '33.33%', transformOrigin: 'left center' }}
-              animate={stage === 'flattening' ? { rotateY: [12, 0] } : stage === 'unrolling' ? { rotateY: 12 } : { rotateY: 0 }}
+              animate={
+                stage === 'flattening'
+                  ? { rotateY: [12, 0] }
+                  : stage === 'unrolling'
+                    ? { rotateY: 12 }
+                    : { rotateY: 0 }
+              }
               transition={{ duration: 0.8, ease: 'easeOut' }}
             />
           </div>
 
           {/* 📐 Crease Line Shadow Overlays */}
-          <motion.div 
+          <motion.div
             className="absolute left-[33.33%] top-0 bottom-0 w-[40px] -translate-x-1/2 pointer-events-none mix-blend-multiply opacity-25"
-            style={{ backgroundImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 50%, transparent 100%)', zIndex: 3 }}
-            animate={stage === 'reveal' || stage === 'expanding' ? { opacity: 0.05 } : { opacity: 0.25 }}
+            style={{
+              backgroundImage:
+                'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 50%, transparent 100%)',
+              zIndex: 3,
+            }}
+            animate={
+              stage === 'reveal' || stage === 'expanding' ? { opacity: 0.05 } : { opacity: 0.25 }
+            }
           />
-          <motion.div 
+          <motion.div
             className="absolute left-[66.66%] top-0 bottom-0 w-[40px] -translate-x-1/2 pointer-events-none mix-blend-multiply opacity-25"
-            style={{ backgroundImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 50%, transparent 100%)', zIndex: 3 }}
-            animate={stage === 'reveal' || stage === 'expanding' ? { opacity: 0.05 } : { opacity: 0.25 }}
+            style={{
+              backgroundImage:
+                'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 50%, transparent 100%)',
+              zIndex: 3,
+            }}
+            animate={
+              stage === 'reveal' || stage === 'expanding' ? { opacity: 0.05 } : { opacity: 0.25 }
+            }
           />
 
           {/* 🌀 THE CYLINDRICAL SCROLL ROLL (Travels to the right and spins/shrinks) */}
@@ -370,7 +448,8 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
                 className="absolute right-0 top-0 bottom-0 bg-[#b79672] shadow-[-10px_0_30px_rgba(0,0,0,0.4)] z-40 transform-style-3d origin-center"
                 style={{
                   transform: 'translateX(50%)',
-                  backgroundImage: 'linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(255,255,255,0.1) 15%, rgba(255,255,255,0.25) 30%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.45) 85%, rgba(0,0,0,0.7) 100%)'
+                  backgroundImage:
+                    'linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(255,255,255,0.1) 15%, rgba(255,255,255,0.25) 30%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.45) 85%, rgba(0,0,0,0.7) 100%)',
                 }}
                 initial="initial"
                 animate={stage === 'unrolling' ? 'unrolling' : 'initial'}
@@ -379,23 +458,23 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
                   initial: {
                     width: 48,
                     opacity: 1,
-                    rotateY: 0
+                    rotateY: 0,
                   },
                   unrolling: {
                     width: [48, 12], // Shrink cylinder roll as paper unrolls
-                    rotateY: 720,    // Spin cylinder roll
-                    transition: { duration: 1.0, ease: 'easeInOut' }
+                    rotateY: 720, // Spin cylinder roll
+                    transition: { duration: 1.0, ease: 'easeInOut' },
                   },
                   exit: {
                     opacity: 0,
                     width: 0,
-                    transition: { duration: 0.3 }
-                  }
+                    transition: { duration: 0.3 },
+                  },
                 }}
               >
                 {/* Cylinder top spiral cap */}
-                <div 
-                  className="absolute top-0 left-0 right-0 h-4 rounded-full bg-[#9b7e5f] border border-[#524133] overflow-hidden" 
+                <div
+                  className="absolute top-0 left-0 right-0 h-4 rounded-full bg-[#9b7e5f] border border-[#524133] overflow-hidden"
                   style={{ transform: 'translateY(-50%)' }}
                 >
                   <div className="absolute inset-1 rounded-full border border-[#6d5540] opacity-50" />
@@ -403,8 +482,8 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
                   <div className="absolute inset-3 rounded-full border border-[#6d5540] opacity-50" />
                 </div>
                 {/* Cylinder bottom spiral cap */}
-                <div 
-                  className="absolute bottom-0 left-0 right-0 h-4 rounded-full bg-[#9b7e5f] border border-[#524133] overflow-hidden" 
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-4 rounded-full bg-[#9b7e5f] border border-[#524133] overflow-hidden"
                   style={{ transform: 'translateY(50%)' }}
                 >
                   <div className="absolute inset-1 rounded-full border border-[#6d5540] opacity-50" />
@@ -458,7 +537,12 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
                     {personal.website && (
                       <span className="flex items-center gap-1.5">
                         <Compass size={13} className="text-neutral-950" />
-                        <a href={personal.website} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-0.5 text-neutral-950 font-bold">
+                        <a
+                          href={personal.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline flex items-center gap-0.5 text-neutral-950 font-bold"
+                        >
                           {personal.website.replace(/^https?:\/\//, '')} <ExternalLink size={9} />
                         </a>
                       </span>
@@ -494,8 +578,8 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
                         {skills.map((skill, index) => {
                           const skillName = typeof skill === 'string' ? skill : skill.name;
                           return (
-                            <span 
-                              key={index} 
+                            <span
+                              key={index}
                               className="bg-neutral-900 text-neutral-50 font-mono text-[10px] uppercase font-bold tracking-tight px-2.5 py-1 rounded shadow-[1px_1px_3px_rgba(0,0,0,0.15)]"
                             >
                               {skillName}
@@ -512,20 +596,41 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
                       </h2>
                       <div className="space-y-2.5">
                         {socials.github && (
-                          <a href={socials.github} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between text-neutral-900 hover:text-black font-semibold hover:underline">
-                            <span className="flex items-center gap-2"><Github size={13} /> github</span>
+                          <a
+                            href={socials.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between text-neutral-900 hover:text-black font-semibold hover:underline"
+                          >
+                            <span className="flex items-center gap-2">
+                              <Github size={13} /> github
+                            </span>
                             <ExternalLink size={10} />
                           </a>
                         )}
                         {socials.linkedin && (
-                          <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between text-neutral-900 hover:text-black font-semibold hover:underline">
-                            <span className="flex items-center gap-2"><Linkedin size={13} /> linkedin</span>
+                          <a
+                            href={socials.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between text-neutral-900 hover:text-black font-semibold hover:underline"
+                          >
+                            <span className="flex items-center gap-2">
+                              <Linkedin size={13} /> linkedin
+                            </span>
                             <ExternalLink size={10} />
                           </a>
                         )}
                         {socials.twitter && (
-                          <a href={socials.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between text-neutral-900 hover:text-black font-semibold hover:underline">
-                            <span className="flex items-center gap-2"><Twitter size={13} /> twitter</span>
+                          <a
+                            href={socials.twitter}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between text-neutral-900 hover:text-black font-semibold hover:underline"
+                          >
+                            <span className="flex items-center gap-2">
+                              <Twitter size={13} /> twitter
+                            </span>
                             <ExternalLink size={10} />
                           </a>
                         )}
@@ -538,11 +643,12 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
                     {/* Experience Section */}
                     <section className="space-y-4">
                       <h2 className="font-mono text-sm font-bold uppercase tracking-wider text-neutral-950 border-b-2 border-neutral-950 pb-2 flex items-center gap-2">
-                        <Briefcase size={15} className="text-neutral-950" /> Logged Fragments [Experience]
+                        <Briefcase size={15} className="text-neutral-950" /> Logged Fragments
+                        [Experience]
                       </h2>
                       <div className="space-y-4">
                         {experience.map((exp, idx) => (
-                          <div 
+                          <div
                             key={idx}
                             className="border border-neutral-950/30 bg-[#fdfaf2]/40 p-4 rounded hover:border-neutral-950/60 transition-colors"
                           >
@@ -572,7 +678,7 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
                       </h2>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {projects.map((proj, idx) => (
-                          <div 
+                          <div
                             key={idx}
                             className="border-2 border-dashed border-neutral-950/40 bg-[#fdfaf2]/30 p-4 rounded hover:border-neutral-950/70 transition-colors flex flex-col justify-between"
                           >
@@ -593,7 +699,10 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
                             <div>
                               <div className="flex flex-wrap gap-1 mb-4">
                                 {(proj.techStack || proj.technologies || []).map((tech, tIdx) => (
-                                  <span key={tIdx} className="text-[9px] font-mono border border-neutral-950/40 px-1.5 py-0.5 rounded bg-[#f0dfcc] text-neutral-950 font-medium">
+                                  <span
+                                    key={tIdx}
+                                    className="text-[9px] font-mono border border-neutral-950/40 px-1.5 py-0.5 rounded bg-[#f0dfcc] text-neutral-950 font-medium"
+                                  >
                                     {tech}
                                   </span>
                                 ))}
@@ -601,20 +710,20 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
 
                               <div className="flex gap-3">
                                 {proj.liveUrl && (
-                                  <a 
-                                    href={proj.liveUrl} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer" 
+                                  <a
+                                    href={proj.liveUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="font-mono text-[10px] font-bold text-white bg-neutral-900 px-3 py-1.5 rounded hover:bg-neutral-950 transition-colors flex items-center gap-1"
                                   >
                                     Live <ExternalLink size={10} />
                                   </a>
                                 )}
                                 {proj.githubUrl && (
-                                  <a 
-                                    href={proj.githubUrl} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer" 
+                                  <a
+                                    href={proj.githubUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="font-mono text-[10px] font-bold border border-neutral-900 text-neutral-900 px-3 py-1 rounded hover:bg-neutral-900 hover:text-white transition-colors flex items-center gap-1"
                                   >
                                     Code <Github size={10} />

@@ -6,10 +6,14 @@ export default function Contact({ personal, socials }) {
 
   const getSocialIcon = (platform) => {
     switch (platform?.toLowerCase()) {
-      case 'github': return <Github className="h-6 w-6" />;
-      case 'linkedin': return <Linkedin className="h-6 w-6" />;
-      case 'twitter': return <Twitter className="h-6 w-6" />;
-      default: return <ExternalLink className="h-6 w-6" />;
+      case 'github':
+        return <Github className="h-6 w-6" />;
+      case 'linkedin':
+        return <Linkedin className="h-6 w-6" />;
+      case 'twitter':
+        return <Twitter className="h-6 w-6" />;
+      default:
+        return <ExternalLink className="h-6 w-6" />;
     }
   };
 
@@ -33,13 +37,13 @@ export default function Contact({ personal, socials }) {
           </div>
 
           <p className="mb-12 max-w-2xl text-lg font-bold text-gray-400">
-            Got a project in mind? Want to collaborate on a masterpiece? 
-            Drop a message and let's create something legendary.
+            Got a project in mind? Want to collaborate on a masterpiece? Drop a message and let's
+            create something legendary.
           </p>
 
           <div className="flex w-full flex-col gap-6 md:flex-row md:justify-center md:gap-12">
             {personal.email && (
-              <a 
+              <a
                 href={`mailto:${personal.email}`}
                 className="group flex flex-col items-center rounded-xl border-2 border-white/10 bg-white/5 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:border-pink-500 hover:bg-pink-500/10"
               >

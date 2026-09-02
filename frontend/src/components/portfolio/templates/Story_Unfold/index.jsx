@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function StoryUnfold() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Story Unfold Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Narrative scroll portfolio where a personal story unfolds chapter by chapter. Text and images reveal with fade-in/slide-up animations as user scrolls.
+            Narrative scroll portfolio where a personal story unfolds chapter by chapter. Text and
+            images reveal with fade-in/slide-up animations as user scrolls.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

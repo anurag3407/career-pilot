@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Code2 } from 'lucide-react';
 
-const GlowingCard = ({ children, className = "", delay = 0 }) => (
+const GlowingCard = ({ children, className = '', delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.6, ease: "easeOut", delay }}
+    viewport={{ once: true, margin: '-100px' }}
+    transition={{ duration: 0.6, ease: 'easeOut', delay }}
     whileHover={{ y: -6, transition: { duration: 0.2 } }}
     className={`relative group rounded-2xl border border-indigo-500/10 hover:border-cyan-400/40 bg-[#0a0d24]/60 backdrop-blur-md hover:shadow-[0_0_35px_rgba(34,211,238,0.12)] transition-all duration-300 ${className}`}
   >
@@ -29,8 +29,12 @@ export default function Skills({ data }) {
             <Code2 size={20} />
           </div>
           <div>
-            <span className="text-cyan-400 text-xs font-bold tracking-wider uppercase">Capabilities</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white">Skills & Technologies</h2>
+            <span className="text-cyan-400 text-xs font-bold tracking-wider uppercase">
+              Capabilities
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">
+              Skills & Technologies
+            </h2>
           </div>
         </div>
 
@@ -60,7 +64,7 @@ export default function Skills({ data }) {
                           className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500 shadow-[0_0_8px_rgba(6,182,212,0.3)]"
                           initial={{ width: 0 }}
                           whileInView={{ width: `${skill.level}%` }}
-                          transition={{ duration: 1, ease: "easeOut" }}
+                          transition={{ duration: 1, ease: 'easeOut' }}
                           viewport={{ once: true }}
                         />
                       </div>

@@ -154,10 +154,10 @@ export default function GithubTokenCard() {
               {validated && oauthConnected
                 ? `PAT @${validatedLogin} · OAuth @${oauthLogin}`
                 : validated
-                ? `PAT @${validatedLogin}`
-                : oauthConnected
-                ? `OAuth @${oauthLogin}`
-                : 'Connect for private repos + 5000 req/hr'}
+                  ? `PAT @${validatedLogin}`
+                  : oauthConnected
+                    ? `OAuth @${oauthLogin}`
+                    : 'Connect for private repos + 5000 req/hr'}
             </p>
           </div>
         </div>
@@ -204,11 +204,7 @@ export default function GithubTokenCard() {
                     </Button>
                   </div>
                 ) : (
-                  <Button
-                    onClick={handleConnectOauth}
-                    size="sm"
-                    className="gap-2"
-                  >
+                  <Button onClick={handleConnectOauth} size="sm" className="gap-2">
                     <Github className="h-4 w-4" />
                     Connect GitHub
                   </Button>
@@ -231,7 +227,8 @@ export default function GithubTokenCard() {
                     Generate a token <ExternalLink className="h-3 w-3" />
                   </a>{' '}
                   with <code className="text-[10px]">repo</code> +{' '}
-                  <code className="text-[10px]">read:user</code> scopes. Stored encrypted in your browser.
+                  <code className="text-[10px]">read:user</code> scopes. Stored encrypted in your
+                  browser.
                 </p>
 
                 <div className="flex items-center gap-2">
@@ -316,8 +313,8 @@ export default function GithubTokenCard() {
                   </h4>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Just paste a username on the Portfolio Builder page. Public data only,
-                  60 req/hr limit.
+                  Just paste a username on the Portfolio Builder page. Public data only, 60 req/hr
+                  limit.
                 </p>
               </div>
             </div>

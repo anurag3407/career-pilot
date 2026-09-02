@@ -4,7 +4,7 @@ import { Settings, Play, Pause, RefreshCw, Layers, ShieldAlert } from 'lucide-re
 export default function FluidCanvas() {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
-  
+
   // Settings state (controlled by overlay)
   const [isOpen, setIsOpen] = useState(false);
   const [particleCount, setParticleCount] = useState(400);
@@ -25,7 +25,7 @@ export default function FluidCanvas() {
     particleSize,
     colorMode,
     showVectors,
-    isPaused
+    isPaused,
   });
 
   useEffect(() => {
@@ -37,9 +37,18 @@ export default function FluidCanvas() {
       particleSize,
       colorMode,
       showVectors,
-      isPaused
+      isPaused,
     };
-  }, [particleCount, flowSpeed, viscosity, turbulence, particleSize, colorMode, showVectors, isPaused]);
+  }, [
+    particleCount,
+    flowSpeed,
+    viscosity,
+    turbulence,
+    particleSize,
+    colorMode,
+    showVectors,
+    isPaused,
+  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -59,7 +68,7 @@ export default function FluidCanvas() {
       vy: 0,
       lastX: 0,
       lastY: 0,
-      active: false
+      active: false,
     };
 
     // Particles list
@@ -68,14 +77,18 @@ export default function FluidCanvas() {
     let shockwaves = [];
 
     // Helper to generate a particle
-    const createParticle = (x = Math.random() * width, y = Math.random() * height, isBurst = false) => {
+    const createParticle = (
+      x = Math.random() * width,
+      y = Math.random() * height,
+      isBurst = false
+    ) => {
       const colors = {
         aqua: ['#06b6d4', '#3b82f6', '#60a5fa', '#0ea5e9'],
         nebula: ['#a855f7', '#ec4899', '#f43f5e', '#d946ef'],
         magma: ['#f97316', '#ef4444', '#f59e0b', '#dc2626'],
-        acid: ['#10b981', '#84cc16', '#22c55e', '#a3e635']
+        acid: ['#10b981', '#84cc16', '#22c55e', '#a3e635'],
       };
-      
+
       const themeColors = colors[settingsRef.current.colorMode] || colors.aqua;
       const color = themeColors[Math.floor(Math.random() * themeColors.length)];
 
@@ -88,7 +101,7 @@ export default function FluidCanvas() {
         color,
         alpha: Math.random() * 0.5 + 0.3,
         life: isBurst ? Math.random() * 60 + 40 : Infinity,
-        maxLife: isBurst ? 100 : Infinity
+        maxLife: isBurst ? 100 : Infinity,
       };
     };
 
@@ -106,7 +119,7 @@ export default function FluidCanvas() {
       const { x, y, count = 25, color } = e.detail || {};
       const actualX = x || Math.random() * width;
       const actualY = y || Math.random() * height;
-      
+
       for (let i = 0; i < count; i++) {
         const p = createParticle(actualX, actualY, true);
         if (color) p.color = color;
@@ -124,7 +137,7 @@ export default function FluidCanvas() {
     // Event listener: push current flow
     const handleFlow = (e) => {
       const { x, y, dx, dy, radius = 200, strength = 3 } = e.detail || {};
-      particles.forEach(p => {
+      particles.forEach((p) => {
         const distSq = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
         if (distSq < radius * radius) {
           const dist = Math.sqrt(distSq);
@@ -161,12 +174,14 @@ export default function FluidCanvas() {
         radius: 10,
         maxRadius: 280,
         strength: 18,
-        speed: 8
+        speed: 8,
       });
       // also create local particle explosion
-      window.dispatchEvent(new CustomEvent('fluid-burst', {
-        detail: { x: e.clientX, y: e.clientY, count: 20 }
-      }));
+      window.dispatchEvent(
+        new CustomEvent('fluid-burst', {
+          detail: { x: e.clientX, y: e.clientY, count: 20 },
+        })
+      );
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -187,20 +202,28 @@ export default function FluidCanvas() {
       // Combine multiple layered sine waves to produce scrolling organic vortices
       const scale1 = 0.0025;
       const scale2 = 0.006;
-      
-      const angle1 = Math.sin(x * scale1 + time * 0.04 * speed) * Math.cos(y * scale1 - time * 0.03 * speed) * Math.PI * 2.5;
-      const angle2 = Math.cos(x * scale2 - time * 0.025 * speed) * Math.sin(y * scale2 + time * 0.035 * speed) * Math.PI * 1.5;
-      
+
+      const angle1 =
+        Math.sin(x * scale1 + time * 0.04 * speed) *
+        Math.cos(y * scale1 - time * 0.03 * speed) *
+        Math.PI *
+        2.5;
+      const angle2 =
+        Math.cos(x * scale2 - time * 0.025 * speed) *
+        Math.sin(y * scale2 + time * 0.035 * speed) *
+        Math.PI *
+        1.5;
+
       const angle = (angle1 + angle2) * 0.5;
-      
+
       return {
         x: Math.cos(angle) * 0.45 * speed,
-        y: Math.sin(angle) * 0.45 * speed
+        y: Math.sin(angle) * 0.45 * speed,
       };
     };
 
     let time = 0;
-    
+
     // Animation frame loop
     const loop = () => {
       if (!settingsRef.current.isPaused) {
@@ -227,7 +250,7 @@ export default function FluidCanvas() {
         }
 
         // Update & Render Shockwaves
-        shockwaves = shockwaves.filter(s => {
+        shockwaves = shockwaves.filter((s) => {
           s.radius += s.speed;
           // draw subtle ring
           ctx.strokeStyle = `rgba(255, 255, 255, ${0.15 * (1 - s.radius / s.maxRadius)})`;
@@ -245,7 +268,7 @@ export default function FluidCanvas() {
         // Maintain constant particles count
         const maxNormalParticles = settingsRef.current.particleCount;
         let normalCount = 0;
-        particles.forEach(p => {
+        particles.forEach((p) => {
           if (p.life === Infinity) normalCount++;
         });
 
@@ -256,10 +279,10 @@ export default function FluidCanvas() {
         }
 
         // Update and draw particles
-        particles = particles.filter(p => {
+        particles = particles.filter((p) => {
           // Calculate flow field vector at particle position
           const flow = getFlowVector(p.x, p.y, time);
-          
+
           // Apply flow field force
           p.vx += flow.x * 0.15;
           p.vy += flow.y * 0.15;
@@ -280,7 +303,7 @@ export default function FluidCanvas() {
 
             if (dist < influenceRadius && dist > 1) {
               const strength = 1.0 - dist / influenceRadius;
-              
+
               // 1. Swirl vortex force
               const swirlSpeed = 2.4;
               p.vx += (-dy / dist) * strength * swirlSpeed;
@@ -298,7 +321,7 @@ export default function FluidCanvas() {
           }
 
           // Apply Shockwaves
-          shockwaves.forEach(s => {
+          shockwaves.forEach((s) => {
             const dx = p.x - s.x;
             const dy = p.y - s.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
@@ -332,7 +355,7 @@ export default function FluidCanvas() {
             const padding = 10;
             if (p.x < -padding) p.x = width + padding;
             else if (p.x > width + padding) p.x = -padding;
-            
+
             if (p.y < -padding) p.y = height + padding;
             else if (p.y > height + padding) p.y = -padding;
           } else {
@@ -374,26 +397,36 @@ export default function FluidCanvas() {
 
   // Trigger recalculation of particles
   const triggerReset = () => {
-    window.dispatchEvent(new CustomEvent('fluid-burst', {
-      detail: { x: window.innerWidth / 2, y: window.innerHeight / 2, count: 100 }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-burst', {
+        detail: { x: window.innerWidth / 2, y: window.innerHeight / 2, count: 100 },
+      })
+    );
   };
 
   return (
-    <div ref={containerRef} className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-slate-950">
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-auto block" />
-      
+    <div
+      ref={containerRef}
+      className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-slate-950"
+    >
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-auto block"
+      />
+
       {/* Visual Hexagonal Grid overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay"
-        style={{ 
-          backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', 
-          backgroundSize: '30px 30px' 
-        }} 
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay"
+        style={{
+          backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
+          backgroundSize: '30px 30px',
+        }}
       />
 
       {/* Floating Simulation Settings Panel (Interactive controls) */}
       <div className="absolute bottom-6 left-6 z-40 pointer-events-auto select-none font-sans text-xs">
-        <button type="button"
+        <button
+          type="button"
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 px-3 py-2 bg-slate-900/80 border border-slate-700/50 backdrop-blur-md rounded-lg text-slate-300 hover:text-white transition-all shadow-lg hover:shadow-cyan-500/10 cursor-pointer"
         >
@@ -408,12 +441,17 @@ export default function FluidCanvas() {
                 <Layers className="w-3.5 h-3.5 text-cyan-400" />
                 Flow Dynamics Solver
               </span>
-              <button type="button" 
-                onClick={() => setIsPaused(!isPaused)} 
+              <button
+                type="button"
+                onClick={() => setIsPaused(!isPaused)}
                 className="p-1 hover:bg-slate-800 rounded transition"
-                title={isPaused ? "Play" : "Pause"}
+                title={isPaused ? 'Play' : 'Pause'}
               >
-                {isPaused ? <Play className="w-3.5 h-3.5 text-green-400" /> : <Pause className="w-3.5 h-3.5 text-amber-400" />}
+                {isPaused ? (
+                  <Play className="w-3.5 h-3.5 text-green-400" />
+                ) : (
+                  <Pause className="w-3.5 h-3.5 text-amber-400" />
+                )}
               </button>
             </div>
 
@@ -510,16 +548,29 @@ export default function FluidCanvas() {
               <div className="grid grid-cols-4 gap-1.5">
                 {[
                   { id: 'aqua', label: 'Aqua', class: 'bg-cyan-500 border-cyan-400 text-cyan-100' },
-                  { id: 'nebula', label: 'Nebula', class: 'bg-purple-500 border-purple-400 text-purple-100' },
-                  { id: 'magma', label: 'Magma', class: 'bg-orange-500 border-orange-400 text-orange-100' },
-                  { id: 'acid', label: 'Acid', class: 'bg-emerald-500 border-emerald-400 text-emerald-100' }
-                ].map(mode => (
-                  <button type="button"
+                  {
+                    id: 'nebula',
+                    label: 'Nebula',
+                    class: 'bg-purple-500 border-purple-400 text-purple-100',
+                  },
+                  {
+                    id: 'magma',
+                    label: 'Magma',
+                    class: 'bg-orange-500 border-orange-400 text-orange-100',
+                  },
+                  {
+                    id: 'acid',
+                    label: 'Acid',
+                    class: 'bg-emerald-500 border-emerald-400 text-emerald-100',
+                  },
+                ].map((mode) => (
+                  <button
+                    type="button"
                     key={mode.id}
                     onClick={() => setColorMode(mode.id)}
                     className={`px-1 py-1 rounded text-[10px] border font-bold transition cursor-pointer text-center ${
-                      colorMode === mode.id 
-                        ? `${mode.class} shadow-lg scale-105` 
+                      colorMode === mode.id
+                        ? `${mode.class} shadow-lg scale-105`
                         : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -541,7 +592,8 @@ export default function FluidCanvas() {
                 <span>Vector Grid</span>
               </label>
 
-              <button type="button"
+              <button
+                type="button"
                 onClick={triggerReset}
                 className="flex items-center gap-1 hover:text-white transition cursor-pointer bg-slate-800 px-2 py-1 rounded"
               >

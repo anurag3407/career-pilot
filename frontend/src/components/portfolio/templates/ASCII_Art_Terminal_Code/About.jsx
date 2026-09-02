@@ -59,12 +59,14 @@ export default function About() {
       {/* scanlines subtle overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: 'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,65,0.008) 3px,rgba(0,255,65,0.008) 4px)' }}
+        style={{
+          background:
+            'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,65,0.008) 3px,rgba(0,255,65,0.008) 4px)',
+        }}
         aria-hidden="true"
       />
 
       <div className="max-w-4xl mx-auto space-y-8">
-
         {/* Section header command */}
         <motion.div
           variants={fadeUp}
@@ -98,7 +100,6 @@ export default function About() {
 
         {/* Details grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
           {/* Identity */}
           <motion.div
             variants={fadeUp}
@@ -108,20 +109,32 @@ export default function About() {
           >
             <AsciiBox label="identity.json">
               <div className="space-y-2">
-                <TermLine prefix="  &quot;name&quot;:" value={`"${data.personal.name}"`} valueColor="text-amber-400" />
-                <TermLine prefix="  &quot;title&quot;:" value={`"${data.personal.title}"`} valueColor="text-cyan-300" />
                 <TermLine
-                  prefix="  &quot;location&quot;:"
+                  prefix='  "name":'
+                  value={`"${data.personal.name}"`}
+                  valueColor="text-amber-400"
+                />
+                <TermLine
+                  prefix='  "title":'
+                  value={`"${data.personal.title}"`}
+                  valueColor="text-cyan-300"
+                />
+                <TermLine
+                  prefix='  "location":'
                   value={`"${data.personal.location || 'Remote'}"`}
                   valueColor="text-green-300"
                 />
                 <TermLine
-                  prefix="  &quot;status&quot;:"
+                  prefix='  "status":'
                   value={'"open_to_opportunities"'}
                   valueColor="text-green-400"
                 />
                 {data.personal.tagline && (
-                  <TermLine prefix="  &quot;tagline&quot;:" value={`"${data.personal.tagline}"`} valueColor="text-purple-400" />
+                  <TermLine
+                    prefix='  "tagline":'
+                    value={`"${data.personal.tagline}"`}
+                    valueColor="text-purple-400"
+                  />
                 )}
               </div>
             </AsciiBox>
@@ -137,11 +150,35 @@ export default function About() {
             <AsciiBox label="contact.sh">
               <div className="space-y-2">
                 {[
-                  { icon: Mail, label: '--email', value: data.socials.email, href: `mailto:${data.socials.email}`, color: 'text-amber-400' },
-                  { icon: Github, label: '--github', value: 'github.com', href: data.socials.github, color: 'text-white' },
-                  { icon: Linkedin, label: '--linkedin', value: 'linkedin.com', href: data.socials.linkedin, color: 'text-cyan-400' },
-                  { icon: Twitter, label: '--twitter', value: 'twitter.com', href: data.socials.twitter, color: 'text-sky-400' },
-                ].map(({ icon: Icon, label, value, href, color }) => (
+                  {
+                    icon: Mail,
+                    label: '--email',
+                    value: data.socials.email,
+                    href: `mailto:${data.socials.email}`,
+                    color: 'text-amber-400',
+                  },
+                  {
+                    icon: Github,
+                    label: '--github',
+                    value: 'github.com',
+                    href: data.socials.github,
+                    color: 'text-white',
+                  },
+                  {
+                    icon: Linkedin,
+                    label: '--linkedin',
+                    value: 'linkedin.com',
+                    href: data.socials.linkedin,
+                    color: 'text-cyan-400',
+                  },
+                  {
+                    icon: Twitter,
+                    label: '--twitter',
+                    value: 'twitter.com',
+                    href: data.socials.twitter,
+                    color: 'text-sky-400',
+                  },
+                ].map(({ icon: Icon, label, value, href, color }) =>
                   href ? (
                     <a
                       key={label}
@@ -150,13 +187,18 @@ export default function About() {
                       rel="noreferrer"
                       className="flex items-center gap-2 text-xs font-mono group hover:bg-green-900/10 transition-colors rounded px-1 py-0.5"
                     >
-                      <Icon size={12} className="text-green-700 group-hover:text-green-400 transition-colors flex-shrink-0" />
+                      <Icon
+                        size={12}
+                        className="text-green-700 group-hover:text-green-400 transition-colors flex-shrink-0"
+                      />
                       <span className="text-green-600">connect</span>
                       <span className="text-green-400">{label}</span>
-                      <span className={`${color} underline underline-offset-2 truncate`}>{value}</span>
+                      <span className={`${color} underline underline-offset-2 truncate`}>
+                        {value}
+                      </span>
                     </a>
                   ) : null
-                ))}
+                )}
               </div>
             </AsciiBox>
           </motion.div>
@@ -175,16 +217,30 @@ export default function About() {
           </div>
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: 'YEARS_EXPERIENCE', value: `${data.stats.yearsExperience}+`, color: 'text-green-400' },
-              { label: 'PROJECTS_SHIPPED', value: String(data.stats.projectsCompleted), color: 'text-cyan-400' },
-              { label: 'HAPPY_CLIENTS', value: String(data.stats.happyClients), color: 'text-amber-400' },
-            ].map(stat => (
+              {
+                label: 'YEARS_EXPERIENCE',
+                value: `${data.stats.yearsExperience}+`,
+                color: 'text-green-400',
+              },
+              {
+                label: 'PROJECTS_SHIPPED',
+                value: String(data.stats.projectsCompleted),
+                color: 'text-cyan-400',
+              },
+              {
+                label: 'HAPPY_CLIENTS',
+                value: String(data.stats.happyClients),
+                color: 'text-amber-400',
+              },
+            ].map((stat) => (
               <div
                 key={stat.label}
                 className="border border-green-900/50 bg-green-950/10 p-4 text-center hover:border-green-700/60 transition-colors"
               >
                 <div className={`text-2xl md:text-3xl font-bold ${stat.color}`}>{stat.value}</div>
-                <div className="text-green-800 text-[10px] tracking-widest mt-1 uppercase">{stat.label}</div>
+                <div className="text-green-800 text-[10px] tracking-widest mt-1 uppercase">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>

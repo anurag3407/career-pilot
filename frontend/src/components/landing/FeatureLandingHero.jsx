@@ -5,21 +5,21 @@ import { Link } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 
 export default function FeatureLandingHero({
-  badgeText = "NEW FEATURE",
-  title = "Supercharge Your",
-  accentText = "Career Path",
-  description = "The most advanced AI tools to help you build, optimize, and land your dream job faster than ever before.",
-  primaryCtaText = "Get Started Free",
-  secondaryCtaText = "Watch Demo",
-  primaryCtaLink = "/register",
-  secondaryCtaLink = "#demo",
+  badgeText = 'NEW FEATURE',
+  title = 'Supercharge Your',
+  accentText = 'Career Path',
+  description = 'The most advanced AI tools to help you build, optimize, and land your dream job faster than ever before.',
+  primaryCtaText = 'Get Started Free',
+  secondaryCtaText = 'Watch Demo',
+  primaryCtaLink = '/register',
+  secondaryCtaLink = '#demo',
   tertiaryCta = null,
   stats = [
-    { label: "Active Users", value: "10K+" },
-    { label: "Success Rate", value: "95%" },
-    { label: "Time Saved", value: "10x" }
+    { label: 'Active Users', value: '10K+' },
+    { label: 'Success Rate', value: '95%' },
+    { label: 'Time Saved', value: '10x' },
   ],
-  illustration = null
+  illustration = null,
 }) {
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -63,9 +63,7 @@ export default function FeatureLandingHero({
             <motion.div variants={itemVariants} className="space-y-4">
               <h1 className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
                 {title} <br className="hidden sm:block" />
-                <span className="gradient-text">
-                  {accentText}
-                </span>
+                <span className="gradient-text">{accentText}</span>
               </h1>
               <p className="max-w-[600px] text-lg text-muted-foreground sm:text-xl leading-relaxed">
                 {description}

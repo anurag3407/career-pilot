@@ -19,7 +19,8 @@ export default function Experience({ experience }) {
         {/* Timeline */}
         <div className="relative">
           {/* Glowing vertical line */}
-          <div className="absolute left-4 md:left-6 top-0 bottom-0 w-px bg-gradient-to-b from-orange-500/60 via-orange-400/30 to-transparent"
+          <div
+            className="absolute left-4 md:left-6 top-0 bottom-0 w-px bg-gradient-to-b from-orange-500/60 via-orange-400/30 to-transparent"
             style={{ boxShadow: '0 0 8px 1px #ff6a0030' }}
           />
 
@@ -34,7 +35,8 @@ export default function Experience({ experience }) {
                 className="relative pl-12 md:pl-16"
               >
                 {/* Glowing node */}
-                <div className="absolute left-2.5 md:left-4.5 top-2 w-3.5 h-3.5 rounded-full bg-orange-500 border-2 border-gray-950"
+                <div
+                  className="absolute left-2.5 md:left-4.5 top-2 w-3.5 h-3.5 rounded-full bg-orange-500 border-2 border-gray-950"
                   style={{ boxShadow: '0 0 10px 3px #ff6a0050' }}
                 />
 

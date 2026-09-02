@@ -14,7 +14,8 @@ export function ThemeProvider({ children }) {
     if (typeof window === 'undefined') return 'light';
     try {
       const savedTheme = window.localStorage.getItem('theme');
-      if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'highContrast') return savedTheme;
+      if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'highContrast')
+        return savedTheme;
     } catch (e) {
       console.warn('Failed to read from localStorage:', e);
     }
@@ -24,10 +25,10 @@ export function ThemeProvider({ children }) {
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
     const root = window.document.documentElement;
-    
+
     root.classList.remove('light', 'dark', 'highContrast');
     root.classList.add(theme);
-    
+
     try {
       window.localStorage.setItem('theme', theme);
     } catch (e) {
@@ -46,9 +47,5 @@ export function ThemeProvider({ children }) {
     });
   };
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }

@@ -69,7 +69,9 @@ export default function Skills({ data }) {
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
                 className="rounded-2xl border border-white/8 bg-[#13131A] p-6 transition-colors hover:border-[#2E2E42]"
               >
-                <p className="mb-4 text-xs uppercase tracking-[0.25em] text-[#4B4870]">{category}</p>
+                <p className="mb-4 text-xs uppercase tracking-[0.25em] text-[#4B4870]">
+                  {category}
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {(skills || []).map((skill) => (
                     <span
@@ -96,7 +98,10 @@ export default function Skills({ data }) {
                   <div key={skill?.name}>
                     <div className="mb-2 flex items-center justify-between text-sm">
                       <span className="font-medium text-[#F1F0FF]">{skill?.name}</span>
-                      <span className="font-mono text-[#8884A8]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                      <span
+                        className="font-mono text-[#8884A8]"
+                        style={{ fontFamily: 'JetBrains Mono, monospace' }}
+                      >
                         {percent}%
                       </span>
                     </div>

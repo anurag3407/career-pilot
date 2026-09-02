@@ -19,10 +19,10 @@ const RiskSummaryChart = ({ risks }) => {
   }
 
   const counts = {
-    critical: risks.filter(r => r.severity === 'critical').length,
-    high: risks.filter(r => r.severity === 'high').length,
-    medium: risks.filter(r => r.severity === 'medium').length,
-    low: risks.filter(r => r.severity === 'low').length,
+    critical: risks.filter((r) => r.severity === 'critical').length,
+    high: risks.filter((r) => r.severity === 'high').length,
+    medium: risks.filter((r) => r.severity === 'medium').length,
+    low: risks.filter((r) => r.severity === 'low').length,
   };
 
   const total = risks.length;
@@ -35,15 +35,15 @@ const RiskSummaryChart = ({ risks }) => {
     const arrays = {};
     const offsets = {};
 
-    ['critical', 'high', 'medium', 'low'].forEach(severity => {
+    ['critical', 'high', 'medium', 'low'].forEach((severity) => {
       const count = counts[severity];
       if (count > 0) {
         const percentage = count / total;
         const length = percentage * circumference;
-        
+
         arrays[severity] = `${length} ${circumference - length}`;
         offsets[severity] = -offset;
-        
+
         offset += length;
       }
     });
@@ -56,19 +56,19 @@ const RiskSummaryChart = ({ risks }) => {
     critical: '#ef4444',
     high: '#f97316',
     medium: '#eab308',
-    low: '#06b6d4'
+    low: '#06b6d4',
   };
 
   return (
     <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-full flex flex-col">
       <h3 className="text-lg font-semibold text-white mb-6">Risk Breakdown</h3>
-      
+
       <div className="flex-1 flex flex-col items-center justify-center relative min-h-[200px]">
         {/* SVG Donut */}
         <svg viewBox="0 0 160 160" className="w-40 h-40 transform -rotate-90">
           <circle cx="80" cy="80" r="60" fill="none" stroke="#1e293b" strokeWidth="20" />
-          
-          {['critical', 'high', 'medium', 'low'].map(severity => {
+
+          {['critical', 'high', 'medium', 'low'].map((severity) => {
             if (counts[severity] === 0 || !dashArrays[severity]) return null;
             return (
               <motion.circle
@@ -82,7 +82,7 @@ const RiskSummaryChart = ({ risks }) => {
                 strokeDasharray={dashArrays[severity]}
                 strokeDashoffset={circumference}
                 animate={{ strokeDashoffset: dashOffsets[severity] }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
+                transition={{ duration: 1.5, ease: 'easeOut' }}
               />
             );
           })}
@@ -97,12 +97,18 @@ const RiskSummaryChart = ({ risks }) => {
 
       {/* Legend */}
       <div className="grid grid-cols-2 gap-3 mt-6">
-        {['critical', 'high', 'medium', 'low'].map(severity => {
+        {['critical', 'high', 'medium', 'low'].map((severity) => {
           if (counts[severity] === 0) return null;
           return (
-            <div key={severity} className="flex items-center justify-between p-2 rounded-lg bg-black/20 border border-white/5">
+            <div
+              key={severity}
+              className="flex items-center justify-between p-2 rounded-lg bg-black/20 border border-white/5"
+            >
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[severity] }} />
+                <span
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: colors[severity] }}
+                />
                 <span className="text-sm font-medium text-slate-300 capitalize">{severity}</span>
               </div>
               <span className="text-sm font-bold text-white">{counts[severity]}</span>

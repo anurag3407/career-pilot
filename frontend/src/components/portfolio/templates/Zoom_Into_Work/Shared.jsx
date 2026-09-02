@@ -1,22 +1,27 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useInView, useMotionValue, animate, useTransform } from 'framer-motion';
 
-export const AnimatedCounter = ({ from = 0, to, suffix = "" }) => {
+export const AnimatedCounter = ({ from = 0, to, suffix = '' }) => {
   const count = useMotionValue(from);
   const rounded = useTransform(count, (latest) => Math.round(latest) + suffix);
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const inView = useInView(ref, { once: true, margin: '-50px' });
 
   useEffect(() => {
     if (inView) {
-      animate(count, parseInt(to, 10), { duration: 2.5, ease: "easeOut" });
+      animate(count, parseInt(to, 10), { duration: 2.5, ease: 'easeOut' });
     }
   }, [inView, count, to]);
 
   return <motion.span ref={ref}>{rounded}</motion.span>;
 };
 
-export const SectionHeading = ({ children, icon: Icon, className = "flex items-center justify-center gap-4 mb-16", disableAnimation = false }) => {
+export const SectionHeading = ({
+  children,
+  icon: Icon,
+  className = 'flex items-center justify-center gap-4 mb-16',
+  disableAnimation = false,
+}) => {
   if (disableAnimation) {
     return (
       <div className={className}>
@@ -33,21 +38,21 @@ export const SectionHeading = ({ children, icon: Icon, className = "flex items-c
       {Icon && (
         <motion.div
           animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Icon className="text-cyan-500" size={36} />
         </motion.div>
       )}
-      <motion.h2 
-        animate={{ 
+      <motion.h2
+        animate={{
           y: [-3, 3, -3],
           textShadow: [
-            "0px 0px 0px rgba(6,182,212,0)", 
-            "0px 0px 15px rgba(6,182,212,0.4)", 
-            "0px 0px 0px rgba(6,182,212,0)"
-          ]
+            '0px 0px 0px rgba(6,182,212,0)',
+            '0px 0px 15px rgba(6,182,212,0.4)',
+            '0px 0px 0px rgba(6,182,212,0)',
+          ],
         }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         className="text-4xl md:text-5xl font-bold text-white text-center"
       >
         {children}
@@ -68,7 +73,7 @@ export const AmbientBackground = () => {
       top: 20 + Math.random() * 60,
       left: 20 + Math.random() * 60,
       size: 100 + Math.random() * 150,
-      bg: i % 2 === 0 ? 'rgba(6, 182, 212, 0.1)' : 'rgba(99, 102, 241, 0.1)'
+      bg: i % 2 === 0 ? 'rgba(6, 182, 212, 0.1)' : 'rgba(99, 102, 241, 0.1)',
     }));
     setBlobs(generated);
   }, []);
@@ -85,13 +90,13 @@ export const AmbientBackground = () => {
             y: [0, b.y, 0],
             x: [0, b.x, 0],
             scale: [1, 1.2, 1],
-            opacity: [0.3, 0.6, 0.3]
+            opacity: [0.3, 0.6, 0.3],
           }}
           transition={{
             duration: b.duration,
             repeat: Infinity,
             ease: 'easeInOut',
-            delay: b.delay
+            delay: b.delay,
           }}
           className="absolute rounded-full blur-3xl mix-blend-screen"
           style={{
@@ -99,7 +104,7 @@ export const AmbientBackground = () => {
             left: `${b.left}%`,
             width: `${b.size}px`,
             height: `${b.size}px`,
-            backgroundColor: b.bg
+            backgroundColor: b.bg,
           }}
         />
       ))}

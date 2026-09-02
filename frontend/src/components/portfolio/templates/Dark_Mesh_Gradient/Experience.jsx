@@ -59,9 +59,7 @@ export default function Experience() {
                     <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-purple-400 transition-colors">
                       {exp.role}
                     </h3>
-                    <p className="text-purple-300 font-semibold mt-1">
-                      {exp.company}
-                    </p>
+                    <p className="text-purple-300 font-semibold mt-1">{exp.company}</p>
                   </div>
 
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-gray-400 text-sm font-medium w-fit">

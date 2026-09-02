@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Card,
   CardContent,
@@ -6,16 +6,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { BentoGridShowcase } from "@/components/ui/bento-product-features";
-import {
-  Settings2,
-  Command,
-  Plus,
-} from "lucide-react";
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { BentoGridShowcase } from '@/components/ui/bento-product-features';
+import { Settings2, Command, Plus } from 'lucide-react';
 
 // --- Helper Components for the Demo ---
 // These components represent the content for each slot.
@@ -30,7 +26,8 @@ const IntegrationCard = () => (
       </div>
       <CardTitle>AI Resume Optimization</CardTitle>
       <CardDescription>
-        Unlock effortless enhancement. Let our AI completely rewrite and optimize your resume to pass ATS screeners and impress human recruiters with ease.
+        Unlock effortless enhancement. Let our AI completely rewrite and optimize your resume to
+        pass ATS screeners and impress human recruiters with ease.
       </CardDescription>
     </CardHeader>
     <CardFooter className="mt-auto flex items-center justify-between">
@@ -51,9 +48,7 @@ const TrackersCard = () => (
   <Card className="h-full">
     <CardContent className="flex h-full flex-col justify-between p-6">
       <div>
-        <CardTitle className="text-base font-medium">
-          Job Trackers Connected
-        </CardTitle>
+        <CardTitle className="text-base font-medium">Job Trackers Connected</CardTitle>
         <CardDescription>03 Active Applications</CardDescription>
       </div>
       <div className="flex -space-x-2 overflow-hidden mt-4">
@@ -100,8 +95,8 @@ const StatisticCard = () => (
     <div
       className="absolute inset-0 opacity-20"
       style={{
-        backgroundImage: "radial-gradient(hsl(var(--foreground)) 1px, transparent 1px)",
-        backgroundSize: "16px 16px",
+        backgroundImage: 'radial-gradient(hsl(var(--foreground)) 1px, transparent 1px)',
+        backgroundSize: '16px 16px',
       }}
     />
     <CardContent className="relative z-10 flex h-full items-center justify-center p-6">
@@ -116,11 +111,10 @@ const StatisticCard = () => (
 const ProductivityCard = () => (
   <Card className="h-full">
     <CardContent className="flex h-full flex-col justify-end p-6">
-      <CardTitle className="text-base font-medium">
-        Tailored Cover Letters
-      </CardTitle>
+      <CardTitle className="text-base font-medium">Tailored Cover Letters</CardTitle>
       <CardDescription className="mt-2">
-        Generate customized cover letters that perfectly align your experience with the job description.
+        Generate customized cover letters that perfectly align your experience with the job
+        description.
       </CardDescription>
     </CardContent>
   </Card>
@@ -131,9 +125,7 @@ const ShortcutsCard = () => (
     <CardContent className="flex h-full flex-wrap items-center justify-between gap-4 p-6">
       <div>
         <CardTitle className="text-base font-medium">Shortcut Keys</CardTitle>
-        <CardDescription>
-          Generate tailored resumes instantly with shortcuts.
-        </CardDescription>
+        <CardDescription>Generate tailored resumes instantly with shortcuts.</CardDescription>
       </div>
       <div className="flex items-center gap-2">
         {/* Styled div replacing Kbd */}
@@ -159,8 +151,8 @@ export function BentoGridShowcaseDemo() {
           Powerful AI Features
         </h1>
         <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto">
-          Organize, prioritize and track your job applications more
-          efficiently in our trusted platform
+          Organize, prioritize and track your job applications more efficiently in our trusted
+          platform
         </p>
       </div>
 

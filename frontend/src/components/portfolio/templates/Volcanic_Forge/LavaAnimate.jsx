@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 
 function random(min, max) {
   return Math.random() * (max - min) + min;
@@ -12,18 +12,18 @@ export default function LavaAnimate({
   duration = 3.5,
   formedDelay = 2800,
   particleCount = 120,
-  particleColor = "#ff6a00",
+  particleColor = '#ff6a00',
   particleSize = [15, 38],
-  sourceX = "50%",
-  sourceY = "55%",
+  sourceX = '50%',
+  sourceY = '55%',
   particles = true,
   textMelt = true,
   meltAmount = 10,
-  className = "",
+  className = '',
 }) {
   const [formed, setFormed] = useState(false);
   const rootRef = useRef(null);
-  
+
   const inView = useInView(rootRef, {
     once: true,
     amount: 0.05,
@@ -46,12 +46,15 @@ export default function LavaAnimate({
     }));
   }, [particleCount, duration, particleSize]);
 
-  const isTextElement = React.isValidElement(children) && typeof children.props.children === "string";
+  const isTextElement =
+    React.isValidElement(children) && typeof children.props.children === 'string';
 
   return (
     <div ref={rootRef} className={`relative overflow-visible ${className}`}>
       <AnimatePresence>
-        {!formed && inView && particles &&
+        {!formed &&
+          inView &&
+          particles &&
           droplets.map((drop) => (
             <motion.div
               key={drop.id}
@@ -66,7 +69,8 @@ export default function LavaAnimate({
               <div
                 className="rounded-full"
                 style={{
-                  width: drop.size, height: drop.size,
+                  width: drop.size,
+                  height: drop.size,
                   background: `radial-gradient(circle, #ffd27a 0%, ${particleColor} 45%, #ff3d00 75%, #551000 100%)`,
                   boxShadow: `0 0 12px ${particleColor}`,
                 }}
@@ -76,12 +80,12 @@ export default function LavaAnimate({
       </AnimatePresence>
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20, filter: "blur(10px)" }}
+        initial={{ opacity: 0, scale: 0.95, y: 20, filter: 'blur(10px)' }}
         animate={{
           opacity: formed ? 1 : 0,
           scale: formed ? 1 : 0.95,
           y: formed ? 0 : 20,
-          filter: formed ? "blur(0px)" : "blur(10px)",
+          filter: formed ? 'blur(0px)' : 'blur(10px)',
         }}
         // SMOOTH REVEAL: Longer duration with a buttery-soft easing profile
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -89,13 +93,20 @@ export default function LavaAnimate({
         className="relative w-full flex justify-center"
       >
         {isTextElement && formed && textMelt ? (
-          <motion.div animate={{ y: [0, meltAmount, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }} className="relative">
+          <motion.div
+            animate={{ y: [0, meltAmount, 0] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+            className="relative"
+          >
             <div className="relative z-10">{children}</div>
             <motion.div
               animate={{ scaleY: [1, 1.08, 1], opacity: [0.18, 0.28, 0.18] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute inset-0 pointer-events-none blur-[2px]"
-              style={{ background: "linear-gradient(180deg, rgba(255,120,0,0.15), rgba(255,40,0,0.25))", WebkitBackgroundClip: "text" }}
+              style={{
+                background: 'linear-gradient(180deg, rgba(255,120,0,0.15), rgba(255,40,0,0.25))',
+                WebkitBackgroundClip: 'text',
+              }}
             />
           </motion.div>
         ) : (

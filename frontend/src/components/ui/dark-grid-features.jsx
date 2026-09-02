@@ -1,38 +1,38 @@
-import { useState } from "react";
-import { Search, Briefcase, BarChart3, Users, FileText, Zap, Plus, Minus } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from 'react';
+import { Search, Briefcase, BarChart3, Users, FileText, Zap, Plus, Minus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const items = [
   {
-    title: "Advanced Search",
+    title: 'Advanced Search',
     icon: Search,
-    desc: "Filter by salary, location, company size, and more. Find your perfect role with precision targeting.",
+    desc: 'Filter by salary, location, company size, and more. Find your perfect role with precision targeting.',
   },
   {
-    title: "Application Tracking",
+    title: 'Application Tracking',
     icon: Briefcase,
-    desc: "Track every application status in one dashboard. Never lose sight of your opportunities.",
+    desc: 'Track every application status in one dashboard. Never lose sight of your opportunities.',
   },
   {
-    title: "Analytics & Insights",
+    title: 'Analytics & Insights',
     icon: BarChart3,
-    desc: "Visualize your job search progress and patterns. Make data-driven decisions for your career.",
+    desc: 'Visualize your job search progress and patterns. Make data-driven decisions for your career.',
   },
   {
-    title: "Community",
+    title: 'Community',
     icon: Users,
-    desc: "Connect with other job seekers and share tips. Learn from success stories and grow together.",
+    desc: 'Connect with other job seekers and share tips. Learn from success stories and grow together.',
   },
   {
-    title: "Multiple Resumes",
+    title: 'Multiple Resumes',
     icon: FileText,
-    desc: "Create role-specific resume versions. Tailor your experience for every opportunity.",
+    desc: 'Create role-specific resume versions. Tailor your experience for every opportunity.',
   },
   {
-    title: "Quick Apply",
+    title: 'Quick Apply',
     icon: Zap,
-    badge: "New",
-    desc: "Apply to multiple jobs with one click. Maximize your reach with minimal effort.",
+    badge: 'New',
+    desc: 'Apply to multiple jobs with one click. Maximize your reach with minimal effort.',
   },
 ];
 
@@ -74,14 +74,20 @@ export default function AdditionalFeatures() {
                 className="group flex w-full items-center gap-5 py-6 text-left"
               >
                 <span className="text-[10px] font-black tabular-nums text-muted-foreground/40">
-                  {String(i + 1).padStart(2, "0")}
+                  {String(i + 1).padStart(2, '0')}
                 </span>
-                <Icon className={`h-5 w-5 shrink-0 transition-colors duration-300 ${
-                  open === i ? "text-primary" : "text-muted-foreground/50"
-                }`} />
-                <span className={`flex-1 text-lg font-black tracking-tight transition-colors duration-300 md:text-2xl ${
-                  open === i ? "text-foreground" : "text-muted-foreground/60 group-hover:text-foreground"
-                }`}>
+                <Icon
+                  className={`h-5 w-5 shrink-0 transition-colors duration-300 ${
+                    open === i ? 'text-primary' : 'text-muted-foreground/50'
+                  }`}
+                />
+                <span
+                  className={`flex-1 text-lg font-black tracking-tight transition-colors duration-300 md:text-2xl ${
+                    open === i
+                      ? 'text-foreground'
+                      : 'text-muted-foreground/60 group-hover:text-foreground'
+                  }`}
+                >
                   {title}
                 </span>
                 {badge && (
@@ -89,12 +95,18 @@ export default function AdditionalFeatures() {
                     {badge}
                   </span>
                 )}
-                <span className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-300 ${
-                  open === i
-                    ? "border-primary bg-primary text-primary-foreground rotate-0"
-                    : "border-border text-muted-foreground rotate-0"
-                }`}>
-                  {open === i ? <Minus className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                <span
+                  className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-300 ${
+                    open === i
+                      ? 'border-primary bg-primary text-primary-foreground rotate-0'
+                      : 'border-border text-muted-foreground rotate-0'
+                  }`}
+                >
+                  {open === i ? (
+                    <Minus className="h-3.5 w-3.5" />
+                  ) : (
+                    <Plus className="h-3.5 w-3.5" />
+                  )}
                 </span>
               </button>
 
@@ -102,7 +114,7 @@ export default function AdditionalFeatures() {
                 {open === i && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
+                    animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                     className="overflow-hidden"

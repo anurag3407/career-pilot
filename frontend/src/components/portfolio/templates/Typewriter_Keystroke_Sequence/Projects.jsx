@@ -31,26 +31,27 @@ function ProjectCard({ project, index }) {
       {/* Project image */}
       {project.image && (
         <div style={{ position: 'relative', overflow: 'hidden' }}>
-          <img
-            src={project.image}
-            alt={project.title}
-            className="tks-img"
-            loading="lazy"
-          />
+          <img src={project.image} alt={project.title} className="tks-img" loading="lazy" />
           {/* Overlay chapter number */}
-          <div style={{
-            position: 'absolute',
-            bottom: 0, left: 0, right: 0,
-            background: 'linear-gradient(transparent, rgba(31,31,31,0.7))',
-            padding: '20px 14px 10px',
-          }}>
-            <span style={{
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: 9,
-              letterSpacing: 4,
-              color: `${C.paperWhite}cc`,
-              textTransform: 'uppercase',
-            }}>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: 'linear-gradient(transparent, rgba(31,31,31,0.7))',
+              padding: '20px 14px 10px',
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: 9,
+                letterSpacing: 4,
+                color: `${C.paperWhite}cc`,
+                textTransform: 'uppercase',
+              }}
+            >
               Chapter {chapterNum}
             </span>
           </div>
@@ -63,20 +64,24 @@ function ProjectCard({ project, index }) {
         <TypedTitle text={project.title} speed={45} />
 
         {/* Description */}
-        <p style={{
-          fontSize: 12,
-          lineHeight: 1.75,
-          color: C.inkGray,
-          marginBottom: 14,
-          flex: 1,
-        }}>
+        <p
+          style={{
+            fontSize: 12,
+            lineHeight: 1.75,
+            color: C.inkGray,
+            marginBottom: 14,
+            flex: 1,
+          }}
+        >
           {project.description}
         </p>
 
         {/* Tech stack */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 16 }}>
           {(project.techStack || []).map((tech, i) => (
-            <span key={i} className="tks-tag">{tech}</span>
+            <span key={i} className="tks-tag">
+              {tech}
+            </span>
           ))}
         </div>
 
@@ -159,11 +164,13 @@ export default function Projects({ projects }) {
         </motion.div>
 
         {/* Projects grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-          gap: 28,
-        }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+            gap: 28,
+          }}
+        >
           {projects.map((project, i) => (
             <ProjectCard key={project.title || i} project={project} index={i} />
           ))}

@@ -1,5 +1,5 @@
-import '@testing-library/jest-dom'
-import { vi } from 'vitest'
+import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 vi.mock('@clerk/clerk-react', () => ({
   useUser: () => ({
@@ -9,20 +9,20 @@ vi.mock('@clerk/clerk-react', () => ({
       id: 'test-user-123',
       fullName: 'Test User',
       primaryEmailAddress: { emailAddress: 'test@example.com' },
-      imageUrl: 'https://example.com/avatar.jpg'
-    }
+      imageUrl: 'https://example.com/avatar.jpg',
+    },
   }),
   useAuth: () => ({
     isLoaded: true,
     isSignedIn: true,
     userId: 'test-user-123',
     getToken: async () => 'mock-clerk-token',
-    signOut: async () => {}
+    signOut: async () => {},
   }),
   useClerk: () => ({
     redirectToSignIn: vi.fn(),
     redirectToSignUp: vi.fn(),
-    signOut: vi.fn()
+    signOut: vi.fn(),
   }),
   ClerkProvider: ({ children }) => children,
   SignedIn: ({ children }) => children,
@@ -36,5 +36,5 @@ vi.mock('@clerk/clerk-react', () => ({
       <button>Sign in</button>
     </div>
   ),
-  SignUp: () => <div>SignUp Component</div>
-}))
+  SignUp: () => <div>SignUp Component</div>,
+}));

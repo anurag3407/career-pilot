@@ -12,22 +12,24 @@ export default function Skills() {
           <SectionHeading icon={Terminal} className="flex items-center justify-center gap-4 mb-6">
             Skills
           </SectionHeading>
-          <p className="text-zinc-400 max-w-2xl mx-auto">Core technologies and tools I use to bring ideas to life.</p>
+          <p className="text-zinc-400 max-w-2xl mx-auto">
+            Core technologies and tools I use to bring ideas to life.
+          </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {data.skills.map((skill, index) => (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.05 }}
               key={index}
-              whileHover={{ 
-                scale: 1.05, 
+              whileHover={{
+                scale: 1.05,
                 y: -5,
                 rotateZ: index % 2 === 0 ? 2 : -2,
-                boxShadow: "0px 10px 30px rgba(6, 182, 212, 0.2)"
+                boxShadow: '0px 10px 30px rgba(6, 182, 212, 0.2)',
               }}
               className="flex items-center gap-4 p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800 hover:border-cyan-500/40 transition-all cursor-crosshair shadow-md"
             >

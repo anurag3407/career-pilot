@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+.env*
+package-lock.json
+coverage
+frontend/dist
+backend/coverage
+*.log

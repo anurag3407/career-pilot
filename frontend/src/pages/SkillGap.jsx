@@ -7,7 +7,7 @@ import CopyButton from '../components/CopyButton';
 import {
   extractSkillsFromText,
   inferCareerFocus,
-  getSkillSynergyInsights
+  getSkillSynergyInsights,
 } from '../utils/skillSynergy';
 // Utility helpers for Skill Synergy Insights.
 // These functions detect resume skills, infer the job-related career focus,
@@ -120,7 +120,8 @@ const SkillGap = () => {
             Skill Gap Analyzer
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Compare your resume against any job description to identify matching skills, gaps, and get personalized learning suggestions.
+            Compare your resume against any job description to identify matching skills, gaps, and
+            get personalized learning suggestions.
           </p>
         </motion.div>
 
@@ -152,7 +153,8 @@ const SkillGap = () => {
                   >
                     {resumes.map((resume) => (
                       <option key={resume._id} value={resume._id}>
-                        {resume.title || resume.jobRole || 'Untitled Resume'} — {new Date(resume.createdAt).toLocaleDateString()}
+                        {resume.title || resume.jobRole || 'Untitled Resume'} —{' '}
+                        {new Date(resume.createdAt).toLocaleDateString()}
                       </option>
                     ))}
                   </select>
@@ -217,7 +219,7 @@ const SkillGap = () => {
                 <div className="h-4 bg-muted animate-pulse rounded w-2/3" />
                 <div className="h-4 bg-muted animate-pulse rounded w-1/2" />
                 <div className="grid grid-cols-2 gap-3 mt-4">
-                  {[1,2,3,4].map(i => (
+                  {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="h-8 bg-muted animate-pulse rounded-full" />
                   ))}
                 </div>
@@ -227,16 +229,23 @@ const SkillGap = () => {
             {results && (
               <>
                 {/* Match Score */}
-                <div className={`border rounded-xl p-6 text-center ${getScoreBg(results.matchScore)}`}>
+                <div
+                  className={`border rounded-xl p-6 text-center ${getScoreBg(results.matchScore)}`}
+                >
                   <p className="text-sm font-medium text-muted-foreground mb-1">Match Score</p>
                   <p className={`text-5xl font-bold ${getScoreColor(results.matchScore)}`}>
                     {results.matchScore}%
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
                     {results.matchScore >= 80 && 'Excellent match! You are well-qualified.'}
-                    {results.matchScore >= 60 && results.matchScore < 80 && 'Good match with some areas to improve.'}
-                    {results.matchScore >= 40 && results.matchScore < 60 && 'Moderate match. Focus on the missing skills.'}
-                    {results.matchScore < 40 && 'Significant gaps. Consider upskilling before applying.'}
+                    {results.matchScore >= 60 &&
+                      results.matchScore < 80 &&
+                      'Good match with some areas to improve.'}
+                    {results.matchScore >= 40 &&
+                      results.matchScore < 60 &&
+                      'Moderate match. Focus on the missing skills.'}
+                    {results.matchScore < 40 &&
+                      'Significant gaps. Consider upskilling before applying.'}
                   </p>
                 </div>
 
@@ -306,14 +315,18 @@ const SkillGap = () => {
                           Skill Synergy Insights
                         </h3>
                         <p className="text-sm text-muted-foreground mt-1">
-                          Complementary skills recommended for your current profile and career focus.
+                          Complementary skills recommended for your current profile and career
+                          focus.
                         </p>
                         <p className="text-sm text-muted-foreground mt-1">
-                          Primary focus: <span className="font-medium text-foreground">{careerFocus}</span>
+                          Primary focus:{' '}
+                          <span className="font-medium text-foreground">{careerFocus}</span>
                         </p>
                       </div>
                       <CopyButton
-                        text={synergyInsights.map((item) => `${item.skill}: ${item.description}`).join('\n')}
+                        text={synergyInsights
+                          .map((item) => `${item.skill}: ${item.description}`)
+                          .join('\n')}
                         label="Copy"
                         size={14}
                       />
@@ -330,9 +343,7 @@ const SkillGap = () => {
                               {item.source}
                             </span>
                           </div>
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            {item.description}
-                          </p>
+                          <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
                         </div>
                       ))}
                     </div>
@@ -343,7 +354,9 @@ const SkillGap = () => {
                       Skill Synergy Insights
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      No tailored synergy recommendations were detected from your resume skills. Try adding more explicit skills like Python, SQL, or Data Analysis to get better insights.
+                      No tailored synergy recommendations were detected from your resume skills. Try
+                      adding more explicit skills like Python, SQL, or Data Analysis to get better
+                      insights.
                     </p>
                   </div>
                 )}

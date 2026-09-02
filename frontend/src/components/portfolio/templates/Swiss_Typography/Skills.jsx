@@ -14,7 +14,10 @@ const fadeUp = {
 
 function Label({ children }) {
   return (
-    <span className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase" style={{ color: ACCENT }}>
+    <span
+      className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase"
+      style={{ color: ACCENT }}
+    >
       {children}
     </span>
   );
@@ -51,7 +54,10 @@ export default function Skills({ data }) {
                       <span className="w-28 md:w-36 text-xs md:text-sm font-semibold text-black shrink-0">
                         {skill.name}
                       </span>
-                      <div className="flex-1 relative" style={{ height: '2px', backgroundColor: '#e5e7eb' }}>
+                      <div
+                        className="flex-1 relative"
+                        style={{ height: '2px', backgroundColor: '#e5e7eb' }}
+                      >
                         <motion.div
                           initial={{ scaleX: 0 }}
                           whileInView={{ scaleX: 1 }}

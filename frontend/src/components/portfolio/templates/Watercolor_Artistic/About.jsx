@@ -38,9 +38,7 @@ export default function About() {
           <div>
             {/* Label */}
             <div className="mb-8 inline-flex -rotate-3 rounded-full border border-white/40 bg-white/40 px-7 py-3 shadow-xl backdrop-blur-xl">
-              <span className="text-sm uppercase tracking-[0.35em] text-[#8b6d82]">
-                About Me
-              </span>
+              <span className="text-sm uppercase tracking-[0.35em] text-[#8b6d82]">About Me</span>
             </div>
 
             {/* Heading */}
@@ -50,14 +48,13 @@ export default function About() {
 
             {/* Description */}
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#675d68] md:text-xl">
-              I’m a frontend developer passionate about creating immersive,
-              scalable, and visually engaging web applications.
+              I’m a frontend developer passionate about creating immersive, scalable, and visually
+              engaging web applications.
             </p>
 
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#675d68]">
-              I enjoy building interfaces that feel modern,
-              polished, and memorable while maintaining accessibility,
-              performance, and maintainable code structure.
+              I enjoy building interfaces that feel modern, polished, and memorable while
+              maintaining accessibility, performance, and maintainable code structure.
             </p>
 
             {/* Tags */}
@@ -101,21 +98,17 @@ export default function About() {
                     {/* Avatar */}
                     <div className="relative flex h-36 w-36 items-center justify-center rounded-full bg-gradient-to-br from-pink-200 via-purple-200 to-sky-200 text-6xl shadow-2xl">
                       💻
-
                       <div className="absolute inset-0 rounded-full bg-white/20 backdrop-blur-md" />
                     </div>
 
                     {/* Title */}
-                    <h3 className="mt-8 text-4xl font-black">
-                      Frontend Developer
-                    </h3>
+                    <h3 className="mt-8 text-4xl font-black">Frontend Developer</h3>
 
                     {/* Description */}
                     <p className="mt-5 max-w-md leading-relaxed text-gray-900/60">
-                      Specialized in crafting responsive interfaces, interactive
-                      frontend systems, and modern user experiences with React,
-                      Tailwind CSS, animations, and scalable component-based
-                      architecture.
+                      Specialized in crafting responsive interfaces, interactive frontend systems,
+                      and modern user experiences with React, Tailwind CSS, animations, and scalable
+                      component-based architecture.
                     </p>
 
                     {/* Skill Pills */}

@@ -35,8 +35,11 @@ export const SectionWrapper = ({ children, title, scrollable = false, isMobile =
     </div>
 
     <div
-      className={`h-full w-full px-5 pb-12 pt-16 lg:px-16 lg:pb-16 lg:pt-24 ${scrollable && !isMobile ? 'overflow-y-auto [-webkit-overflow-scrolling:touch] scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden' : ''}`}>
-      <div className={`mx-auto flex w-full max-w-7xl flex-col pointer-events-auto ${scrollable && !isMobile ? 'min-h-full justify-start gap-6 lg:gap-8' : 'h-full justify-center'}`}>
+      className={`h-full w-full px-5 pb-12 pt-16 lg:px-16 lg:pb-16 lg:pt-24 ${scrollable && !isMobile ? 'overflow-y-auto [-webkit-overflow-scrolling:touch] scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden' : ''}`}
+    >
+      <div
+        className={`mx-auto flex w-full max-w-7xl flex-col pointer-events-auto ${scrollable && !isMobile ? 'min-h-full justify-start gap-6 lg:gap-8' : 'h-full justify-center'}`}
+      >
         {children}
       </div>
     </div>

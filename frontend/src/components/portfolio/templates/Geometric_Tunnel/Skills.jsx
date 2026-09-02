@@ -1,14 +1,14 @@
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import data from "../../../../data/dummy_data.json";
-import SectionHeading from "./SectionHeading";
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import data from '../../../../data/dummy_data.json';
+import SectionHeading from './SectionHeading';
 
-const SEC = "relative z-10 py-24 px-4";
+const SEC = 'relative z-10 py-24 px-4';
 
 export default function Skills() {
   const { skills } = data;
-  const ref    = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
     <section id="skills" className={SEC}>
@@ -23,8 +23,8 @@ export default function Skills() {
               transition={{ duration: 0.4, delay: i * 0.05 }}
               whileHover={{
                 scale: 1.02,
-                borderColor: "rgba(99,102,241,0.35)",
-                boxShadow: "0 10px 30px -15px rgba(99,102,241,0.3)",
+                borderColor: 'rgba(99,102,241,0.35)',
+                boxShadow: '0 10px 30px -15px rgba(99,102,241,0.3)',
               }}
               className="relative p-5 bg-slate-900/40 backdrop-blur-sm rounded-2xl border border-white/5 overflow-hidden group cursor-default"
             >

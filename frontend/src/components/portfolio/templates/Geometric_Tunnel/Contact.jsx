@@ -4,13 +4,13 @@ import { Send, CheckCircle, Code2 } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
 import SectionHeading from './SectionHeading';
 
-const SEC = "relative z-10 py-24 px-4";
+const SEC = 'relative z-10 py-24 px-4';
 
 export default function Contact() {
   const { personal } = data;
   const [submitted, setSubmitted] = useState(false);
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,23 +33,34 @@ export default function Contact() {
 
           <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
             {[
-              { label: "Your Name",  type: "text",  placeholder: "e.g. tommy"       },
-              { label: "Your Email", type: "email", placeholder: "tommy@example.com"     },
+              { label: 'Your Name', type: 'text', placeholder: 'e.g. tommy' },
+              { label: 'Your Email', type: 'email', placeholder: 'tommy@example.com' },
             ].map(({ label, type, placeholder }) => (
               <div key={label}>
-                <label className="block text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">{label}</label>
-                <input type={type} required placeholder={placeholder}
+                <label className="block text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">
+                  {label}
+                </label>
+                <input
+                  type={type}
+                  required
+                  placeholder={placeholder}
                   className="w-full px-4 py-3 rounded-xl bg-slate-950/60 border border-white/10 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/60 transition-colors"
                 />
               </div>
             ))}
             <div>
-              <label className="block text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">Message</label>
-              <textarea rows={4} required placeholder="Your message..."
+              <label className="block text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">
+                Message
+              </label>
+              <textarea
+                rows={4}
+                required
+                placeholder="Your message..."
                 className="w-full px-4 py-3 rounded-xl bg-slate-950/60 border border-white/10 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/60 transition-colors resize-none"
               />
             </div>
-            <button type="submit"
+            <button
+              type="submit"
               className="w-full py-3.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/10 active:scale-[0.98] transition-all duration-300"
             >
               Send Message <Send size={16} />
@@ -60,7 +71,9 @@ export default function Contact() {
             {submitted && (
               <motion.div
                 className="absolute inset-0 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-20"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
               >
                 <CheckCircle size={44} className="text-emerald-400 mb-3" />
                 <h3 className="text-xl font-bold text-white mb-1">Message Sent!</h3>

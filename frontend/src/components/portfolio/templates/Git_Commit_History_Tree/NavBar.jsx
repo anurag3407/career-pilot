@@ -4,13 +4,13 @@ import { GitBranch, Star, GitFork, Eye, Menu, X, GitCommit } from 'lucide-react'
 import { usePortfolio } from './PortfolioContext';
 
 const NAV_LINKS = [
-  { id: 'hero',         label: 'Code',        icon: '{ }' },
-  { id: 'about',        label: 'About',        icon: '<>' },
-  { id: 'skills',       label: 'Tags',         icon: '#' },
-  { id: 'experience',   label: 'Commits',      icon: '●' },
-  { id: 'projects',     label: 'Branches',     icon: '⎇' },
+  { id: 'hero', label: 'Code', icon: '{ }' },
+  { id: 'about', label: 'About', icon: '<>' },
+  { id: 'skills', label: 'Tags', icon: '#' },
+  { id: 'experience', label: 'Commits', icon: '●' },
+  { id: 'projects', label: 'Branches', icon: '⎇' },
   { id: 'testimonials', label: 'Pull Requests', icon: 'PR' },
-  { id: 'contact',      label: 'Remotes',      icon: '~' },
+  { id: 'contact', label: 'Remotes', icon: '~' },
 ];
 
 function scrollTo(id) {
@@ -22,18 +22,19 @@ export default function NavBar() {
   const { portfolioData } = usePortfolio();
   const { personal, stats } = portfolioData;
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive]   = useState('hero');
+  const [active, setActive] = useState('hero');
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const username = personal.name
-    ?.toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '') || 'developer';
+  const username =
+    personal.name
+      ?.toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '') || 'developer';
 
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 20);
-      const sections = NAV_LINKS.map(l => document.getElementById(l.id)).filter(Boolean);
+      const sections = NAV_LINKS.map((l) => document.getElementById(l.id)).filter(Boolean);
       const current = sections.reduce((acc, sec) => {
         return sec.getBoundingClientRect().top <= 120 ? sec.id : acc;
       }, 'hero');
@@ -55,7 +56,10 @@ export default function NavBar() {
       {/* Top breadcrumb bar */}
       <div className="flex items-center gap-2 px-4 py-2 border-b border-[#21262D] text-xs font-mono text-[#8B949E]">
         <GitCommit size={12} className="text-[#3FB950]" />
-        <span className="text-[#58A6FF] hover:underline cursor-pointer" onClick={() => scrollTo('hero')}>
+        <span
+          className="text-[#58A6FF] hover:underline cursor-pointer"
+          onClick={() => scrollTo('hero')}
+        >
           {username}
         </span>
         <span>/</span>
@@ -82,18 +86,23 @@ export default function NavBar() {
       <nav className="flex items-center justify-between px-4" aria-label="Repository navigation">
         {/* Desktop tabs */}
         <div className="hidden md:flex items-center" role="tablist">
-          {NAV_LINKS.map(link => (
-            <button type="button"
+          {NAV_LINKS.map((link) => (
+            <button
+              type="button"
               key={link.id}
               role="tab"
               aria-selected={active === link.id}
-              onClick={() => { scrollTo(link.id); setActive(link.id); }}
+              onClick={() => {
+                scrollTo(link.id);
+                setActive(link.id);
+              }}
               id={`nav-tab-${link.id}`}
               className={`
                 relative flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors
-                ${active === link.id
-                  ? 'text-white border-b-2 border-[#F0883E]'
-                  : 'text-[#8B949E] hover:text-white border-b-2 border-transparent'
+                ${
+                  active === link.id
+                    ? 'text-white border-b-2 border-[#F0883E]'
+                    : 'text-[#8B949E] hover:text-white border-b-2 border-transparent'
                 }
               `}
             >
@@ -112,9 +121,10 @@ export default function NavBar() {
         </div>
 
         {/* Mobile menu button */}
-        <button type="button"
+        <button
+          type="button"
           className="md:hidden p-2 text-[#8B949E] hover:text-white"
-          onClick={() => setMenuOpen(v => !v)}
+          onClick={() => setMenuOpen((v) => !v)}
           aria-label="Toggle navigation menu"
           aria-expanded={menuOpen}
         >
@@ -132,10 +142,14 @@ export default function NavBar() {
             transition={{ duration: 0.2 }}
             className="md:hidden bg-[#0D1117] border-t border-[#30363D]"
           >
-            {NAV_LINKS.map(link => (
-              <button type="button"
+            {NAV_LINKS.map((link) => (
+              <button
+                type="button"
                 key={link.id}
-                onClick={() => { scrollTo(link.id); setMenuOpen(false); }}
+                onClick={() => {
+                  scrollTo(link.id);
+                  setMenuOpen(false);
+                }}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left border-b border-[#21262D] transition-colors
                   ${active === link.id ? 'text-white bg-[#161B22]' : 'text-[#8B949E] hover:text-white hover:bg-[#161B22]/50'}`}
               >

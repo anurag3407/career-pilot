@@ -32,12 +32,12 @@ export function usePresence(userIds = []) {
   // 1. Synchronize local map when global onlineUsers change or target user IDs change
   useEffect(() => {
     const map = {};
-    stableUserIds.forEach(uid => {
-      const user = onlineUsers.find(u => u.uid === uid);
+    stableUserIds.forEach((uid) => {
+      const user = onlineUsers.find((u) => u.uid === uid);
       map[uid] = {
         isOnline: !!user,
         status: user?.status || 'offline',
-        lastSeen: user?.lastSeen || null
+        lastSeen: user?.lastSeen || null,
       };
     });
     setPresenceMap(map);
@@ -50,32 +50,32 @@ export function usePresence(userIds = []) {
 
     const unsubOnline = subscribe('user_online', ({ uid }) => {
       if (stableUserIds.includes(uid)) {
-        setPresenceMap(prev => ({
+        setPresenceMap((prev) => ({
           ...prev,
-          [uid]: { isOnline: true, status: 'online', lastSeen: new Date() }
+          [uid]: { isOnline: true, status: 'online', lastSeen: new Date() },
         }));
       }
     });
 
     const unsubOffline = subscribe('user_offline', ({ uid }) => {
       if (stableUserIds.includes(uid)) {
-        setPresenceMap(prev => ({
+        setPresenceMap((prev) => ({
           ...prev,
-          [uid]: { isOnline: false, status: 'offline', lastSeen: new Date() }
+          [uid]: { isOnline: false, status: 'offline', lastSeen: new Date() },
         }));
       }
     });
 
     const unsubStatusChange = subscribe('user_status_changed', ({ uid, status }) => {
       if (stableUserIds.includes(uid)) {
-        setPresenceMap(prev => ({
+        setPresenceMap((prev) => ({
           ...prev,
-          [uid]: { ...prev[uid], status, lastSeen: new Date() }
+          [uid]: { ...prev[uid], status, lastSeen: new Date() },
         }));
       }
     });
 
-    // CRITICAL CLEANUP: Ensures old subscriptions are cleanly unwound 
+    // CRITICAL CLEANUP: Ensures old subscriptions are cleanly unwound
     // before re-executing or upon hook unmount.
     return () => {
       unsubOnline();
@@ -85,19 +85,25 @@ export function usePresence(userIds = []) {
   }, [stableUserIds, subscribe]);
 
   // 3. Wrap helper utility methods in useCallback to prevent parent re-renders
-  const isUserOnline = useCallback((uid) => {
-    return presenceMap[uid]?.isOnline || false;
-  }, [presenceMap]);
+  const isUserOnline = useCallback(
+    (uid) => {
+      return presenceMap[uid]?.isOnline || false;
+    },
+    [presenceMap]
+  );
 
-  const getUserStatus = useCallback((uid) => {
-    return presenceMap[uid]?.status || 'offline';
-  }, [presenceMap]);
+  const getUserStatus = useCallback(
+    (uid) => {
+      return presenceMap[uid]?.status || 'offline';
+    },
+    [presenceMap]
+  );
 
   return {
     presenceMap,
     isUserOnline,
     getUserStatus,
-    onlineCount: onlineUsers.length
+    onlineCount: onlineUsers.length,
   };
 }
 

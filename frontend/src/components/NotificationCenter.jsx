@@ -1,41 +1,63 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Bell, BriefcaseBusiness, Mail, XCircle, CheckCheck, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useSocket } from "../hooks/useSocket";
-import { cn } from "../lib/utils";
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bell, BriefcaseBusiness, Mail, XCircle, CheckCheck, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useSocket } from '../hooks/useSocket';
+import { cn } from '../lib/utils';
 
 function timeAgo(date) {
   const diff = (Date.now() - new Date(date)) / 1000;
-  if (diff < 60) return "just now";
+  if (diff < 60) return 'just now';
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
 const TYPE_CONFIG = {
-  job_alert_new_jobs:    { icon: BriefcaseBusiness, color: "text-primary",    bg: "bg-primary/10",     label: "New Jobs Found",   href: "/job-alerts" },
-  job_alert_email_sent:  { icon: Mail,              color: "text-green-500",   bg: "bg-green-500/10",   label: "Alert Email Sent", href: "/job-alerts" },
-  job_alert_email_failed:{ icon: XCircle,           color: "text-destructive", bg: "bg-destructive/10", label: "Email Failed",     href: "/job-alerts" },
-  notification:          { icon: Bell,              color: "text-primary",     bg: "bg-primary/10",     label: "Notification",     href: "/dashboard"  },
+  job_alert_new_jobs: {
+    icon: BriefcaseBusiness,
+    color: 'text-primary',
+    bg: 'bg-primary/10',
+    label: 'New Jobs Found',
+    href: '/job-alerts',
+  },
+  job_alert_email_sent: {
+    icon: Mail,
+    color: 'text-green-500',
+    bg: 'bg-green-500/10',
+    label: 'Alert Email Sent',
+    href: '/job-alerts',
+  },
+  job_alert_email_failed: {
+    icon: XCircle,
+    color: 'text-destructive',
+    bg: 'bg-destructive/10',
+    label: 'Email Failed',
+    href: '/job-alerts',
+  },
+  notification: {
+    icon: Bell,
+    color: 'text-primary',
+    bg: 'bg-primary/10',
+    label: 'Notification',
+    href: '/dashboard',
+  },
 };
 
 function getTitle(notif) {
-  if (notif.type === "job_alert_new_jobs") {
-    const count = Number.isFinite(notif.data?.jobCount)
-      ? notif.data.jobCount
-      : 0;
+  if (notif.type === 'job_alert_new_jobs') {
+    const count = Number.isFinite(notif.data?.jobCount) ? notif.data.jobCount : 0;
 
-    const title = notif.data?.alertTitle || "your alert";
+    const title = notif.data?.alertTitle || 'your alert';
 
-    return `${count} new job${count === 1 ? "" : "s"} for "${title}"`;
+    return `${count} new job${count === 1 ? '' : 's'} for "${title}"`;
   }
 
-  if (notif.type === "job_alert_email_sent")
-    return `Email sent for "${notif.data?.alertTitle || "your alert"}"`;
+  if (notif.type === 'job_alert_email_sent')
+    return `Email sent for "${notif.data?.alertTitle || 'your alert'}"`;
 
-  if (notif.type === "job_alert_email_failed")
-    return `Email failed for "${notif.data?.alertTitle || "your alert"}"`;
+  if (notif.type === 'job_alert_email_failed')
+    return `Email failed for "${notif.data?.alertTitle || 'your alert'}"`;
 
   return notif.data?.message ?? TYPE_CONFIG.notification.label;
 }
@@ -53,8 +75,8 @@ export default function NotificationCenter() {
     const handler = (e) => {
       if (panelRef.current && !panelRef.current.contains(e.target)) setOpen(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   const handleClick = (notif) => {
@@ -84,7 +106,7 @@ export default function NotificationCenter() {
             animate={{ scale: 1 }}
             className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center leading-none"
           >
-            {unreadCount > 99 ? "99+" : unreadCount}
+            {unreadCount > 99 ? '99+' : unreadCount}
           </motion.span>
         )}
       </button>
@@ -132,26 +154,38 @@ export default function NotificationCenter() {
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
+                        if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           handleClick(notif);
                         }
                       }}
                       className={cn(
-                        "flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-muted/60 relative group",
-                        !notif.read && "bg-primary/5"
+                        'flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-muted/60 relative group',
+                        !notif.read && 'bg-primary/5'
                       )}
                     >
                       {/* Icon */}
-                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5", config.bg)}>
-                        <Icon className={cn("w-4 h-4", config.color)} />
+                      <div
+                        className={cn(
+                          'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5',
+                          config.bg
+                        )}
+                      >
+                        <Icon className={cn('w-4 h-4', config.color)} />
                       </div>
                       {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <p className={cn("text-sm leading-snug", notif.read ? "text-muted-foreground" : "text-foreground font-medium")}>
+                        <p
+                          className={cn(
+                            'text-sm leading-snug',
+                            notif.read ? 'text-muted-foreground' : 'text-foreground font-medium'
+                          )}
+                        >
                           {getTitle(notif)}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{timeAgo(notif.timestamp)}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {timeAgo(notif.timestamp)}
+                        </p>
                       </div>
                       {/* Unread dot */}
                       {!notif.read && (

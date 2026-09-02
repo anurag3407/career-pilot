@@ -24,7 +24,10 @@ function SkillLine({ name, level, category, index }) {
       setPhase(1);
       let i = 0;
       const iv = setInterval(() => {
-        if (destroyed) { clearInterval(iv); return; }
+        if (destroyed) {
+          clearInterval(iv);
+          return;
+        }
         i++;
         setTypedName(name.slice(0, i));
         if (i >= name.length) {
@@ -34,7 +37,10 @@ function SkillLine({ name, level, category, index }) {
           const dotsStr = '.'.repeat(DOTS_COUNT);
           let d = 0;
           const iv2 = setInterval(() => {
-            if (destroyed) { clearInterval(iv2); return; }
+            if (destroyed) {
+              clearInterval(iv2);
+              return;
+            }
             d++;
             setTypedDots(dotsStr.slice(0, d));
             if (d >= DOTS_COUNT) {
@@ -44,10 +50,16 @@ function SkillLine({ name, level, category, index }) {
               const pctStr = `${level}%`;
               let p = 0;
               const iv3 = setInterval(() => {
-                if (destroyed) { clearInterval(iv3); return; }
+                if (destroyed) {
+                  clearInterval(iv3);
+                  return;
+                }
                 p++;
                 setTypedPct(pctStr.slice(0, p));
-                if (p >= pctStr.length) { clearInterval(iv3); setPhase(4); }
+                if (p >= pctStr.length) {
+                  clearInterval(iv3);
+                  setPhase(4);
+                }
               }, 60);
             }
           }, 18);
@@ -55,7 +67,10 @@ function SkillLine({ name, level, category, index }) {
       }, 40);
     }, baseDelay);
 
-    return () => { destroyed = true; clearTimeout(t1); };
+    return () => {
+      destroyed = true;
+      clearTimeout(t1);
+    };
   }, [inView, name, level, index]);
 
   return (
@@ -67,16 +82,18 @@ function SkillLine({ name, level, category, index }) {
       transition={{ delay: index * 0.08, duration: 0.3 }}
     >
       {/* Category badge */}
-      <span style={{
-        position: 'absolute',
-        left: 0,
-        width: 3,
-        top: '50%',
-        transform: 'translateY(-50%)',
-        height: 14,
-        background: categoryColor(category),
-        borderRadius: 1,
-      }} />
+      <span
+        style={{
+          position: 'absolute',
+          left: 0,
+          width: 3,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          height: 14,
+          background: categoryColor(category),
+          borderRadius: 1,
+        }}
+      />
 
       <span className="tks-skill-name" style={{ paddingLeft: 12 }}>
         {typedName}
@@ -85,7 +102,9 @@ function SkillLine({ name, level, category, index }) {
 
       <span className="tks-skill-dots" style={{ padding: '0 6px', letterSpacing: 3 }}>
         {typedDots}
-        {phase === 2 && <span style={{ color: C.deepRed, animation: 'tks-blink 0.5s step-end infinite' }}>.</span>}
+        {phase === 2 && (
+          <span style={{ color: C.deepRed, animation: 'tks-blink 0.5s step-end infinite' }}>.</span>
+        )}
       </span>
 
       <span className="tks-skill-pct">
@@ -111,10 +130,10 @@ function SkillLine({ name, level, category, index }) {
 function categoryColor(cat = '') {
   const map = {
     Frontend: C.deepRed,
-    Backend:  C.warmBrown,
-    DevOps:   C.inkGray,
-    Design:   C.amber,
-    Core:     C.deepRed,
+    Backend: C.warmBrown,
+    DevOps: C.inkGray,
+    Design: C.amber,
+    Core: C.deepRed,
   };
   return map[cat] || C.border;
 }
@@ -122,7 +141,7 @@ function categoryColor(cat = '') {
 // Group skills by category
 function groupByCategory(skills) {
   const groups = {};
-  skills.forEach(s => {
+  skills.forEach((s) => {
     const cat = s.category || 'Core';
     if (!groups[cat]) groups[cat] = [];
     groups[cat].push(s);
@@ -188,13 +207,16 @@ export default function Skills({ skills }) {
                 — {cat} —
               </motion.div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0, position: 'relative' }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr',
+                  gap: 0,
+                  position: 'relative',
+                }}
+              >
                 {catSkills.map((skill, i) => (
-                  <SkillLine
-                    key={skill.name}
-                    {...skill}
-                    index={gi * 10 + i}
-                  />
+                  <SkillLine key={skill.name} {...skill} index={gi * 10 + i} />
                 ))}
               </div>
             </div>

@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from "react";
-import { Search, X, Loader2 } from "lucide-react";
-import PropTypes from "prop-types";
-import { cn } from "@/lib/utils";
+import { useState, useEffect, useRef } from 'react';
+import { Search, X, Loader2 } from 'lucide-react';
+import PropTypes from 'prop-types';
+import { cn } from '@/lib/utils';
 
 export default function SearchInput({
   label,
   required = false,
   disabled = false,
-  type = "text",
+  type = 'text',
   name,
   value,
   placeholder,
@@ -15,12 +15,12 @@ export default function SearchInput({
   error,
   debounceMs = 300,
   isLoading = false,
-  wrapperClassName = "",
-  inputClassName = "",
+  wrapperClassName = '',
+  inputClassName = '',
 }) {
   // Internal input state used for debouncing.
   // Starts with the external value prop if provided.
-  const [query, setQuery] = useState(value || "");
+  const [query, setQuery] = useState(value || '');
 
   /**
    * Keep internal query state synced with external value changes.
@@ -75,7 +75,7 @@ export default function SearchInput({
   // Clear the current search query.
   // This will also trigger the debounced onChange effect.
   const handleInputClear = () => {
-    setQuery("");
+    setQuery('');
   };
 
   return (
@@ -96,8 +96,8 @@ export default function SearchInput({
         {/* Search icon turns destructive color when there's an error */}
         <span
           className={cn(
-            "absolute left-4 pointer-events-none z-10",
-            error ? "text-destructive" : "text-muted-foreground",
+            'absolute left-4 pointer-events-none z-10',
+            error ? 'text-destructive' : 'text-muted-foreground'
           )}
         >
           <Search size={16} />
@@ -108,20 +108,20 @@ export default function SearchInput({
           id={name}
           name={name}
           value={query}
-          aria-label={label || placeholder || "Search"}
+          aria-label={label || placeholder || 'Search'}
           onChange={handleInputChange}
           placeholder={placeholder}
           disabled={disabled}
           required={required}
           className={cn(
-            "w-full px-5 py-3.5 rounded-2xl transition-all duration-300",
-            "bg-muted/30 border border-border",
-            "text-foreground placeholder:text-muted-foreground",
-            "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
-            "disabled:bg-muted disabled:cursor-not-allowed disabled:opacity-50",
-            "pl-10 pr-10", // room for icons on both sides
-            error ? "border-destructive/50 focus:ring-destructive/20" : "",
-            inputClassName,
+            'w-full px-5 py-3.5 rounded-2xl transition-all duration-300',
+            'bg-muted/30 border border-border',
+            'text-foreground placeholder:text-muted-foreground',
+            'focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+            'disabled:bg-muted disabled:cursor-not-allowed disabled:opacity-50',
+            'pl-10 pr-10', // room for icons on both sides
+            error ? 'border-destructive/50 focus:ring-destructive/20' : '',
+            inputClassName
           )}
         />
 
@@ -144,9 +144,7 @@ export default function SearchInput({
 
       {/* Error message which mirrors Input component's error block */}
       {error && (
-        <p className="mt-2 text-sm font-bold text-destructive uppercase tracking-wide">
-          {error}
-        </p>
+        <p className="mt-2 text-sm font-bold text-destructive uppercase tracking-wide">{error}</p>
       )}
     </div>
   );

@@ -1,23 +1,23 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { ArrowRight, GitBranch, Network, Zap, ShieldAlert } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowRight, GitBranch, Network, Zap, ShieldAlert } from 'lucide-react';
 
 const features = [
   {
     icon: Network,
-    title: "Architecture Maps",
-    desc: "Interactive visual graphs of your codebase modules.",
+    title: 'Architecture Maps',
+    desc: 'Interactive visual graphs of your codebase modules.',
   },
   {
     icon: ShieldAlert,
-    title: "Risk Hotspots",
-    desc: "Detect complexity and coupling instantly.",
+    title: 'Risk Hotspots',
+    desc: 'Detect complexity and coupling instantly.',
   },
   {
     icon: Zap,
-    title: "AI Onboarding",
-    desc: "Chat with an AI that knows your architecture.",
+    title: 'AI Onboarding',
+    desc: 'Chat with an AI that knows your architecture.',
   },
 ];
 
@@ -29,8 +29,8 @@ export default function ProjectVisualizerSection() {
         className="pointer-events-none absolute inset-0 opacity-[0.04]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
+            'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
         }}
       />
       {/* Top gradient fade */}
@@ -153,16 +153,31 @@ export default function ProjectVisualizerSection() {
 
               {/* Module nodes */}
               {[
-                { label: "react-reconciler", x: "8%", y: "15%", color: "border-cyan-500/50 text-cyan-400" },
-                { label: "react-dom", x: "55%", y: "45%", color: "border-violet-500/50 text-violet-400" },
-                { label: "scheduler", x: "25%", y: "70%", color: "border-amber-500/50 text-amber-400" },
+                {
+                  label: 'react-reconciler',
+                  x: '8%',
+                  y: '15%',
+                  color: 'border-cyan-500/50 text-cyan-400',
+                },
+                {
+                  label: 'react-dom',
+                  x: '55%',
+                  y: '45%',
+                  color: 'border-violet-500/50 text-violet-400',
+                },
+                {
+                  label: 'scheduler',
+                  x: '25%',
+                  y: '70%',
+                  color: 'border-amber-500/50 text-amber-400',
+                },
               ].map((node, i) => (
                 <motion.div
                   key={node.label}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 1 + i * 0.2, type: "spring", stiffness: 200 }}
+                  transition={{ delay: 1 + i * 0.2, type: 'spring', stiffness: 200 }}
                   className={`absolute rounded-lg border ${node.color} bg-[#161b22] px-3 py-2 font-mono text-xs`}
                   style={{ left: node.x, top: node.y }}
                 >
@@ -181,7 +196,8 @@ export default function ProjectVisualizerSection() {
                 <div className="flex items-start gap-2">
                   <Zap className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-400" />
                   <p className="text-xs leading-relaxed text-white/60">
-                    The core reconciler module seems heavily coupled. Consider reviewing dependencies.
+                    The core reconciler module seems heavily coupled. Consider reviewing
+                    dependencies.
                   </p>
                 </div>
               </motion.div>
@@ -199,7 +215,10 @@ export default function ProjectVisualizerSection() {
         >
           <div className="flex flex-wrap items-center justify-center gap-4">
             {features.map((f) => (
-              <span key={f.title} className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/70">
+              <span
+                key={f.title}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/70"
+              >
                 <f.icon className="h-4 w-4 text-cyan-400" />
                 {f.title}
               </span>

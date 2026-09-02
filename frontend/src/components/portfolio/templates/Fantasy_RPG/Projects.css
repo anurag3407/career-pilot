@@ -12,23 +12,47 @@
 
 /* Renamed from gold-shimmer to avoid collision with ResumeCTA.css */
 @keyframes rpg-proj-gold-shimmer {
-  0%   { border-color: #b48c3b; box-shadow: 0 0 5px rgba(180, 140, 59, 0.4); }
-  50%  { border-color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.8); }
-  100% { border-color: #b48c3b; box-shadow: 0 0 5px rgba(180, 140, 59, 0.4); }
+  0% {
+    border-color: #b48c3b;
+    box-shadow: 0 0 5px rgba(180, 140, 59, 0.4);
+  }
+  50% {
+    border-color: #d4af37;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+  }
+  100% {
+    border-color: #b48c3b;
+    box-shadow: 0 0 5px rgba(180, 140, 59, 0.4);
+  }
 }
 
 @keyframes dice-spin {
-  0%   { transform: rotate(0deg) scale(1); }
-  25%  { transform: rotate(90deg) scale(1.15); }
-  50%  { transform: rotate(180deg) scale(0.9); }
-  75%  { transform: rotate(270deg) scale(1.1); }
-  100% { transform: rotate(360deg) scale(1); }
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.15);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.9);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
 }
 
 /* Renamed from float-runes to avoid collision with ResumeCTA.css */
 @keyframes rpg-proj-float-runes {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50%       { transform: translateY(-8px) rotate(3deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(3deg);
+  }
 }
 
 .rpg-proj-gold-border-glow {
@@ -44,18 +68,46 @@
 }
 
 .metal-corner-tl::before {
-  content: ""; position: absolute; top: 0; left: 0; width: 12px; height: 12px;
-  border-top: 3px solid #d4af37; border-left: 3px solid #d4af37; pointer-events: none;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 3px solid #d4af37;
+  border-left: 3px solid #d4af37;
+  pointer-events: none;
 }
 .metal-corner-tr::before {
-  content: ""; position: absolute; top: 0; right: 0; width: 12px; height: 12px;
-  border-top: 3px solid #d4af37; border-right: 3px solid #d4af37; pointer-events: none;
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 3px solid #d4af37;
+  border-right: 3px solid #d4af37;
+  pointer-events: none;
 }
 .metal-corner-bl::before {
-  content: ""; position: absolute; bottom: 0; left: 0; width: 12px; height: 12px;
-  border-bottom: 3px solid #d4af37; border-left: 3px solid #d4af37; pointer-events: none;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-bottom: 3px solid #d4af37;
+  border-left: 3px solid #d4af37;
+  pointer-events: none;
 }
 .metal-corner-br::before {
-  content: ""; position: absolute; bottom: 0; right: 0; width: 12px; height: 12px;
-  border-bottom: 3px solid #d4af37; border-right: 3px solid #d4af37; pointer-events: none;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-bottom: 3px solid #d4af37;
+  border-right: 3px solid #d4af37;
+  pointer-events: none;
 }

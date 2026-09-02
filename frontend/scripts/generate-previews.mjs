@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * generate-previews.mjs
- * 
+ *
  * Launches Puppeteer, navigates to each template's /preview/:id route,
  * waits for the hero section to render, and saves a 1280×800 screenshot
  * to public/template-previews/<id>.png.
@@ -27,14 +27,14 @@ const TEMPLATES_DIR = path.resolve(__dirname, '..', 'src', 'components', 'portfo
 
 // Parse CLI args
 const args = process.argv.slice(2);
-const only = args.find(a => a.startsWith('--only='))?.split('=')[1];
+const only = args.find((a) => a.startsWith('--only='))?.split('=')[1];
 const force = args.includes('--force');
-const port = args.find(a => a.startsWith('--port='))?.split('=')[1] || '5173';
+const port = args.find((a) => a.startsWith('--port='))?.split('=')[1] || '5173';
 const BASE_URL = `http://localhost:${port}`;
 
 // Get all template folder names
 function getTemplateFolders() {
-  return fs.readdirSync(TEMPLATES_DIR).filter(name => {
+  return fs.readdirSync(TEMPLATES_DIR).filter((name) => {
     const fullPath = path.join(TEMPLATES_DIR, name);
     if (!fs.statSync(fullPath).isDirectory()) return false;
     // Must have an index.jsx
@@ -60,13 +60,12 @@ async function generateScreenshot(browser, templateId) {
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
 
     // Wait for React Suspense to resolve (the loading fallback disappears)
-    await page.waitForFunction(
-      () => !document.querySelector('[class*="animate-spin"]'),
-      { timeout: 10000 }
-    ).catch(() => {});
+    await page
+      .waitForFunction(() => !document.querySelector('[class*="animate-spin"]'), { timeout: 10000 })
+      .catch(() => {});
 
     // Give animations a moment to settle
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 2000));
 
     await page.screenshot({
       path: outputPath,
@@ -89,7 +88,7 @@ async function main() {
   fs.mkdirSync(PREVIEW_DIR, { recursive: true });
 
   const allTemplates = getTemplateFolders();
-  const templates = only ? allTemplates.filter(t => t === only) : allTemplates;
+  const templates = only ? allTemplates.filter((t) => t === only) : allTemplates;
 
   if (templates.length === 0) {
     console.error('No templates found' + (only ? ` matching "${only}"` : ''));
@@ -112,10 +111,8 @@ async function main() {
   const BATCH_SIZE = 4;
   for (let i = 0; i < templates.length; i += BATCH_SIZE) {
     const batch = templates.slice(i, i + BATCH_SIZE);
-    const batchResults = await Promise.all(
-      batch.map(id => generateScreenshot(browser, id))
-    );
-    batchResults.forEach(r => results[r]++);
+    const batchResults = await Promise.all(batch.map((id) => generateScreenshot(browser, id)));
+    batchResults.forEach((r) => results[r]++);
   }
 
   await browser.close();
@@ -126,7 +123,7 @@ async function main() {
   console.log(`   ❌ ${results.failed} failed\n`);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Fatal error:', err);
   process.exit(1);
 });

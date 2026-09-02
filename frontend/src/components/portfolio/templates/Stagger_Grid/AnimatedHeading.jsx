@@ -2,11 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export const AnimatedHeading = ({ text, dark = false }) => {
-  const baseColor = dark ? "#ffffff" : "#18181b";
-  const highlightColor = "#4f46e5";
+  const baseColor = dark ? '#ffffff' : '#18181b';
+  const highlightColor = '#4f46e5';
 
   return (
-    <motion.div 
+    <motion.div
       className="flex flex-wrap mb-10 overflow-hidden"
       initial="hidden"
       whileInView="visible"
@@ -20,18 +20,18 @@ export const AnimatedHeading = ({ text, dark = false }) => {
           style={{ color: baseColor }}
           variants={{
             hidden: { y: 50, opacity: 0 },
-            visible: { 
-              y: 0, 
+            visible: {
+              y: 0,
               opacity: 1,
-              transition: { type: "spring", damping: 12, delay: index * 0.05 }
-            }
+              transition: { type: 'spring', damping: 12, delay: index * 0.05 },
+            },
           }}
         >
           <motion.span
             animate={{ color: [baseColor, highlightColor, baseColor] }}
-            transition={{ duration: 4, repeat: Infinity, delay: index * 0.1, ease: "easeInOut" }}
+            transition={{ duration: 4, repeat: Infinity, delay: index * 0.1, ease: 'easeInOut' }}
           >
-            {char === " " ? "\u00A0" : char}
+            {char === ' ' ? '\u00A0' : char}
           </motion.span>
         </motion.h2>
       ))}

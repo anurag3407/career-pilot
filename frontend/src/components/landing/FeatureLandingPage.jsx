@@ -30,7 +30,7 @@ export default function FeatureLandingPage({ config }) {
         {/* Background Mesh/Blobs are handled by index.css or inside Hero, but we can ensure a base mesh */}
         <div className="bg-mesh" />
 
-        <FeatureLandingHero 
+        <FeatureLandingHero
           badgeText={config.hero.badgeText}
           title={config.hero.title}
           accentText={config.hero.accentText}
@@ -44,13 +44,10 @@ export default function FeatureLandingPage({ config }) {
           illustration={config.Illustration ? <config.Illustration /> : null}
         />
 
-        <FeatureShowcase 
-          heading={config.showcase.heading}
-          features={config.showcase.features}
-        />
+        <FeatureShowcase heading={config.showcase.heading} features={config.showcase.features} />
 
         <div id="demo">
-          <FeatureVideoSection 
+          <FeatureVideoSection
             heading={config.video.heading}
             subheading={config.video.subheading}
             videoUrl={config.video.videoUrl}
@@ -58,18 +55,18 @@ export default function FeatureLandingPage({ config }) {
           />
         </div>
 
-        <FeatureHowItWorks 
+        <FeatureHowItWorks
           heading={config.howItWorks.title}
           subheading="A simpler way to reach your goals."
           steps={config.howItWorks.steps}
         />
 
-        <FeatureTestimonials 
+        <FeatureTestimonials
           heading={config.testimonials.heading}
           testimonials={config.testimonials.items}
         />
 
-        <FeatureCTA 
+        <FeatureCTA
           heading={config.cta.headline}
           subheading={config.cta.subtext}
           primaryCtaText={ctaSectionText}

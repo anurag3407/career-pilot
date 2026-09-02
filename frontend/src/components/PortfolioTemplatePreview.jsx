@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Eye, RotateCcw, Palette, Type } from "lucide-react";
+import { useState } from 'react';
+import { Eye, RotateCcw, Palette, Type } from 'lucide-react';
 
 export default function PortfolioTemplatePreview() {
   const defaultSettings = {
-    color: "#2563eb",
-    fontSize: "16px",
-    layout: "Modern",
+    color: '#2563eb',
+    fontSize: '16px',
+    layout: 'Modern',
   };
 
   const [settings, setSettings] = useState(defaultSettings);
@@ -18,16 +18,12 @@ export default function PortfolioTemplatePreview() {
     <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
       <div className="flex items-center gap-2 mb-5">
         <Eye className="w-6 h-6 text-primary" />
-        <h2 className="text-xl font-black">
-          Portfolio Template Preview
-        </h2>
+        <h2 className="text-xl font-black">Portfolio Template Preview</h2>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-
         {/* Controls */}
         <div className="space-y-4">
-
           <div>
             <label className="font-bold flex gap-2 items-center mb-2">
               <Palette size={18} />
@@ -45,7 +41,6 @@ export default function PortfolioTemplatePreview() {
               }
             />
           </div>
-
 
           <div>
             <label className="font-bold flex gap-2 items-center mb-2">
@@ -69,17 +64,14 @@ export default function PortfolioTemplatePreview() {
             </select>
           </div>
 
-
           <button
             onClick={resetSettings}
             className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg"
           >
-            <RotateCcw size={18}/>
+            <RotateCcw size={18} />
             Reset Default
           </button>
-
         </div>
-
 
         {/* Live Preview */}
         <div className="border rounded-xl p-5">
@@ -102,9 +94,7 @@ export default function PortfolioTemplatePreview() {
           </p>
 
           <div className="mt-4">
-            <h4 className="font-bold">
-              Projects
-            </h4>
+            <h4 className="font-bold">Projects</h4>
 
             <ul className="list-disc ml-5">
               <li>E-commerce Platform</li>
@@ -112,7 +102,6 @@ export default function PortfolioTemplatePreview() {
             </ul>
           </div>
         </div>
-
       </div>
     </div>
   );

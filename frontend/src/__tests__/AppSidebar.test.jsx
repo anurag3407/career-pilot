@@ -17,7 +17,7 @@ vi.mock('../components/AppSidebar.jsx', () => ({
 describe('AppSidebar', () => {
   test('renders navigation links', async () => {
     const { default: AppSidebar } = await import('../components/AppSidebar.jsx');
-    
+
     render(
       <MemoryRouter>
         <AppSidebar />

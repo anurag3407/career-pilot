@@ -17,15 +17,15 @@ const Skills = ({ skills }) => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
-            whileHover={{ 
-              scale: 1.05, 
-              textShadow: "0px 0px 8px rgb(59 130 246)",
-              boxShadow: "0px 0px 15px rgba(59, 130, 246, 0.5)"
+            whileHover={{
+              scale: 1.05,
+              textShadow: '0px 0px 8px rgb(59 130 246)',
+              boxShadow: '0px 0px 15px rgba(59, 130, 246, 0.5)',
             }}
             className="relative cursor-none overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/30 px-6 py-3 text-zinc-300 backdrop-blur-sm"
           >
             <span className="relative z-10 font-mono text-sm">{skill.name}</span>
-            <motion.div 
+            <motion.div
               className="absolute inset-0 z-0 bg-blue-600/20"
               initial={{ x: '-100%' }}
               whileHover={{ x: '0%' }}

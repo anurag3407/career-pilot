@@ -1,22 +1,21 @@
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { MapPin, Layers, Zap, Sparkles } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
-import SectionHeading from "./SectionHeading";
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { MapPin, Layers, Zap, Sparkles } from 'lucide-react';
+import data from '../../../../data/dummy_data.json';
+import SectionHeading from './SectionHeading';
 
-const SEC = "relative z-10 py-24 px-4";
+const SEC = 'relative z-10 py-24 px-4';
 
 export default function About() {
   const { personal } = data;
-  const ref    = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
     <section id="about" className={SEC}>
       <div className="max-w-5xl mx-auto">
         <SectionHeading>About</SectionHeading>
         <div ref={ref} className="grid md:grid-cols-12 gap-8 items-center">
-
           <motion.div
             className="md:col-span-5 relative group"
             initial={{ opacity: 0, x: -40 }}
@@ -29,19 +28,21 @@ export default function About() {
                 <motion.div
                   className="w-3/4 h-3/4 border border-dashed border-purple-500/40 rounded-full"
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                 />
               </div>
               <div className="relative z-10 text-center p-6">
                 <img
-                  src={personal?.avatar || "https://api.dicebear.com/7.x/shapes/svg?seed=about"}
+                  src={personal?.avatar || 'https://api.dicebear.com/7.x/shapes/svg?seed=about'}
                   alt={personal?.name}
                   className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 border border-white/10"
                 />
-                <p className="text-xs font-mono tracking-widest text-slate-400 uppercase mb-2">Location</p>
+                <p className="text-xs font-mono tracking-widest text-slate-400 uppercase mb-2">
+                  Location
+                </p>
                 <div className="flex items-center justify-center gap-2 text-white font-medium">
                   <MapPin size={16} className="text-indigo-400" />
-                  <span>{personal?.location || "Remote"}</span>
+                  <span>{personal?.location || 'Remote'}</span>
                 </div>
               </div>
             </div>
@@ -60,12 +61,22 @@ export default function About() {
             <p className="text-slate-400 leading-relaxed">{personal?.bio}</p>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { Icon: Layers, color: "text-indigo-400", title: "Architecture", sub: "Structured modular patterns"  },
-                { Icon: Zap,    color: "text-purple-400", title: "Performance",  sub: "Optimized rendering engines" },
+                {
+                  Icon: Layers,
+                  color: 'text-indigo-400',
+                  title: 'Architecture',
+                  sub: 'Structured modular patterns',
+                },
+                {
+                  Icon: Zap,
+                  color: 'text-purple-400',
+                  title: 'Performance',
+                  sub: 'Optimized rendering engines',
+                },
               ].map(({ Icon, color, title, sub }) => (
                 <motion.div
                   key={title}
-                  whileHover={{ borderColor: "rgba(99,102,241,0.3)", y: -3 }}
+                  whileHover={{ borderColor: 'rgba(99,102,241,0.3)', y: -3 }}
                   className="p-4 rounded-2xl bg-slate-900/40 border border-white/5 backdrop-blur-sm transition-all"
                 >
                   <Icon className={`${color} mb-2`} size={20} />
@@ -75,7 +86,6 @@ export default function About() {
               ))}
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>

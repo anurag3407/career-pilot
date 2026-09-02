@@ -11,12 +11,12 @@ import {
   Loader2,
   AlertCircle,
   Sparkles,
-  Zap
+  Zap,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { jobAlertsApi, jobsApi } from '../services/api';
 import { JobAlertModal, JobAlertsList } from '../components';
-import { SkeletonStatCards, SkeletonJobList } from '../components/ui/Skeleton'
+import { SkeletonStatCards, SkeletonJobList } from '../components/ui/Skeleton';
 
 export default function JobAlerts() {
   const [activeTab, setActiveTab] = useState('alerts'); // 'alerts' | 'search'
@@ -31,7 +31,7 @@ export default function JobAlerts() {
     indigo: 'hover:border-primary/30',
     green: 'hover:border-green-500/30',
     purple: 'hover:border-purple-500/30',
-    blue: 'hover:border-blue-500/30'
+    blue: 'hover:border-blue-500/30',
   };
 
   useEffect(() => {
@@ -93,8 +93,8 @@ export default function JobAlerts() {
                 Job Alerts
               </h1>
               <p className="mt-3 text-muted-foreground max-w-xl">
-                Set up personalized job alerts and never miss an opportunity.
-                We'll email you when new jobs match your criteria.
+                Set up personalized job alerts and never miss an opportunity. We'll email you when
+                new jobs match your criteria.
               </p>
             </div>
             <button
@@ -116,32 +116,38 @@ export default function JobAlerts() {
             >
               <SkeletonStatCards count={4} />
             </motion.div>
-          ) : stats && (
-            <motion.div
-              className="grid grid-cols-4 gap-4"
-              variants={{ animate: { transition: { staggerChildren: 0.08 } } }}
-              initial="initial"
-              animate="animate"
-            >
-              {[
-                { value: stats.totalAlerts || 0, label: 'Total Alerts', color: 'indigo' },
-                { value: stats.activeAlerts || 0, label: 'Active Alerts', color: 'green' },
-                { value: stats.totalJobsFound || 0, label: 'Jobs Found', color: 'purple' },
-                { value: stats.totalEmailsSent || 0, label: 'Emails Sent', color: 'blue' }
-              ].map((stat, idx) => (
-                <motion.div
-                  key={idx}
-                  variants={{
-                    initial: { opacity: 0, y: 12 },
-                    animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } }
-                  }}
-                  className={`bg-background/50 border border-border rounded-xl p-4 ${hoverBorderClassMap[stat.color] || 'hover:border-border'} transition-colors`}
-                >
-                  <div className={`text-3xl font-bold text-foreground`}>{stat.value}</div>
-                  <div className="text-muted-foreground text-sm">{stat.label}</div>
-                </motion.div>
-              ))}
-            </motion.div>
+          ) : (
+            stats && (
+              <motion.div
+                className="grid grid-cols-4 gap-4"
+                variants={{ animate: { transition: { staggerChildren: 0.08 } } }}
+                initial="initial"
+                animate="animate"
+              >
+                {[
+                  { value: stats.totalAlerts || 0, label: 'Total Alerts', color: 'indigo' },
+                  { value: stats.activeAlerts || 0, label: 'Active Alerts', color: 'green' },
+                  { value: stats.totalJobsFound || 0, label: 'Jobs Found', color: 'purple' },
+                  { value: stats.totalEmailsSent || 0, label: 'Emails Sent', color: 'blue' },
+                ].map((stat, idx) => (
+                  <motion.div
+                    key={idx}
+                    variants={{
+                      initial: { opacity: 0, y: 12 },
+                      animate: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.22, ease: 'easeOut' },
+                      },
+                    }}
+                    className={`bg-background/50 border border-border rounded-xl p-4 ${hoverBorderClassMap[stat.color] || 'hover:border-border'} transition-colors`}
+                  >
+                    <div className={`text-3xl font-bold text-foreground`}>{stat.value}</div>
+                    <div className="text-muted-foreground text-sm">{stat.label}</div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )
           )}
         </div>
       </div>
@@ -152,7 +158,7 @@ export default function JobAlerts() {
           {[
             { id: 'alerts', label: 'My Alerts', icon: Bell },
             { id: 'search', label: 'Search Jobs', icon: Search },
-          ].map(tab => (
+          ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -172,9 +178,7 @@ export default function JobAlerts() {
       {/* Content */}
       <div className="relative max-w-6xl mx-auto px-4 pb-8">
         <div className="bg-card border border-border border-t-0 rounded-b-xl rounded-tr-xl p-6">
-          {activeTab === 'alerts' && (
-            <JobAlertsList />
-          )}
+          {activeTab === 'alerts' && <JobAlertsList />}
 
           {activeTab === 'search' && (
             <div className="space-y-6">
@@ -232,7 +236,7 @@ export default function JobAlerts() {
                   <motion.div
                     className="space-y-4"
                     variants={{
-                      animate: { transition: { staggerChildren: 0.07 } }
+                      animate: { transition: { staggerChildren: 0.07 } },
                     }}
                     initial="initial"
                     animate="animate"
@@ -252,8 +256,8 @@ export default function JobAlerts() {
                   </div>
                   <h3 className="text-lg font-medium text-foreground">Search for Jobs</h3>
                   <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-                    Enter a job title, skill, or company name to find matching opportunities.
-                    You can then create an alert to get notified about new matches.
+                    Enter a job title, skill, or company name to find matching opportunities. You
+                    can then create an alert to get notified about new matches.
                   </p>
                 </div>
               )}
@@ -290,7 +294,7 @@ function JobCard({ job, index }) {
     <motion.div
       variants={{
         initial: { opacity: 0, y: 12 },
-        animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } }
+        animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } },
       }}
       className="bg-muted/50 rounded-xl border border-border p-5 hover:border-primary/30 transition-all"
     >
@@ -342,7 +346,9 @@ function JobCard({ job, index }) {
             </span>
             {job.salary?.min != null && (
               <span className="text-green-400 font-medium">
-                ${job.salary.min.toLocaleString()}{job.salary.max != null ? ` - $${job.salary.max.toLocaleString()}` : '+'} / {job.salary.period || 'year'}
+                ${job.salary.min.toLocaleString()}
+                {job.salary.max != null ? ` - $${job.salary.max.toLocaleString()}` : '+'} /{' '}
+                {job.salary.period || 'year'}
               </span>
             )}
           </div>

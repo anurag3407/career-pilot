@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import { usePortfolio } from '../../../../context/PortfolioContext';
 
 /* ─── STYLES ────────────────────────────────────────────────────────────── */
@@ -311,10 +318,13 @@ function useReveal() {
   useEffect(() => {
     const els = document.querySelectorAll('.erm-reveal');
     const obs = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add('visible');
+        }),
       { threshold: 0.1 }
     );
-    els.forEach(el => obs.observe(el));
+    els.forEach((el) => obs.observe(el));
     return () => obs.disconnect();
   }, []);
 }
@@ -323,50 +333,72 @@ function useReveal() {
 const PixelRunner = forwardRef(({ onGameStateChange }, ref) => {
   const { portfolioData } = usePortfolio();
   const skills = portfolioData?.skills || [];
-  const skillNames = skills.map(s => s.name.length > 8 ? s.name.slice(0, 7) + '.' : s.name);
-  
+  const skillNames = skills.map((s) => (s.name.length > 8 ? s.name.slice(0, 7) + '.' : s.name));
+
   const canvasRef = useRef(null);
   const skillsRef = useRef(skillNames);
-  
-  useEffect(() => { skillsRef.current = skillNames; }, [skillNames]);
+
+  useEffect(() => {
+    skillsRef.current = skillNames;
+  }, [skillNames]);
 
   const stateRef = useRef({
-    running: false, score: 0, hi: 0, speed: 6, // INCREASED INITIAL BASE SPEED
-    playerY: 0, velY: 0, jumping: false, dead: false,
-    obstacles: [], particles: [],
-    frame: 0, groundX: 0,
+    running: false,
+    score: 0,
+    hi: 0,
+    speed: 6, // INCREASED INITIAL BASE SPEED
+    playerY: 0,
+    velY: 0,
+    jumping: false,
+    dead: false,
+    obstacles: [],
+    particles: [],
+    frame: 0,
+    groundX: 0,
   });
   const rafRef = useRef(null);
   const [hudScore, setHudScore] = useState(0);
   const [hudHi, setHudHi] = useState(0);
 
-  const PLAYER_W = 33, PLAYER_H = 39;
+  const PLAYER_W = 33,
+    PLAYER_H = 39;
   const PLAYER_X = 120;
 
   const jump = useCallback(() => {
     const s = stateRef.current;
     if (!s.running || s.dead) return;
-    if (!s.jumping) { s.velY = -12; s.jumping = true; } 
+    if (!s.jumping) {
+      s.velY = -12;
+      s.jumping = true;
+    }
   }, []);
 
   function startGame() {
     const s = stateRef.current;
     const canvas = canvasRef.current;
     if (canvas) {
-        const H = canvas.height;
-        const GROUND = H - Math.min(150, H * 0.15);
-        s.playerY = GROUND - PLAYER_H;
+      const H = canvas.height;
+      const GROUND = H - Math.min(150, H * 0.15);
+      s.playerY = GROUND - PLAYER_H;
     }
-    s.running = true; s.score = 0; s.speed = 6.0; // INCREASED GAME START SPEED
-    s.velY = 0; s.jumping = false; s.dead = false;
-    s.obstacles = []; s.particles = []; s.frame = 0; s.groundX = 0;
-    
+    s.running = true;
+    s.score = 0;
+    s.speed = 6.0; // INCREASED GAME START SPEED
+    s.velY = 0;
+    s.jumping = false;
+    s.dead = false;
+    s.obstacles = [];
+    s.particles = [];
+    s.frame = 0;
+    s.groundX = 0;
+
     if (onGameStateChange) onGameStateChange('running');
     if (!rafRef.current) loop();
   }
 
   useImperativeHandle(ref, () => ({
-    startGame, jump
+    startGame,
+    jump,
   }));
 
   function loop() {
@@ -374,7 +406,8 @@ const PixelRunner = forwardRef(({ onGameStateChange }, ref) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
+    const W = canvas.width,
+      H = canvas.height;
     const s = stateRef.current;
 
     const GROUND = H - Math.min(150, H * 0.15);
@@ -390,7 +423,7 @@ const PixelRunner = forwardRef(({ onGameStateChange }, ref) => {
     if (!s.dead) {
       s.score += 0.08;
       // INCREASED SPEED SCALING OVER TIME
-      s.speed = 6.0 + s.score * 0.02; 
+      s.speed = 6.0 + s.score * 0.02;
     }
 
     s.groundX = (s.groundX - s.speed) % 80;
@@ -401,7 +434,10 @@ const PixelRunner = forwardRef(({ onGameStateChange }, ref) => {
       const nameIdx = Math.floor(Math.random() * arr.length);
       const obsH = 30 + Math.random() * 35;
       s.obstacles.push({
-        x: W + 20, w: 22, h: obsH, label: arr[nameIdx],
+        x: W + 20,
+        w: 22,
+        h: obsH,
+        label: arr[nameIdx],
         color: `hsl(${Math.random() * 60 + 340},90%,60%)`,
       });
     }
@@ -419,13 +455,17 @@ const PixelRunner = forwardRef(({ onGameStateChange }, ref) => {
     ctx.strokeStyle = '#00f5ff';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(0, GROUND); ctx.lineTo(W, GROUND);
+    ctx.moveTo(0, GROUND);
+    ctx.lineTo(W, GROUND);
     ctx.stroke();
 
     ctx.strokeStyle = 'rgba(0,245,255,0.15)';
     ctx.lineWidth = 1;
     for (let x = s.groundX; x < W; x += 80) {
-      ctx.beginPath(); ctx.moveTo(x, GROUND); ctx.lineTo(x - 50, H); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, GROUND);
+      ctx.lineTo(x - 50, H);
+      ctx.stroke();
     }
 
     drawPlayer(ctx, PLAYER_X, s.playerY, s.frame, s.dead);
@@ -449,8 +489,10 @@ const PixelRunner = forwardRef(({ onGameStateChange }, ref) => {
       ctx.fillText(obs.label, obs.x + obs.w / 2, obsY - 8);
 
       if (!s.dead) {
-        const px = PLAYER_X + 6, py = s.playerY + 6;
-        const pw = PLAYER_W - 12, ph = PLAYER_H - 12;
+        const px = PLAYER_X + 6,
+          py = s.playerY + 6;
+        const pw = PLAYER_W - 12,
+          ph = PLAYER_H - 12;
         if (px < obs.x + obs.w && px + pw > obs.x && py < obsY + obs.h && py + ph > obsY) {
           collisionOccurred = true;
         }
@@ -460,23 +502,29 @@ const PixelRunner = forwardRef(({ onGameStateChange }, ref) => {
     }
 
     if (collisionOccurred && !s.dead) {
-        s.dead = true;
-        s.running = false;
-        if (s.score > s.hi) s.hi = s.score;
-        for (let p = 0; p < 20; p++) {
-          s.particles.push({
-            x: PLAYER_X + PLAYER_W / 2, y: s.playerY + PLAYER_H / 2,
-            vx: (Math.random() - 0.5) * 8, vy: -Math.random() * 6 - 2,
-            life: 40, color: `hsl(${Math.random() * 60},100%,60%)`,
-          });
-        }
-        setHudHi(Math.floor(s.hi));
-        if (onGameStateChange) onGameStateChange('dead');
+      s.dead = true;
+      s.running = false;
+      if (s.score > s.hi) s.hi = s.score;
+      for (let p = 0; p < 20; p++) {
+        s.particles.push({
+          x: PLAYER_X + PLAYER_W / 2,
+          y: s.playerY + PLAYER_H / 2,
+          vx: (Math.random() - 0.5) * 8,
+          vy: -Math.random() * 6 - 2,
+          life: 40,
+          color: `hsl(${Math.random() * 60},100%,60%)`,
+        });
+      }
+      setHudHi(Math.floor(s.hi));
+      if (onGameStateChange) onGameStateChange('dead');
     }
 
     for (let i = s.particles.length - 1; i >= 0; i--) {
       const p = s.particles[i];
-      p.x += p.vx; p.y += p.vy; p.vy += 0.4; p.life--;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.4;
+      p.life--;
       ctx.globalAlpha = p.life / 40;
       ctx.fillStyle = p.color;
       ctx.fillRect(p.x, p.y, 6, 6);
@@ -486,18 +534,21 @@ const PixelRunner = forwardRef(({ onGameStateChange }, ref) => {
 
     if (!s.dead) setHudScore(Math.floor(s.score));
 
-    ctx.textAlign = 'left'; 
+    ctx.textAlign = 'left';
   }
 
   function drawStatic(ctx, W, H, GROUND) {
     ctx.strokeStyle = '#00f5ff33';
     ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, GROUND); ctx.lineTo(W, GROUND); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, GROUND);
+    ctx.lineTo(W, GROUND);
+    ctx.stroke();
     drawPlayer(ctx, PLAYER_X, GROUND - PLAYER_H, 0, false);
   }
 
   function drawPlayer(ctx, x, y, frame, dead) {
-    const run = Math.floor(frame / 6) % 2; 
+    const run = Math.floor(frame / 6) % 2;
     ctx.fillStyle = dead ? '#ff2d78' : '#00f5ff';
     ctx.fillRect(x + 7, y, 18, 15);
     ctx.fillStyle = '#0a0e1a';
@@ -523,29 +574,29 @@ const PixelRunner = forwardRef(({ onGameStateChange }, ref) => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const setSize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     setSize();
     window.addEventListener('resize', setSize);
-    
+
     rafRef.current = requestAnimationFrame(loop);
-    
-    const onKey = (e) => { 
-        if (['Space','ArrowUp'].includes(e.code)) { 
-            e.preventDefault(); 
-            jump(); 
-        } 
+
+    const onKey = (e) => {
+      if (['Space', 'ArrowUp'].includes(e.code)) {
+        e.preventDefault();
+        jump();
+      }
     };
     window.addEventListener('keydown', onKey);
-    
-    return () => { 
-        cancelAnimationFrame(rafRef.current); 
-        rafRef.current = null; 
-        window.removeEventListener('resize', setSize); 
-        window.removeEventListener('keydown', onKey); 
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      window.removeEventListener('resize', setSize);
+      window.removeEventListener('keydown', onKey);
     };
   }, [jump]);
 
@@ -613,19 +664,24 @@ function About() {
 function Skills() {
   const { portfolioData } = usePortfolio();
   const skills = portfolioData?.skills || [];
-  
-  const categories = ['All', ...Array.from(new Set(skills.map(s => s.category)))];
+
+  const categories = ['All', ...Array.from(new Set(skills.map((s) => s.category)))];
   const [active, setActive] = useState('All');
   const [animate, setAnimate] = useState(false);
 
-  const filtered = active === 'All' ? skills : skills.filter(s => s.category === active);
+  const filtered = active === 'All' ? skills : skills.filter((s) => s.category === active);
 
   const handleCat = (cat) => {
     setAnimate(false);
-    setTimeout(() => { setActive(cat); setAnimate(true); }, 10);
+    setTimeout(() => {
+      setActive(cat);
+      setAnimate(true);
+    }, 10);
   };
-  
-  useEffect(() => { setAnimate(true); }, []);
+
+  useEffect(() => {
+    setAnimate(true);
+  }, []);
 
   if (skills.length === 0) return null;
 
@@ -633,8 +689,13 @@ function Skills() {
     <section className="erm-section erm-reveal" id="skills">
       <SectionHeader label="// CHAR.STATS" title="Skills" />
       <div className="erm-skills-cats">
-        {categories.map(cat => (
-          <button type="button" key={cat} className={`erm-cat-btn${active === cat ? ' active' : ''}`} onClick={() => handleCat(cat)}>
+        {categories.map((cat) => (
+          <button
+            type="button"
+            key={cat}
+            className={`erm-cat-btn${active === cat ? ' active' : ''}`}
+            onClick={() => handleCat(cat)}
+          >
             {cat}
           </button>
         ))}
@@ -647,7 +708,10 @@ function Skills() {
               <span className="erm-skill-pct">{skill.level}%</span>
             </div>
             <div className="erm-skill-bar">
-              <div className="erm-skill-fill" style={{ width: animate ? `${skill.level}%` : '0%' }} />
+              <div
+                className="erm-skill-fill"
+                style={{ width: animate ? `${skill.level}%` : '0%' }}
+              />
             </div>
           </div>
         ))}
@@ -677,11 +741,33 @@ function Projects() {
               <div className="erm-project-title">{p.title}</div>
               <p className="erm-project-desc">{p.description}</p>
               <div className="erm-project-stack">
-                {(p.techStack || []).map(t => <span className="erm-tech-tag" key={t}>{t}</span>)}
+                {(p.techStack || []).map((t) => (
+                  <span className="erm-tech-tag" key={t}>
+                    {t}
+                  </span>
+                ))}
               </div>
               <div className="erm-project-links">
-                {p.liveUrl && <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className="erm-link-btn">PLAY</a>}
-                {p.githubUrl && <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" className="erm-link-btn secondary">SRC</a>}
+                {p.liveUrl && (
+                  <a
+                    href={p.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="erm-link-btn"
+                  >
+                    PLAY
+                  </a>
+                )}
+                {p.githubUrl && (
+                  <a
+                    href={p.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="erm-link-btn secondary"
+                  >
+                    SRC
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -755,14 +841,43 @@ function Contact() {
       <SectionHeader label="// CONTINUE?" title="Contact Me" />
       <div className="erm-contact-inner">
         <p className="erm-contact-text">
-          Got a project in mind, or just want to say hi? My inbox is always open.
-          Let's build something great together.
+          Got a project in mind, or just want to say hi? My inbox is always open. Let's build
+          something great together.
         </p>
-        <a href={`mailto:${socials.email || ''}`} className="erm-cta-email">&gt; SEND MESSAGE_</a>
+        <a href={`mailto:${socials.email || ''}`} className="erm-cta-email">
+          &gt; SEND MESSAGE_
+        </a>
         <div className="erm-socials">
-          {socials.github   && <a href={socials.github}   target="_blank" rel="noopener noreferrer" className="erm-social-link">⬡ GitHub</a>}
-          {socials.linkedin && <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="erm-social-link">⬡ LinkedIn</a>}
-          {socials.twitter  && <a href={socials.twitter}  target="_blank" rel="noopener noreferrer" className="erm-social-link">⬡ Twitter</a>}
+          {socials.github && (
+            <a
+              href={socials.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="erm-social-link"
+            >
+              ⬡ GitHub
+            </a>
+          )}
+          {socials.linkedin && (
+            <a
+              href={socials.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="erm-social-link"
+            >
+              ⬡ LinkedIn
+            </a>
+          )}
+          {socials.twitter && (
+            <a
+              href={socials.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="erm-social-link"
+            >
+              ⬡ Twitter
+            </a>
+          )}
         </div>
       </div>
     </section>
@@ -780,13 +895,13 @@ export default function EndlessRunnerMinigame() {
   const [gameState, setGameState] = useState('idle'); // idle | running | dead
 
   const handleStartGame = () => {
-      gameRef.current?.startGame();
+    gameRef.current?.startGame();
   };
 
   return (
     <div className="scanlines">
       <style>{STYLES}</style>
-      
+
       {/* ── BACKGROUND GAME ── */}
       <div className="erm-bg-game">
         <PixelRunner ref={gameRef} onGameStateChange={setGameState} />
@@ -794,50 +909,57 @@ export default function EndlessRunnerMinigame() {
 
       {/* ── FOREGROUND CONTENT ── */}
       <div className="erm-content-wrapper">
-          <section className="erm-hero">
-            <div className="erm-hero-bg" />
-            
-            <div className="erm-hero-content">
-                {/* ── AVATAR INTEGRATION ── */}
-                {personal.avatar && (
-                  <div className="erm-hero-avatar-wrap">
-                    <img src={personal.avatar} alt={personal.name} className="erm-hero-avatar" />
-                  </div>
-                )}
+        <section className="erm-hero">
+          <div className="erm-hero-bg" />
 
-                <div className="erm-hero-title">{personal.name || 'PLAYER 1'}</div>
-                <div className="erm-hero-sub">{personal.title || 'Developer'}</div>
-                
-                {gameState === 'idle' && (
-                    <button type="button" className="erm-start-btn" onClick={handleStartGame}>
-                        START BACKGROUND GAME
-                    </button>
-                )}
+          <div className="erm-hero-content">
+            {/* ── AVATAR INTEGRATION ── */}
+            {personal.avatar && (
+              <div className="erm-hero-avatar-wrap">
+                <img src={personal.avatar} alt={personal.name} className="erm-hero-avatar" />
+              </div>
+            )}
 
-                {gameState === 'dead' && (
-                    <button type="button" className="erm-start-btn" style={{ borderColor: '#ff2d78', color: '#ff2d78' }} onClick={handleStartGame}>
-                        GAME OVER // RETRY
-                    </button>
-                )}
+            <div className="erm-hero-title">{personal.name || 'PLAYER 1'}</div>
+            <div className="erm-hero-sub">{personal.title || 'Developer'}</div>
 
-                {gameState === 'running' && (
-                    <div className="erm-game-controls">
-                        <span className="erm-key">SPACE</span> or <span className="erm-key">↑</span> to JUMP over obstacles!
-                    </div>
-                )}
-            </div>
-          </section>
+            {gameState === 'idle' && (
+              <button type="button" className="erm-start-btn" onClick={handleStartGame}>
+                START BACKGROUND GAME
+              </button>
+            )}
 
-          <About />
-          <Skills />
-          <Projects />
-          <Experience />
-          <Testimonials />
-          <Contact />
+            {gameState === 'dead' && (
+              <button
+                type="button"
+                className="erm-start-btn"
+                style={{ borderColor: '#ff2d78', color: '#ff2d78' }}
+                onClick={handleStartGame}
+              >
+                GAME OVER // RETRY
+              </button>
+            )}
 
-          <footer className="erm-footer">
-            © {new Date().getFullYear()} <span>{personal.name || 'DEV'}</span> · CRAFTED WITH &lt;3 · {personal.location || 'THE WEB'}
-          </footer>
+            {gameState === 'running' && (
+              <div className="erm-game-controls">
+                <span className="erm-key">SPACE</span> or <span className="erm-key">↑</span> to JUMP
+                over obstacles!
+              </div>
+            )}
+          </div>
+        </section>
+
+        <About />
+        <Skills />
+        <Projects />
+        <Experience />
+        <Testimonials />
+        <Contact />
+
+        <footer className="erm-footer">
+          © {new Date().getFullYear()} <span>{personal.name || 'DEV'}</span> · CRAFTED WITH &lt;3 ·{' '}
+          {personal.location || 'THE WEB'}
+        </footer>
       </div>
     </div>
   );

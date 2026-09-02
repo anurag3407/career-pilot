@@ -19,12 +19,14 @@ export default function Contact({ personal, socials }) {
             <p className="text-green-500 mb-6">
               visitor@portfolio:~$ <span className="text-white">./init_connection.sh</span>
             </p>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div>
                 <p className="text-gray-300 mb-6">
-                  Establishing secure connection...<br/>
-                  Connection established.<br/>
+                  Establishing secure connection...
+                  <br />
+                  Connection established.
+                  <br />
                   Awaiting input to send message to {personal?.name || 'Owner'}...
                 </p>
 
@@ -32,22 +34,33 @@ export default function Contact({ personal, socials }) {
                   <div className="flex flex-col gap-2">
                     <span className="text-green-500"># Direct communication links:</span>
                     {personal?.email && (
-                      <a href={`mailto:${personal.email}`} className="flex items-center gap-2 text-gray-300 hover:text-green-400 transition-colors">
+                      <a
+                        href={`mailto:${personal.email}`}
+                        className="flex items-center gap-2 text-gray-300 hover:text-green-400 transition-colors"
+                      >
                         <Mail size={16} /> <span>{personal.email}</span>
                       </a>
                     )}
                   </div>
-                  
+
                   {socials && socials.length > 0 && (
                     <div className="flex flex-col gap-2 mt-4">
                       <span className="text-green-500"># Social network nodes:</span>
                       <div className="flex gap-4">
                         {socials.map((social, i) => (
-                          <a key={i} href={social.url} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-green-400 transition-colors">
+                          <a
+                            key={i}
+                            href={social.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-gray-300 hover:text-green-400 transition-colors"
+                          >
                             {social.platform.toLowerCase() === 'github' && <Github size={20} />}
                             {social.platform.toLowerCase() === 'linkedin' && <Linkedin size={20} />}
                             {social.platform.toLowerCase() === 'twitter' && <Twitter size={20} />}
-                            {!['github', 'linkedin', 'twitter'].includes(social.platform.toLowerCase()) && <span>{social.platform}</span>}
+                            {!['github', 'linkedin', 'twitter'].includes(
+                              social.platform.toLowerCase()
+                            ) && <span>{social.platform}</span>}
                           </a>
                         ))}
                       </div>
@@ -57,10 +70,7 @@ export default function Contact({ personal, socials }) {
               </div>
 
               <div>
-                <form
-                  onSubmit={(e) => e.preventDefault()}
-                  className="space-y-4"
-                >
+                <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                   <div>
                     <label htmlFor="name" className="mb-2 block text-green-400">
                       $ enter_name

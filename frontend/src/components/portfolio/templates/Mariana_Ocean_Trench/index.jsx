@@ -26,7 +26,7 @@ export default function MarianaOceanTrenchTemplate({ portfolioData: propData }) 
         const scrolled = window.scrollY / docHeight;
         const boundedScrolled = Math.min(Math.max(scrolled, 0), 1);
         setScrollPercent(boundedScrolled);
-        
+
         // Depth mapping: 0 to 10,994m
         const currentDepth = Math.round(boundedScrolled * 10994);
         setDepth(currentDepth);
@@ -78,12 +78,7 @@ export default function MarianaOceanTrenchTemplate({ portfolioData: propData }) 
   return (
     <div className="min-h-screen text-slate-100 bg-[#000102] overflow-x-hidden relative font-sans">
       {/* Immersive HUD Overlay */}
-      <HUD 
-        depth={depth} 
-        pressure={pressure} 
-        zone={zone} 
-        scrollPercent={scrollPercent} 
-      />
+      <HUD depth={depth} pressure={pressure} zone={zone} scrollPercent={scrollPercent} />
 
       {/* Surface Zone (Hero) */}
       <Hero data={data} />

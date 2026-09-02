@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function WaveDistortion() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Wave Distortion Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Wavy distortion effect on images and section borders. Animated SVG wave paths as dividers. Ocean-wave-inspired fluid motion throughout.
+            Wavy distortion effect on images and section borders. Animated SVG wave paths as
+            dividers. Ocean-wave-inspired fluid motion throughout.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

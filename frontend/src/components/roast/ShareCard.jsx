@@ -1,13 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import {
-  Copy,
-  Check,
-  Share2,
-  Twitter,
-  Linkedin,
-  Flame,
-} from 'lucide-react';
+import { Copy, Check, Share2, Twitter, Linkedin, Flame } from 'lucide-react';
 import { Button } from '../ui/button';
 import StarRating from './StarRating';
 
@@ -70,14 +63,10 @@ export default function ShareCard({ result, jobRole }) {
                 Resume Roast {jobRole ? `· ${jobRole}` : ''}
               </span>
             </div>
-            <h2 className="text-xl md:text-2xl font-bold leading-tight">
-              {result.tagline}
-            </h2>
+            <h2 className="text-xl md:text-2xl font-bold leading-tight">{result.tagline}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               ATS score:{' '}
-              <span className="font-semibold text-foreground">
-                {result.overallScore}/100
-              </span>
+              <span className="font-semibold text-foreground">{result.overallScore}/100</span>
             </p>
           </div>
         </div>
@@ -98,18 +87,15 @@ export default function ShareCard({ result, jobRole }) {
           <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2">
             The Roast
           </h3>
-          {result.roast
-                ? result.roast.split(/\n{2,}/).map((p, i) => (
-                    <p
-                      key={i}
-                      className="text-base leading-relaxed text-foreground mb-3 last:mb-0"
-                    >
-                      {p}
-                    </p>
-                  ))
-                : (
-                  <p className="text-muted-foreground italic">No roast text returned.</p>
-                )}
+          {result.roast ? (
+            result.roast.split(/\n{2,}/).map((p, i) => (
+              <p key={i} className="text-base leading-relaxed text-foreground mb-3 last:mb-0">
+                {p}
+              </p>
+            ))
+          ) : (
+            <p className="text-muted-foreground italic">No roast text returned.</p>
+          )}
         </div>
 
         {/* Silver linings */}
@@ -148,12 +134,7 @@ export default function ShareCard({ result, jobRole }) {
         {/* Share row */}
         {shareUrl && (
           <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
-            <Button
-              onClick={copyLink}
-              variant="outline"
-              size="sm"
-              className="gap-2"
-            >
+            <Button onClick={copyLink} variant="outline" size="sm" className="gap-2">
               {copied ? (
                 <>
                   <Check className="h-4 w-4 text-emerald-500" /> Copied

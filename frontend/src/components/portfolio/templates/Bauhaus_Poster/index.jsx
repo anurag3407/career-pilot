@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Hero from './Hero';
@@ -46,14 +46,25 @@ const BauhausPortfolioIntegrated = () => {
         top: `${Math.random() * 100}%`,
         // shorter durations = faster motion
         duration: Math.random() * (isMobile ? 6 : 10) + (isMobile ? 4 : 6),
-        delay: Math.random() * -20
+        delay: Math.random() * -20,
       };
     });
 
     const darkShapes = Array.from({ length: darkCount }).map((_, i) => {
       const size = Math.random() * 100 + 40;
       const points = [
-        [0, 10], [18, 0], [44, 8], [70, 2], [100, 18], [92, 52], [100, 78], [72, 100], [38, 92], [12, 100], [0, 74], [8, 42]
+        [0, 10],
+        [18, 0],
+        [44, 8],
+        [70, 2],
+        [100, 18],
+        [92, 52],
+        [100, 78],
+        [72, 100],
+        [38, 92],
+        [12, 100],
+        [0, 74],
+        [8, 42],
       ]
         .map(([x, y]) => `${x}% ${y}%`)
         .join(', ');
@@ -68,7 +79,7 @@ const BauhausPortfolioIntegrated = () => {
         // shorten dark shape cycles for snappier motion
         duration: Math.random() * (isMobile ? 8 : 12) + (isMobile ? 6 : 8),
         delay: Math.random() * -28,
-        clipPath: `polygon(${points})`
+        clipPath: `polygon(${points})`,
       };
     });
 
@@ -79,7 +90,6 @@ const BauhausPortfolioIntegrated = () => {
 
   return (
     <div className="relative min-h-screen bg-[#F4F0EC] text-black overflow-x-hidden font-sans selection:bg-black selection:text-white">
-      
       {/* ================= DYNAMIC BACKGROUND ================= */}
       {/* Force hardware acceleration on mobile using transform-gpu */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 transform-gpu">
@@ -90,17 +100,42 @@ const BauhausPortfolioIntegrated = () => {
             style={{
               width: shape.isTriangle ? 0 : shape.size,
               height: shape.isTriangle ? 0 : shape.size,
-              backgroundColor: shape.kind === 'dark' ? shape.color : (shape.isTriangle ? 'transparent' : shape.color),
-              borderRadius: shape.kind === 'dark' ? '28% 72% 63% 37% / 46% 39% 61% 54%' : (shape.isCircle && !shape.isTriangle ? '50%' : '0%'),
-              borderLeft: shape.kind === 'dark' ? 'none' : (shape.isTriangle ? `${shape.size / 2}px solid transparent` : 'none'),
-              borderRight: shape.kind === 'dark' ? 'none' : (shape.isTriangle ? `${shape.size / 2}px solid transparent` : 'none'),
-              borderBottom: shape.kind === 'dark' ? 'none' : (shape.isTriangle ? `${shape.size}px solid ${shape.color}` : 'none'),
+              backgroundColor:
+                shape.kind === 'dark'
+                  ? shape.color
+                  : shape.isTriangle
+                    ? 'transparent'
+                    : shape.color,
+              borderRadius:
+                shape.kind === 'dark'
+                  ? '28% 72% 63% 37% / 46% 39% 61% 54%'
+                  : shape.isCircle && !shape.isTriangle
+                    ? '50%'
+                    : '0%',
+              borderLeft:
+                shape.kind === 'dark'
+                  ? 'none'
+                  : shape.isTriangle
+                    ? `${shape.size / 2}px solid transparent`
+                    : 'none',
+              borderRight:
+                shape.kind === 'dark'
+                  ? 'none'
+                  : shape.isTriangle
+                    ? `${shape.size / 2}px solid transparent`
+                    : 'none',
+              borderBottom:
+                shape.kind === 'dark'
+                  ? 'none'
+                  : shape.isTriangle
+                    ? `${shape.size}px solid ${shape.color}`
+                    : 'none',
               left: shape.left,
               top: shape.top,
               clipPath: shape.kind === 'dark' ? shape.clipPath : undefined,
               opacity: shape.kind === 'dark' ? 0.15 : 0.2, // Slightly bumped opacity
               mixBlendMode: 'multiply',
-              transformOrigin: 'center'
+              transformOrigin: 'center',
             }}
             animate={{
               y: shape.kind === 'dark' ? [0, -80, 20, 0] : [0, -100, 0],
@@ -112,7 +147,7 @@ const BauhausPortfolioIntegrated = () => {
               duration: shape.duration,
               delay: shape.delay,
               repeat: Infinity,
-              ease: "linear"
+              ease: 'linear',
             }}
           />
         ))}
@@ -120,7 +155,6 @@ const BauhausPortfolioIntegrated = () => {
 
       {/* ================= MAIN CONTENT WRAPPER ================= */}
       <div className="relative z-10 w-full max-w-7xl mx-auto bg-[#F4F0EC]/90 md:bg-[#F4F0EC]/80 backdrop-blur-sm border-x-0 md:border-x-4 border-black flex flex-col md:shadow-[24px_0px_0px_0px_rgba(0,0,0,1)]">
-
         <Hero colors={colors} />
         <About />
         <Skills colors={colors} />
@@ -128,7 +162,6 @@ const BauhausPortfolioIntegrated = () => {
         <Experience />
         <Testimonials />
         <FooterContact />
-
       </div>
     </div>
   );

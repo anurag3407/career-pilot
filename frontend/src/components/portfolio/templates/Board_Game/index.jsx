@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function BoardGame() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Board Game Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Board game layout with winding game path with colored squares. Each square is a portfolio item. Dice roll animation to navigate. Cheerful aesthetic.
+            Board game layout with winding game path with colored squares. Each square is a
+            portfolio item. Dice roll animation to navigate. Cheerful aesthetic.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

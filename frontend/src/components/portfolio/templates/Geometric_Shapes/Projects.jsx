@@ -6,7 +6,10 @@ export default function Projects({ projects }) {
   if (!projects || projects.length === 0) return null;
 
   return (
-    <section id="projects" className="relative w-full overflow-hidden bg-[#050816] py-24 px-6 sm:px-8 lg:px-12 text-white">
+    <section
+      id="projects"
+      className="relative w-full overflow-hidden bg-[#050816] py-24 px-6 sm:px-8 lg:px-12 text-white"
+    >
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:84px_84px] opacity-30 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_left,rgba(56,189,248,0.15),transparent_50%)] pointer-events-none" />
 
@@ -23,7 +26,10 @@ export default function Projects({ projects }) {
             Portfolio
           </div>
           <h2 className="text-4xl md:text-5xl font-black tracking-tight">
-            Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-cyan-400 to-teal-300">Projects</span>
+            Featured{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-cyan-400 to-teal-300">
+              Projects
+            </span>
           </h2>
         </motion.div>
 
@@ -40,9 +46,9 @@ export default function Projects({ projects }) {
               <div className="relative h-64 overflow-hidden border-b border-white/10">
                 <div className="absolute inset-0 bg-sky-500/20 group-hover:bg-transparent transition-colors z-10" />
                 {project.image ? (
-                  <img 
-                    src={project.image} 
-                    alt={project.title} 
+                  <img
+                    src={project.image}
+                    alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 ) : (
@@ -51,26 +57,29 @@ export default function Projects({ projects }) {
                   </div>
                 )}
               </div>
-              
+
               <div className="p-8 flex-grow flex flex-col">
                 <h3 className="text-2xl font-bold text-white mb-3">{project.title}</h3>
                 <p className="text-slate-300 text-sm leading-relaxed mb-6 flex-grow">
                   {project.description}
                 </p>
-                
+
                 {project.technologies && project.technologies.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-8">
                     {project.technologies.map((tech, idx) => (
-                      <span key={idx} className="text-[10px] uppercase tracking-wider text-sky-300 border border-sky-400/20 rounded-full px-2 py-1 bg-sky-400/5">
+                      <span
+                        key={idx}
+                        className="text-[10px] uppercase tracking-wider text-sky-300 border border-sky-400/20 rounded-full px-2 py-1 bg-sky-400/5"
+                      >
                         {tech}
                       </span>
                     ))}
                   </div>
                 )}
-                
+
                 <div className="flex items-center gap-4 mt-auto">
                   {project.link && (
-                    <a 
+                    <a
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -80,7 +89,7 @@ export default function Projects({ projects }) {
                     </a>
                   )}
                   {project.github && (
-                    <a 
+                    <a
                       href={project.github}
                       target="_blank"
                       rel="noopener noreferrer"

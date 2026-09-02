@@ -59,7 +59,11 @@ export default function Testimonials({ testimonials }) {
               <div
                 aria-hidden="true"
                 className="absolute -top-4 right-8 leading-none text-[#1a1a1a]/[0.04] group-hover:text-[#C41E3A]/[0.08] transition-colors duration-500 select-none pointer-events-none"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 900, fontSize: 'clamp(5rem, 8vw, 8rem)' }}
+                style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(5rem, 8vw, 8rem)',
+                }}
               >
                 "
               </div>

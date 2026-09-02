@@ -5,9 +5,7 @@ import { MapPin, Sparkles } from 'lucide-react';
 export default function About({ data }) {
   const personal = data?.personal || {};
 
-  const hasAvatar =
-    typeof personal.avatar === 'string' &&
-    personal.avatar.trim().length > 0;
+  const hasAvatar = typeof personal.avatar === 'string' && personal.avatar.trim().length > 0;
 
   return (
     <section className="relative px-6 py-20 md:py-24">
@@ -90,9 +88,7 @@ export default function About({ data }) {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-3xl border border-amber-200/10 bg-slate-950/80 p-5">
-                  <p className="text-xs uppercase tracking-[0.35em] text-amber-200/70">
-                    Location
-                  </p>
+                  <p className="text-xs uppercase tracking-[0.35em] text-amber-200/70">Location</p>
 
                   <p className="mt-3 flex items-center gap-2 text-lg font-semibold text-amber-100">
                     <MapPin size={16} />
@@ -105,9 +101,7 @@ export default function About({ data }) {
                     Portfolio Style
                   </p>
 
-                  <p className="mt-3 text-lg font-semibold text-amber-100">
-                    Art Deco Gold
-                  </p>
+                  <p className="mt-3 text-lg font-semibold text-amber-100">Art Deco Gold</p>
                 </div>
               </div>
             </div>

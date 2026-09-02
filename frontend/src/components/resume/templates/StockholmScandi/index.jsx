@@ -1,14 +1,14 @@
-import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
-import ExperienceRow from '../../shared/ExperienceRow'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import Section from '../../shared/Section';
+import ExperienceRow from '../../shared/ExperienceRow';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * StockholmScandi — Scandinavian spacing and monochrome palette. Calm,
  * spacious, and timeless.
  */
 export default function StockholmScandi() {
-  const { personal, experience, education, projects, skills, certifications } = useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   const nodes = {
     summary: personal.summary ? (
@@ -17,33 +17,35 @@ export default function StockholmScandi() {
       </Section>
     ) : null,
 
-    experience: experience.length > 0 ? (
-      <Section title="Experience" accent="#1c1917" uppercase={false}>
-        {experience.map((e, i) => (
-          <ExperienceRow
-            key={i}
-            exp={e}
-            roleColor="#1c1917"
-            companyColor="#57534e"
-            periodColor="#78716c"
-            bulletColor="#1c1917"
-            fontSize="10pt"
-          />
-        ))}
-      </Section>
-    ) : null,
+    experience:
+      experience.length > 0 ? (
+        <Section title="Experience" accent="#1c1917" uppercase={false}>
+          {experience.map((e, i) => (
+            <ExperienceRow
+              key={i}
+              exp={e}
+              roleColor="#1c1917"
+              companyColor="#57534e"
+              periodColor="#78716c"
+              bulletColor="#1c1917"
+              fontSize="10pt"
+            />
+          ))}
+        </Section>
+      ) : null,
 
-    projects: projects.length > 0 ? (
-      <Section title="Projects" accent="#1c1917" uppercase={false}>
-        {projects.map((p, i) => (
-          <div key={i} style={{ marginBottom: '3mm' }}>
-            <strong>{p.title}</strong>
-            {p.description && <div style={{ color: '#1c1917' }}>{p.description}</div>}
-          </div>
-        ))}
-      </Section>
-    ) : null,
-  }
+    projects:
+      projects.length > 0 ? (
+        <Section title="Projects" accent="#1c1917" uppercase={false}>
+          {projects.map((p, i) => (
+            <div key={i} style={{ marginBottom: '3mm' }}>
+              <strong>{p.title}</strong>
+              {p.description && <div style={{ color: '#1c1917' }}>{p.description}</div>}
+            </div>
+          ))}
+        </Section>
+      ) : null,
+  };
 
   return (
     <div
@@ -67,11 +69,22 @@ export default function StockholmScandi() {
           padding: '14mm 8mm',
         }}
       >
-        <h1 style={{ margin: 0, fontSize: '22pt', fontWeight: 400, color: '#1c1917', letterSpacing: '-0.5px', lineHeight: 1.1 }}>
+        <h1
+          style={{
+            margin: 0,
+            fontSize: '22pt',
+            fontWeight: 400,
+            color: '#1c1917',
+            letterSpacing: '-0.5px',
+            lineHeight: 1.1,
+          }}
+        >
           {personal.name || 'Your Name'}
         </h1>
         {personal.title && (
-          <div style={{ marginTop: '2mm', fontSize: '11pt', color: '#57534e', fontStyle: 'italic' }}>
+          <div
+            style={{ marginTop: '2mm', fontSize: '11pt', color: '#57534e', fontStyle: 'italic' }}
+          >
             {personal.title}
           </div>
         )}
@@ -105,7 +118,9 @@ export default function StockholmScandi() {
             {education.map((e, i) => (
               <div key={i} style={{ marginBottom: '2.5mm' }}>
                 <strong style={{ fontSize: '9.5pt' }}>{e.degree}</strong>
-                <div style={{ color: '#57534e', fontSize: '9pt', fontStyle: 'italic' }}>{e.institution}</div>
+                <div style={{ color: '#57534e', fontSize: '9pt', fontStyle: 'italic' }}>
+                  {e.institution}
+                </div>
                 <div style={{ color: '#78716c', fontSize: '8.5pt' }}>{e.period}</div>
               </div>
             ))}
@@ -137,7 +152,7 @@ export default function StockholmScandi() {
         />
       </main>
     </div>
-  )
+  );
 }
 
 function SideTitle({ children }) {
@@ -156,5 +171,5 @@ function SideTitle({ children }) {
     >
       {children}
     </h2>
-  )
+  );
 }

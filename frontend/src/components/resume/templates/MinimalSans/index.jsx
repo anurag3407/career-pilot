@@ -1,7 +1,7 @@
-import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
-import ExperienceRow from '../../shared/ExperienceRow'
-import OrderedSections from '../../shared/OrderedSections'
+import { useResume } from '../../../../context/ResumeContext';
+import Section from '../../shared/Section';
+import ExperienceRow from '../../shared/ExperienceRow';
+import OrderedSections from '../../shared/OrderedSections';
 
 /**
  * Minimal Sans — clean, generous-whitespace single-column resume.
@@ -10,8 +10,7 @@ import OrderedSections from '../../shared/OrderedSections'
  * Designed for startups, product roles, and modern design-forward companies.
  */
 export default function MinimalSans() {
-  const { personal, experience, education, projects, skills, certifications } =
-    useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume();
 
   const nodes = {
     summary: personal.summary ? (
@@ -20,85 +19,90 @@ export default function MinimalSans() {
       </Section>
     ) : null,
 
-    experience: experience.length > 0 ? (
-      <Section title="Experience" accent="#2563eb" uppercase={false}>
-        {experience.map((e, i) => (
-          <ExperienceRow
-            key={i}
-            exp={e}
-            roleColor="#0f172a"
-            companyColor="#2563eb"
-            periodColor="#94a3b8"
-            bulletColor="#475569"
-            fontSize="10pt"
-          />
-        ))}
-      </Section>
-    ) : null,
+    experience:
+      experience.length > 0 ? (
+        <Section title="Experience" accent="#2563eb" uppercase={false}>
+          {experience.map((e, i) => (
+            <ExperienceRow
+              key={i}
+              exp={e}
+              roleColor="#0f172a"
+              companyColor="#2563eb"
+              periodColor="#94a3b8"
+              bulletColor="#475569"
+              fontSize="10pt"
+            />
+          ))}
+        </Section>
+      ) : null,
 
-    projects: projects.length > 0 ? (
-      <Section title="Projects" accent="#2563eb" uppercase={false}>
-        {projects.map((p, i) => (
-          <article key={i} style={{ marginBottom: '5mm' }}>
-            <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 600, color: '#0f172a' }}>
-              {p.title}
-            </h3>
-            {p.description && (
-              <p style={{ margin: '1.5mm 0', color: '#475569' }}>{p.description}</p>
-            )}
-            {p.techStack.length > 0 && (
-              <div style={{ fontSize: '8.5pt', color: '#94a3b8', letterSpacing: '0.5px' }}>
-                {p.techStack.join('  ·  ')}
-              </div>
-            )}
-          </article>
-        ))}
-      </Section>
-    ) : null,
-
-    education: education.length > 0 ? (
-      <Section title="Education" accent="#2563eb" uppercase={false}>
-        {education.map((e, i) => (
-          <div key={i} style={{ marginBottom: '3mm' }}>
-            <div style={{ fontWeight: 600, color: '#0f172a' }}>{e.degree}</div>
-            <div style={{ color: '#2563eb', fontSize: '9.5pt' }}>{e.institution}</div>
-            <div style={{ color: '#94a3b8', fontSize: '8.5pt' }}>
-              {[e.period, e.location].filter(Boolean).join(' · ')}
-            </div>
-          </div>
-        ))}
-      </Section>
-    ) : null,
-
-    skills: skills.length > 0 ? (
-      <Section title="Skills" accent="#2563eb" uppercase={false}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5mm' }}>
-          {skills.map((s, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontWeight: 500 }}>{s.name}</span>
-              {s.level && (
-                <span style={{ fontSize: '8.5pt', color: '#94a3b8', fontWeight: 300 }}>
-                  {s.level}
-                </span>
+    projects:
+      projects.length > 0 ? (
+        <Section title="Projects" accent="#2563eb" uppercase={false}>
+          {projects.map((p, i) => (
+            <article key={i} style={{ marginBottom: '5mm' }}>
+              <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 600, color: '#0f172a' }}>
+                {p.title}
+              </h3>
+              {p.description && (
+                <p style={{ margin: '1.5mm 0', color: '#475569' }}>{p.description}</p>
               )}
+              {p.techStack.length > 0 && (
+                <div style={{ fontSize: '8.5pt', color: '#94a3b8', letterSpacing: '0.5px' }}>
+                  {p.techStack.join('  ·  ')}
+                </div>
+              )}
+            </article>
+          ))}
+        </Section>
+      ) : null,
+
+    education:
+      education.length > 0 ? (
+        <Section title="Education" accent="#2563eb" uppercase={false}>
+          {education.map((e, i) => (
+            <div key={i} style={{ marginBottom: '3mm' }}>
+              <div style={{ fontWeight: 600, color: '#0f172a' }}>{e.degree}</div>
+              <div style={{ color: '#2563eb', fontSize: '9.5pt' }}>{e.institution}</div>
+              <div style={{ color: '#94a3b8', fontSize: '8.5pt' }}>
+                {[e.period, e.location].filter(Boolean).join(' · ')}
+              </div>
             </div>
           ))}
-        </div>
-      </Section>
-    ) : null,
+        </Section>
+      ) : null,
 
-    certifications: certifications.length > 0 ? (
-      <Section title="Certifications" accent="#2563eb" uppercase={false}>
-        {certifications.map((c, i) => (
-          <div key={i} style={{ marginBottom: '2mm' }}>
-            <span style={{ fontWeight: 500 }}>{c.name}</span>
-            {c.issuer && <span style={{ color: '#94a3b8' }}>  ·  {c.issuer}</span>}
-            {c.year && <span style={{ color: '#94a3b8' }}>  ·  {c.year}</span>}
+    skills:
+      skills.length > 0 ? (
+        <Section title="Skills" accent="#2563eb" uppercase={false}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5mm' }}>
+            {skills.map((s, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontWeight: 500 }}>{s.name}</span>
+                {s.level && (
+                  <span style={{ fontSize: '8.5pt', color: '#94a3b8', fontWeight: 300 }}>
+                    {s.level}
+                  </span>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
-      </Section>
-    ) : null,
-  }
+        </Section>
+      ) : null,
+
+    certifications:
+      certifications.length > 0 ? (
+        <Section title="Certifications" accent="#2563eb" uppercase={false}>
+          {certifications.map((c, i) => (
+            <div key={i} style={{ marginBottom: '2mm' }}>
+              <span style={{ fontWeight: 500 }}>{c.name}</span>
+              {c.issuer && <span style={{ color: '#94a3b8' }}> · {c.issuer}</span>}
+              {c.year && <span style={{ color: '#94a3b8' }}> · {c.year}</span>}
+            </div>
+          ))}
+        </Section>
+      ) : null,
+  };
 
   return (
     <div
@@ -167,7 +171,7 @@ export default function MinimalSans() {
         customBodyStyle={{ color: '#475569' }}
       />
     </div>
-  )
+  );
 }
 
 function Divider() {
@@ -179,5 +183,5 @@ function Divider() {
         margin: '0 0 7mm',
       }}
     />
-  )
+  );
 }

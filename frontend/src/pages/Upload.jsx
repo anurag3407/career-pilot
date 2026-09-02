@@ -1,131 +1,147 @@
-import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import toast from 'react-hot-toast'
-import { motion } from 'framer-motion'
-import { uploadApi, resumeApi } from '../services/api'
-import Button from '../components/Button'
-import DropZone from '../components/DropZone'
-import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap, PlusCircle, TextSelect } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
+import { uploadApi, resumeApi } from '../services/api';
+import Button from '../components/Button';
+import DropZone from '../components/DropZone';
+import {
+  FileText,
+  Upload as UploadIcon,
+  CheckCircle,
+  Target,
+  BarChart3,
+  Zap,
+  Linkedin,
+  ArrowRight,
+  User,
+  Briefcase,
+  GraduationCap,
+  PlusCircle,
+  TextSelect,
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Upload() {
-  const navigate = useNavigate()
-  const uploadControllerRef = useRef(null)
-  const redirectTimeoutRef = useRef(null)
+  const navigate = useNavigate();
+  const uploadControllerRef = useRef(null);
+  const redirectTimeoutRef = useRef(null);
 
-  const [_file, setFile] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [uploadComplete, setUploadComplete] = useState(false)
+  const [_file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [uploadComplete, setUploadComplete] = useState(false);
 
-  const [linkedinUrl, setLinkedinUrl] = useState('')
-  const [linkedinLoading, setLinkedinLoading] = useState(false)
-  const [linkedinPreview, setLinkedinPreview] = useState(null)
-  const [linkedinProfile, setLinkedinProfile] = useState(null)
-  const [importing, setImporting] = useState(false)
+  const [linkedinUrl, setLinkedinUrl] = useState('');
+  const [linkedinLoading, setLinkedinLoading] = useState(false);
+  const [linkedinPreview, setLinkedinPreview] = useState(null);
+  const [linkedinProfile, setLinkedinProfile] = useState(null);
+  const [importing, setImporting] = useState(false);
 
   const handleFileSelect = async (selectedFile) => {
-    setFile(selectedFile)
-    setLoading(true)
-    const controller = new AbortController()
-    uploadControllerRef.current = controller
+    setFile(selectedFile);
+    setLoading(true);
+    const controller = new AbortController();
+    uploadControllerRef.current = controller;
 
     try {
       // Upload and extract text
-      const response = await uploadApi.uploadPdf(selectedFile, { signal: controller.signal })
-      const extractedText = response.data.extractedText
+      const response = await uploadApi.uploadPdf(selectedFile, { signal: controller.signal });
+      const extractedText = response.data.extractedText;
 
       // Create resume automatically
-      const resumeTitle = `Resume - ${new Date().toLocaleDateString()}`
+      const resumeTitle = `Resume - ${new Date().toLocaleDateString()}`;
       const resumeResponse = await resumeApi.create(
         {
           originalText: extractedText,
-          title: resumeTitle
+          title: resumeTitle,
         },
         { signal: controller.signal }
-      )
+      );
 
-      setUploadComplete(true)
-      toast.success('Resume uploaded successfully!')
+      setUploadComplete(true);
+      toast.success('Resume uploaded successfully!');
 
       // Redirect to enhance page after a brief delay
       redirectTimeoutRef.current = setTimeout(() => {
-        navigate(`/enhance/${resumeResponse.data.id}`)
-      }, 1500)
-
+        navigate(`/enhance/${resumeResponse.data.id}`);
+      }, 1500);
     } catch (error) {
       if (error.name === 'AbortError') {
-        toast('Upload cancelled')
-        return
+        toast('Upload cancelled');
+        return;
       }
-      const message = error.response?.data?.error || error.message || 'Failed to upload resume'
-      toast.error(message)
-      setFile(null)
+      const message = error.response?.data?.error || error.message || 'Failed to upload resume';
+      toast.error(message);
+      setFile(null);
     } finally {
-      setLoading(false)
-      uploadControllerRef.current = null
+      setLoading(false);
+      uploadControllerRef.current = null;
     }
-  }
+  };
 
   const handleCancelUpload = () => {
-    uploadControllerRef.current?.abort()
+    uploadControllerRef.current?.abort();
     if (redirectTimeoutRef.current) {
-      clearTimeout(redirectTimeoutRef.current)
-      redirectTimeoutRef.current = null
+      clearTimeout(redirectTimeoutRef.current);
+      redirectTimeoutRef.current = null;
     }
-    setLoading(false)
-    setUploadComplete(false)
-    setFile(null)
-  }
+    setLoading(false);
+    setUploadComplete(false);
+    setFile(null);
+  };
 
   useEffect(() => {
     return () => {
-      uploadControllerRef.current?.abort()
+      uploadControllerRef.current?.abort();
       if (redirectTimeoutRef.current) {
-        clearTimeout(redirectTimeoutRef.current)
+        clearTimeout(redirectTimeoutRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   const normalizeLinkedInUrl = (raw) => {
-    let url = raw.trim()
+    let url = raw.trim();
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = `https://${url}`
+      url = `https://${url}`;
     }
-    return url
-  }
+    return url;
+  };
 
   const handleLinkedinPreview = async () => {
-    if (!linkedinUrl.trim()) return toast.error('Please enter a LinkedIn profile URL')
-    const url = normalizeLinkedInUrl(linkedinUrl)
+    if (!linkedinUrl.trim()) return toast.error('Please enter a LinkedIn profile URL');
+    const url = normalizeLinkedInUrl(linkedinUrl);
     if (!url.includes('linkedin.com/in/')) {
-      return toast.error('Please enter a valid LinkedIn profile URL (linkedin.com/in/...)')
+      return toast.error('Please enter a valid LinkedIn profile URL (linkedin.com/in/...)');
     }
-    setLinkedinLoading(true)
-    setLinkedinPreview(null)
-    setLinkedinProfile(null)
+    setLinkedinLoading(true);
+    setLinkedinPreview(null);
+    setLinkedinProfile(null);
     try {
-      const res = await resumeApi.previewLinkedIn(url)
-      setLinkedinPreview(res.preview)
-      setLinkedinProfile(res.profile)
+      const res = await resumeApi.previewLinkedIn(url);
+      setLinkedinPreview(res.preview);
+      setLinkedinProfile(res.profile);
     } catch (err) {
-      toast.error(err.message || 'Failed to load LinkedIn profile')
+      toast.error(err.message || 'Failed to load LinkedIn profile');
     } finally {
-      setLinkedinLoading(false)
+      setLinkedinLoading(false);
     }
-  }
+  };
 
   const handleLinkedinImport = async () => {
-    setImporting(true)
+    setImporting(true);
     try {
-      const res = await resumeApi.importLinkedIn(normalizeLinkedInUrl(linkedinUrl), linkedinProfile)
-      toast.success('LinkedIn profile imported!')
-      navigate(`/resume/${res.data._id || res.data.id}`)
+      const res = await resumeApi.importLinkedIn(
+        normalizeLinkedInUrl(linkedinUrl),
+        linkedinProfile
+      );
+      toast.success('LinkedIn profile imported!');
+      navigate(`/resume/${res.data._id || res.data.id}`);
     } catch (err) {
-      toast.error(err.message || 'Failed to import profile')
+      toast.error(err.message || 'Failed to import profile');
     } finally {
-      setImporting(false)
+      setImporting(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -147,7 +163,8 @@ export default function Upload() {
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-4">Upload Your Resume</h1>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Upload your PDF resume to get instant ATS score analysis and AI-powered improvements tailored to your target job role
+            Upload your PDF resume to get instant ATS score analysis and AI-powered improvements
+            tailored to your target job role
           </p>
         </motion.div>
 
@@ -195,19 +212,29 @@ export default function Upload() {
             transition={{ delay: 0.15 }}
             className="grid md:grid-cols-2 gap-6 mb-8"
           >
-            <Link to="/resume-builder" className="group p-6 rounded-xl bg-background/50 border border-border hover:border-primary/50 transition-all flex flex-col items-center text-center">
+            <Link
+              to="/resume-builder"
+              className="group p-6 rounded-xl bg-background/50 border border-border hover:border-primary/50 transition-all flex flex-col items-center text-center"
+            >
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <PlusCircle className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">Create from Scratch</h3>
-              <p className="text-sm text-muted-foreground">Use our step-by-step builder to create a professional resume.</p>
+              <p className="text-sm text-muted-foreground">
+                Use our step-by-step builder to create a professional resume.
+              </p>
             </Link>
-            <Link to="/text-to-resume" className="group p-6 rounded-xl bg-background/50 border border-border hover:border-primary/50 transition-all flex flex-col items-center text-center">
+            <Link
+              to="/text-to-resume"
+              className="group p-6 rounded-xl bg-background/50 border border-border hover:border-primary/50 transition-all flex flex-col items-center text-center"
+            >
               <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <TextSelect className="w-6 h-6 text-secondary-foreground" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">Paste Text</h3>
-              <p className="text-sm text-muted-foreground">Convert raw text or an old resume into a structured format using AI.</p>
+              <p className="text-sm text-muted-foreground">
+                Convert raw text or an old resume into a structured format using AI.
+              </p>
             </Link>
           </motion.div>
         )}
@@ -226,7 +253,9 @@ export default function Upload() {
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-foreground">Select PDF File</h2>
-                <p className="text-sm text-muted-foreground">We'll extract and analyze your resume automatically</p>
+                <p className="text-sm text-muted-foreground">
+                  We'll extract and analyze your resume automatically
+                </p>
               </div>
             </div>
 
@@ -252,7 +281,9 @@ export default function Upload() {
                     <div className="h-3 w-1/3 rounded bg-muted-foreground/15" />
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground">Extracting text and preparing analysis…</p>
+                <p className="text-sm text-muted-foreground">
+                  Extracting text and preparing analysis…
+                </p>
                 <Button variant="outline" size="sm" onClick={handleCancelUpload}>
                   Cancel upload
                 </Button>
@@ -268,7 +299,9 @@ export default function Upload() {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-4">
               <CheckCircle className="w-8 h-8 text-green-400" />
             </div>
-            <h2 className="text-xl font-semibold text-foreground mb-2">Resume Uploaded Successfully!</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-2">
+              Resume Uploaded Successfully!
+            </h2>
             <p className="text-muted-foreground mb-4">Redirecting to ATS analysis...</p>
             <div className="flex justify-center gap-1">
               {[0, 1, 2].map((i) => (
@@ -276,12 +309,12 @@ export default function Upload() {
                   key={i}
                   animate={{
                     scale: [1, 1.2, 1],
-                    opacity: [0.5, 1, 0.5]
+                    opacity: [0.5, 1, 0.5],
                   }}
                   transition={{
                     duration: 1,
                     repeat: Infinity,
-                    delay: i * 0.2
+                    delay: i * 0.2,
                   }}
                   className="w-2 h-2 bg-green-500 rounded-full"
                 />
@@ -304,7 +337,9 @@ export default function Upload() {
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-foreground">Import from LinkedIn</h2>
-                <p className="text-sm text-muted-foreground">Paste your public LinkedIn profile URL to auto-fill your resume</p>
+                <p className="text-sm text-muted-foreground">
+                  Paste your public LinkedIn profile URL to auto-fill your resume
+                </p>
               </div>
             </div>
 
@@ -313,9 +348,9 @@ export default function Upload() {
                 type="text"
                 value={linkedinUrl}
                 onChange={(e) => {
-                  setLinkedinUrl(e.target.value)
-                  setLinkedinPreview(null)
-                  setLinkedinProfile(null)
+                  setLinkedinUrl(e.target.value);
+                  setLinkedinPreview(null);
+                  setLinkedinProfile(null);
                 }}
                 placeholder="https://linkedin.com/in/your-profile"
                 className="flex-1 px-4 py-2.5 rounded-lg bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200 text-sm"
@@ -344,12 +379,18 @@ export default function Upload() {
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-foreground font-semibold text-base">{linkedinPreview.name}</h3>
+                    <h3 className="text-foreground font-semibold text-base">
+                      {linkedinPreview.name}
+                    </h3>
                     {linkedinPreview.headline && (
-                      <p className="text-sky-600 dark:text-sky-400 text-sm mt-0.5">{linkedinPreview.headline}</p>
+                      <p className="text-sky-600 dark:text-sky-400 text-sm mt-0.5">
+                        {linkedinPreview.headline}
+                      </p>
                     )}
                     {linkedinPreview.location && (
-                      <p className="text-muted-foreground text-xs mt-0.5">{linkedinPreview.location}</p>
+                      <p className="text-muted-foreground text-xs mt-0.5">
+                        {linkedinPreview.location}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -358,13 +399,15 @@ export default function Upload() {
                   {linkedinPreview.experienceCount > 0 && (
                     <span className="flex items-center gap-1.5">
                       <Briefcase className="w-4 h-4 text-muted-foreground" />
-                      {linkedinPreview.experienceCount} experience {linkedinPreview.experienceCount === 1 ? 'entry' : 'entries'}
+                      {linkedinPreview.experienceCount} experience{' '}
+                      {linkedinPreview.experienceCount === 1 ? 'entry' : 'entries'}
                     </span>
                   )}
                   {linkedinPreview.educationCount > 0 && (
                     <span className="flex items-center gap-1.5">
                       <GraduationCap className="w-4 h-4 text-muted-foreground" />
-                      {linkedinPreview.educationCount} education {linkedinPreview.educationCount === 1 ? 'entry' : 'entries'}
+                      {linkedinPreview.educationCount} education{' '}
+                      {linkedinPreview.educationCount === 1 ? 'entry' : 'entries'}
                     </span>
                   )}
                   {linkedinPreview.skills?.length > 0 && (
@@ -417,23 +460,33 @@ export default function Upload() {
           <h3 className="text-lg font-semibold text-foreground mb-6 text-center">How It Works</h3>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center mx-auto mb-3 text-foreground font-bold">1</div>
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center mx-auto mb-3 text-foreground font-bold">
+                1
+              </div>
               <h4 className="text-foreground font-medium mb-1">Upload Resume</h4>
               <p className="text-muted-foreground text-sm">Upload your PDF resume file</p>
             </div>
             <div className="text-center">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center mx-auto mb-3 text-foreground font-bold">2</div>
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center mx-auto mb-3 text-foreground font-bold">
+                2
+              </div>
               <h4 className="text-foreground font-medium mb-1">Get ATS Score</h4>
-              <p className="text-muted-foreground text-sm">See how your resume scores for your target job</p>
+              <p className="text-muted-foreground text-sm">
+                See how your resume scores for your target job
+              </p>
             </div>
             <div className="text-center">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center mx-auto mb-3 text-foreground font-bold">3</div>
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center mx-auto mb-3 text-foreground font-bold">
+                3
+              </div>
               <h4 className="text-foreground font-medium mb-1">Improve with AI</h4>
-              <p className="text-muted-foreground text-sm">One-click AI enhancement based on analysis</p>
+              <p className="text-muted-foreground text-sm">
+                One-click AI enhancement based on analysis
+              </p>
             </div>
           </div>
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

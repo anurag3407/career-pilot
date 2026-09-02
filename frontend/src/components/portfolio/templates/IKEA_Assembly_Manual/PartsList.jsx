@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 
 export default function PartsList() {
   const { portfolioData } = usePortfolio();
@@ -20,14 +20,35 @@ export default function PartsList() {
             <p className="text-sm font-bold mb-4 flex-grow">{proj.description}</p>
             <div className="flex flex-wrap gap-2 mt-auto">
               {(proj.techStack || []).map((tech, tIdx) => (
-                <span key={tIdx} className="text-xs border border-black px-1 uppercase font-bold bg-white">
+                <span
+                  key={tIdx}
+                  className="text-xs border border-black px-1 uppercase font-bold bg-white"
+                >
                   {tech}
                 </span>
               ))}
             </div>
             <div className="mt-4 flex gap-2">
-               {proj.liveUrl && <a href={proj.liveUrl} target="_blank" rel="noreferrer" className="flex-1 bg-[#0051ba] text-white text-center font-bold text-xs py-1 uppercase border-2 border-black hover:bg-black transition-colors">View Live</a>}
-               {proj.githubUrl && <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="flex-1 bg-white text-black text-center font-bold text-xs py-1 uppercase border-2 border-black hover:bg-[#ffda1a] transition-colors">Source</a>}
+              {proj.liveUrl && (
+                <a
+                  href={proj.liveUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex-1 bg-[#0051ba] text-white text-center font-bold text-xs py-1 uppercase border-2 border-black hover:bg-black transition-colors"
+                >
+                  View Live
+                </a>
+              )}
+              {proj.githubUrl && (
+                <a
+                  href={proj.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex-1 bg-white text-black text-center font-bold text-xs py-1 uppercase border-2 border-black hover:bg-[#ffda1a] transition-colors"
+                >
+                  Source
+                </a>
+              )}
             </div>
           </div>
         ))}

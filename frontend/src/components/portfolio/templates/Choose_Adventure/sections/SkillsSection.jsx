@@ -24,7 +24,7 @@ export default function SkillsSection({ data, onChoice }) {
   }, {});
 
   const choices = [
-    { label: 'See the projects I\'ve shipped', next: 'projects' },
+    { label: "See the projects I've shipped", next: 'projects' },
     { label: 'Read my work history', next: 'experience' },
     { label: 'Hear what colleagues say', next: 'testimonials' },
   ];
@@ -58,7 +58,9 @@ export default function SkillsSection({ data, onChoice }) {
           <div className="space-y-8">
             {Object.entries(grouped).map(([category, categorySkills]) => (
               <div key={category}>
-                <p className={`text-xs uppercase tracking-widest mb-4 font-semibold ${CATEGORY_TEXT[category] || 'text-slate-400'}`}>
+                <p
+                  className={`text-xs uppercase tracking-widest mb-4 font-semibold ${CATEGORY_TEXT[category] || 'text-slate-400'}`}
+                >
                   {category}
                 </p>
                 <div className="space-y-3">
@@ -98,7 +100,10 @@ export default function SkillsSection({ data, onChoice }) {
               onClick={() => onChoice(choice.next)}
               className="w-full flex items-center gap-3 text-left px-5 py-4 rounded-xl border border-violet-700/40 hover:border-violet-400/70 bg-violet-950/30 hover:bg-violet-900/40 text-violet-200 hover:text-white transition-all duration-200 group"
             >
-              <ChevronRight size={14} className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0" />
+              <ChevronRight
+                size={14}
+                className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0"
+              />
               <span className="text-sm">{choice.label}</span>
             </motion.button>
           ))}

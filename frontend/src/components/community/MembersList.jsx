@@ -24,27 +24,35 @@ const itemVariants = {
 export default function MembersList({ channel, onlineUsers }) {
   const safeOnlineUsers = onlineUsers || [];
   // Get channel members with online status
-  const membersWithStatus = channel?.members?.map(member => ({
-    ...member,
-    isOnline: safeOnlineUsers.some(u => u.uid === member.uid)
-  })) || [];
+  const membersWithStatus =
+    channel?.members?.map((member) => ({
+      ...member,
+      isOnline: safeOnlineUsers.some((u) => u.uid === member.uid),
+    })) || [];
 
   // Sort: online first, then by role
   const sortedMembers = [...membersWithStatus].sort((a, b) => {
     // Online status first
     if (a.isOnline && !b.isOnline) return -1;
     if (!a.isOnline && b.isOnline) return 1;
-    
+
     // Then by role
     const roleOrder = { admin: 0, moderator: 1, member: 2 };
     return (roleOrder[a.role] || 2) - (roleOrder[b.role] || 2);
   });
 
-  const onlineMembers = sortedMembers.filter(m => m.isOnline);
-  const offlineMembers = sortedMembers.filter(m => !m.isOnline);
+  const onlineMembers = sortedMembers.filter((m) => m.isOnline);
+  const offlineMembers = sortedMembers.filter((m) => !m.isOnline);
 
   const getInitials = (name) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '??';
+    return (
+      name
+        ?.split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2) || '??'
+    );
   };
 
   const getRoleBadge = (role) => {
@@ -58,7 +66,10 @@ export default function MembersList({ channel, onlineUsers }) {
   };
 
   const MemberItem = ({ member }) => (
-    <motion.div variants={itemVariants} className="flex items-center gap-3 px-3 py-2 hover:bg-muted rounded-lg cursor-pointer">
+    <motion.div
+      variants={itemVariants}
+      className="flex items-center gap-3 px-3 py-2 hover:bg-muted rounded-lg cursor-pointer"
+    >
       <div className="relative">
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium">
           {member.avatar ? (
@@ -81,16 +92,16 @@ export default function MembersList({ channel, onlineUsers }) {
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className={`text-sm font-medium truncate ${
-            member.isOnline ? 'text-foreground' : 'text-muted-foreground'
-          }`}>
+          <span
+            className={`text-sm font-medium truncate ${
+              member.isOnline ? 'text-foreground' : 'text-muted-foreground'
+            }`}
+          >
             {member.name}
           </span>
           {getRoleBadge(member.role)}
         </div>
-        {member.email && (
-          <p className="text-xs text-muted-foreground truncate">{member.email}</p>
-        )}
+        {member.email && <p className="text-xs text-muted-foreground truncate">{member.email}</p>}
       </div>
     </motion.div>
   );
@@ -128,7 +139,7 @@ export default function MembersList({ channel, onlineUsers }) {
               animate="visible"
               className="px-1"
             >
-              {onlineMembers.map(member => (
+              {onlineMembers.map((member) => (
                 <MemberItem key={member.uid} member={member} />
               ))}
             </motion.div>
@@ -148,7 +159,7 @@ export default function MembersList({ channel, onlineUsers }) {
               animate="visible"
               className="px-1"
             >
-              {offlineMembers.map(member => (
+              {offlineMembers.map((member) => (
                 <MemberItem key={member.uid} member={member} />
               ))}
             </motion.div>
@@ -169,7 +180,7 @@ export default function MembersList({ channel, onlineUsers }) {
             All Online Users
           </h4>
           <div className="flex flex-wrap gap-1">
-            {safeOnlineUsers.slice(0, 10).map(user => (
+            {safeOnlineUsers.slice(0, 10).map((user) => (
               <div
                 key={user.uid}
                 className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium ring-2 ring-background"

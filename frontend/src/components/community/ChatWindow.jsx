@@ -3,17 +3,28 @@ import { useSocket } from '../../hooks/useSocket';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
 import { useTheme } from '../../hooks/useTheme';
-import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon, Contrast } from 'lucide-react';
+import {
+  Hash,
+  Users,
+  Pin,
+  Search,
+  Settings,
+  MoreVertical,
+  Loader2,
+  Sun,
+  Moon,
+  Contrast,
+} from 'lucide-react';
 
 // Skeleton loader component for chat messages
 const MessageSkeleton = ({ isOwn }) => (
   <div className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : ''} animate-pulse`}>
-    {!isOwn && (
-      <div className="w-9 h-9 rounded-full bg-foreground/10 shrink-0" />
-    )}
+    {!isOwn && <div className="w-9 h-9 rounded-full bg-foreground/10 shrink-0" />}
     <div className={`flex flex-col gap-1 ${isOwn ? 'items-end' : 'items-start'}`}>
       {!isOwn && <div className="h-3 w-20 bg-foreground/10 rounded" />}
-      <div className={`rounded-2xl px-4 py-3 ${isOwn ? 'bg-primary/10' : 'bg-card border border-border'}`}>
+      <div
+        className={`rounded-2xl px-4 py-3 ${isOwn ? 'bg-primary/10' : 'bg-card border border-border'}`}
+      >
         <div className="space-y-2">
           <div className={`h-3 ${isOwn ? 'w-32' : 'w-48'} bg-foreground/10 rounded`} />
           <div className={`h-3 ${isOwn ? 'w-24' : 'w-36'} bg-foreground/10 rounded`} />
@@ -29,14 +40,14 @@ const ChatLoadingSkeleton = () => (
   <div className="flex-1 flex flex-col px-4 py-4 space-y-6 bg-background overflow-hidden">
     {/* Animated gradient overlay */}
     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/5 to-background/20 pointer-events-none" />
-    
+
     {/* Date separator skeleton */}
     <div className="flex items-center gap-4 my-2 animate-pulse">
       <div className="flex-1 h-px bg-foreground/10"></div>
       <div className="h-4 w-28 bg-foreground/10 rounded-full"></div>
       <div className="flex-1 h-px bg-foreground/10"></div>
     </div>
-    
+
     {/* Message skeletons with staggered animation */}
     <div className="space-y-4">
       <div style={{ animationDelay: '0ms' }}>
@@ -55,23 +66,41 @@ const ChatLoadingSkeleton = () => (
         <MessageSkeleton isOwn={true} />
       </div>
     </div>
-    
+
     {/* Floating loading indicator */}
     <div className="flex justify-center mt-4">
       <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-full shadow-lg border border-border">
         <Loader2 className="w-4 h-4 text-primary animate-spin" />
         <span className="text-sm text-foreground font-medium">Loading messages...</span>
         <div className="flex gap-1 ml-1">
-          <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-          <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-          <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+          <span
+            className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"
+            style={{ animationDelay: '0ms' }}
+          ></span>
+          <span
+            className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"
+            style={{ animationDelay: '150ms' }}
+          ></span>
+          <span
+            className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"
+            style={{ animationDelay: '300ms' }}
+          ></span>
         </div>
       </div>
     </div>
   </div>
 );
 
-export default function ChatWindow({ channel, messages, currentUser, onOptimisticMessage, onOptimisticReaction, onOptimisticEdit, onOptimisticDelete, loading }) {
+export default function ChatWindow({
+  channel,
+  messages,
+  currentUser,
+  onOptimisticMessage,
+  onOptimisticReaction,
+  onOptimisticEdit,
+  onOptimisticDelete,
+  loading,
+}) {
   const { theme, toggleTheme } = useTheme();
   const { subscribe, startTyping, stopTyping } = useSocket();
   const [typingUsers, setTypingUsers] = useState([]);
@@ -90,11 +119,11 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
   // Subscribe to typing events
   useEffect(() => {
     const channelId = channel.id || channel._id;
-    
+
     const unsubTyping = subscribe('user_typing', ({ channelId: typingChannelId, user }) => {
       if (typingChannelId === channelId && user.uid !== currentUser?.uid) {
-        setTypingUsers(prev => {
-          if (!prev.find(u => u.uid === user.uid)) {
+        setTypingUsers((prev) => {
+          if (!prev.find((u) => u.uid === user.uid)) {
             return [...prev, user];
           }
           return prev;
@@ -102,11 +131,14 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
       }
     });
 
-    const unsubStoppedTyping = subscribe('user_stopped_typing', ({ channelId: typingChannelId, user }) => {
-      if (typingChannelId === channelId) {
-        setTypingUsers(prev => prev.filter(u => u.uid !== user.uid));
+    const unsubStoppedTyping = subscribe(
+      'user_stopped_typing',
+      ({ channelId: typingChannelId, user }) => {
+        if (typingChannelId === channelId) {
+          setTypingUsers((prev) => prev.filter((u) => u.uid !== user.uid));
+        }
       }
-    });
+    );
 
     return () => {
       unsubTyping();
@@ -133,12 +165,12 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
   const handleTyping = useCallback(() => {
     const channelId = channel.id || channel._id;
     startTyping(channelId);
-    
+
     // Clear previous timeout
     if (stopTypingTimeoutRef.current) {
       clearTimeout(stopTypingTimeoutRef.current);
     }
-    
+
     // Stop typing after 2 seconds of inactivity
     stopTypingTimeoutRef.current = setTimeout(() => {
       stopTyping(channelId);
@@ -147,9 +179,10 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
 
   // Filter messages based on search
   const filteredMessages = searchQuery
-    ? messages.filter(msg => 
-        msg.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        msg.sender.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ? messages.filter(
+        (msg) =>
+          msg.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          msg.sender.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : messages;
 
@@ -159,7 +192,7 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
     if (!groups[date]) {
       groups[date] = [];
@@ -209,11 +242,21 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
           <button
             onClick={toggleTheme}
             className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
-            title={theme === 'light' ? 'Switch to Dark Mode' : theme === 'dark' ? 'Switch to High Contrast' : 'Switch to Light Mode'}
+            title={
+              theme === 'light'
+                ? 'Switch to Dark Mode'
+                : theme === 'dark'
+                  ? 'Switch to High Contrast'
+                  : 'Switch to Light Mode'
+            }
           >
-            {theme === 'light' ? <Moon className="w-5 h-5" /> : 
-             theme === 'dark' ? <Contrast className="w-5 h-5" /> : 
-             <Sun className="w-5 h-5" />}
+            {theme === 'light' ? (
+              <Moon className="w-5 h-5" />
+            ) : theme === 'dark' ? (
+              <Contrast className="w-5 h-5" />
+            ) : (
+              <Sun className="w-5 h-5" />
+            )}
           </button>
           <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <MoreVertical className="w-5 h-5" />
@@ -239,7 +282,7 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
       {loading ? (
         <ChatLoadingSkeleton />
       ) : (
-        <div 
+        <div
           ref={messagesContainerRef}
           className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-background"
         >
@@ -255,13 +298,14 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
               {/* Messages */}
               {dateMessages.map((message, index) => {
                 const prevMessage = dateMessages[index - 1];
-                const showAvatar = !prevMessage || 
+                const showAvatar =
+                  !prevMessage ||
                   prevMessage.sender.uid !== message.sender.uid ||
                   new Date(message.createdAt) - new Date(prevMessage.createdAt) > 5 * 60 * 1000;
-                
+
                 const messageId = message.id || message._id;
                 const channelId = channel.id || channel._id;
-                
+
                 return (
                   <MessageBubble
                     key={messageId}
@@ -291,7 +335,9 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
                   <>
                     <span className="text-4xl mb-3 block">{channel.icon || '💬'}</span>
                     <h3 className="font-medium text-foreground">Welcome to #{channel.name}</h3>
-                    <p className="text-sm mt-1">{channel.description || 'Start the conversation!'}</p>
+                    <p className="text-sm mt-1">
+                      {channel.description || 'Start the conversation!'}
+                    </p>
                   </>
                 )}
               </div>
@@ -307,14 +353,22 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
         <div className="px-4 py-2 text-sm text-muted-foreground bg-background border-t border-border">
           <span className="inline-flex items-center gap-2">
             <span className="flex gap-1">
-              <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-              <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-              <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+              <span
+                className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"
+                style={{ animationDelay: '0ms' }}
+              ></span>
+              <span
+                className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"
+                style={{ animationDelay: '150ms' }}
+              ></span>
+              <span
+                className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"
+                style={{ animationDelay: '300ms' }}
+              ></span>
             </span>
-            {typingUsers.length === 1 
+            {typingUsers.length === 1
               ? `${typingUsers[0].name} is typing...`
-              : `${typingUsers.map(u => u.name).join(', ')} are typing...`
-            }
+              : `${typingUsers.map((u) => u.name).join(', ')} are typing...`}
           </span>
         </div>
       )}

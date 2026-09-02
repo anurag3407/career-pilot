@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function StartupPitch() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Startup Pitch Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Pitch deck presentation style with slide-by-slide layout. Each section is a presentation slide with Problem, Solution, Demo, Team, Contact flow.
+            Pitch deck presentation style with slide-by-slide layout. Each section is a presentation
+            slide with Problem, Solution, Demo, Team, Contact flow.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

@@ -24,12 +24,15 @@ const Testimonials = ({ testimonials }) => {
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: 'linear-gradient(to right, #22d3ee 1px, transparent 1px), linear-gradient(to bottom, #22d3ee 1px, transparent 1px)',
+            backgroundImage:
+              'linear-gradient(to right, #22d3ee 1px, transparent 1px), linear-gradient(to bottom, #22d3ee 1px, transparent 1px)',
             backgroundSize: '20px 20px',
           }}
         />
 
-        <span className="absolute left-6 top-4 z-0 font-serif text-6xl text-gray-800 opacity-50">"</span>
+        <span className="absolute left-6 top-4 z-0 font-serif text-6xl text-gray-800 opacity-50">
+          "
+        </span>
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -51,7 +54,9 @@ const Testimonials = ({ testimonials }) => {
               />
               <div>
                 <h4 className="font-medium text-white">{testimonials[activeIndex].name}</h4>
-                <p className="font-mono text-sm text-cyan-400/70">{testimonials[activeIndex].role}</p>
+                <p className="font-mono text-sm text-cyan-400/70">
+                  {testimonials[activeIndex].role}
+                </p>
               </div>
             </div>
           </motion.div>
@@ -59,7 +64,8 @@ const Testimonials = ({ testimonials }) => {
 
         <div className="absolute bottom-6 right-8 z-10 flex gap-2">
           {testimonials.map((_, index) => (
-            <button type="button"
+            <button
+              type="button"
               key={index}
               onClick={() => setActiveIndex(index)}
               className={`h-1 transition-all duration-300 ${activeIndex === index ? 'w-8 bg-cyan-400' : 'w-2 bg-gray-700 hover:bg-gray-500'}`}

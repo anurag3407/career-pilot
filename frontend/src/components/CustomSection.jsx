@@ -1,8 +1,8 @@
-import { useState, useRef, useCallback } from 'react'
-import toast from 'react-hot-toast'
-import { cn } from '@/lib/utils'
-import Button from './Button'
-import DragHandle from './DragHandle'
+import { useState, useRef, useCallback } from 'react';
+import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
+import Button from './Button';
+import DragHandle from './DragHandle';
 
 // ─── Icons (inline SVG to keep zero extra deps) ────────────────────────────
 
@@ -21,52 +21,53 @@ const Icon = ({ path, size = 16, className = '' }) => (
   >
     <path d={path} />
   </svg>
-)
+);
 
 const ICONS = {
-  plus:       'M12 5v14M5 12h14',
-  trash:      'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6',
-  grip:       'M9 5h2M9 12h2M9 19h2M13 5h2M13 12h2M13 19h2',
-  chevUp:     'M18 15l-6-6-6 6',
-  chevDown:   'M6 9l6 6 6-6',
+  plus: 'M12 5v14M5 12h14',
+  trash: 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6',
+  grip: 'M9 5h2M9 12h2M9 19h2M13 5h2M13 12h2M13 19h2',
+  chevUp: 'M18 15l-6-6-6 6',
+  chevDown: 'M6 9l6 6 6-6',
   chevUpDown: 'M12 3l4 5H8l4-5zM12 21l-4-5h8l-4 5',
-  edit:       'M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z',
-  check:      'M20 6L9 17l-5-5',
-  x:          'M18 6L6 18M6 6l12 12',
-  arrowUp:    'M12 19V5M5 12l7-7 7 7',
-  arrowDown:  'M12 5v14M19 12l-7 7-7-7',
-  sparkles: 'M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z',
-}
+  edit: 'M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z',
+  check: 'M20 6L9 17l-5-5',
+  x: 'M18 6L6 18M6 6l12 12',
+  arrowUp: 'M12 19V5M5 12l7-7 7 7',
+  arrowDown: 'M12 5v14M19 12l-7 7-7-7',
+  sparkles:
+    'M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z',
+};
 
 // ─── Suggested section presets ─────────────────────────────────────────────
 
 const SECTION_PRESETS = [
-  { label: 'Awards & Honors',    icon: '🏆' },
-  { label: 'Publications',       icon: '📄' },
-  { label: 'Certifications',     icon: '🎓' },
-  { label: 'Volunteer Work',     icon: '🤝' },
-  { label: 'Languages',          icon: '🌐' },
-  { label: 'Patents',            icon: '💡' },
-  { label: 'Conferences',        icon: '🎤' },
-  { label: 'Hobbies & Interests',icon: '⚡' },
-]
+  { label: 'Awards & Honors', icon: '🏆' },
+  { label: 'Publications', icon: '📄' },
+  { label: 'Certifications', icon: '🎓' },
+  { label: 'Volunteer Work', icon: '🤝' },
+  { label: 'Languages', icon: '🌐' },
+  { label: 'Patents', icon: '💡' },
+  { label: 'Conferences', icon: '🎤' },
+  { label: 'Hobbies & Interests', icon: '⚡' },
+];
 
 // ─── Entry default factory ─────────────────────────────────────────────────
 
 const makeEntry = () => ({
-  id:          crypto.randomUUID(),
-  title:       '',
-  subtitle:    '',
-  date:        '',
+  id: crypto.randomUUID(),
+  title: '',
+  subtitle: '',
+  date: '',
   description: '',
-})
+});
 
 // ─── Entry editor ──────────────────────────────────────────────────────────
 
 function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst, isLast }) {
-  const [expanded, setExpanded] = useState(!entry.title)
+  const [expanded, setExpanded] = useState(!entry.title);
 
-  const update = (field) => (e) => onChange({ ...entry, [field]: e.target.value })
+  const update = (field) => (e) => onChange({ ...entry, [field]: e.target.value });
 
   return (
     <div className="border border-border/50 rounded-xl overflow-hidden bg-muted/30 group/entry">
@@ -128,20 +129,20 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
           <div className="sm:col-span-2">
             <label className="block text-xs font-medium text-muted-foreground mb-1">Title *</label>
             <input
-  type="text"
-  value={entry.title}
-  onChange={update('title')}
-  maxLength={100}
-  placeholder="e.g. Best Paper Award"
-  className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
-/>
+              type="text"
+              value={entry.title}
+              onChange={update('title')}
+              maxLength={100}
+              placeholder="e.g. Best Paper Award"
+              className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
+            />
 
-<p className="text-xs text-gray-500 mt-1">
-  {entry.title?.length || 0} / 100
-</p>
+            <p className="text-xs text-gray-500 mt-1">{entry.title?.length || 0} / 100</p>
           </div>
           <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">Subtitle / Issuer</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
+              Subtitle / Issuer
+            </label>
             <input
               type="text"
               value={entry.subtitle}
@@ -150,12 +151,12 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
               placeholder="e.g. IEEE Conference"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             />
-            <p className="text-xs text-gray-500 mt-1">
-  {entry.subtitle?.length || 0} / 150
-</p>
+            <p className="text-xs text-gray-500 mt-1">{entry.subtitle?.length || 0} / 150</p>
           </div>
           <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">Date / Year</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
+              Date / Year
+            </label>
             <input
               type="text"
               value={entry.date}
@@ -164,116 +165,105 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
               placeholder="e.g. May 2024"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             />
-            <p className="text-xs text-gray-500 mt-1">
-  {entry.date?.length || 0} / 30
-</p>
+            <p className="text-xs text-gray-500 mt-1">{entry.date?.length || 0} / 30</p>
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-muted-foreground mb-1">Description</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
+              Description
+            </label>
             <textarea
-  rows={2}
-  value={entry.description}
-  onChange={update('description')}
-  maxLength={500}
+              rows={2}
+              value={entry.description}
+              onChange={update('description')}
+              maxLength={500}
               placeholder="Brief description (optional)"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors resize-none"
             />
             <p
-  className={`text-sm mt-1 ${
-    (entry.description?.length || 0) > 450
-      ? 'text-red-500'
-      : 'text-gray-500'
-  }`}
->
-  {entry.description?.length || 0} / 500
-</p>
+              className={`text-sm mt-1 ${
+                (entry.description?.length || 0) > 450 ? 'text-red-500' : 'text-gray-500'
+              }`}
+            >
+              {entry.description?.length || 0} / 500
+            </p>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
 
 // ─── Single section card ────────────────────────────────────────────────────
 
-function SectionCard({
-  section,
-  onChange,
-  onDelete,
-  onMoveUp,
-  onMoveDown,
-  isFirst,
-  isLast,
-}) {
-  const [collapsed, setCollapsed] = useState(false)
-  const [editingName, setEditingName] = useState(false)
-  const nameRef = useRef(null)
-  const [isEnhancing, setIsEnhancing] = useState(false)
-  const [enhancedData, setEnhancedData] = useState(null)
+function SectionCard({ section, onChange, onDelete, onMoveUp, onMoveDown, isFirst, isLast }) {
+  const [collapsed, setCollapsed] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const nameRef = useRef(null);
+  const [isEnhancing, setIsEnhancing] = useState(false);
+  const [enhancedData, setEnhancedData] = useState(null);
   const handleEnhance = async () => {
-    if (!section.entries || section.entries.length === 0) return
+    if (!section.entries || section.entries.length === 0) return;
 
-    setIsEnhancing(true)
-    
+    setIsEnhancing(true);
+
     // Simulate a 2-second API delay
     setTimeout(() => {
-      const mockEnhancedEntries = section.entries.map(entry => ({
+      const mockEnhancedEntries = section.entries.map((entry) => ({
         ...entry,
-        description: entry.description 
-          ? `✨ [AI ENHANCED] ${entry.description}\n- Restructured for professional impact.\n- Quantified achievements and optimized keywords.` 
-          : '✨ [AI ENHANCED] Developed and executed core modules using high-performance engineering standards.'
-      }))
-      
-      setEnhancedData({ ...section, entries: mockEnhancedEntries })
-      setIsEnhancing(false)
-    }, 2000)
-  }
+        description: entry.description
+          ? `✨ [AI ENHANCED] ${entry.description}\n- Restructured for professional impact.\n- Quantified achievements and optimized keywords.`
+          : '✨ [AI ENHANCED] Developed and executed core modules using high-performance engineering standards.',
+      }));
+
+      setEnhancedData({ ...section, entries: mockEnhancedEntries });
+      setIsEnhancing(false);
+    }, 2000);
+  };
   // ── entry helpers ────────────────────────────────────────────────────────
 
-  const addEntry = () =>
-    onChange({ ...section, entries: [...section.entries, makeEntry()] })
+  const addEntry = () => onChange({ ...section, entries: [...section.entries, makeEntry()] });
 
   const updateEntry = (id, updated) =>
     onChange({
       ...section,
       entries: section.entries.map((e) => (e.id === id ? updated : e)),
-    })
+    });
 
   const deleteEntry = (id) =>
     onChange({
       ...section,
       entries: section.entries.filter((e) => e.id !== id),
-    })
+    });
 
   const moveEntry = (idx, dir) => {
-    const entries = [...section.entries]
-    const target = idx + dir
-    if (target < 0 || target >= entries.length) return
-    ;[entries[idx], entries[target]] = [entries[target], entries[idx]]
-    onChange({ ...section, entries })
-  }
+    const entries = [...section.entries];
+    const target = idx + dir;
+    if (target < 0 || target >= entries.length) return;
+    [entries[idx], entries[target]] = [entries[target], entries[idx]];
+    onChange({ ...section, entries });
+  };
 
   // ── name editing ─────────────────────────────────────────────────────────
 
   const startEdit = () => {
-    setEditingName(true)
-    setTimeout(() => nameRef.current?.focus(), 0)
-  }
+    setEditingName(true);
+    setTimeout(() => nameRef.current?.focus(), 0);
+  };
 
-  const commitEdit = () => setEditingName(false)
+  const commitEdit = () => setEditingName(false);
 
   return (
     <div
       className={cn(
         'border border-border rounded-2xl overflow-hidden transition-all duration-300',
-        'bg-card shadow-sm hover:shadow-md hover:border-primary/30',
+        'bg-card shadow-sm hover:shadow-md hover:border-primary/30'
       )}
     >
       {/* Section header */}
-        <div className="group flex items-center gap-3 px-5 py-3.5 bg-muted/20 border-b border-border/50">
+      <div className="group flex items-center gap-3 px-5 py-3.5 bg-muted/20 border-b border-border/50">
         <DragHandle />
         {/* Reorder */}
-        
+
         <div className="flex gap-1 shrink-0">
           <button
             type="button"
@@ -328,10 +318,10 @@ function SectionCard({
           disabled={isEnhancing || !section.entries || section.entries.length === 0}
           className="flex items-center gap-1.5 px-2.5 py-1.5 ml-2 rounded-lg text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <Icon 
-            path={ICONS.sparkles} 
-            size={14} 
-            className={isEnhancing ? "animate-spin text-amber-500" : ""} 
+          <Icon
+            path={ICONS.sparkles}
+            size={14}
+            className={isEnhancing ? 'animate-spin text-amber-500' : ''}
           />
           {isEnhancing ? 'Enhancing...' : 'Enhance with AI'}
         </button>
@@ -373,7 +363,7 @@ function SectionCard({
                     onClick={() => {
                       onChange(enhancedData); // Apply changes to original state
                       setEnhancedData(null); // Close diff view
-                      toast.success("Successfully enhanced section!");
+                      toast.success('Successfully enhanced section!');
                     }}
                     className="px-2.5 py-1 rounded bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors"
                   >
@@ -388,23 +378,35 @@ function SectionCard({
                   </button>
                 </div>
               </div>
-              
+
               {/* Split-Screen Diff Layout */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                 <div className="space-y-2 border-r border-border/50 pr-2">
-                  <p className="font-semibold text-muted-foreground uppercase tracking-wider text-[10px]">Original Description</p>
+                  <p className="font-semibold text-muted-foreground uppercase tracking-wider text-[10px]">
+                    Original Description
+                  </p>
                   {section.entries.map((entry) => (
-                    <div key={entry.id} className="p-2 bg-background/50 rounded border border-border/30">
-                      <p className="font-medium">{entry.title || "Untitled"}</p>
-                      <p className="text-muted-foreground whitespace-pre-line">{entry.description || <span className="italic">No description</span>}</p>
+                    <div
+                      key={entry.id}
+                      className="p-2 bg-background/50 rounded border border-border/30"
+                    >
+                      <p className="font-medium">{entry.title || 'Untitled'}</p>
+                      <p className="text-muted-foreground whitespace-pre-line">
+                        {entry.description || <span className="italic">No description</span>}
+                      </p>
                     </div>
                   ))}
                 </div>
                 <div className="space-y-2">
-                  <p className="font-semibold text-amber-600 uppercase tracking-wider text-[10px]">AI Enhanced Description</p>
+                  <p className="font-semibold text-amber-600 uppercase tracking-wider text-[10px]">
+                    AI Enhanced Description
+                  </p>
                   {enhancedData.entries.map((entry) => (
-                    <div key={entry.id} className="p-2 bg-amber-500/5 rounded border border-amber-500/20">
-                      <p className="font-medium">{entry.title || "Untitled"}</p>
+                    <div
+                      key={entry.id}
+                      className="p-2 bg-amber-500/5 rounded border border-amber-500/20"
+                    >
+                      <p className="font-medium">{entry.title || 'Untitled'}</p>
                       <p className="text-foreground whitespace-pre-line">{entry.description}</p>
                     </div>
                   ))}
@@ -436,7 +438,7 @@ function SectionCard({
             onClick={addEntry}
             className={cn(
               'w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-border',
-              'text-sm text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors',
+              'text-sm text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors'
             )}
           >
             <Icon path={ICONS.plus} size={14} />
@@ -445,20 +447,20 @@ function SectionCard({
         </div>
       )}
     </div>
-  )
+  );
 }
 
 // ─── Add-section dialog / inline form ──────────────────────────────────────
 
 function AddSectionPanel({ onAdd, onClose }) {
-  const [name, setName] = useState('')
+  const [name, setName] = useState('');
 
   const submit = (nameOverride) => {
-    const finalName = (nameOverride ?? name).trim()
-    if (!finalName) return
-    onAdd(finalName)
-    onClose()
-  }
+    const finalName = (nameOverride ?? name).trim();
+    if (!finalName) return;
+    onAdd(finalName);
+    onClose();
+  };
 
   return (
     <div className="border border-border rounded-2xl bg-card shadow-lg overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
@@ -507,7 +509,7 @@ function AddSectionPanel({ onAdd, onClose }) {
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium',
                   'border border-border bg-muted/40 text-foreground',
-                  'hover:border-primary/60 hover:bg-primary/10 hover:text-primary transition-colors',
+                  'hover:border-primary/60 hover:bg-primary/10 hover:text-primary transition-colors'
                 )}
               >
                 <span>{p.icon}</span>
@@ -518,7 +520,7 @@ function AddSectionPanel({ onAdd, onClose }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // ─── Markdown export helper ────────────────────────────────────────────────
@@ -542,39 +544,38 @@ function AddSectionPanel({ onAdd, onClose }) {
  *   { id: string, title: string, subtitle: string, date: string, description: string }
  */
 export default function CustomSection({ sections = [], onSectionsChange }) {
-  const [showAddPanel, setShowAddPanel] = useState(false)
+  const [showAddPanel, setShowAddPanel] = useState(false);
 
   // ── section helpers ────────────────────────────────────────────────────
 
   const addSection = useCallback(
     (name) => {
-      const newSection = { id: crypto.randomUUID(), name, entries: [] }
-      onSectionsChange([...sections, newSection])
+      const newSection = { id: crypto.randomUUID(), name, entries: [] };
+      onSectionsChange([...sections, newSection]);
     },
-    [sections, onSectionsChange],
-  )
+    [sections, onSectionsChange]
+  );
 
   const updateSection = useCallback(
-    (id, updated) =>
-      onSectionsChange(sections.map((s) => (s.id === id ? updated : s))),
-    [sections, onSectionsChange],
-  )
+    (id, updated) => onSectionsChange(sections.map((s) => (s.id === id ? updated : s))),
+    [sections, onSectionsChange]
+  );
 
   const deleteSection = useCallback(
     (id) => onSectionsChange(sections.filter((s) => s.id !== id)),
-    [sections, onSectionsChange],
-  )
+    [sections, onSectionsChange]
+  );
 
   const moveSection = useCallback(
     (idx, dir) => {
-      const next = [...sections]
-      const target = idx + dir
-      if (target < 0 || target >= next.length) return
-      ;[next[idx], next[target]] = [next[target], next[idx]]
-      onSectionsChange(next)
+      const next = [...sections];
+      const target = idx + dir;
+      if (target < 0 || target >= next.length) return;
+      [next[idx], next[target]] = [next[target], next[idx]];
+      onSectionsChange(next);
     },
-    [sections, onSectionsChange],
-  )
+    [sections, onSectionsChange]
+  );
 
   return (
     <div className="space-y-4">
@@ -599,10 +600,7 @@ export default function CustomSection({ sections = [], onSectionsChange }) {
 
       {/* Add section panel */}
       {showAddPanel && (
-        <AddSectionPanel
-          onAdd={addSection}
-          onClose={() => setShowAddPanel(false)}
-        />
+        <AddSectionPanel onAdd={addSection} onClose={() => setShowAddPanel(false)} />
       )}
 
       {/* Section list */}
@@ -629,5 +627,5 @@ export default function CustomSection({ sections = [], onSectionsChange }) {
         />
       ))}
     </div>
-  )
+  );
 }

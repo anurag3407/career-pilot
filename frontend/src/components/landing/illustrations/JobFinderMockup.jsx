@@ -15,7 +15,7 @@ export default function JobFinderMockup() {
 
       <div className="flex-1 p-4 bg-background/30 flex gap-4 relative overflow-hidden">
         {/* Filters Sidebar */}
-        <motion.div 
+        <motion.div
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
@@ -27,7 +27,7 @@ export default function JobFinderMockup() {
             <div className="h-2 w-full bg-muted rounded" />
             <div className="h-2 w-3/4 bg-muted rounded" />
             <div className="h-2 w-4/5 bg-muted rounded" />
-            
+
             <div className="h-3 w-20 bg-foreground/20 rounded mt-4 mb-2" />
             <div className="flex gap-2">
               <div className="h-4 w-12 bg-primary/20 rounded-full" />
@@ -39,7 +39,7 @@ export default function JobFinderMockup() {
         {/* Job Listings */}
         <div className="flex-1 flex flex-col gap-3">
           {/* Active Job Card */}
-          <motion.div 
+          <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -49,7 +49,7 @@ export default function JobFinderMockup() {
             <div className="absolute top-4 right-4 bg-primary/10 text-primary px-2 py-1 rounded-md text-xs font-bold border border-primary/20">
               98% Match
             </div>
-            
+
             <div className="h-12 w-12 rounded bg-muted flex items-center justify-center shrink-0">
               <div className="h-6 w-6 rounded-full bg-primary/50" />
             </div>
@@ -64,7 +64,7 @@ export default function JobFinderMockup() {
           </motion.div>
 
           {/* Job Card 2 */}
-          <motion.div 
+          <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -87,7 +87,7 @@ export default function JobFinderMockup() {
           </motion.div>
 
           {/* Job Card 3 */}
-          <motion.div 
+          <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}

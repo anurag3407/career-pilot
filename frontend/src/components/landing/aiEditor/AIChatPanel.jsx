@@ -63,7 +63,7 @@ export default function AIChatPanel({ portfolioData, onApplyPatch, onShowToast }
       id: 'sys-1',
       role: 'assistant',
       content:
-        "Hi! Tell me what to change in your portfolio — bio, accent color, skills, project copy. Or click any element on the left to edit it directly.",
+        'Hi! Tell me what to change in your portfolio — bio, accent color, skills, project copy. Or click any element on the left to edit it directly.',
     },
   ]);
   const [input, setInput] = useState('');
@@ -144,9 +144,7 @@ export default function AIChatPanel({ portfolioData, onApplyPatch, onShowToast }
             AI Editor
           </span>
         </div>
-        <span className="text-[10px] font-mono text-neutral-600 uppercase">
-          F1_Racing
-        </span>
+        <span className="text-[10px] font-mono text-neutral-600 uppercase">F1_Racing</span>
       </div>
 
       {/* Messages */}
@@ -158,10 +156,7 @@ export default function AIChatPanel({ portfolioData, onApplyPatch, onShowToast }
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
-              className={cn(
-                'flex',
-                m.role === 'user' ? 'justify-end' : 'justify-start'
-              )}
+              className={cn('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}
             >
               <div
                 className={cn(

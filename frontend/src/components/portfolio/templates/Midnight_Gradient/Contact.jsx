@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Send } from 'lucide-react';
 
-const GlowingCard = ({ children, className = "", delay = 0 }) => (
+const GlowingCard = ({ children, className = '', delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.6, ease: "easeOut", delay }}
+    viewport={{ once: true, margin: '-100px' }}
+    transition={{ duration: 0.6, ease: 'easeOut', delay }}
     whileHover={{ y: -6, transition: { duration: 0.2 } }}
     className={`relative group rounded-2xl border border-indigo-500/10 hover:border-cyan-400/40 bg-[#0a0d24]/60 backdrop-blur-md hover:shadow-[0_0_35px_rgba(34,211,238,0.12)] transition-all duration-300 ${className}`}
   >
@@ -25,9 +25,12 @@ export default function Contact({ data }) {
           <div className="inline-flex p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 mb-4 justify-center">
             <Phone size={24} />
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white text-center">Let's Connect</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white text-center">
+            Let's Connect
+          </h2>
           <p className="text-gray-400 text-sm mt-3 leading-relaxed text-center">
-            Have an exciting role, project, or general inquiry? Feel free to reach out and let's construct something awesome!
+            Have an exciting role, project, or general inquiry? Feel free to reach out and let's
+            construct something awesome!
           </p>
         </div>
 
@@ -36,7 +39,9 @@ export default function Contact({ data }) {
           <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label htmlFor="user-name" className="sr-only">Full Name</label>
+                <label htmlFor="user-name" className="sr-only">
+                  Full Name
+                </label>
                 <input
                   id="user-name"
                   type="text"
@@ -45,7 +50,9 @@ export default function Contact({ data }) {
                 />
               </div>
               <div>
-                <label htmlFor="user-email" className="sr-only">Email Address</label>
+                <label htmlFor="user-email" className="sr-only">
+                  Email Address
+                </label>
                 <input
                   id="user-email"
                   type="email"
@@ -56,7 +63,9 @@ export default function Contact({ data }) {
             </div>
 
             <div>
-              <label htmlFor="message-subject" className="sr-only">Subject</label>
+              <label htmlFor="message-subject" className="sr-only">
+                Subject
+              </label>
               <input
                 id="message-subject"
                 type="text"
@@ -66,7 +75,9 @@ export default function Contact({ data }) {
             </div>
 
             <div>
-              <label htmlFor="user-message" className="sr-only">Your Message</label>
+              <label htmlFor="user-message" className="sr-only">
+                Your Message
+              </label>
               <textarea
                 id="user-message"
                 rows={5}

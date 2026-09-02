@@ -28,8 +28,7 @@ export default function AIProviderSetup() {
   // Derive active provider display info
   const activeMeta = activeProvider ? PROVIDER_META[activeProvider] : null;
   const activeEntry = activeProvider ? providers[activeProvider] : null;
-  const activeModel =
-    activeEntry?.model || activeMeta?.defaultModel || '';
+  const activeModel = activeEntry?.model || activeMeta?.defaultModel || '';
 
   return (
     <div className="space-y-6">
@@ -57,20 +56,15 @@ export default function AIProviderSetup() {
             {activeProvider ? (
               <>
                 Currently using{' '}
-                <span className="font-semibold text-foreground">
-                  {activeMeta?.name}
-                </span>{' '}
-                <span className="text-muted-foreground/70">
-                  ({activeModel})
-                </span>
+                <span className="font-semibold text-foreground">{activeMeta?.name}</span>{' '}
+                <span className="text-muted-foreground/70">({activeModel})</span>
               </>
             ) : (
               <>
-                No{' '}
-                <span className="font-semibold text-foreground">
-                  API Key Found
-                </span>{' '}
-                <span className="text-muted-foreground/70">(configure your own API keys to use AI features)</span>
+                No <span className="font-semibold text-foreground">API Key Found</span>{' '}
+                <span className="text-muted-foreground/70">
+                  (configure your own API keys to use AI features)
+                </span>
               </>
             )}
           </p>

@@ -15,8 +15,15 @@ export default function Projects({ projects }) {
           <h2 className="text-5xl font-black uppercase tracking-tighter md:text-7xl mb-4">
             <span className="text-white">THE </span>
             <span className="relative inline-block">
-              <span className="absolute inset-0 -translate-x-1 translate-y-1 text-pink-500 blur-[2px]">GALLERY</span>
-              <span className="relative text-transparent" style={{ WebkitTextStroke: '2px #fbbf24' }}>GALLERY</span>
+              <span className="absolute inset-0 -translate-x-1 translate-y-1 text-pink-500 blur-[2px]">
+                GALLERY
+              </span>
+              <span
+                className="relative text-transparent"
+                style={{ WebkitTextStroke: '2px #fbbf24' }}
+              >
+                GALLERY
+              </span>
             </span>
           </h2>
           <p className="text-gray-400 font-bold uppercase tracking-widest">Featured Masterpieces</p>
@@ -26,15 +33,17 @@ export default function Projects({ projects }) {
           {projects.map((project, i) => (
             <div key={i} className="group relative">
               {/* Backing shadow/border for street art offset effect */}
-              <div className={`absolute inset-0 translate-x-3 translate-y-3 rounded-xl transition-transform duration-300 group-hover:translate-x-5 group-hover:translate-y-5 ${i % 2 === 0 ? 'bg-pink-500' : 'bg-yellow-400'}`} />
-              
+              <div
+                className={`absolute inset-0 translate-x-3 translate-y-3 rounded-xl transition-transform duration-300 group-hover:translate-x-5 group-hover:translate-y-5 ${i % 2 === 0 ? 'bg-pink-500' : 'bg-yellow-400'}`}
+              />
+
               <div className="relative h-full flex flex-col bg-gray-900 border-2 border-white/20 rounded-xl overflow-hidden hover:border-white/50 transition-colors">
                 {/* Project Image */}
                 <div className="relative aspect-video overflow-hidden bg-black">
                   {project.image ? (
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
+                    <img
+                      src={project.image}
+                      alt={project.title}
                       className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 mix-blend-luminosity group-hover:mix-blend-normal"
                     />
                   ) : (
@@ -51,7 +60,7 @@ export default function Projects({ projects }) {
                   <h3 className="text-2xl md:text-3xl font-black uppercase text-white mb-3 group-hover:text-pink-400 transition-colors">
                     {project.title}
                   </h3>
-                  
+
                   <p className="text-gray-400 mb-6 flex-grow leading-relaxed">
                     {project.description}
                   </p>
@@ -60,7 +69,10 @@ export default function Projects({ projects }) {
                   {project.technologies && project.technologies.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-8">
                       {project.technologies.map((tech, j) => (
-                        <span key={j} className="px-2 py-1 text-xs font-bold uppercase text-black bg-white/80 hover:bg-white transition-colors">
+                        <span
+                          key={j}
+                          className="px-2 py-1 text-xs font-bold uppercase text-black bg-white/80 hover:bg-white transition-colors"
+                        >
                           {tech}
                         </span>
                       ))}
@@ -70,9 +82,9 @@ export default function Projects({ projects }) {
                   {/* Links */}
                   <div className="flex items-center gap-4 pt-4 border-t border-white/10">
                     {project.link && (
-                      <a 
-                        href={project.link} 
-                        target="_blank" 
+                      <a
+                        href={project.link}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm font-black uppercase text-yellow-400 hover:text-yellow-300 transition-colors"
                       >
@@ -80,9 +92,9 @@ export default function Projects({ projects }) {
                       </a>
                     )}
                     {project.github && (
-                      <a 
-                        href={project.github} 
-                        target="_blank" 
+                      <a
+                        href={project.github}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm font-black uppercase text-gray-400 hover:text-white transition-colors ml-auto"
                       >

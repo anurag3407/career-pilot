@@ -35,13 +35,15 @@ function DiaryEntry({ exp, index }) {
       </p>
 
       {/* Signature line */}
-      <div style={{
-        marginTop: 10,
-        fontSize: 9,
-        fontFamily: "'IBM Plex Mono', monospace",
-        color: C.border,
-        letterSpacing: 2,
-      }}>
+      <div
+        style={{
+          marginTop: 10,
+          fontSize: 9,
+          fontFamily: "'IBM Plex Mono', monospace",
+          color: C.border,
+          letterSpacing: 2,
+        }}
+      >
         — entry recorded —
       </div>
     </motion.div>

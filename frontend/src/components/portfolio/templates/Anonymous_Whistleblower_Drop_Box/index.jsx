@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Github,
   Linkedin,
@@ -15,8 +15,8 @@ import {
   AlertTriangle,
   ChevronRight,
   Zap,
-} from "lucide-react";
-import { usePortfolio } from "../../../../context/PortfolioContext";
+} from 'lucide-react';
+import { usePortfolio } from '../../../../context/PortfolioContext';
 
 /* ─── Palette ─────────────────────────────────────────────
    Aesthetic: leaked classified dossier + secure terminal
@@ -24,20 +24,20 @@ import { usePortfolio } from "../../../../context/PortfolioContext";
    on hover, revealing data beneath
 ──────────────────────────────────────────────────────── */
 const C = {
-  bg: "#080A08",
-  paper: "#0C0F0C",
-  border: "#1A2A1A",
-  green: "#00FF41",
-  greenDim: "#00CC33",
-  greenMute: "rgba(0,255,65,0.35)",
-  greenGlow: "rgba(0,255,65,0.08)",
-  red: "#FF3B3B",
-  amber: "#FFB800",
-  text: "#C8D8C8",
-  muted: "rgba(200,216,200,0.5)",
-  dim: "rgba(200,216,200,0.2)",
-  black: "#000000",
-  redact: "#111811",
+  bg: '#080A08',
+  paper: '#0C0F0C',
+  border: '#1A2A1A',
+  green: '#00FF41',
+  greenDim: '#00CC33',
+  greenMute: 'rgba(0,255,65,0.35)',
+  greenGlow: 'rgba(0,255,65,0.08)',
+  red: '#FF3B3B',
+  amber: '#FFB800',
+  text: '#C8D8C8',
+  muted: 'rgba(200,216,200,0.5)',
+  dim: 'rgba(200,216,200,0.2)',
+  black: '#000000',
+  redact: '#111811',
 };
 
 /* ─── Scanline overlay ─────────────────────────────────── */
@@ -45,13 +45,13 @@ function Scanlines() {
   return (
     <div
       style={{
-        position: "fixed",
+        position: 'fixed',
         inset: 0,
-        pointerEvents: "none",
+        pointerEvents: 'none',
         zIndex: 999,
         backgroundImage:
-          "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)",
-        backgroundSize: "100% 4px",
+          'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)',
+        backgroundSize: '100% 4px',
       }}
     />
   );
@@ -59,13 +59,13 @@ function Scanlines() {
 
 /* ─── Typing text effect ────────────────────────────────── */
 function TypedText({ text, speed = 28, className, style }) {
-  const [displayed, setDisplayed] = useState("");
+  const [displayed, setDisplayed] = useState('');
   const [done, setDone] = useState(false);
   const idx = useRef(0);
 
   useEffect(() => {
     idx.current = 0;
-    setDisplayed("");
+    setDisplayed('');
     setDone(false);
     const interval = setInterval(() => {
       idx.current++;
@@ -84,13 +84,13 @@ function TypedText({ text, speed = 28, className, style }) {
       {!done && (
         <span
           style={{
-            display: "inline-block",
-            width: "0.55em",
-            height: "1em",
+            display: 'inline-block',
+            width: '0.55em',
+            height: '1em',
             background: C.green,
-            verticalAlign: "text-bottom",
+            verticalAlign: 'text-bottom',
             marginLeft: 2,
-            animation: "blink 0.9s step-end infinite",
+            animation: 'blink 0.9s step-end infinite',
           }}
         />
       )}
@@ -106,11 +106,11 @@ function Redacted({ children, label, alwaysVisible = false }) {
     <span
       onMouseEnter={() => setRevealed(true)}
       onMouseLeave={() => !alwaysVisible && setRevealed(false)}
-      title={alwaysVisible ? undefined : "Hover to declassify"}
+      title={alwaysVisible ? undefined : 'Hover to declassify'}
       style={{
-        display: "inline-block",
-        cursor: alwaysVisible ? "default" : "pointer",
-        position: "relative",
+        display: 'inline-block',
+        cursor: alwaysVisible ? 'default' : 'pointer',
+        position: 'relative',
       }}
     >
       <AnimatePresence mode="wait">
@@ -136,14 +136,14 @@ function Redacted({ children, label, alwaysVisible = false }) {
               background: C.redact,
               color: C.redact,
               borderRadius: 2,
-              padding: "0 4px",
-              userSelect: "none",
-              fontSize: "0.9em",
-              letterSpacing: "0.08em",
+              padding: '0 4px',
+              userSelect: 'none',
+              fontSize: '0.9em',
+              letterSpacing: '0.08em',
               border: `1px solid #1a2a1a`,
             }}
           >
-            {label || "█████████"}
+            {label || '█████████'}
           </motion.span>
         )}
       </AnimatePresence>
@@ -152,31 +152,25 @@ function Redacted({ children, label, alwaysVisible = false }) {
 }
 
 /* ─── Dossier section wrapper ───────────────────────────── */
-function DossierSection({
-  id,
-  label,
-  classification = "CONFIDENTIAL",
-  children,
-  delay = 0,
-}) {
+function DossierSection({ id, label, classification = 'CONFIDENTIAL', children, delay = 0 }) {
   return (
     <motion.section
       id={id}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay, ease: "easeOut" }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.5, delay, ease: 'easeOut' }}
       style={{
         borderLeft: `2px solid ${C.border}`,
         paddingLeft: 24,
         marginBottom: 56,
-        position: "relative",
+        position: 'relative',
       }}
     >
       {/* Corner bracket */}
       <div
         style={{
-          position: "absolute",
+          position: 'absolute',
           top: 0,
           left: -2,
           width: 12,
@@ -189,8 +183,8 @@ function DossierSection({
       {/* Section label */}
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
+          display: 'flex',
+          alignItems: 'center',
           gap: 10,
           marginBottom: 20,
         }}
@@ -199,8 +193,8 @@ function DossierSection({
           style={{
             fontSize: 9,
             fontWeight: 700,
-            letterSpacing: "0.4em",
-            textTransform: "uppercase",
+            letterSpacing: '0.4em',
+            textTransform: 'uppercase',
             color: C.green,
             fontFamily: "'Courier New', Courier, monospace",
           }}
@@ -211,10 +205,10 @@ function DossierSection({
           style={{
             fontSize: 8,
             fontWeight: 700,
-            letterSpacing: "0.25em",
+            letterSpacing: '0.25em',
             color: C.red,
             border: `1px solid ${C.red}`,
-            padding: "1px 6px",
+            padding: '1px 6px',
             borderRadius: 2,
             fontFamily: "'Courier New', Courier, monospace",
           }}
@@ -237,9 +231,9 @@ function SkillRow({ name, level, category, index }) {
       viewport={{ once: true }}
       transition={{ delay: index * 0.04, duration: 0.35 }}
       style={{
-        display: "grid",
-        gridTemplateColumns: "140px 1fr 36px",
-        alignItems: "center",
+        display: 'grid',
+        gridTemplateColumns: '140px 1fr 36px',
+        alignItems: 'center',
         gap: 12,
         marginBottom: 10,
         fontFamily: "'Courier New', Courier, monospace",
@@ -249,9 +243,9 @@ function SkillRow({ name, level, category, index }) {
         style={{
           fontSize: 11,
           color: C.text,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
         }}
       >
         {name}
@@ -259,26 +253,24 @@ function SkillRow({ name, level, category, index }) {
       <div
         style={{
           height: 3,
-          background: "rgba(255,255,255,0.05)",
+          background: 'rgba(255,255,255,0.05)',
           borderRadius: 0,
-          overflow: "hidden",
+          overflow: 'hidden',
         }}
       >
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${level}%` }}
           viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: "easeOut", delay: index * 0.04 }}
+          transition={{ duration: 1.2, ease: 'easeOut', delay: index * 0.04 }}
           style={{
-            height: "100%",
+            height: '100%',
             background: `linear-gradient(90deg, ${C.greenDim}, ${C.green})`,
             boxShadow: `0 0 6px ${C.greenMute}`,
           }}
         />
       </div>
-      <span style={{ fontSize: 10, color: C.greenDim, textAlign: "right" }}>
-        {level}%
-      </span>
+      <span style={{ fontSize: 10, color: C.greenDim, textAlign: 'right' }}>{level}%</span>
     </motion.div>
   );
 }
@@ -298,53 +290,53 @@ function ProjectCard({ project, index }) {
       style={{
         border: `1px solid ${hover ? C.green : C.border}`,
         borderRadius: 0,
-        overflow: "hidden",
-        background: hover ? C.greenGlow : "transparent",
-        transition: "border-color 0.2s, background 0.2s",
-        cursor: "default",
+        overflow: 'hidden',
+        background: hover ? C.greenGlow : 'transparent',
+        transition: 'border-color 0.2s, background 0.2s',
+        cursor: 'default',
       }}
     >
       {project.image && (
-        <div style={{ position: "relative", height: 110, overflow: "hidden" }}>
+        <div style={{ position: 'relative', height: 110, overflow: 'hidden' }}>
           <img
             src={project.image}
             alt={project.title}
             style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              filter: "grayscale(80%) brightness(0.5)",
-              transition: "filter 0.3s",
-              ...(hover && { filter: "grayscale(40%) brightness(0.65)" }),
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              filter: 'grayscale(80%) brightness(0.5)',
+              transition: 'filter 0.3s',
+              ...(hover && { filter: 'grayscale(40%) brightness(0.65)' }),
             }}
           />
           {/* Classification stamp on image */}
           <div
             style={{
-              position: "absolute",
+              position: 'absolute',
               top: 8,
               right: 8,
               fontSize: 8,
               fontWeight: 700,
-              letterSpacing: "0.3em",
+              letterSpacing: '0.3em',
               color: C.red,
               border: `1px solid ${C.red}`,
-              padding: "2px 6px",
+              padding: '2px 6px',
               fontFamily: "'Courier New', Courier, monospace",
-              background: "rgba(0,0,0,0.7)",
-              transform: "rotate(2deg)",
+              background: 'rgba(0,0,0,0.7)',
+              transform: 'rotate(2deg)',
             }}
           >
             CLASSIFIED
           </div>
         </div>
       )}
-      <div style={{ padding: "14px 16px" }}>
+      <div style={{ padding: '14px 16px' }}>
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
             marginBottom: 6,
           }}
         >
@@ -354,13 +346,13 @@ function ProjectCard({ project, index }) {
               fontWeight: 700,
               color: C.text,
               fontFamily: "'Courier New', Courier, monospace",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
             }}
           >
             {project.title}
           </span>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
@@ -388,24 +380,24 @@ function ProjectCard({ project, index }) {
             fontSize: 11,
             color: C.muted,
             lineHeight: 1.65,
-            margin: "0 0 10px",
+            margin: '0 0 10px',
             fontFamily: "'Courier New', Courier, monospace",
           }}
         >
           {project.description?.slice(0, 90)}…
         </p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
           {project.techStack?.slice(0, 4).map((t) => (
             <span
               key={t}
               style={{
                 fontSize: 9,
                 fontWeight: 700,
-                padding: "2px 7px",
+                padding: '2px 7px',
                 border: `1px solid ${C.greenDim}`,
                 color: C.greenDim,
                 fontFamily: "'Courier New', Courier, monospace",
-                letterSpacing: "0.1em",
+                letterSpacing: '0.1em',
               }}
             >
               {t}
@@ -434,9 +426,9 @@ function ExpEntry({ entry, index }) {
     >
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
           gap: 6,
           marginBottom: 6,
         }}
@@ -447,24 +439,22 @@ function ExpEntry({ entry, index }) {
               fontSize: 12,
               fontWeight: 700,
               color: C.text,
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
             }}
           >
             {entry.role || entry.title}
           </div>
-          <div style={{ fontSize: 11, color: C.green, marginTop: 2 }}>
-            {entry.company}
-          </div>
+          <div style={{ fontSize: 11, color: C.green, marginTop: 2 }}>{entry.company}</div>
         </div>
         <span
           style={{
             fontSize: 9,
             color: C.dim,
             border: `1px solid ${C.border}`,
-            padding: "2px 8px",
-            alignSelf: "flex-start",
-            letterSpacing: "0.1em",
+            padding: '2px 8px',
+            alignSelf: 'flex-start',
+            letterSpacing: '0.1em',
           }}
         >
           {entry.duration || entry.period}
@@ -489,15 +479,15 @@ function TestimonialCard({ t, index }) {
       transition={{ delay: index * 0.08, duration: 0.4 }}
       style={{
         border: `1px solid ${C.border}`,
-        padding: "16px 18px",
+        padding: '16px 18px',
         background: C.greenGlow,
         fontFamily: "'Courier New', Courier, monospace",
       }}
     >
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
+          display: 'flex',
+          alignItems: 'center',
           gap: 10,
           marginBottom: 10,
         }}
@@ -509,9 +499,9 @@ function TestimonialCard({ t, index }) {
             style={{
               width: 32,
               height: 32,
-              borderRadius: "50%",
-              objectFit: "cover",
-              filter: "grayscale(60%)",
+              borderRadius: '50%',
+              objectFit: 'cover',
+              filter: 'grayscale(60%)',
               border: `1px solid ${C.border}`,
             }}
           />
@@ -520,11 +510,11 @@ function TestimonialCard({ t, index }) {
             style={{
               width: 32,
               height: 32,
-              borderRadius: "50%",
+              borderRadius: '50%',
               background: C.border,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               fontSize: 13,
               fontWeight: 700,
               color: C.green,
@@ -534,9 +524,7 @@ function TestimonialCard({ t, index }) {
           </div>
         )}
         <div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: C.text }}>
-            {t.name}
-          </div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.text }}>{t.name}</div>
           <div style={{ fontSize: 10, color: C.dim }}>{t.role}</div>
         </div>
       </div>
@@ -545,7 +533,7 @@ function TestimonialCard({ t, index }) {
           fontSize: 11,
           color: C.muted,
           lineHeight: 1.7,
-          fontStyle: "italic",
+          fontStyle: 'italic',
           margin: 0,
         }}
       >
@@ -558,27 +546,19 @@ function TestimonialCard({ t, index }) {
 /* ─── Main template ──────────────────────────────────────── */
 export default function Anonymous_Whistleblower_Drop_Box() {
   const { portfolioData } = usePortfolio();
-  const {
-    personal,
-    socials,
-    stats,
-    skills,
-    projects,
-    experience,
-    testimonials,
-  } = portfolioData;
+  const { personal, socials, stats, skills, projects, experience, testimonials } = portfolioData;
 
   const [accessGranted, setAccessGranted] = useState(false);
   const [bootLines, setBootLines] = useState([]);
 
   const BOOT_SEQUENCE = [
-    "> INITIALIZING SECURE CHANNEL...",
-    "> VERIFYING IDENTITY... [ANONYMOUS]",
-    "> STRIPPING METADATA...",
-    "> ESTABLISHING ENCRYPTED TUNNEL...",
-    "> LOADING DOSSIER...",
+    '> INITIALIZING SECURE CHANNEL...',
+    '> VERIFYING IDENTITY... [ANONYMOUS]',
+    '> STRIPPING METADATA...',
+    '> ESTABLISHING ENCRYPTED TUNNEL...',
+    '> LOADING DOSSIER...',
     `> SUBJECT: ${personal.name?.toUpperCase()}`,
-    "> ACCESS GRANTED. PROCEED WITH CAUTION.",
+    '> ACCESS GRANTED. PROCEED WITH CAUTION.',
   ];
 
   /* Boot sequence on mount */
@@ -598,14 +578,12 @@ export default function Anonymous_Whistleblower_Drop_Box() {
   const contactLinks = [
     {
       Icon: Mail,
-      href: socials.email?.includes("@")
-        ? `mailto:${socials.email}`
-        : socials.email,
-      label: "SECURE_MAIL",
+      href: socials.email?.includes('@') ? `mailto:${socials.email}` : socials.email,
+      label: 'SECURE_MAIL',
     },
-    { Icon: Github, href: socials.github, label: "GITHUB" },
-    { Icon: Linkedin, href: socials.linkedin, label: "LINKEDIN" },
-    { Icon: Twitter, href: socials.twitter, label: "TWITTER" },
+    { Icon: Github, href: socials.github, label: 'GITHUB' },
+    { Icon: Linkedin, href: socials.linkedin, label: 'LINKEDIN' },
+    { Icon: Twitter, href: socials.twitter, label: 'TWITTER' },
   ].filter((l) => l.href);
 
   /* ── Boot screen ── */
@@ -613,23 +591,23 @@ export default function Anonymous_Whistleblower_Drop_Box() {
     return (
       <div
         style={{
-          width: "100%",
-          minHeight: "100vh",
+          width: '100%',
+          minHeight: '100vh',
           background: C.black,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           fontFamily: "'Courier New', Courier, monospace",
           color: C.green,
           padding: 40,
         }}
       >
         <Scanlines />
-        <div style={{ maxWidth: 560, width: "100%" }}>
+        <div style={{ maxWidth: 560, width: '100%' }}>
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               gap: 10,
               marginBottom: 28,
             }}
@@ -638,15 +616,15 @@ export default function Anonymous_Whistleblower_Drop_Box() {
             <span
               style={{
                 fontSize: 11,
-                letterSpacing: "0.4em",
-                textTransform: "uppercase",
+                letterSpacing: '0.4em',
+                textTransform: 'uppercase',
                 fontWeight: 700,
               }}
             >
               ANONYMOUS DROP BOX — v2.4.1
             </span>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {bootLines.map((line, i) => (
               <motion.div
                 key={i}
@@ -655,13 +633,13 @@ export default function Anonymous_Whistleblower_Drop_Box() {
                 transition={{ duration: 0.2 }}
                 style={{
                   fontSize: 12,
-                  color: line?.includes("GRANTED")
+                  color: line?.includes('GRANTED')
                     ? C.green
-                    : line?.includes("SUBJECT")
+                    : line?.includes('SUBJECT')
                       ? C.amber
                       : C.greenDim,
-                  fontWeight: line?.includes("GRANTED") ? 700 : 400,
-                  letterSpacing: "0.05em",
+                  fontWeight: line?.includes('GRANTED') ? 700 : 400,
+                  letterSpacing: '0.05em',
                 }}
               >
                 {line}
@@ -677,12 +655,12 @@ export default function Anonymous_Whistleblower_Drop_Box() {
   return (
     <div
       style={{
-        width: "100%",
-        minHeight: "100vh",
+        width: '100%',
+        minHeight: '100vh',
         background: C.bg,
         color: C.text,
         fontFamily: "'Courier New', Courier, monospace",
-        position: "relative",
+        position: 'relative',
       }}
     >
       <Scanlines />
@@ -705,23 +683,23 @@ export default function Anonymous_Whistleblower_Drop_Box() {
       {/* ── Sticky top bar ── */}
       <div
         style={{
-          position: "sticky",
+          position: 'sticky',
           top: 0,
           zIndex: 50,
           background: C.black,
           borderBottom: `1px solid ${C.border}`,
-          padding: "10px 40px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          padding: '10px 40px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Lock size={13} color={C.green} />
           <span
             style={{
               fontSize: 9,
-              letterSpacing: "0.4em",
+              letterSpacing: '0.4em',
               color: C.green,
               fontWeight: 700,
             }}
@@ -729,18 +707,18 @@ export default function Anonymous_Whistleblower_Drop_Box() {
             ANON//DROP-BOX
           </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          {["about", "skills", "projects", "experience", "contact"].map((s) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          {['about', 'skills', 'projects', 'experience', 'contact'].map((s) => (
             <a
               key={s}
               href={`#${s}`}
               style={{
                 fontSize: 9,
-                letterSpacing: "0.25em",
+                letterSpacing: '0.25em',
                 color: C.dim,
-                textDecoration: "none",
-                textTransform: "uppercase",
-                transition: "color 0.15s",
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+                transition: 'color 0.15s',
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = C.green)}
               onMouseLeave={(e) => (e.currentTarget.style.color = C.dim)}
@@ -749,27 +727,21 @@ export default function Anonymous_Whistleblower_Drop_Box() {
             </a>
           ))}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <div
             style={{
               width: 6,
               height: 6,
-              borderRadius: "50%",
+              borderRadius: '50%',
               background: C.green,
-              animation: "blink 1.8s ease-in-out infinite",
+              animation: 'blink 1.8s ease-in-out infinite',
             }}
           />
-          <span
-            style={{ fontSize: 9, color: C.greenDim, letterSpacing: "0.2em" }}
-          >
-            ENCRYPTED
-          </span>
+          <span style={{ fontSize: 9, color: C.greenDim, letterSpacing: '0.2em' }}>ENCRYPTED</span>
         </div>
       </div>
 
-      <div
-        style={{ maxWidth: 860, margin: "0 auto", padding: "60px 40px 80px" }}
-      >
+      <div style={{ maxWidth: 860, margin: '0 auto', padding: '60px 40px 80px' }}>
         {/* ── Header / Hero ── */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -784,11 +756,11 @@ export default function Anonymous_Whistleblower_Drop_Box() {
           {/* Dossier file header */}
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
               marginBottom: 36,
-              flexWrap: "wrap",
+              flexWrap: 'wrap',
               gap: 16,
             }}
           >
@@ -797,24 +769,24 @@ export default function Anonymous_Whistleblower_Drop_Box() {
                 style={{
                   fontSize: 8,
                   color: C.dim,
-                  letterSpacing: "0.4em",
+                  letterSpacing: '0.4em',
                   marginBottom: 6,
                 }}
               >
                 FILE REF: AWB-
                 {Math.floor(Date.now() / 10000)
                   .toString(16)
-                  .toUpperCase()}{" "}
+                  .toUpperCase()}{' '}
                 // TOP SECRET
               </div>
               <div
                 style={{
                   fontSize: 8,
                   color: C.red,
-                  letterSpacing: "0.35em",
+                  letterSpacing: '0.35em',
                   border: `1px solid ${C.red}`,
-                  display: "inline-block",
-                  padding: "3px 10px",
+                  display: 'inline-block',
+                  padding: '3px 10px',
                   marginBottom: 18,
                 }}
               >
@@ -822,13 +794,13 @@ export default function Anonymous_Whistleblower_Drop_Box() {
               </div>
               <h1
                 style={{
-                  fontSize: "clamp(2rem, 5vw, 3.6rem)",
+                  fontSize: 'clamp(2rem, 5vw, 3.6rem)',
                   fontWeight: 700,
-                  margin: "0 0 8px",
-                  letterSpacing: "0.04em",
+                  margin: '0 0 8px',
+                  letterSpacing: '0.04em',
                   color: C.text,
                   lineHeight: 1,
-                  textTransform: "uppercase",
+                  textTransform: 'uppercase',
                 }}
               >
                 <TypedText text={personal.name} speed={60} />
@@ -837,9 +809,9 @@ export default function Anonymous_Whistleblower_Drop_Box() {
                 style={{
                   fontSize: 13,
                   color: C.green,
-                  margin: "0 0 12px",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
+                  margin: '0 0 12px',
+                  letterSpacing: '0.15em',
+                  textTransform: 'uppercase',
                 }}
               >
                 {personal.title}
@@ -850,18 +822,18 @@ export default function Anonymous_Whistleblower_Drop_Box() {
                   color: C.muted,
                   maxWidth: 480,
                   lineHeight: 1.75,
-                  margin: "0 0 28px",
+                  margin: '0 0 28px',
                 }}
               >
                 {personal.tagline}
               </p>
 
               {/* Stats row */}
-              <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+              <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
                 {[
-                  { label: "YEARS_ACTIVE", val: `${stats.yearsExperience}+` },
-                  { label: "OPS_COMPLETE", val: `${stats.projectsCompleted}+` },
-                  { label: "CLIENTS_SERVED", val: `${stats.happyClients}+` },
+                  { label: 'YEARS_ACTIVE', val: `${stats.yearsExperience}+` },
+                  { label: 'OPS_COMPLETE', val: `${stats.projectsCompleted}+` },
+                  { label: 'CLIENTS_SERVED', val: `${stats.happyClients}+` },
                 ].map(({ label, val }) => (
                   <div key={label}>
                     <div
@@ -878,7 +850,7 @@ export default function Anonymous_Whistleblower_Drop_Box() {
                       style={{
                         fontSize: 8,
                         color: C.dim,
-                        letterSpacing: "0.3em",
+                        letterSpacing: '0.3em',
                         marginTop: 4,
                       }}
                     >
@@ -890,31 +862,31 @@ export default function Anonymous_Whistleblower_Drop_Box() {
             </div>
 
             {/* Avatar with redaction treatment */}
-            <div style={{ position: "relative", flexShrink: 0 }}>
+            <div style={{ position: 'relative', flexShrink: 0 }}>
               <div
                 style={{
                   width: 120,
                   height: 120,
                   border: `2px solid ${C.border}`,
-                  overflow: "hidden",
-                  position: "relative",
+                  overflow: 'hidden',
+                  position: 'relative',
                 }}
               >
                 <img
                   src={personal.avatar}
                   alt="subject"
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    filter: "grayscale(70%) contrast(1.1)",
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    filter: 'grayscale(70%) contrast(1.1)',
                   }}
                 />
                 {/* Redaction bar over eyes */}
                 <div
                   style={{
-                    position: "absolute",
-                    top: "32%",
+                    position: 'absolute',
+                    top: '32%',
                     left: 0,
                     right: 0,
                     height: 18,
@@ -927,9 +899,9 @@ export default function Anonymous_Whistleblower_Drop_Box() {
                 style={{
                   fontSize: 8,
                   color: C.dim,
-                  letterSpacing: "0.2em",
+                  letterSpacing: '0.2em',
                   marginTop: 6,
-                  textAlign: "center",
+                  textAlign: 'center',
                 }}
               >
                 SUBJECT_PHOTO
@@ -940,17 +912,13 @@ export default function Anonymous_Whistleblower_Drop_Box() {
 
         {/* ── About ── */}
         <div id="about">
-          <DossierSection
-            label="SUBJECT PROFILE"
-            classification="CONFIDENTIAL"
-            delay={0.05}
-          >
+          <DossierSection label="SUBJECT PROFILE" classification="CONFIDENTIAL" delay={0.05}>
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr auto",
+                display: 'grid',
+                gridTemplateColumns: '1fr auto',
                 gap: 32,
-                alignItems: "start",
+                alignItems: 'start',
               }}
             >
               <div>
@@ -960,30 +928,24 @@ export default function Anonymous_Whistleblower_Drop_Box() {
                     color: C.muted,
                     lineHeight: 1.85,
                     marginBottom: 20,
-                    margin: "0 0 20px",
+                    margin: '0 0 20px',
                   }}
                 >
                   {personal.bio}
                 </p>
                 <div style={{ fontSize: 11, color: C.dim, lineHeight: 1.9 }}>
                   <div>
-                    LOCATION:{" "}
-                    <Redacted label="██████████████">
-                      {personal.location}
-                    </Redacted>
+                    LOCATION: <Redacted label="██████████████">{personal.location}</Redacted>
                   </div>
                   <div>
-                    CONTACT:{" "}
-                    <Redacted label="████████████████">
-                      {socials.email}
-                    </Redacted>
+                    CONTACT: <Redacted label="████████████████">{socials.email}</Redacted>
                   </div>
                   <div
                     style={{
                       marginTop: 8,
                       color: C.dim,
                       fontSize: 10,
-                      letterSpacing: "0.1em",
+                      letterSpacing: '0.1em',
                     }}
                   >
                     ↑ HOVER FIELDS TO DECLASSIFY
@@ -996,16 +958,12 @@ export default function Anonymous_Whistleblower_Drop_Box() {
 
         {/* ── Skills ── */}
         <div id="skills">
-          <DossierSection
-            label="CAPABILITIES ASSESSMENT"
-            classification="SECRET"
-            delay={0.1}
-          >
+          <DossierSection label="CAPABILITIES ASSESSMENT" classification="SECRET" delay={0.1}>
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "0 40px",
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '0 40px',
               }}
             >
               {skills.slice(0, 14).map((skill, i) => (
@@ -1023,15 +981,11 @@ export default function Anonymous_Whistleblower_Drop_Box() {
 
         {/* ── Projects ── */}
         <div id="projects">
-          <DossierSection
-            label="DOCUMENTED OPERATIONS"
-            classification="TOP SECRET"
-            delay={0.15}
-          >
+          <DossierSection label="DOCUMENTED OPERATIONS" classification="TOP SECRET" delay={0.15}>
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
                 gap: 16,
               }}
             >
@@ -1044,11 +998,7 @@ export default function Anonymous_Whistleblower_Drop_Box() {
 
         {/* ── Experience ── */}
         <div id="experience">
-          <DossierSection
-            label="EMPLOYMENT HISTORY"
-            classification="CONFIDENTIAL"
-            delay={0.2}
-          >
+          <DossierSection label="EMPLOYMENT HISTORY" classification="CONFIDENTIAL" delay={0.2}>
             {(experience || []).slice(0, 4).map((entry, i) => (
               <ExpEntry key={i} entry={entry} index={i} />
             ))}
@@ -1056,15 +1006,11 @@ export default function Anonymous_Whistleblower_Drop_Box() {
         </div>
 
         {/* ── Testimonials ── */}
-        <DossierSection
-          label="WITNESS STATEMENTS"
-          classification="SEALED"
-          delay={0.25}
-        >
+        <DossierSection label="WITNESS STATEMENTS" classification="SEALED" delay={0.25}>
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
               gap: 14,
             }}
           >
@@ -1076,11 +1022,7 @@ export default function Anonymous_Whistleblower_Drop_Box() {
 
         {/* ── Contact ── */}
         <div id="contact">
-          <DossierSection
-            label="ESTABLISH CONTACT"
-            classification="EYES ONLY"
-            delay={0.3}
-          >
+          <DossierSection label="ESTABLISH CONTACT" classification="EYES ONLY" delay={0.3}>
             <p
               style={{
                 fontSize: 12,
@@ -1090,11 +1032,10 @@ export default function Anonymous_Whistleblower_Drop_Box() {
                 maxWidth: 480,
               }}
             >
-              All transmissions are encrypted end-to-end. Your identity remains
-              anonymous. Leave a message through any of the secure channels
-              below.
+              All transmissions are encrypted end-to-end. Your identity remains anonymous. Leave a
+              message through any of the secure channels below.
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
               {contactLinks.map(({ Icon, href, label }) => (
                 <a
                   key={label}
@@ -1116,17 +1057,17 @@ export default function Anonymous_Whistleblower_Drop_Box() {
           style={{
             borderTop: `1px solid ${C.border}`,
             paddingTop: 24,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
             gap: 10,
           }}
         >
-          <span style={{ fontSize: 9, color: C.dim, letterSpacing: "0.25em" }}>
+          <span style={{ fontSize: 9, color: C.dim, letterSpacing: '0.25em' }}>
             ANON//DROP-BOX — THIS CONNECTION WILL SELF-TERMINATE
           </span>
-          <span style={{ fontSize: 9, color: C.dim, letterSpacing: "0.15em" }}>
+          <span style={{ fontSize: 9, color: C.dim, letterSpacing: '0.15em' }}>
             ⚠ DESTROY AFTER READING ⚠
           </span>
         </div>

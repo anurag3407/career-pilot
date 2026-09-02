@@ -14,7 +14,7 @@ export default function Skills({ data }) {
       border: 'border-cyan-500/30',
       hoverBorder: 'hover:border-cyan-400',
       text: 'text-cyan-400',
-      icon: Cpu
+      icon: Cpu,
     },
     Backend: {
       color: '#a855f7', // Purple
@@ -22,7 +22,7 @@ export default function Skills({ data }) {
       border: 'border-purple-500/30',
       hoverBorder: 'hover:border-purple-400',
       text: 'text-purple-400',
-      icon: Server
+      icon: Server,
     },
     DevOps: {
       color: '#f97316', // Orange
@@ -30,7 +30,7 @@ export default function Skills({ data }) {
       border: 'border-orange-500/30',
       hoverBorder: 'hover:border-orange-400',
       text: 'text-orange-400',
-      icon: Shield
+      icon: Shield,
     },
     Design: {
       color: '#10b981', // Emerald
@@ -38,7 +38,7 @@ export default function Skills({ data }) {
       border: 'border-emerald-500/30',
       hoverBorder: 'hover:border-emerald-400',
       text: 'text-emerald-400',
-      icon: Layers
+      icon: Layers,
     },
     Other: {
       color: '#3b82f6', // Blue
@@ -46,67 +46,76 @@ export default function Skills({ data }) {
       border: 'border-blue-500/30',
       hoverBorder: 'hover:border-blue-400',
       text: 'text-blue-400',
-      icon: Cpu
-    }
+      icon: Cpu,
+    },
   };
 
   // Helper to resolve category stylesheet
   const getStyle = (cat) => {
     const normalized = Object.keys(categoryStyles).find(
-      key => key.toLowerCase() === (cat || '').toLowerCase()
+      (key) => key.toLowerCase() === (cat || '').toLowerCase()
     );
     return categoryStyles[normalized] || categoryStyles.Other;
   };
 
   // Collect unique categories
-  const categories = ['All', ...new Set(skills.map(s => s.category || 'Other'))];
+  const categories = ['All', ...new Set(skills.map((s) => s.category || 'Other'))];
 
   // Filter skills
-  const filteredSkills = activeCategory === 'All' 
-    ? skills 
-    : skills.filter(s => (s.category || 'Other') === activeCategory);
+  const filteredSkills =
+    activeCategory === 'All'
+      ? skills
+      : skills.filter((s) => (s.category || 'Other') === activeCategory);
 
   // Trigger fluid effects
   const handleSkillHover = (e, cat) => {
     const style = getStyle(cat);
-    window.dispatchEvent(new CustomEvent('fluid-burst', {
-      detail: {
-        x: e.clientX,
-        y: e.clientY,
-        count: 5,
-        color: style.color
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-burst', {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          count: 5,
+          color: style.color,
+        },
+      })
+    );
   };
 
   const handleSkillClick = (e, cat) => {
     const style = getStyle(cat);
     // Large explosion
-    window.dispatchEvent(new CustomEvent('fluid-burst', {
-      detail: {
-        x: e.clientX,
-        y: e.clientY,
-        count: 35,
-        color: style.color
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-burst', {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          count: 35,
+          color: style.color,
+        },
+      })
+    );
     // Flow ripple current
-    window.dispatchEvent(new CustomEvent('fluid-flow', {
-      detail: {
-        x: e.clientX,
-        y: e.clientY,
-        dx: (Math.random() - 0.5) * 8,
-        dy: -6,
-        radius: 300,
-        strength: 5
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-flow', {
+        detail: {
+          x: e.clientX,
+          y: e.clientY,
+          dx: (Math.random() - 0.5) * 8,
+          dy: -6,
+          radius: 300,
+          strength: 5,
+        },
+      })
+    );
   };
 
   return (
-    <section id="skills-section" className="relative py-28 px-6 md:px-12 bg-slate-950/20 backdrop-blur-[2px] border-t border-b border-slate-900 overflow-hidden text-white">
+    <section
+      id="skills-section"
+      className="relative py-28 px-6 md:px-12 bg-slate-950/20 backdrop-blur-[2px] border-t border-b border-slate-900 overflow-hidden text-white"
+    >
       <div className="max-w-6xl mx-auto relative z-10 space-y-16">
-        
         {/* Title */}
         <div className="text-center space-y-4 max-w-xl mx-auto">
           <motion.h2
@@ -123,7 +132,8 @@ export default function Skills({ data }) {
             viewport={{ once: true }}
             className="text-slate-400 text-sm md:text-base leading-relaxed"
           >
-            Floating core competencies. Hover to accelerate surrounding vector currents, or click a node to trigger a particle wave.
+            Floating core competencies. Hover to accelerate surrounding vector currents, or click a
+            node to trigger a particle wave.
           </motion.p>
         </div>
 
@@ -133,7 +143,8 @@ export default function Skills({ data }) {
             const isActive = activeCategory === cat;
             const style = cat === 'All' ? categoryStyles.Other : getStyle(cat);
             return (
-              <button type="button"
+              <button
+                type="button"
                 key={idx}
                 onClick={() => setActiveCategory(cat)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border cursor-pointer ${
@@ -149,7 +160,7 @@ export default function Skills({ data }) {
         </div>
 
         {/* Floating Skills Grid */}
-        <motion.div 
+        <motion.div
           layout
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
         >
@@ -187,7 +198,7 @@ export default function Skills({ data }) {
                     <span className="block font-bold text-slate-100 group-hover:text-white transition duration-200 text-sm sm:text-base">
                       {skillName}
                     </span>
-                    
+
                     {/* Simulated visual liquid gauge bar */}
                     <div className="space-y-1">
                       <div className="flex justify-between text-[10px] text-slate-500 font-mono">
@@ -195,15 +206,16 @@ export default function Skills({ data }) {
                         <span>{skillLevel}%</span>
                       </div>
                       <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden relative">
-                        <div 
+                        <div
                           className="h-full rounded-full transition-all duration-1000 ease-out relative"
-                          style={{ 
+                          style={{
                             width: `${skillLevel}%`,
-                            background: `linear-gradient(90deg, ${style.color}cc, ${style.color})`
+                            background: `linear-gradient(90deg, ${style.color}cc, ${style.color})`,
                           }}
                         >
                           {/* Flowing liquid sheen simulation */}
-                          <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent)] -translate-x-full animate-shimmer" 
+                          <div
+                            className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent)] -translate-x-full animate-shimmer"
                             style={{ animation: 'shimmer 2s infinite' }}
                           />
                         </div>

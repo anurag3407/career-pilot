@@ -26,10 +26,10 @@ export default function Skills({ skills }) {
 
   // Group skills if possible, else chunk them visually
   const categories = ['Frontend', 'Backend', 'Design', 'Tools', 'Languages', 'Other'];
-  let grouped = categories.map(cat => ({ category: cat, items: [] }));
+  let grouped = categories.map((cat) => ({ category: cat, items: [] }));
   let ungrouped = [];
 
-  skills.forEach(skill => {
+  skills.forEach((skill) => {
     let placed = false;
     for (let g of grouped) {
       if (skill.category === g.category) {
@@ -45,7 +45,7 @@ export default function Skills({ skills }) {
     grouped.push({ category: 'Core Competencies', items: ungrouped });
   }
 
-  const validGroups = grouped.filter(g => g.items.length > 0);
+  const validGroups = grouped.filter((g) => g.items.length > 0);
 
   return (
     <section

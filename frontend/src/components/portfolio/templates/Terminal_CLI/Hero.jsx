@@ -1,12 +1,11 @@
-import React from "react";
-import { Terminal, ArrowRight, Download } from "lucide-react";
+import React from 'react';
+import { Terminal, ArrowRight, Download } from 'lucide-react';
 
 export default function Hero() {
   return (
     <section className="w-full min-h-screen bg-black text-green-400 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-6xl">
         <div className="bg-zinc-950 border border-green-500/30 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(34,197,94,0.15)]">
-          
           {/* Terminal Header */}
           <div className="flex items-center gap-2 px-4 py-3 bg-zinc-900 border-b border-green-500/20">
             <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -21,9 +20,7 @@ export default function Hero() {
 
           {/* Terminal Body */}
           <div className="p-6 md:p-10 font-mono">
-            <p className="text-green-500 mb-3">
-              visitor@portfolio:~$
-            </p>
+            <p className="text-green-500 mb-3">visitor@portfolio:~$</p>
             <div className="mb-4 text-green-500 text-sm">
               <p>Initializing portfolio...</p>
               <p>Loading profile data...</p>
@@ -47,9 +44,9 @@ export default function Hero() {
             </h2>
 
             <div className="mb-6 text-gray-300 text-sm md:text-base">
-              <p>{">"} Status: Available for opportunities</p>
-              <p>{">"} Location: Remote / Worldwide</p>
-              <p>{">"} Experience: 3+ Years</p>
+              <p>{'>'} Status: Available for opportunities</p>
+              <p>{'>'} Location: Remote / Worldwide</p>
+              <p>{'>'} Experience: 3+ Years</p>
             </div>
 
             <p className="mb-2">
@@ -57,18 +54,23 @@ export default function Hero() {
             </p>
 
             <p className="max-w-3xl text-gray-300 leading-relaxed mb-8">
-              Building scalable web applications, contributing to
-              open source projects, and creating modern digital
-              experiences using React, Node.js, and cloud technologies.
+              Building scalable web applications, contributing to open source projects, and creating
+              modern digital experiences using React, Node.js, and cloud technologies.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button type="button" className="flex items-center justify-center gap-2 px-6 py-3 border border-green-500 rounded-lg hover:bg-green-500 hover:text-black transition-all duration-300">
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 px-6 py-3 border border-green-500 rounded-lg hover:bg-green-500 hover:text-black transition-all duration-300"
+              >
                 $ ./view-projects
                 <ArrowRight size={18} />
               </button>
 
-              <button type="button" className="flex items-center justify-center gap-2 px-6 py-3 border border-green-500/40 rounded-lg hover:border-green-500 transition-all duration-300">
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 px-6 py-3 border border-green-500/40 rounded-lg hover:border-green-500 transition-all duration-300"
+              >
                 $ ./download-resume
                 <Download size={18} />
               </button>

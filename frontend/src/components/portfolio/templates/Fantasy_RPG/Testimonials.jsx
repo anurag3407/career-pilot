@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { usePortfolio } from '../../../../context/PortfolioContext';
 import { MessageSquare, Quote, Star, Award } from 'lucide-react';
-import "./Projects.css";
+import './Projects.css';
 
 export default function Testimonials() {
   const { portfolioData } = usePortfolio();
@@ -36,7 +36,6 @@ export default function Testimonials() {
       <div className="absolute inset-0 bg-[radial-gradient(#201910_1px,transparent_1px)] [background-size:32px_32px] pointer-events-none opacity-45" />
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
-        
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-16 relative">
           <div className="flex items-center gap-4 mb-3">
@@ -65,7 +64,7 @@ export default function Testimonials() {
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
           {data.map((testimonial, index) => (
-            <div 
+            <div
               key={index}
               className="bg-[#121118]/90 border-2 border-[#302718] p-8 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative rpg-proj-gold-border-glow group"
             >
@@ -91,7 +90,11 @@ export default function Testimonials() {
                 <div className="flex items-center gap-4 pt-6 border-t border-amber-900/40 mt-auto">
                   <div className="w-12 h-12 rounded-full bg-amber-950 border-2 border-amber-600 flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.3)] overflow-hidden">
                     {testimonial.image ? (
-                      <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
+                      <img
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
                       <Award className="w-6 h-6 text-amber-500" />
                     )}

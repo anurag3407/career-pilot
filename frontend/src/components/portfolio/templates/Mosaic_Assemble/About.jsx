@@ -6,7 +6,6 @@ import TileSnappingText from './TileSnappingText';
 const About = ({ data = {} }) => (
   <section className="py-32 px-6 max-w-7xl mx-auto relative z-20">
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-      
       {/* Profile Media Frame */}
       <motion.div
         className="w-full lg:col-span-4 relative group"
@@ -29,8 +28,8 @@ const About = ({ data = {} }) => (
       <div className="w-full lg:col-span-8 flex flex-col justify-center">
         <div className="flex items-center gap-4 mb-4">
           <div className="h-px w-8 bg-cyan-500" />
-          <TileSnappingText 
-            text="Identity Registry" 
+          <TileSnappingText
+            text="Identity Registry"
             className="text-xs font-mono uppercase tracking-[0.4em] text-cyan-400"
             baseDelay={0.1}
           />
@@ -41,12 +40,12 @@ const About = ({ data = {} }) => (
         </h2>
 
         <div className="text-lg text-slate-300 font-normal leading-relaxed mb-8 max-w-3xl border-l-2 border-slate-900 pl-6 py-2">
-          <TileSnappingText 
-            text={data.bio} 
-            className="text-slate-300" 
-            variant="subtle" 
+          <TileSnappingText
+            text={data.bio}
+            className="text-slate-300"
+            variant="subtle"
             stagger={0.003} // Fast stream for long descriptive copy
-            baseDelay={0.3} 
+            baseDelay={0.3}
           />
         </div>
 
@@ -60,11 +59,11 @@ const About = ({ data = {} }) => (
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
             </span>
-            OPERATIONAL BASE : <span className="text-white ml-1 font-sans font-bold">{data.location}</span>
+            OPERATIONAL BASE :{' '}
+            <span className="text-white ml-1 font-sans font-bold">{data.location}</span>
           </motion.div>
         </div>
       </div>
-
     </div>
   </section>
 );

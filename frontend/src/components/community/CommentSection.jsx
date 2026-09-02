@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { communityApi } from '../../services/api';
-import { 
-  Heart, 
-  MessageCircle, 
-  Send, 
-  MoreHorizontal,
-  ChevronDown,
-  ChevronUp
-} from 'lucide-react';
+import { Heart, MessageCircle, Send, MoreHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { SkeletonCommentList } from '../ui/Skeleton';
 
@@ -18,12 +11,19 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
   const [replyContent, setReplyContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isLiked = comment.likes?.some(l => l.uid === currentUser?.uid);
+  const isLiked = comment.likes?.some((l) => l.uid === currentUser?.uid);
   const isOwn = comment.author?.uid === currentUser?.uid;
   const likeCount = comment.likes?.length || comment.likeCount || 0;
 
   const getInitials = (name) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '??';
+    return (
+      name
+        ?.split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2) || '??'
+    );
   };
 
   const handleSubmitReply = async (e) => {
@@ -49,8 +49,8 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
         <div className="shrink-0">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium">
             {comment.author?.avatar ? (
-              <img 
-                src={comment.author.avatar} 
+              <img
+                src={comment.author.avatar}
                 alt={comment.author.name}
                 className="w-full h-full rounded-full object-cover"
               />
@@ -67,21 +67,17 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
               {comment.author?.name || 'Anonymous'}
             </span>
             {isOwn && (
-              <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">
-                You
-              </span>
+              <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">You</span>
             )}
             <span className="text-xs text-muted-foreground">
-              {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : ''}
+              {comment.createdAt
+                ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })
+                : ''}
             </span>
-            {comment.isEdited && (
-              <span className="text-xs text-muted-foreground">(edited)</span>
-            )}
+            {comment.isEdited && <span className="text-xs text-muted-foreground">(edited)</span>}
           </div>
 
-          <p className="text-sm text-foreground mt-1 whitespace-pre-wrap">
-            {comment.content}
-          </p>
+          <p className="text-sm text-foreground mt-1 whitespace-pre-wrap">{comment.content}</p>
 
           {/* Actions */}
           <div className="flex items-center gap-4 mt-2">
@@ -125,10 +121,10 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                   <>
-        <Send className="w-4 h-4" />
-        <span className="sr-only">Post Reply</span>
-    </>
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span className="sr-only">Post Reply</span>
+                  </>
                 )}
               </button>
             </form>
@@ -144,12 +140,13 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
             className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 mb-2 ml-11"
           >
             {showReplies ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            {showReplies ? 'Hide' : 'Show'} {comment.replies.length} {comment.replies.length === 1 ? 'reply' : 'replies'}
+            {showReplies ? 'Hide' : 'Show'} {comment.replies.length}{' '}
+            {comment.replies.length === 1 ? 'reply' : 'replies'}
           </button>
-          
+
           {showReplies && (
             <div className="space-y-1">
-              {comment.replies.map(reply => (
+              {comment.replies.map((reply) => (
                 <CommentItem
                   key={reply.id || reply._id}
                   comment={reply}
@@ -183,18 +180,18 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
   const fetchComments = async (loadMore = false) => {
     try {
       if (!loadMore) setLoading(true);
-      
+
       const pageToFetch = loadMore ? page + 1 : 1;
       const data = await communityApi.getComments(postId, pageToFetch);
-      
+
       if (loadMore) {
-        setComments(prev => [...prev, ...data.comments]);
+        setComments((prev) => [...prev, ...data.comments]);
         setPage(pageToFetch);
       } else {
         setComments(data.comments);
         setPage(1);
       }
-      
+
       setTotal(data.pagination.total);
       setHasMore(data.comments.length === 20 && data.pagination.total > pageToFetch * 20);
     } catch (error) {
@@ -211,9 +208,9 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
     setIsSubmitting(true);
     try {
       const data = await communityApi.createComment(postId, { content: newComment.trim() });
-      setComments(prev => [data.comment, ...prev]);
+      setComments((prev) => [data.comment, ...prev]);
       setNewComment('');
-      setTotal(prev => prev + 1);
+      setTotal((prev) => prev + 1);
       onCommentAdded?.();
       toast.success('Comment posted!');
     } catch (error) {
@@ -224,37 +221,39 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
   };
 
   const handleReply = async (parentCommentId, content) => {
-    const data = await communityApi.createComment(postId, { 
-      content, 
-      parentCommentId 
+    const data = await communityApi.createComment(postId, {
+      content,
+      parentCommentId,
     });
-    
+
     // Add reply to the parent comment
-    setComments(prev => prev.map(comment => {
-      if ((comment.id || comment._id) === parentCommentId) {
-        return {
-          ...comment,
-          replies: [...(comment.replies || []), data.comment],
-          replyCount: (comment.replyCount || 0) + 1
-        };
-      }
-      return comment;
-    }));
-    
+    setComments((prev) =>
+      prev.map((comment) => {
+        if ((comment.id || comment._id) === parentCommentId) {
+          return {
+            ...comment,
+            replies: [...(comment.replies || []), data.comment],
+            replyCount: (comment.replyCount || 0) + 1,
+          };
+        }
+        return comment;
+      })
+    );
+
     onCommentAdded?.();
   };
 
   const handleLikeComment = async (commentId) => {
     try {
       const data = await communityApi.toggleLikeComment(commentId);
-      
+
       // Update the comment in state
       const updateCommentLike = (comments) => {
-        return comments.map(comment => {
+        return comments.map((comment) => {
           if ((comment.id || comment._id) === commentId) {
             const newLikes = data.liked
               ? [...(comment.likes || []), { uid: currentUser.uid, name: currentUser.displayName }]
-              : (comment.likes || []).filter(l => l.uid !== currentUser.uid);
+              : (comment.likes || []).filter((l) => l.uid !== currentUser.uid);
             return { ...comment, likes: newLikes, likeCount: data.likeCount };
           }
           // Check replies
@@ -264,7 +263,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
           return comment;
         });
       };
-      
+
       setComments(updateCommentLike);
     } catch (error) {
       toast.error('Failed to like comment', { id: `community-like-comment-error-${commentId}` });
@@ -278,13 +277,18 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
         <form onSubmit={handleSubmitComment} className="flex gap-2">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium shrink-0">
             {currentUser?.photoURL ? (
-              <img 
-                src={currentUser.photoURL} 
+              <img
+                src={currentUser.photoURL}
                 alt={currentUser.displayName}
                 className="w-full h-full rounded-full object-cover"
               />
             ) : (
-              currentUser?.displayName?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '??'
+              currentUser?.displayName
+                ?.split(' ')
+                .map((n) => n[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2) || '??'
             )}
           </div>
           <input
@@ -322,7 +326,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
           </div>
         ) : (
           <div className="px-4 divide-y divide-border">
-            {comments.map(comment => (
+            {comments.map((comment) => (
               <CommentItem
                 key={comment.id || comment._id}
                 comment={comment}

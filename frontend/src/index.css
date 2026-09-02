@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme inline {
   --animate-shadanim: shadanim 15s linear infinite;
@@ -138,11 +138,11 @@ html {
 
 body {
   font-family:
-    "Inter",
-    "Outfit",
+    'Inter',
+    'Outfit',
     -apple-system,
     BlinkMacSystemFont,
-    "Segoe UI",
+    'Segoe UI',
     Roboto,
     sans-serif;
   background-color: var(--background);
@@ -151,8 +151,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
-
-
 
 /* Selection */
 ::selection {
@@ -221,8 +219,12 @@ body {
 
 /* Premium Skeleton Shimmer */
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .animate-shimmer {
@@ -317,43 +319,27 @@ body {
 }
 
 .dark .bg-mesh::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background:
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(124, 58, 237, 0.05) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 10% 10%,
-      rgba(0, 191, 255, 0.05) 0%,
-      transparent 40%
-    );
+    radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 10% 10%, rgba(0, 191, 255, 0.05) 0%, transparent 40%);
 }
 
 .light .bg-mesh::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background:
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(99, 102, 241, 0.03) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 10% 10%,
-      rgba(14, 165, 233, 0.03) 0%,
-      transparent 40%
-    );
+    radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 10% 10%, rgba(14, 165, 233, 0.03) 0%, transparent 40%);
 }
 
 @layer utilities {
@@ -410,11 +396,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    var(--primary),
-    var(--secondary)
-  );
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
   border-radius: 999px;
 }
 
@@ -510,21 +492,13 @@ body {
 }
 
 .aurora-2 {
-  background: radial-gradient(
-    38% 38% at 50% 50%,
-    rgba(124, 58, 237, 0.45) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(38% 38% at 50% 50%, rgba(124, 58, 237, 0.45) 0%, transparent 70%);
   animation-duration: 24s;
   animation-direction: reverse;
 }
 
 .aurora-3 {
-  background: radial-gradient(
-    35% 35% at 50% 50%,
-    rgba(236, 72, 153, 0.3) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(35% 35% at 50% 50%, rgba(236, 72, 153, 0.3) 0%, transparent 70%);
   animation-duration: 30s;
 }
 
@@ -601,20 +575,8 @@ body {
 }
 
 .marquee-mask {
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 12%,
-    #000 88%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 12%,
-    #000 88%,
-    transparent
-  );
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
 }
 
 /* Soft float for product preview */
@@ -644,18 +606,13 @@ body {
 }
 
 .shine-sweep::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 60%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.18),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
   transform: translateX(-120%) skewX(-12deg);
   animation: shine-sweep 5s ease-in-out infinite;
   pointer-events: none;

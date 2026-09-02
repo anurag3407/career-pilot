@@ -1,15 +1,55 @@
-import { triggerConfetti } from '../utils/confetti'
+import { triggerConfetti } from '../utils/confetti';
 import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X, Globe, Code2, Play, Link as LinkIcon, Share2, Download } from 'lucide-react';
+import {
+  Mic,
+  MicOff,
+  Video,
+  VideoOff,
+  XCircle,
+  CheckCircle,
+  AlertCircle,
+  Volume2,
+  VolumeX,
+  RotateCcw,
+  UserX,
+  Loader2,
+  Sparkles,
+  ArrowRight,
+  Target,
+  TrendingUp,
+  MessageSquare,
+  Eye,
+  Brain,
+  Award,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  BarChart3,
+  Lightbulb,
+  Zap,
+  Laptop,
+  Smartphone,
+  Chrome,
+  AlertTriangle,
+  FileUp,
+  FileText,
+  X,
+  Globe,
+  Code2,
+  Play,
+  Link as LinkIcon,
+  Share2,
+  Download,
+} from 'lucide-react';
 import Button from '../components/Button';
 import BodyLanguageTips from '../components/BodyLanguageTips';
 import VoiceToTextButton from '../components/VoiceToTextButton';
 import { interviewApi, uploadApi, resumeApi } from '../services/api';
-import ConfidenceMeter from "../components/ConfidenceMeter";
-import {DEFAULT_PROGRESS,updateDifficulty} from '../utils/interviewDifficulty';
-import LearningRecommendations from "../components/LearningRecommendations";
+import ConfidenceMeter from '../components/ConfidenceMeter';
+import { DEFAULT_PROGRESS, updateDifficulty } from '../utils/interviewDifficulty';
+import LearningRecommendations from '../components/LearningRecommendations';
 import CopyButton from '../components/CopyButton';
 import QuestionAnalysisCard from '../components/interview/QuestionAnalysisCard';
 import AvatarInterviewer from '../components/interview/AvatarInterviewer';
@@ -26,7 +66,8 @@ const ShareCard = lazy(() => import('../components/ShareCard'));
 const isMobileDevice = () => {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
   // Check for mobile user agents
-  const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|tablet/i;
+  const mobileRegex =
+    /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|tablet/i;
   // Also check screen width as fallback
   const isMobileWidth = window.innerWidth <= 768;
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -49,21 +90,21 @@ const INDUSTRIES = [
   { value: 'design', label: 'Design' },
   { value: 'finance', label: 'Finance' },
   { value: 'healthcare', label: 'Healthcare' },
-  { value: 'consulting', label: 'Consulting' }
+  { value: 'consulting', label: 'Consulting' },
 ];
 
 const EXPERIENCE_LEVELS = [
   { value: 'entry', label: 'Entry Level (0-2 years)' },
   { value: 'mid', label: 'Mid Level (3-5 years)' },
   { value: 'senior', label: 'Senior Level (6-10 years)' },
-  { value: 'lead', label: 'Lead/Principal (10+ years)' }
+  { value: 'lead', label: 'Lead/Principal (10+ years)' },
 ];
 
 const INTERVIEW_MODES = [
   { value: 'behavioral', label: 'Behavioral', desc: 'Soft-skill & STAR-method questions' },
   { value: 'technical', label: 'Technical', desc: 'Domain knowledge & reasoning' },
   { value: 'coding', label: 'Coding', desc: 'Live code with test cases' },
-  { value: 'mixed', label: 'Mixed', desc: 'Behavioral + technical blend' }
+  { value: 'mixed', label: 'Mixed', desc: 'Behavioral + technical blend' },
 ];
 
 const CODING_LANGUAGES = [
@@ -71,15 +112,8 @@ const CODING_LANGUAGES = [
   { value: 'python', label: 'Python' },
   { value: 'java', label: 'Java' },
   { value: 'cpp', label: 'C++' },
-  { value: 'go', label: 'Go' }
+  { value: 'go', label: 'Go' },
 ];
-
-
-
-
-
-
-
 
 export default function InterviewPrep() {
   const navigate = useNavigate();
@@ -109,7 +143,7 @@ export default function InterviewPrep() {
     companyName: '',
     codingLanguage: 'javascript',
     jdText: '',
-    skipWarmup: false
+    skipWarmup: false,
   });
 
   // Resume upload state
@@ -151,23 +185,16 @@ export default function InterviewPrep() {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const shareCardRef = useRef(null);
-  
+
   const [useTextInput, setUseTextInput] = useState(false);
   const [textAnswer, setTextAnswer] = useState('');
 
   const [overallResults, setOverallResults] = useState(null);
   const [progressData, setProgressData] = useState(() => {
+    const stored = localStorage.getItem('interviewProgress');
 
-  const stored =
-    localStorage.getItem(
-      "interviewProgress"
-    );
-
-  return stored
-    ? JSON.parse(stored)
-    : DEFAULT_PROGRESS;
-
-});
+    return stored ? JSON.parse(stored) : DEFAULT_PROGRESS;
+  });
   const [expressionSamples, setExpressionSamples] = useState([]);
 
   // Active AI config (BYOK) — for the avatar and provider-switch modal
@@ -218,9 +245,11 @@ export default function InterviewPrep() {
       const hasStoreKey = !!activeConfig?.apiKey;
       const legacyConfigStr = localStorage.getItem('aiConfig');
       let hasLegacyKey = false;
-      try { hasLegacyKey = legacyConfigStr && JSON.parse(legacyConfigStr).apiKey; } catch(e) {}
+      try {
+        hasLegacyKey = legacyConfigStr && JSON.parse(legacyConfigStr).apiKey;
+      } catch (e) {}
       const hasOpenRouterKey = localStorage.getItem('openRouterApiKey');
-      
+
       if (!hasStoreKey && !hasLegacyKey && !hasOpenRouterKey) {
         navigate('/settings?tab=ai&return_url=/interview-prep');
         return;
@@ -233,8 +262,9 @@ export default function InterviewPrep() {
         if (Array.isArray(response)) fetchedResumes = response;
         else if (Array.isArray(response.data)) fetchedResumes = response.data;
         else if (Array.isArray(response.resumes)) fetchedResumes = response.resumes;
-        else if (response.data && Array.isArray(response.data.resumes)) fetchedResumes = response.data.resumes;
-        
+        else if (response.data && Array.isArray(response.data.resumes))
+          fetchedResumes = response.data.resumes;
+
         setSavedResumes(fetchedResumes);
       } catch (err) {
         console.error('Failed to fetch saved resumes:', err);
@@ -254,7 +284,7 @@ export default function InterviewPrep() {
   // Cleanup AV check stream when moving to interview
   useEffect(() => {
     if (step !== 'av-check' && avCheckStream) {
-      avCheckStream.getTracks().forEach(track => track.stop());
+      avCheckStream.getTracks().forEach((track) => track.stop());
       setAvCheckStream(null);
     }
   }, [step, avCheckStream]);
@@ -282,9 +312,9 @@ export default function InterviewPrep() {
         video: {
           width: { ideal: 1280 },
           height: { ideal: 720 },
-          facingMode: 'user'
+          facingMode: 'user',
         },
-        audio: true
+        audio: true,
       });
       mediaStreamRef.current = stream;
       if (videoRef.current) videoRef.current.srcObject = stream;
@@ -314,7 +344,9 @@ export default function InterviewPrep() {
     const totalPixels = data.length / 4;
 
     for (let i = 0; i < data.length; i += 4) {
-      const r = data[i], g = data[i + 1], b = data[i + 2];
+      const r = data[i],
+        g = data[i + 1],
+        b = data[i + 2];
       brightness += (r + g + b) / 3;
       if (r > 95 && g > 40 && b > 20 && r > g && r > b && Math.abs(r - g) > 15) skinTonePixels++;
     }
@@ -325,30 +357,32 @@ export default function InterviewPrep() {
 
     setFaceVisible(detected);
     if (detected) {
-  const confidence =
-    Math.min(100, Math.max(40, 50 + skinRatio * 200));
+      const confidence = Math.min(100, Math.max(40, 50 + skinRatio * 200));
 
-  setFaceConfidence(confidence);
+      setFaceConfidence(confidence);
 
-  setExpressionSamples(prev => [
-    ...prev.slice(-60),
-    { confidence, timestamp: Date.now() }
-  ]);
-} else {
-  setFaceConfidence(20);
-}
+      setExpressionSamples((prev) => [...prev.slice(-60), { confidence, timestamp: Date.now() }]);
+    } else {
+      setFaceConfidence(20);
+    }
   };
 
   const getAverageMetrics = () => {
     if (expressionSamples.length === 0) {
-      return { averageConfidence: 60, eyeContactPercentage: 60, headMovementStability: 70, overallExpressionScore: 60 };
+      return {
+        averageConfidence: 60,
+        eyeContactPercentage: 60,
+        headMovementStability: 70,
+        overallExpressionScore: 60,
+      };
     }
-    const avgConfidence = expressionSamples.reduce((sum, s) => sum + s.confidence, 0) / expressionSamples.length;
+    const avgConfidence =
+      expressionSamples.reduce((sum, s) => sum + s.confidence, 0) / expressionSamples.length;
     return {
       averageConfidence: Math.round(avgConfidence),
       eyeContactPercentage: Math.round(avgConfidence * 0.9),
       headMovementStability: Math.round(70 + Math.random() * 15),
-      overallExpressionScore: Math.round(avgConfidence)
+      overallExpressionScore: Math.round(avgConfidence),
     };
   };
 
@@ -367,15 +401,20 @@ export default function InterviewPrep() {
     }
     analyserRef.current = null;
 
-    if (mediaStreamRef.current) mediaStreamRef.current.getTracks().forEach(track => track.stop());
-    if (recognitionRef.current) try { recognitionRef.current.stop(); } catch (e) { }
+    if (mediaStreamRef.current) mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+    if (recognitionRef.current)
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
     if (timerRef.current) clearInterval(timerRef.current);
     if (faceCheckIntervalRef.current) clearInterval(faceCheckIntervalRef.current);
   };
 
   const speakQuestion = (text) => {
     if (!text || !synthRef.current) return;
-    try { synthRef.current.cancel(); } catch {}
+    try {
+      synthRef.current.cancel();
+    } catch {}
     setIsSpeaking(true);
 
     const lang = getLanguage(formData.language);
@@ -387,16 +426,22 @@ export default function InterviewPrep() {
     const voices = synthRef.current.getVoices();
     const localePrefix = lang.speechLocale.split('-')[0];
     const preferredVoice =
-      voices.find(v => v.lang === lang.speechLocale && v.name.includes('Google'))
-      || voices.find(v => v.lang === lang.speechLocale)
-      || voices.find(v => v.lang.startsWith(localePrefix))
-      || voices.find(v => v.lang.startsWith('en') && v.name.includes('Google'))
-      || voices.find(v => v.lang.startsWith('en-US'))
-      || voices.find(v => v.lang.startsWith('en'));
+      voices.find((v) => v.lang === lang.speechLocale && v.name.includes('Google')) ||
+      voices.find((v) => v.lang === lang.speechLocale) ||
+      voices.find((v) => v.lang.startsWith(localePrefix)) ||
+      voices.find((v) => v.lang.startsWith('en') && v.name.includes('Google')) ||
+      voices.find((v) => v.lang.startsWith('en-US')) ||
+      voices.find((v) => v.lang.startsWith('en'));
     if (preferredVoice) utterance.voice = preferredVoice;
 
-    utterance.onend = () => { setIsSpeaking(false); setAmplitude(0); };
-    utterance.onerror = () => { setIsSpeaking(false); setAmplitude(0); };
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      setAmplitude(0);
+    };
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      setAmplitude(0);
+    };
 
     // Animate the avatar mouth while speaking
     let phase = 0;
@@ -405,7 +450,17 @@ export default function InterviewPrep() {
     const loop = () => {
       phase += 0.18;
       const amp = active
-        ? Math.max(0, Math.min(1, 0.45 + 0.45 * (Math.sin(phase) * 0.5 + Math.sin(phase * 2.7) * 0.25 + Math.sin(phase * 5.1) * 0.15)))
+        ? Math.max(
+            0,
+            Math.min(
+              1,
+              0.45 +
+                0.45 *
+                  (Math.sin(phase) * 0.5 +
+                    Math.sin(phase * 2.7) * 0.25 +
+                    Math.sin(phase * 5.1) * 0.15)
+            )
+          )
         : 0;
       setAmplitude(amp);
       if (active) raf = requestAnimationFrame(loop);
@@ -453,7 +508,7 @@ export default function InterviewPrep() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: 640, height: 480, facingMode: 'user' },
-        audio: true
+        audio: true,
       });
       setAvCheckStream(stream);
       setAvVideoWorking(true);
@@ -486,7 +541,9 @@ export default function InterviewPrep() {
       const extractedText = response.data?.text || response.text || '';
 
       if (!extractedText || extractedText.trim().length < 10) {
-        throw new Error('Could not extract text from PDF. The file may be image-based or corrupted.');
+        throw new Error(
+          'Could not extract text from PDF. The file may be image-based or corrupted.'
+        );
       }
 
       setResumeText(extractedText.trim());
@@ -495,7 +552,9 @@ export default function InterviewPrep() {
       return extractedText.trim();
     } catch (err) {
       console.error('PDF extraction failed:', err);
-      setResumeError(err.message || 'Failed to extract text from PDF. Please try a different file.');
+      setResumeError(
+        err.message || 'Failed to extract text from PDF. Please try a different file.'
+      );
       setResumeLoading(false);
       return '';
     }
@@ -511,7 +570,7 @@ export default function InterviewPrep() {
       setResumeText('');
       setResumeFile(null);
     } else {
-      const selected = savedResumes.find(r => (r._id || r.id) === id);
+      const selected = savedResumes.find((r) => (r._id || r.id) === id);
       if (selected) {
         setResumeText(selected.enhancedText || selected.originalText || '');
         setResumeFile({ name: selected.title || selected.jobRole || 'Saved Resume' });
@@ -529,7 +588,8 @@ export default function InterviewPrep() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+    if (file.size > 5 * 1024 * 1024) {
+      // 5MB limit
       setResumeError('File size must be less than 5MB');
       return;
     }
@@ -557,7 +617,7 @@ export default function InterviewPrep() {
 
     // Stop the AV check stream - it will be re-initialized in interview step
     if (avCheckStream) {
-      avCheckStream.getTracks().forEach(track => track.stop());
+      avCheckStream.getTracks().forEach((track) => track.stop());
       setAvCheckStream(null);
     }
 
@@ -583,7 +643,7 @@ export default function InterviewPrep() {
         jobDescriptionText: jdSummary?.jdText || null,
         companyName: formData.companyName || null,
         companyRole: formData.companyName ? formData.jobRole : null,
-        skipWarmup: formData.skipWarmup || warmupQuestions.length > 0
+        skipWarmup: formData.skipWarmup || warmupQuestions.length > 0,
       });
       setInterviewId(response.data.interviewId);
       setQuestions(response.data.questions);
@@ -597,7 +657,7 @@ export default function InterviewPrep() {
           const wr = await interviewApi.getWarmupQuestions({
             jobRole: formData.jobRole,
             industry: formData.industry,
-            language: formData.language
+            language: formData.language,
           });
           setWarmupQuestions(wr.data?.questions || []);
           setWarmupIndex(0);
@@ -653,7 +713,7 @@ export default function InterviewPrep() {
       const res = await interviewApi.runCode(interviewId, {
         code,
         language: formData.codingLanguage,
-        problemId: codingQuestion?.questionId || questions[0]?.questionId
+        problemId: codingQuestion?.questionId || questions[0]?.questionId,
       });
       setRunResults(res.data);
     } catch (err) {
@@ -696,7 +756,11 @@ export default function InterviewPrep() {
     const blob = await generateShareImage();
     if (!blob) return;
     const caption = buildShareCaption(overallResults);
-    const result = await shareImage({ blob, text: caption, fileName: `careerpilot-${overallResults.interviewId || 'score'}.png` });
+    const result = await shareImage({
+      blob,
+      text: caption,
+      fileName: `careerpilot-${overallResults.interviewId || 'score'}.png`,
+    });
     if (result.method === 'native' || result.method === 'cancelled') return;
   };
 
@@ -710,7 +774,7 @@ export default function InterviewPrep() {
     const ctx = canvas.getContext('2d');
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
-    
+
     const dpr = window.devicePixelRatio || 1;
     canvas.width = canvas.clientWidth * dpr;
     canvas.height = canvas.clientHeight * dpr;
@@ -719,15 +783,15 @@ export default function InterviewPrep() {
     const draw = () => {
       if (!isRecordingRef.current) return;
       animationFrameIdRef.current = requestAnimationFrame(draw);
-      
+
       analyser.getByteTimeDomainData(dataArray);
-      
+
       const width = canvas.width / dpr;
       const height = canvas.height / dpr;
-      
+
       ctx.fillStyle = 'rgba(15, 23, 42, 0.2)';
       ctx.fillRect(0, 0, width, height);
-      
+
       ctx.strokeStyle = 'rgba(129, 140, 248, 0.04)';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -736,39 +800,39 @@ export default function InterviewPrep() {
       ctx.stroke();
 
       ctx.lineWidth = 2.5;
-      
+
       const gradient = ctx.createLinearGradient(0, 0, width, 0);
       gradient.addColorStop(0, '#6366f1');
       gradient.addColorStop(0.5, '#a855f7');
       gradient.addColorStop(1, '#ec4899');
       ctx.strokeStyle = gradient;
-      
+
       ctx.shadowBlur = 6;
       ctx.shadowColor = 'rgba(168, 85, 247, 0.4)';
-      
+
       ctx.beginPath();
-      
+
       const sliceWidth = width / bufferLength;
       let x = 0;
-      
+
       for (let i = 0; i < bufferLength; i++) {
         const v = dataArray[i] / 128.0;
         const y = (v * height) / 2;
-        
+
         if (i === 0) {
           ctx.moveTo(x, y);
         } else {
           ctx.lineTo(x, y);
         }
-        
+
         x += sliceWidth;
       }
-      
+
       ctx.lineTo(width, height / 2);
       ctx.stroke();
       ctx.shadowBlur = 0;
     };
-    
+
     draw();
   };
 
@@ -800,14 +864,14 @@ export default function InterviewPrep() {
       if (mediaStreamRef.current) {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         audioCtxRef.current = audioContext;
-        
+
         const source = audioContext.createMediaStreamSource(mediaStreamRef.current);
         const analyser = audioContext.createAnalyser();
         analyser.fftSize = 512;
         analyserRef.current = analyser;
-        
+
         source.connect(analyser);
-        
+
         // Start drawing loop after small timeout to allow canvas mount
         setTimeout(() => {
           if (visualizerCanvasRef.current) {
@@ -828,8 +892,12 @@ export default function InterviewPrep() {
       if (mediaStreamRef.current && typeof MediaRecorder !== 'undefined') {
         const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
           ? 'audio/webm;codecs=opus'
-          : (MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : '');
-        const recorder = mimeType ? new MediaRecorder(mediaStreamRef.current, { mimeType }) : new MediaRecorder(mediaStreamRef.current);
+          : MediaRecorder.isTypeSupported('audio/webm')
+            ? 'audio/webm'
+            : '';
+        const recorder = mimeType
+          ? new MediaRecorder(mediaStreamRef.current, { mimeType })
+          : new MediaRecorder(mediaStreamRef.current);
         audioChunksRef.current = [];
         recorder.ondataavailable = (e) => {
           if (e.data && e.data.size > 0) audioChunksRef.current.push(e.data);
@@ -864,14 +932,25 @@ export default function InterviewPrep() {
     };
 
     recognition.onerror = (event) => {
-      if (isRecordingRef.current && (event.error === 'no-speech' || event.error === 'network' || event.error === 'aborted')) {
-        setTimeout(() => { try { recognition.start(); } catch (e) { } }, 100);
+      if (
+        isRecordingRef.current &&
+        (event.error === 'no-speech' || event.error === 'network' || event.error === 'aborted')
+      ) {
+        setTimeout(() => {
+          try {
+            recognition.start();
+          } catch (e) {}
+        }, 100);
       }
     };
 
     recognition.onend = () => {
       if (isRecordingRef.current) {
-        setTimeout(() => { try { recognition.start(); } catch (e) { } }, 100);
+        setTimeout(() => {
+          try {
+            recognition.start();
+          } catch (e) {}
+        }, 100);
       }
     };
 
@@ -881,7 +960,7 @@ export default function InterviewPrep() {
 
   const stopRecording = async () => {
     isRecordingRef.current = false;
-    
+
     // Stop audio visualizer
     if (animationFrameIdRef.current) {
       cancelAnimationFrame(animationFrameIdRef.current);
@@ -899,7 +978,10 @@ export default function InterviewPrep() {
     }
     analyserRef.current = null;
 
-    if (recognitionRef.current) try { recognitionRef.current.stop(); } catch (e) { }
+    if (recognitionRef.current)
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
     recognitionRef.current = null;
     if (timerRef.current) clearInterval(timerRef.current);
 
@@ -911,7 +993,11 @@ export default function InterviewPrep() {
         if (recorder.state !== 'inactive') {
           await new Promise((resolve) => {
             recorder.onstop = resolve;
-            try { recorder.stop(); } catch (_) { resolve(); }
+            try {
+              recorder.stop();
+            } catch (_) {
+              resolve();
+            }
           });
         }
         if (audioChunksRef.current.length > 0) {
@@ -958,19 +1044,29 @@ export default function InterviewPrep() {
         expressionMetrics: metrics,
         code: formData.mode === 'coding' ? code : undefined,
         codingLanguage: formData.mode === 'coding' ? formData.codingLanguage : undefined,
-        audioBlob
+        audioBlob,
       });
 
-      setAnswersSubmitted([...answersSubmitted, { questionIndex: currentQuestionIndex, transcript: resolvedTranscript, analysis: response.data.analysis }]);
+      setAnswersSubmitted([
+        ...answersSubmitted,
+        {
+          questionIndex: currentQuestionIndex,
+          transcript: resolvedTranscript,
+          analysis: response.data.analysis,
+        },
+      ]);
 
       if (response.data && response.data.questions) {
         setQuestions(response.data.questions);
       }
 
-      if (response.data?.answeredCount >= response.data?.totalQuestions || !response.data?.nextQuestion) {
+      if (
+        response.data?.answeredCount >= response.data?.totalQuestions ||
+        !response.data?.nextQuestion
+      ) {
         completeInterview();
       } else {
-        setCurrentQuestionIndex(prev => prev + 1);
+        setCurrentQuestionIndex((prev) => prev + 1);
         setTranscript('');
         setCode(response.data?.codingQuestion?.starterCode || code);
         setRunResults(null);
@@ -997,19 +1093,30 @@ export default function InterviewPrep() {
         questionId: questions[currentQuestionIndex].questionId,
         transcript: finalTranscript,
         duration: 30, // Default for text answers
-        expressionMetrics: { averageConfidence: 0.8, eyeContactPercentage: 80, headMovementStability: 0.8, overallExpressionScore: 80 }
+        expressionMetrics: {
+          averageConfidence: 0.8,
+          eyeContactPercentage: 80,
+          headMovementStability: 0.8,
+          overallExpressionScore: 80,
+        },
       });
 
-      setAnswersSubmitted([...answersSubmitted, { questionIndex: currentQuestionIndex, transcript: finalTranscript }]);
+      setAnswersSubmitted([
+        ...answersSubmitted,
+        { questionIndex: currentQuestionIndex, transcript: finalTranscript },
+      ]);
 
       if (response.data && response.data.questions) {
         setQuestions(response.data.questions);
       }
 
-      if (response.data?.answeredCount >= response.data?.totalQuestions || !response.data?.nextQuestion) {
+      if (
+        response.data?.answeredCount >= response.data?.totalQuestions ||
+        !response.data?.nextQuestion
+      ) {
         completeInterview();
       } else {
-        setCurrentQuestionIndex(prev => prev + 1);
+        setCurrentQuestionIndex((prev) => prev + 1);
         setTextAnswer('');
       }
     } catch (err) {
@@ -1019,44 +1126,39 @@ export default function InterviewPrep() {
     }
   };
 
-
- const completeInterview = async () => {
-  setLoading(true);
-  try {
-    const response = await interviewApi.completeInterview(interviewId);
-    const score = response.data.overallScore;
-    const previousLevel = progressData.level;
-    const updatedProgress = updateDifficulty(score,progressData);
-    localStorage.setItem("interviewProgress",JSON.stringify( updatedProgress));
-    setProgressData(updatedProgress);
-    if(
- previousLevel !==
- updatedProgress.level
-){
- alert(
-   `🎉 Congratulations!
+  const completeInterview = async () => {
+    setLoading(true);
+    try {
+      const response = await interviewApi.completeInterview(interviewId);
+      const score = response.data.overallScore;
+      const previousLevel = progressData.level;
+      const updatedProgress = updateDifficulty(score, progressData);
+      localStorage.setItem('interviewProgress', JSON.stringify(updatedProgress));
+      setProgressData(updatedProgress);
+      if (previousLevel !== updatedProgress.level) {
+        alert(
+          `🎉 Congratulations!
 You reached
 ${updatedProgress.level}`
- );
-}
+        );
+      }
 
-    setOverallResults(response.data);
-    setStep('feedback');
+      setOverallResults(response.data);
+      setStep('feedback');
 
-    triggerConfetti({
-      duration: 3500,
-      particleCount: 180,
-      spread: 130
-    });
+      triggerConfetti({
+        duration: 3500,
+        particleCount: 180,
+        spread: 130,
+      });
 
-    cleanupMedia();
-
-  } catch (err) {
-    setError(err.message || 'Failed to complete interview');
-  } finally {
-    setLoading(false);
-  }
-};
+      cleanupMedia();
+    } catch (err) {
+      setError(err.message || 'Failed to complete interview');
+    } finally {
+      setLoading(false);
+    }
+  };
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -1092,23 +1194,34 @@ ${updatedProgress.level}`
           <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
         </div>
 
-          <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-8"
+          >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm mb-4">
               <AlertTriangle className="w-4 h-4" />
               Equipment Check Required
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Confirm Your Setup</h1>
-            <p className="text-muted-foreground">Please verify your camera and microphone are working before starting</p>
+            <p className="text-muted-foreground">
+              Please verify your camera and microphone are working before starting
+            </p>
           </motion.div>
 
           {/* Mobile notice */}
           {isMobile && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-4"
+            >
               <div className="flex items-start gap-3">
                 <Smartphone className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                 <p className="text-blue-200 text-sm">
-                  Mobile detected — text-answer mode is recommended. You can still use voice if your keyboard is hidden.
+                  Mobile detected — text-answer mode is recommended. You can still use voice if your
+                  keyboard is hidden.
                 </p>
               </div>
             </motion.div>
@@ -1126,7 +1239,8 @@ ${updatedProgress.level}`
                 <div>
                   <p className="text-amber-300 font-medium">Chrome Browser Recommended</p>
                   <p className="text-amber-400/70 text-sm mt-1">
-                    For the best experience, please use Google Chrome. Speech recognition may not work properly in other browsers.
+                    For the best experience, please use Google Chrome. Speech recognition may not
+                    work properly in other browsers.
                   </p>
                 </div>
               </div>
@@ -1159,7 +1273,9 @@ ${updatedProgress.level}`
 
             {/* A/V Status Indicators */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className={`p-4 rounded-xl border ${avVideoWorking ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+              <div
+                className={`p-4 rounded-xl border ${avVideoWorking ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'}`}
+              >
                 <div className="flex items-center gap-3">
                   {avVideoWorking ? (
                     <CheckCircle className="w-6 h-6 text-emerald-400" />
@@ -1167,7 +1283,9 @@ ${updatedProgress.level}`
                     <XCircle className="w-6 h-6 text-red-400" />
                   )}
                   <div>
-                    <p className={`font-medium ${avVideoWorking ? 'text-emerald-400' : 'text-red-400'}`}>
+                    <p
+                      className={`font-medium ${avVideoWorking ? 'text-emerald-400' : 'text-red-400'}`}
+                    >
                       Camera
                     </p>
                     <p className="text-sm text-muted-foreground">
@@ -1177,7 +1295,9 @@ ${updatedProgress.level}`
                 </div>
               </div>
 
-              <div className={`p-4 rounded-xl border ${avAudioWorking ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+              <div
+                className={`p-4 rounded-xl border ${avAudioWorking ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'}`}
+              >
                 <div className="flex items-center gap-3">
                   {avAudioWorking ? (
                     <CheckCircle className="w-6 h-6 text-emerald-400" />
@@ -1185,7 +1305,9 @@ ${updatedProgress.level}`
                     <XCircle className="w-6 h-6 text-red-400" />
                   )}
                   <div>
-                    <p className={`font-medium ${avAudioWorking ? 'text-emerald-400' : 'text-red-400'}`}>
+                    <p
+                      className={`font-medium ${avAudioWorking ? 'text-emerald-400' : 'text-red-400'}`}
+                    >
                       Microphone
                     </p>
                     <p className="text-sm text-muted-foreground">
@@ -1209,7 +1331,7 @@ ${updatedProgress.level}`
                 variant="outline"
                 onClick={() => {
                   if (avCheckStream) {
-                    avCheckStream.getTracks().forEach(track => track.stop());
+                    avCheckStream.getTracks().forEach((track) => track.stop());
                     setAvCheckStream(null);
                   }
                   setStep('setup');
@@ -1253,21 +1375,33 @@ ${updatedProgress.level}`
         </div>
 
         <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-10"
+          >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-4">
               <Sparkles className="w-4 h-4" />
               AI-Powered Interview Practice
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Interview Prep</h1>
-            <p className="text-lg text-muted-foreground">Practice with AI interviewer, get complete feedback at the end</p>
+            <p className="text-lg text-muted-foreground">
+              Practice with AI interviewer, get complete feedback at the end
+            </p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
             <div className="p-8 rounded-3xl glass glow border border-border shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
               <form onSubmit={handleStartInterview} className="space-y-6 relative z-10">
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Job Role *</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
+                    Job Role *
+                  </label>
                   <input
                     type="text"
                     value={formData.jobRole}
@@ -1279,24 +1413,36 @@ ${updatedProgress.level}`
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Industry *</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
+                    Industry *
+                  </label>
                   <select
                     value={formData.industry}
                     onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
                     className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
                   >
-                    {INDUSTRIES.map(ind => <option key={ind.value} value={ind.value}>{ind.label}</option>)}
+                    {INDUSTRIES.map((ind) => (
+                      <option key={ind.value} value={ind.value}>
+                        {ind.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Experience Level *</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
+                    Experience Level *
+                  </label>
                   <select
                     value={formData.experienceLevel}
                     onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
                     className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
                   >
-                    {EXPERIENCE_LEVELS.map(level => <option key={level.value} value={level.value}>{level.label}</option>)}
+                    {EXPERIENCE_LEVELS.map((level) => (
+                      <option key={level.value} value={level.value}>
+                        {level.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -1335,7 +1481,9 @@ ${updatedProgress.level}`
                       className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
                     >
                       {CODING_LANGUAGES.map((l) => (
-                        <option key={l.value} value={l.value}>{l.label}</option>
+                        <option key={l.value} value={l.value}>
+                          {l.label}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -1353,7 +1501,9 @@ ${updatedProgress.level}`
                     className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
                   >
                     {SUPPORTED_LANGUAGES.map((l) => (
-                      <option key={l.code} value={l.code}>{l.label}</option>
+                      <option key={l.code} value={l.code}>
+                        {l.label}
+                      </option>
                     ))}
                   </select>
                   {formData.language !== 'en' && (
@@ -1380,19 +1530,27 @@ ${updatedProgress.level}`
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Number of Questions</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
+                    Number of Questions
+                  </label>
                   <div className="flex items-center gap-4">
                     <input
                       type="range"
                       min="2"
                       max="20"
                       value={formData.questionCount}
-                      onChange={(e) => setFormData({ ...formData, questionCount: parseInt(e.target.value) })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, questionCount: parseInt(e.target.value) })
+                      }
                       className="flex-1 h-2 bg-card rounded-lg appearance-none cursor-pointer accent-indigo-500"
                     />
-                    <span className="w-12 text-center text-lg font-semibold text-primary">{formData.questionCount}</span>
+                    <span className="w-12 text-center text-lg font-semibold text-primary">
+                      {formData.questionCount}
+                    </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">Choose between 2 to 20 questions for your interview</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Choose between 2 to 20 questions for your interview
+                  </p>
                 </div>
 
                 {/* Job Description (paste or URL) */}
@@ -1403,14 +1561,24 @@ ${updatedProgress.level}`
                         <LinkIcon className="w-5 h-5 text-blue-400" />
                       </div>
                       <div>
-                        <h3 className="text-foreground font-bold text-base">Job Description <span className="text-xs text-muted-foreground font-normal">(optional)</span></h3>
-                        <p className="text-xs text-muted-foreground">Personalize questions to a specific role.</p>
+                        <h3 className="text-foreground font-bold text-base">
+                          Job Description{' '}
+                          <span className="text-xs text-muted-foreground font-normal">
+                            (optional)
+                          </span>
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          Personalize questions to a specific role.
+                        </p>
                       </div>
                     </div>
                     {jdSummary && (
                       <button
                         type="button"
-                        onClick={() => { setJdSummary(null); setJdInput(''); }}
+                        onClick={() => {
+                          setJdSummary(null);
+                          setJdInput('');
+                        }}
                         className="text-xs text-muted-foreground hover:text-foreground"
                       >
                         Clear
@@ -1443,7 +1611,11 @@ ${updatedProgress.level}`
                           <textarea
                             value={jdInput}
                             onChange={(e) => setJdInput(e.target.value)}
-                            placeholder={jdMode === 'url' ? 'https://job-boards.example.com/job/...' : 'Paste the job description text here...'}
+                            placeholder={
+                              jdMode === 'url'
+                                ? 'https://job-boards.example.com/job/...'
+                                : 'Paste the job description text here...'
+                            }
                             rows={jdMode === 'url' ? 2 : 5}
                             className="w-full px-3 py-2 text-sm bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 resize-y"
                           />
@@ -1464,9 +1636,20 @@ ${updatedProgress.level}`
 
                   {jdSummary && (
                     <div className="text-xs text-blue-200 space-y-1">
-                      <div><span className="text-muted-foreground">Detected role: </span>{jdSummary.role || '—'}</div>
-                      {jdSummary.company && <div><span className="text-muted-foreground">Company: </span>{jdSummary.company}</div>}
-                      <div><span className="text-muted-foreground">Text length: </span>{jdSummary.jdText.length} characters</div>
+                      <div>
+                        <span className="text-muted-foreground">Detected role: </span>
+                        {jdSummary.role || '—'}
+                      </div>
+                      {jdSummary.company && (
+                        <div>
+                          <span className="text-muted-foreground">Company: </span>
+                          {jdSummary.company}
+                        </div>
+                      )}
+                      <div>
+                        <span className="text-muted-foreground">Text length: </span>
+                        {jdSummary.jdText.length} characters
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1478,8 +1661,12 @@ ${updatedProgress.level}`
                       <FileUp className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-foreground font-bold text-lg">Resume Context (Optional)</h3>
-                      <p className="text-sm text-muted-foreground">Select or upload a resume to get personalized questions.</p>
+                      <h3 className="text-foreground font-bold text-lg">
+                        Resume Context (Optional)
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Select or upload a resume to get personalized questions.
+                      </p>
                     </div>
                   </div>
 
@@ -1490,7 +1677,7 @@ ${updatedProgress.level}`
                       className="w-full px-4 py-3 bg-card border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary shadow-sm"
                     >
                       <option value="none">-- No Resume --</option>
-                      {savedResumes.map(r => (
+                      {savedResumes.map((r) => (
                         <option key={r._id || r.id} value={r._id || r.id}>
                           {r.title || r.jobRole || 'Saved Resume'}
                         </option>
@@ -1513,12 +1700,16 @@ ${updatedProgress.level}`
                         {resumeLoading ? (
                           <>
                             <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                            <span className="text-sm font-semibold text-muted-foreground">Extracting text...</span>
+                            <span className="text-sm font-semibold text-muted-foreground">
+                              Extracting text...
+                            </span>
                           </>
                         ) : (
                           <>
                             <FileUp className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">Click to upload resume</span>
+                            <span className="text-sm text-muted-foreground">
+                              Click to upload resume
+                            </span>
                           </>
                         )}
                       </div>
@@ -1531,7 +1722,10 @@ ${updatedProgress.level}`
                           <p className="text-sm text-emerald-400 font-medium">{resumeFile.name}</p>
                           {/* Progress bar showing extraction complete */}
                           <div className="mt-1.5 h-1.5 bg-card rounded-full overflow-hidden">
-                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: '100%' }} />
+                            <div
+                              className="h-full bg-emerald-500 rounded-full"
+                              style={{ width: '100%' }}
+                            />
                           </div>
                         </div>
                       </div>
@@ -1545,9 +1739,7 @@ ${updatedProgress.level}`
                     </div>
                   ) : null}
 
-                  {resumeError && (
-                    <p className="text-xs text-red-400 mt-2">{resumeError}</p>
-                  )}
+                  {resumeError && <p className="text-xs text-red-400 mt-2">{resumeError}</p>}
 
                   {resumeText && (
                     <div className="mt-3 flex items-center gap-2 text-xs text-primary">
@@ -1567,15 +1759,27 @@ ${updatedProgress.level}`
                 {/* Body language coaching tip */}
                 <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
 
-                <Button type="submit" disabled={loading} variant="primary" className="w-full !py-4 !text-lg !rounded-xl flex items-center justify-center gap-2">
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Mic className="w-5 h-5" />}
-                  {loading ? 'Generating Questions...' : `Start Interview (${formData.questionCount} Questions)`}
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  variant="primary"
+                  className="w-full !py-4 !text-lg !rounded-xl flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Mic className="w-5 h-5" />
+                  )}
+                  {loading
+                    ? 'Generating Questions...'
+                    : `Start Interview (${formData.questionCount} Questions)`}
                 </Button>
               </form>
 
               <div className="mt-6 pt-6 border-t border-border">
                 <p className="text-xs text-muted-foreground text-center">
-                  Questions will be read aloud • Your answers are recorded • Complete feedback at the end
+                  Questions will be read aloud • Your answers are recorded • Complete feedback at
+                  the end
                 </p>
               </div>
             </div>
@@ -1593,7 +1797,11 @@ ${updatedProgress.level}`
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
         </div>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="relative max-w-xl w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative max-w-xl w-full"
+        >
           <div className="text-center mb-4">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs">
               <Sparkles className="w-3 h-3" /> Warmup · not scored
@@ -1628,284 +1836,399 @@ ${updatedProgress.level}`
     const isCoding = formData.mode === 'coding';
 
     return (
-    <>
-      <div className="min-h-screen bg-background">
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        </div>
+      <>
+        <div className="min-h-screen bg-background">
+          <div className="fixed inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+          </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-muted-foreground">
-                {isCoding ? <span className="inline-flex items-center gap-1"><Code2 className="w-3.5 h-3.5" /> Coding Question</span> : `Question ${currentQuestionIndex + 1} of ${formData.questionCount}`}
-              </span>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setShowSwitchProvider(true)}
-                  className="text-xs inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
-                  title="Re-analyze with a different AI provider"
-                >
-                  <Sparkles className="w-3 h-3" />
-                  Switch AI
-                </button>
-                <span className="text-sm font-medium text-primary">{Math.round(progress)}%</span>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-muted-foreground">
+                  {isCoding ? (
+                    <span className="inline-flex items-center gap-1">
+                      <Code2 className="w-3.5 h-3.5" /> Coding Question
+                    </span>
+                  ) : (
+                    `Question ${currentQuestionIndex + 1} of ${formData.questionCount}`
+                  )}
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setShowSwitchProvider(true)}
+                    className="text-xs inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+                    title="Re-analyze with a different AI provider"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    Switch AI
+                  </button>
+                  <span className="text-sm font-medium text-primary">{Math.round(progress)}%</span>
+                </div>
               </div>
-            </div>
-            <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-              <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} className="h-full bg-gradient-to-r from-primary to-secondary" />
-            </div>
-          </motion.div>
-
-          <div className={isCoding ? 'grid grid-cols-1 gap-6' : 'grid grid-cols-1 lg:grid-cols-2 gap-6'}>
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="p-6 rounded-2xl bg-background/50 border border-border">
-              {!isCoding && (
-                <>
-                  <div className="relative aspect-video bg-background rounded-xl overflow-hidden mb-4">
-                    <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover" style={{ transform: 'scaleX(-1)' }} />
-                    {!videoEnabled && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-background">
-                        <VideoOff className="w-12 h-12 text-muted-foreground/80" />
-                      </div>
-                    )}
-                    {isRecording && (
-                      <div className="absolute top-4 left-4 px-3 py-1.5 bg-red-500 text-foreground rounded-full flex items-center gap-2 animate-pulse">
-                        <div className="w-2 h-2 bg-card rounded-full" />
-                        <span className="text-sm font-medium">REC {formatTime(recordingTime)}</span>
-                      </div>
-                    )}
-                    {isSpeaking && (
-                      <div className="absolute top-4 left-4 px-3 py-1.5 bg-primary text-foreground rounded-full flex items-center gap-2">
-                        <Volume2 className="w-4 h-4 animate-pulse" />
-                        <span className="text-sm font-medium">AI Speaking...</span>
-                      </div>
-                    )}
-                    {isRecording && !faceVisible && (
-                      <div className="absolute inset-0 bg-red-950/80 flex flex-col items-center justify-center">
-                        <UserX className="w-16 h-16 text-red-400 mb-3" />
-                        <p className="text-foreground font-semibold text-lg">Face Not Visible!</p>
-                        <p className="text-red-300 text-sm mt-1">Please position yourself in front of the camera</p>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex justify-center gap-3">
-                    <button onClick={toggleVideo} className={`p-3 rounded-xl border transition-colors cursor-pointer ${videoEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
-                      {videoEnabled ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
-                    </button>
-                    <button onClick={toggleAudio} className={`p-3 rounded-xl border transition-colors cursor-pointer ${audioEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
-                      {audioEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
-                    </button>
-                    {isSpeaking ? (
-                      <button onClick={stopSpeaking} className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 transition-colors cursor-pointer hover:bg-amber-500/30">
-                        <VolumeX className="w-5 h-5" />
-                      </button>
-                    ) : (
-                      <button onClick={replayQuestion} className="p-3 rounded-xl bg-primary/20 border border-primary/30 text-primary transition-colors cursor-pointer hover:bg-primary/90/30" title="Replay question">
-                        <RotateCcw className="w-5 h-5" />
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  className="h-full bg-gradient-to-r from-primary to-secondary"
+                />
+              </div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
-              {isCoding ? (
-                <>
-                  <Suspense fallback={<div className="h-40 flex items-center justify-center text-muted-foreground">Loading problem…</div>}>
-                    <CodingQuestionCard
-                      coding={codingQuestion || questions[0]?.coding}
-                      runResults={runResults}
-                    />
-                  </Suspense>
-                  <div className="p-4 rounded-2xl bg-background/50 border border-border space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                        Your solution · {formData.codingLanguage}
-                      </span>
-                      <Button
-                        onClick={runCandidateCode}
-                        disabled={isRunningCode || !code?.trim()}
-                        variant="outline"
-                        className="!py-2 !px-3 !text-xs"
-                      >
-                        {isRunningCode ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />}
-                        {isRunningCode ? 'Evaluating…' : 'Run Tests'}
-                      </Button>
+            <div
+              className={
+                isCoding ? 'grid grid-cols-1 gap-6' : 'grid grid-cols-1 lg:grid-cols-2 gap-6'
+              }
+            >
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="p-6 rounded-2xl bg-background/50 border border-border"
+              >
+                {!isCoding && (
+                  <>
+                    <div className="relative aspect-video bg-background rounded-xl overflow-hidden mb-4">
+                      <video
+                        ref={videoRef}
+                        autoPlay
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                        style={{ transform: 'scaleX(-1)' }}
+                      />
+                      {!videoEnabled && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-background">
+                          <VideoOff className="w-12 h-12 text-muted-foreground/80" />
+                        </div>
+                      )}
+                      {isRecording && (
+                        <div className="absolute top-4 left-4 px-3 py-1.5 bg-red-500 text-foreground rounded-full flex items-center gap-2 animate-pulse">
+                          <div className="w-2 h-2 bg-card rounded-full" />
+                          <span className="text-sm font-medium">
+                            REC {formatTime(recordingTime)}
+                          </span>
+                        </div>
+                      )}
+                      {isSpeaking && (
+                        <div className="absolute top-4 left-4 px-3 py-1.5 bg-primary text-foreground rounded-full flex items-center gap-2">
+                          <Volume2 className="w-4 h-4 animate-pulse" />
+                          <span className="text-sm font-medium">AI Speaking...</span>
+                        </div>
+                      )}
+                      {isRecording && !faceVisible && (
+                        <div className="absolute inset-0 bg-red-950/80 flex flex-col items-center justify-center">
+                          <UserX className="w-16 h-16 text-red-400 mb-3" />
+                          <p className="text-foreground font-semibold text-lg">Face Not Visible!</p>
+                          <p className="text-red-300 text-sm mt-1">
+                            Please position yourself in front of the camera
+                          </p>
+                        </div>
+                      )}
                     </div>
-                    <Suspense fallback={<div className="h-32 flex items-center justify-center text-muted-foreground text-sm">Loading editor…</div>}>
-                      <CodeEditor
-                        language={formData.codingLanguage}
-                        value={code}
-                        onChange={setCode}
-                        height="320px"
+
+                    <div className="flex justify-center gap-3">
+                      <button
+                        onClick={toggleVideo}
+                        className={`p-3 rounded-xl border transition-colors cursor-pointer ${videoEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}
+                      >
+                        {videoEnabled ? (
+                          <Video className="w-5 h-5" />
+                        ) : (
+                          <VideoOff className="w-5 h-5" />
+                        )}
+                      </button>
+                      <button
+                        onClick={toggleAudio}
+                        className={`p-3 rounded-xl border transition-colors cursor-pointer ${audioEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}
+                      >
+                        {audioEnabled ? (
+                          <Mic className="w-5 h-5" />
+                        ) : (
+                          <MicOff className="w-5 h-5" />
+                        )}
+                      </button>
+                      {isSpeaking ? (
+                        <button
+                          onClick={stopSpeaking}
+                          className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 transition-colors cursor-pointer hover:bg-amber-500/30"
+                        >
+                          <VolumeX className="w-5 h-5" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={replayQuestion}
+                          className="p-3 rounded-xl bg-primary/20 border border-primary/30 text-primary transition-colors cursor-pointer hover:bg-primary/90/30"
+                          title="Replay question"
+                        >
+                          <RotateCcw className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="space-y-6"
+              >
+                {isCoding ? (
+                  <>
+                    <Suspense
+                      fallback={
+                        <div className="h-40 flex items-center justify-center text-muted-foreground">
+                          Loading problem…
+                        </div>
+                      }
+                    >
+                      <CodingQuestionCard
+                        coding={codingQuestion || questions[0]?.coding}
+                        runResults={runResults}
                       />
                     </Suspense>
-                  </div>
-                  <textarea
-                    value={textAnswer}
-                    onChange={(e) => setTextAnswer(e.target.value)}
-                    placeholder="Optional: explain your approach (will be analyzed alongside your code)…"
-                    rows={3}
-                    className="w-full p-3 rounded-xl bg-muted/40 border border-border text-sm text-foreground focus:ring-2 focus:ring-primary resize-y"
-                  />
-                  <Button
-                    onClick={submitTextAnswer}
-                    disabled={loading || !code?.trim()}
-                    variant="primary"
-                    className="w-full !py-4 !rounded-xl flex items-center justify-center gap-2"
-                  >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                    {loading ? 'Submitting…' : 'Submit Solution'}
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <div className="p-4 rounded-2xl bg-background/50 border border-border">
-                    <AvatarInterviewer isSpeaking={isSpeaking} amplitude={amplitude} />
-                  </div>
-                  <div className="p-6 rounded-2xl bg-background/50 border border-border">
-                    <div className="flex items-start gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
-                        <span className="text-primary font-bold">{currentQuestionIndex + 1}</span>
-                      </div>
-                      <div className="flex-1">
-                        <span className="text-xs font-medium text-primary uppercase tracking-wide">
-                          {currentQuestion?.type} • {currentQuestion?.difficulty}
+                    <div className="p-4 rounded-2xl bg-background/50 border border-border space-y-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                          Your solution · {formData.codingLanguage}
                         </span>
-                        <h3 className="text-xl font-semibold text-foreground mt-1">{currentQuestion?.question}</h3>
+                        <Button
+                          onClick={runCandidateCode}
+                          disabled={isRunningCode || !code?.trim()}
+                          variant="outline"
+                          className="!py-2 !px-3 !text-xs"
+                        >
+                          {isRunningCode ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                          ) : (
+                            <Play className="w-3.5 h-3.5 mr-1.5" />
+                          )}
+                          {isRunningCode ? 'Evaluating…' : 'Run Tests'}
+                        </Button>
                       </div>
+                      <Suspense
+                        fallback={
+                          <div className="h-32 flex items-center justify-center text-muted-foreground text-sm">
+                            Loading editor…
+                          </div>
+                        }
+                      >
+                        <CodeEditor
+                          language={formData.codingLanguage}
+                          value={code}
+                          onChange={setCode}
+                          height="320px"
+                        />
+                      </Suspense>
                     </div>
+                    <textarea
+                      value={textAnswer}
+                      onChange={(e) => setTextAnswer(e.target.value)}
+                      placeholder="Optional: explain your approach (will be analyzed alongside your code)…"
+                      rows={3}
+                      className="w-full p-3 rounded-xl bg-muted/40 border border-border text-sm text-foreground focus:ring-2 focus:ring-primary resize-y"
+                    />
+                    <Button
+                      onClick={submitTextAnswer}
+                      disabled={loading || !code?.trim()}
+                      variant="primary"
+                      className="w-full !py-4 !rounded-xl flex items-center justify-center gap-2"
+                    >
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                      {loading ? 'Submitting…' : 'Submit Solution'}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="p-4 rounded-2xl bg-background/50 border border-border">
+                      <AvatarInterviewer isSpeaking={isSpeaking} amplitude={amplitude} />
+                    </div>
+                    <div className="p-6 rounded-2xl bg-background/50 border border-border">
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
+                          <span className="text-primary font-bold">{currentQuestionIndex + 1}</span>
+                        </div>
+                        <div className="flex-1">
+                          <span className="text-xs font-medium text-primary uppercase tracking-wide">
+                            {currentQuestion?.type} • {currentQuestion?.difficulty}
+                          </span>
+                          <h3 className="text-xl font-semibold text-foreground mt-1">
+                            {currentQuestion?.question}
+                          </h3>
+                        </div>
+                      </div>
 
-                    {isRecording && (
-                      <>
-                        <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
-                          <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                                <Mic className="w-5 h-5 text-primary" />
+                      {isRecording && (
+                        <>
+                          <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
+                            <div className="flex items-center gap-3">
+                              <div className="relative">
+                                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                                  <Mic className="w-5 h-5 text-primary" />
+                                </div>
+                                <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
                               </div>
-                              <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
-                            </div>
-                            <div>
-                              <p className="text-foreground font-medium">Recording in progress</p>
-                              <p className="text-muted-foreground text-sm">Speak clearly into your microphone</p>
+                              <div>
+                                <p className="text-foreground font-medium">Recording in progress</p>
+                                <p className="text-muted-foreground text-sm">
+                                  Speak clearly into your microphone
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="mt-4">
+                          <div className="mt-4">
                             <ConfidenceMeter confidence={faceConfidence} />
-                       </div>
-                        <div className="mt-4 rounded-xl overflow-hidden border border-border/60 bg-slate-950 p-1 flex items-center justify-center">
-                          <canvas
-                            ref={visualizerCanvasRef}
-                            className="w-full h-24 bg-slate-900 rounded-lg shadow-inner"
-                          />
-                        </div>
-                      </>
-                    )}
+                          </div>
+                          <div className="mt-4 rounded-xl overflow-hidden border border-border/60 bg-slate-950 p-1 flex items-center justify-center">
+                            <canvas
+                              ref={visualizerCanvasRef}
+                              className="w-full h-24 bg-slate-900 rounded-lg shadow-inner"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {error && (
+                  <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-400">{error}</p>
                   </div>
-                </>
-              )}
+                )}
 
-              {error && (
-                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-400">{error}</p>
-                </div>
-              )}
+                {!isCoding && <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />}
 
-              {!isCoding && <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />}
-
-              {!isCoding && (
-                <div className="flex gap-3 w-full">
-                  {useTextInput ? (
-                    <div className="flex flex-col w-full gap-3">
-                      <textarea
-                        value={textAnswer}
-                        onChange={(e) => setTextAnswer(e.target.value)}
-                        placeholder="Type your answer here..."
-                        className="w-full min-h-[120px] p-4 rounded-xl bg-muted/50 border border-border text-foreground focus:ring-2 focus:ring-primary resize-y"
-                        disabled={loading}
-                      />
-                      <div className="flex gap-3">
-                        <Button onClick={() => setUseTextInput(false)} disabled={loading} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
-                          <Mic className="w-4 h-4" /> Use Microphone
+                {!isCoding && (
+                  <div className="flex gap-3 w-full">
+                    {useTextInput ? (
+                      <div className="flex flex-col w-full gap-3">
+                        <textarea
+                          value={textAnswer}
+                          onChange={(e) => setTextAnswer(e.target.value)}
+                          placeholder="Type your answer here..."
+                          className="w-full min-h-[120px] p-4 rounded-xl bg-muted/50 border border-border text-foreground focus:ring-2 focus:ring-primary resize-y"
+                          disabled={loading}
+                        />
+                        <div className="flex gap-3">
+                          <Button
+                            onClick={() => setUseTextInput(false)}
+                            disabled={loading}
+                            variant="outline"
+                            className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2"
+                          >
+                            <Mic className="w-4 h-4" /> Use Microphone
+                          </Button>
+                          <Button
+                            onClick={submitTextAnswer}
+                            disabled={loading || !textAnswer.trim()}
+                            variant="primary"
+                            className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2"
+                          >
+                            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                            {loading ? 'Submitting...' : 'Submit Answer'}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : !isRecording ? (
+                      <div className="flex w-full gap-3">
+                        <Button
+                          onClick={() => setUseTextInput(true)}
+                          disabled={loading || isSpeaking}
+                          variant="outline"
+                          className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2"
+                        >
+                          <FileText className="w-4 h-4" /> Type Answer
                         </Button>
-                        <Button onClick={submitTextAnswer} disabled={loading || !textAnswer.trim()} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
-                          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                          {loading ? 'Submitting...' : 'Submit Answer'}
+                        <Button
+                          onClick={startRecording}
+                          disabled={loading || isSpeaking}
+                          variant="primary"
+                          className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2"
+                        >
+                          <Mic className="w-5 h-5" />
+                          {isSpeaking ? 'Wait for question...' : 'Start Recording'}
                         </Button>
                       </div>
-                    </div>
-                  ) : !isRecording ? (
-                    <div className="flex w-full gap-3">
-                      <Button onClick={() => setUseTextInput(true)} disabled={loading || isSpeaking} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
-                        <FileText className="w-4 h-4" /> Type Answer
-                      </Button>
-                      <Button onClick={startRecording} disabled={loading || isSpeaking} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
-                        <Mic className="w-5 h-5" />
-                        {isSpeaking ? 'Wait for question...' : 'Start Recording'}
-                      </Button>
-                    </div>
-                  ) : (
-                    <button onClick={stopRecording} disabled={loading} className="flex-1 w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
-                      <XCircle className="w-5 h-5" />
-                      {loading ? 'Submitting...' : 'Stop & Submit'}
-                    </button>
-                  )}
+                    ) : (
+                      <button
+                        onClick={stopRecording}
+                        disabled={loading}
+                        className="flex-1 w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        <XCircle className="w-5 h-5" />
+                        {loading ? 'Submitting...' : 'Stop & Submit'}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-muted/30 border border-border">
+                  <p className="text-xs text-muted-foreground text-center">
+                    {isCoding
+                      ? 'Submit when your solution passes the visible test cases.'
+                      : 'Complete all questions to see your feedback • No scores shown during interview'}
+                  </p>
                 </div>
-              )}
+              </motion.div>
+            </div>
+          </div>
+        </div>
 
-              <div className="p-4 rounded-xl bg-muted/30 border border-border">
-                <p className="text-xs text-muted-foreground text-center">
-                  {isCoding ? 'Submit when your solution passes the visible test cases.' : 'Complete all questions to see your feedback • No scores shown during interview'}
-                </p>
+        {/* Switch-provider modal */}
+        {showSwitchProvider && (
+          <div
+            className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+            onClick={() => !switchBusy && setShowSwitchProvider(false)}
+          >
+            <div
+              className="bg-card border border-border rounded-2xl p-6 max-w-md w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-lg font-semibold text-foreground mb-2">Switch AI Provider</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Re-analyze your last answer using a different BYOK provider. Add providers in
+                Settings first if needed.
+              </p>
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {Object.entries(configuredProviders).map(([key, val]) => (
+                  <button
+                    key={key}
+                    onClick={async () => {
+                      useAIConfigStore.getState().setActiveProvider(key);
+                      await switchProvider();
+                    }}
+                    disabled={switchBusy || key === activeConfig}
+                    className={
+                      'w-full text-left p-3 rounded-xl border transition-colors flex items-center justify-between ' +
+                      (key === activeConfig
+                        ? 'bg-primary/15 border-primary/40 text-primary'
+                        : 'bg-muted/30 border-border text-foreground hover:border-primary/30')
+                    }
+                  >
+                    <span className="font-medium capitalize">{key}</span>
+                    {key === activeConfig && <CheckCircle className="w-4 h-4" />}
+                  </button>
+                ))}
+                {Object.keys(configuredProviders).length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    No providers configured. Visit Settings to add one.
+                  </p>
+                )}
               </div>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-
-      {/* Switch-provider modal */}
-      {showSwitchProvider && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => !switchBusy && setShowSwitchProvider(false)}>
-          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold text-foreground mb-2">Switch AI Provider</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Re-analyze your last answer using a different BYOK provider. Add providers in Settings first if needed.
-            </p>
-            <div className="space-y-2 max-h-64 overflow-y-auto">
-              {Object.entries(configuredProviders).map(([key, val]) => (
-                <button
-                  key={key}
-                  onClick={async () => {
-                    useAIConfigStore.getState().setActiveProvider(key);
-                    await switchProvider();
-                  }}
-                  disabled={switchBusy || key === activeConfig}
-                  className={
-                    'w-full text-left p-3 rounded-xl border transition-colors flex items-center justify-between ' +
-                    (key === activeConfig
-                      ? 'bg-primary/15 border-primary/40 text-primary'
-                      : 'bg-muted/30 border-border text-foreground hover:border-primary/30')
-                  }
+              <div className="mt-4 flex gap-2 justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowSwitchProvider(false)}
+                  disabled={switchBusy}
                 >
-                  <span className="font-medium capitalize">{key}</span>
-                  {key === activeConfig && <CheckCircle className="w-4 h-4" />}
-                </button>
-              ))}
-              {Object.keys(configuredProviders).length === 0 && (
-                <p className="text-sm text-muted-foreground">No providers configured. Visit Settings to add one.</p>
-              )}
-            </div>
-            <div className="mt-4 flex gap-2 justify-end">
-              <Button variant="outline" onClick={() => setShowSwitchProvider(false)} disabled={switchBusy}>Cancel</Button>
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </>
     );
   }
@@ -1927,53 +2250,56 @@ ${updatedProgress.level}`
     };
 
     const scoreColor = getScoreColor(overallResults.overallScore);
-    const scoreGradientClass = {
-      emerald: 'from-emerald-500 to-emerald-600',
-      amber: 'from-amber-500 to-amber-600',
-      red: 'from-red-500 to-red-600'
-    }[scoreColor] || 'from-emerald-500 to-emerald-600';
-    const scoreShadowClass = {
-      emerald: 'shadow-emerald-500/30',
-      amber: 'shadow-amber-500/30',
-      red: 'shadow-red-500/30'
-    }[scoreColor] || 'shadow-emerald-500/30';
-    const avgRelevance = overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.relevance || 0), 0) / (overallResults.answers?.length || 1) || 0;
-    const avgClarity = overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.clarity || 0), 0) / (overallResults.answers?.length || 1) || 0;
-    const avgConfidence = overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.confidence || 0), 0) / (overallResults.answers?.length || 1) || 0;
-    const totalFillerWords = overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.fillerWords?.count || 0), 0) || 0;
-    const expressionScore = overallResults.overallFeedback?.expressionAnalysis?.overallConfidence || 0;
+    const scoreGradientClass =
+      {
+        emerald: 'from-emerald-500 to-emerald-600',
+        amber: 'from-amber-500 to-amber-600',
+        red: 'from-red-500 to-red-600',
+      }[scoreColor] || 'from-emerald-500 to-emerald-600';
+    const scoreShadowClass =
+      {
+        emerald: 'shadow-emerald-500/30',
+        amber: 'shadow-amber-500/30',
+        red: 'shadow-red-500/30',
+      }[scoreColor] || 'shadow-emerald-500/30';
+    const avgRelevance =
+      overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.relevance || 0), 0) /
+        (overallResults.answers?.length || 1) || 0;
+    const avgClarity =
+      overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.clarity || 0), 0) /
+        (overallResults.answers?.length || 1) || 0;
+    const avgConfidence =
+      overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.confidence || 0), 0) /
+        (overallResults.answers?.length || 1) || 0;
+    const totalFillerWords =
+      overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.fillerWords?.count || 0), 0) ||
+      0;
+    const expressionScore =
+      overallResults.overallFeedback?.expressionAnalysis?.overallConfidence || 0;
     const getCommunicationRating = () => {
-  if (avgClarity >= 85 && avgConfidence >= 85) return 'Excellent';
-  if (avgClarity >= 75 && avgConfidence >= 75) return 'Strong';
-  if (avgClarity >= 65 && avgConfidence >= 65) return 'Good';
-  return 'Needs Improvement';
-};
+      if (avgClarity >= 85 && avgConfidence >= 85) return 'Excellent';
+      if (avgClarity >= 75 && avgConfidence >= 75) return 'Strong';
+      if (avgClarity >= 65 && avgConfidence >= 65) return 'Good';
+      return 'Needs Improvement';
+    };
 
-const communicationTips = [];
+    const communicationTips = [];
 
-if (avgConfidence < 70) {
-  communicationTips.push(
-    'Practice speaking more confidently and reduce hesitation.'
-  );
-}
+    if (avgConfidence < 70) {
+      communicationTips.push('Practice speaking more confidently and reduce hesitation.');
+    }
 
-if (avgClarity < 70) {
-  communicationTips.push(
-    'Structure responses using the STAR method.'
-  );
-}
+    if (avgClarity < 70) {
+      communicationTips.push('Structure responses using the STAR method.');
+    }
 
-if (totalFillerWords > 5) {
-  communicationTips.push(
-    "Reduce filler words such as 'um', 'uh', and 'like'."
-  );
-}
+    if (totalFillerWords > 5) {
+      communicationTips.push("Reduce filler words such as 'um', 'uh', and 'like'.");
+    }
 
-if (communicationTips.length === 0) {
-  communicationTips.push(
-    'Excellent communication skills. Keep practicing regularly.'
-  );
-}
+    if (communicationTips.length === 0) {
+      communicationTips.push('Excellent communication skills. Keep practicing regularly.');
+    }
 
     return (
       <div className="min-h-screen bg-background">
@@ -1984,118 +2310,128 @@ if (communicationTips.length === 0) {
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-            <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="relative inline-block mb-6">
-              <div className={`w-24 h-24 bg-gradient-to-br ${scoreGradientClass} rounded-3xl flex items-center justify-center shadow-2xl ${scoreShadowClass}`}>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: 'spring' }}
+              className="relative inline-block mb-6"
+            >
+              <div
+                className={`w-24 h-24 bg-gradient-to-br ${scoreGradientClass} rounded-3xl flex items-center justify-center shadow-2xl ${scoreShadowClass}`}
+              >
                 <Award className="w-14 h-14 text-foreground" />
               </div>
               <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-foreground" />
               </div>
             </motion.div>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Interview Complete!</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
+              Interview Complete!
+            </h1>
 
             <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 mb-6">
-  <h3 className="text-xl font-bold mb-2">
-    Interview Readiness Score
-  </h3>
+              <h3 className="text-xl font-bold mb-2">Interview Readiness Score</h3>
 
-  <p className="text-5xl font-bold text-primary">
-    {overallResults.overallScore}%
-  </p>
+              <p className="text-5xl font-bold text-primary">{overallResults.overallScore}%</p>
 
-  <p className="text-muted-foreground mt-2">
-    Based on confidence, communication, and answer quality.
-  </p>
-</div>
+              <p className="text-muted-foreground mt-2">
+                Based on confidence, communication, and answer quality.
+              </p>
+            </div>
 
-            <p className="text-lg text-muted-foreground">Here's your comprehensive performance analysis</p>
+            <p className="text-lg text-muted-foreground">
+              Here's your comprehensive performance analysis
+            </p>
           </motion.div>
           <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.05 }}
-  className="mb-8"
->
-  <div className="p-6 rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="mb-8"
+          >
+            <div className="p-6 rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+              <h2 className="text-2xl font-bold mb-4">Adaptive Interview Progress</h2>
 
-    <h2 className="text-2xl font-bold mb-4">
-      Adaptive Interview Progress
-    </h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-muted-foreground">Current Level</p>
 
-    <div className="grid md:grid-cols-2 gap-4">
+                  <p className="text-xl font-bold">{progressData.level}</p>
+                </div>
 
-      <div>
-        <p className="text-muted-foreground">
-          Current Level
-        </p>
+                <div>
+                  <p className="text-muted-foreground">Average Score</p>
 
-        <p className="text-xl font-bold">
-          {progressData.level}
-        </p>
-      </div>
+                  <p className="text-xl font-bold">{progressData.averageScore}%</p>
+                </div>
 
-      <div>
-        <p className="text-muted-foreground">
-          Average Score
-        </p>
+                <div>
+                  <p className="text-muted-foreground">Interviews Completed</p>
 
-        <p className="text-xl font-bold">
-          {progressData.averageScore}%
-        </p>
-      </div>
+                  <p className="text-xl font-bold">{progressData.completedInterviews}</p>
+                </div>
 
-      <div>
-        <p className="text-muted-foreground">
-          Interviews Completed
-        </p>
+                <div>
+                  <p className="text-muted-foreground">Success Streak</p>
 
-        <p className="text-xl font-bold">
-          {progressData.completedInterviews}
-        </p>
-      </div>
+                  <p className="text-xl font-bold">{progressData.streak}/3</p>
+                </div>
+              </div>
 
-      <div>
-        <p className="text-muted-foreground">
-          Success Streak
-        </p>
+              <div className="mt-6">
+                <p className="mb-2 text-sm text-muted-foreground">Progress To Next Level</p>
 
-        <p className="text-xl font-bold">
-          {progressData.streak}/3
-        </p>
-      </div>
+                <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all duration-500"
+                    style={{
+                      width: `${progressData.streak * 33}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
-    </div>
-
-    <div className="mt-6">
-
-      <p className="mb-2 text-sm text-muted-foreground">
-        Progress To Next Level
-      </p>
-
-      <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
-
-        <div
-          className="h-full bg-primary rounded-full transition-all duration-500"
-          style={{
-            width: `${progressData.streak * 33}%`
-          }}
-        />
-
-      </div>
-
-    </div>
-
-  </div>
-</motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-8"
+          >
             <div className="p-8 rounded-3xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-border backdrop-blur-xl">
               <div className="flex flex-col lg:flex-row items-center gap-8 mb-8">
                 <div className="relative">
                   <svg className="w-44 h-44 transform -rotate-90">
-                    <circle cx="88" cy="88" r="76" stroke="currentColor" strokeWidth="12" fill="none" className="text-muted-foreground/60" />
-                    <motion.circle initial={{ strokeDashoffset: 478 }} animate={{ strokeDashoffset: 478 - (478 * overallResults.overallScore) / 100 }} transition={{ delay: 0.5, duration: 1.5, ease: 'easeOut' }} cx="88" cy="88" r="76" stroke="url(#scoreGradient)" strokeWidth="12" fill="none" strokeLinecap="round" strokeDasharray="478" />
+                    <circle
+                      cx="88"
+                      cy="88"
+                      r="76"
+                      stroke="currentColor"
+                      strokeWidth="12"
+                      fill="none"
+                      className="text-muted-foreground/60"
+                    />
+                    <motion.circle
+                      initial={{ strokeDashoffset: 478 }}
+                      animate={{
+                        strokeDashoffset: 478 - (478 * overallResults.overallScore) / 100,
+                      }}
+                      transition={{ delay: 0.5, duration: 1.5, ease: 'easeOut' }}
+                      cx="88"
+                      cy="88"
+                      r="76"
+                      stroke="url(#scoreGradient)"
+                      strokeWidth="12"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeDasharray="478"
+                    />
                     <defs>
                       <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#818cf8" />
@@ -2104,10 +2440,17 @@ if (communicationTips.length === 0) {
                     </defs>
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="text-5xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1 }}
+                      className="text-5xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+                    >
                       {overallResults.overallScore}%
                     </motion.span>
-                    <span className="text-muted-foreground text-sm font-medium mt-1">{getScoreLabel(overallResults.overallScore)}</span>
+                    <span className="text-muted-foreground text-sm font-medium mt-1">
+                      {getScoreLabel(overallResults.overallScore)}
+                    </span>
                   </div>
                 </div>
 
@@ -2119,38 +2462,78 @@ if (communicationTips.length === 0) {
                   <div className="space-y-4">
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-foreground text-sm flex items-center gap-2"><Target className="w-4 h-4 text-sky-400" />Answer Relevance</span>
-                        <span className="text-sky-400 font-semibold">{Math.round(avgRelevance)}%</span>
+                        <span className="text-foreground text-sm flex items-center gap-2">
+                          <Target className="w-4 h-4 text-sky-400" />
+                          Answer Relevance
+                        </span>
+                        <span className="text-sky-400 font-semibold">
+                          {Math.round(avgRelevance)}%
+                        </span>
                       </div>
                       <div className="h-2.5 bg-muted rounded-full overflow-hidden">
-                        <motion.div initial={{ width: 0 }} animate={{ width: `${avgRelevance}%` }} transition={{ delay: 0.6, duration: 1 }} className="h-full bg-gradient-to-r from-sky-500 to-sky-400 rounded-full" />
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${avgRelevance}%` }}
+                          transition={{ delay: 0.6, duration: 1 }}
+                          className="h-full bg-gradient-to-r from-sky-500 to-sky-400 rounded-full"
+                        />
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-foreground text-sm flex items-center gap-2"><MessageSquare className="w-4 h-4 text-emerald-400" />Communication Clarity</span>
-                        <span className="text-emerald-400 font-semibold">{Math.round(avgClarity)}%</span>
+                        <span className="text-foreground text-sm flex items-center gap-2">
+                          <MessageSquare className="w-4 h-4 text-emerald-400" />
+                          Communication Clarity
+                        </span>
+                        <span className="text-emerald-400 font-semibold">
+                          {Math.round(avgClarity)}%
+                        </span>
                       </div>
                       <div className="h-2.5 bg-muted rounded-full overflow-hidden">
-                        <motion.div initial={{ width: 0 }} animate={{ width: `${avgClarity}%` }} transition={{ delay: 0.7, duration: 1 }} className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" />
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${avgClarity}%` }}
+                          transition={{ delay: 0.7, duration: 1 }}
+                          className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full"
+                        />
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-foreground text-sm flex items-center gap-2"><Brain className="w-4 h-4 text-purple-400" />Verbal Confidence</span>
-                        <span className="text-purple-400 font-semibold">{Math.round(avgConfidence)}%</span>
+                        <span className="text-foreground text-sm flex items-center gap-2">
+                          <Brain className="w-4 h-4 text-purple-400" />
+                          Verbal Confidence
+                        </span>
+                        <span className="text-purple-400 font-semibold">
+                          {Math.round(avgConfidence)}%
+                        </span>
                       </div>
                       <div className="h-2.5 bg-muted rounded-full overflow-hidden">
-                        <motion.div initial={{ width: 0 }} animate={{ width: `${avgConfidence}%` }} transition={{ delay: 0.8, duration: 1 }} className="h-full bg-gradient-to-r from-secondary to-purple-400 rounded-full" />
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${avgConfidence}%` }}
+                          transition={{ delay: 0.8, duration: 1 }}
+                          className="h-full bg-gradient-to-r from-secondary to-purple-400 rounded-full"
+                        />
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-foreground text-sm flex items-center gap-2"><Eye className="w-4 h-4 text-amber-400" />Body Language & Expression</span>
-                        <span className="text-amber-400 font-semibold">{Math.round(expressionScore)}%</span>
+                        <span className="text-foreground text-sm flex items-center gap-2">
+                          <Eye className="w-4 h-4 text-amber-400" />
+                          Body Language & Expression
+                        </span>
+                        <span className="text-amber-400 font-semibold">
+                          {Math.round(expressionScore)}%
+                        </span>
                       </div>
                       <div className="h-2.5 bg-muted rounded-full overflow-hidden">
-                        <motion.div initial={{ width: 0 }} animate={{ width: `${expressionScore}%` }} transition={{ delay: 0.9, duration: 1 }} className="h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full" />
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${expressionScore}%` }}
+                          transition={{ delay: 0.9, duration: 1 }}
+                          className="h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full"
+                        />
                       </div>
                     </div>
                   </div>
@@ -2162,21 +2545,27 @@ if (communicationTips.length === 0) {
                   <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center mx-auto mb-2">
                     <CheckCircle className="w-5 h-5 text-primary" />
                   </div>
-                  <p className="text-2xl font-bold text-primary">{overallResults.answeredQuestions}/{overallResults.totalQuestions}</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {overallResults.answeredQuestions}/{overallResults.totalQuestions}
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">Questions Answered</p>
                 </div>
                 <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-center">
                   <div className="w-10 h-10 rounded-xl bg-sky-500/20 flex items-center justify-center mx-auto mb-2">
                     <Clock className="w-5 h-5 text-sky-400" />
                   </div>
-                  <p className="text-2xl font-bold text-sky-400">{formatTime(overallResults.duration)}</p>
+                  <p className="text-2xl font-bold text-sky-400">
+                    {formatTime(overallResults.duration)}
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">Total Duration</p>
                 </div>
                 <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center mx-auto mb-2">
                     <TrendingUp className="w-5 h-5 text-emerald-400" />
                   </div>
-                  <p className="text-2xl font-bold text-emerald-400">{Math.round((avgRelevance + avgClarity + avgConfidence) / 3)}%</p>
+                  <p className="text-2xl font-bold text-emerald-400">
+                    {Math.round((avgRelevance + avgClarity + avgConfidence) / 3)}%
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">Avg Answer Quality</p>
                 </div>
                 <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
@@ -2190,100 +2579,94 @@ if (communicationTips.length === 0) {
                   <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center mx-auto mb-2">
                     <Zap className="w-5 h-5 text-purple-400" />
                   </div>
-                  <p className="text-2xl font-bold text-purple-400">{overallResults.answers?.length > 0 ? Math.round(overallResults.duration / overallResults.answers.length) : 0}s</p>
+                  <p className="text-2xl font-bold text-purple-400">
+                    {overallResults.answers?.length > 0
+                      ? Math.round(overallResults.duration / overallResults.answers.length)
+                      : 0}
+                    s
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">Avg Response Time</p>
                 </div>
               </div>
             </div>
           </motion.div>
           <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.2 }}
-  className="mb-8"
->
-  <div className="p-8 rounded-3xl bg-background/50 border border-border">
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8"
+          >
+            <div className="p-8 rounded-3xl bg-background/50 border border-border">
+              <h2 className="text-2xl font-bold mb-6">Communication & Confidence Analysis</h2>
 
-    <h2 className="text-2xl font-bold mb-6">
-      Communication & Confidence Analysis
-    </h2>
+              <div className="grid md:grid-cols-4 gap-4 mb-6">
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                  <p className="text-sm text-muted-foreground">Communication Score</p>
+                  <p className="text-3xl font-bold text-emerald-400">{Math.round(avgClarity)}</p>
+                </div>
 
-    <div className="grid md:grid-cols-4 gap-4 mb-6">
+                <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                  <p className="text-sm text-muted-foreground">Confidence Score</p>
+                  <p className="text-3xl font-bold text-purple-400">{Math.round(avgConfidence)}</p>
+                </div>
 
-      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-        <p className="text-sm text-muted-foreground">
-          Communication Score
-        </p>
-        <p className="text-3xl font-bold text-emerald-400">
-          {Math.round(avgClarity)}
-        </p>
-      </div>
+                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                  <p className="text-sm text-muted-foreground">Filler Words</p>
+                  <p className="text-3xl font-bold text-red-400">{totalFillerWords}</p>
+                </div>
 
-      <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
-        <p className="text-sm text-muted-foreground">
-          Confidence Score
-        </p>
-        <p className="text-3xl font-bold text-purple-400">
-          {Math.round(avgConfidence)}
-        </p>
-      </div>
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                  <p className="text-sm text-muted-foreground">Rating</p>
+                  <p className="text-xl font-bold text-amber-400">{getCommunicationRating()}</p>
+                </div>
+              </div>
 
-      <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-        <p className="text-sm text-muted-foreground">
-          Filler Words
-        </p>
-        <p className="text-3xl font-bold text-red-400">
-          {totalFillerWords}
-        </p>
-      </div>
+              <div className="p-5 rounded-xl bg-primary/10 border border-primary/20">
+                <h3 className="font-semibold mb-3">Communication Improvement Roadmap</h3>
 
-      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-        <p className="text-sm text-muted-foreground">
-          Rating
-        </p>
-        <p className="text-xl font-bold text-amber-400">
-          {getCommunicationRating()}
-        </p>
-      </div>
-
-    </div>
-
-    <div className="p-5 rounded-xl bg-primary/10 border border-primary/20">
-      <h3 className="font-semibold mb-3">
-        Communication Improvement Roadmap
-      </h3>
-
-      <ul className="space-y-2">
-        {communicationTips.map((tip, index) => (
-          <li key={index}>
-            • {tip}
-          </li>
-        ))}
-      </ul>
-    </div>
-
-  </div>
-</motion.div>
+                <ul className="space-y-2">
+                  {communicationTips.map((tip, index) => (
+                    <li key={index}>• {tip}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </motion.div>
 
           {overallResults.overallFeedback && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mb-8"
+            >
               <div className="p-6 rounded-3xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-border backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
                     <Lightbulb className="w-6 h-6 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground">AI Performance Summary</h3>
-                    <p className="text-muted-foreground text-sm">Personalized feedback based on your interview</p>
+                    <h3 className="text-xl font-semibold text-foreground">
+                      AI Performance Summary
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      Personalized feedback based on your interview
+                    </p>
                   </div>
                 </div>
-                <p className="text-foreground leading-relaxed text-lg bg-muted/30 p-5 rounded-2xl border border-border/50">{overallResults.overallFeedback.summary}</p>
+                <p className="text-foreground leading-relaxed text-lg bg-muted/30 p-5 rounded-2xl border border-border/50">
+                  {overallResults.overallFeedback.summary}
+                </p>
               </div>
             </motion.div>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+            >
               <div className="h-full p-6 rounded-3xl bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20 backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center">
@@ -2296,7 +2679,13 @@ if (communicationTips.length === 0) {
                 </div>
                 <ul className="space-y-3">
                   {overallResults.overallFeedback?.topStrengths?.map((s, i) => (
-                    <motion.li initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.1 }} key={i} className="flex items-start gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/10">
+                    <motion.li
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + i * 0.1 }}
+                      key={i}
+                      className="flex items-start gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/10"
+                    >
                       <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
                         <span className="text-emerald-400 text-sm font-bold">{i + 1}</span>
                       </div>
@@ -2307,7 +2696,11 @@ if (communicationTips.length === 0) {
               </div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+            >
               <div className="h-full p-6 rounded-3xl bg-gradient-to-br from-amber-500/10 to-amber-500/5 border border-amber-500/20 backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-12 h-12 rounded-2xl bg-amber-500/20 flex items-center justify-center">
@@ -2320,7 +2713,13 @@ if (communicationTips.length === 0) {
                 </div>
                 <ul className="space-y-3">
                   {overallResults.overallFeedback?.areasToImprove?.map((a, i) => (
-                    <motion.li initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.1 }} key={i} className="flex items-start gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/10">
+                    <motion.li
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + i * 0.1 }}
+                      key={i}
+                      className="flex items-start gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/10"
+                    >
                       <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0 mt-0.5">
                         <ArrowRight className="w-3 h-3 text-amber-400" />
                       </div>
@@ -2332,51 +2731,46 @@ if (communicationTips.length === 0) {
             </motion.div>
 
             <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.35 }}
-  className="mb-8"
->
-  <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/20">
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="mb-8"
+            >
+              <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/20">
+                <h2 className="text-2xl font-bold mb-4">Areas To Improve</h2>
 
-    <h2 className="text-2xl font-bold mb-4">
-      Areas To Improve
-    </h2>
+                <p className="text-muted-foreground mb-5">
+                  Focus on these areas before your next interview.
+                </p>
 
-    <p className="text-muted-foreground mb-5">
-      Focus on these areas before your next interview.
-    </p>
+                <div className="space-y-3">
+                  {overallResults.overallFeedback?.areasToImprove?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="p-4 rounded-xl bg-background/50 border border-border"
+                    >
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5" />
 
-    <div className="space-y-3">
-      {overallResults.overallFeedback?.areasToImprove?.map((item, index) => (
-        <div
-          key={index}
-          className="p-4 rounded-xl bg-background/50 border border-border"
-        >
-          <div className="flex items-start gap-3">
-
-            <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5" />
-
-            <span className="text-foreground">
-              {item}
-            </span>
-
-          </div>
-        </div>
-      ))}
-    </div>
-
-  </div>
-</motion.div>
+                        <span className="text-foreground">{item}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
 
             <LearningRecommendations
-  areasToImprove={
-    overallResults.overallFeedback?.areasToImprove || []
-  }
-/>
+              areasToImprove={overallResults.overallFeedback?.areasToImprove || []}
+            />
           </div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mb-8"
+          >
             <div className="p-6 rounded-3xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 backdrop-blur-xl">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
@@ -2384,12 +2778,20 @@ if (communicationTips.length === 0) {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-foreground">Expert Recommendations</h3>
-                  <p className="text-primary/70 text-sm">Actionable steps for your next interview</p>
+                  <p className="text-primary/70 text-sm">
+                    Actionable steps for your next interview
+                  </p>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {overallResults.overallFeedback?.recommendations?.map((r, i) => (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.1 }} key={i} className="p-4 rounded-2xl bg-muted/50 border border-border/50 hover:border-primary/30 transition-colors">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                    key={i}
+                    className="p-4 rounded-2xl bg-muted/50 border border-border/50 hover:border-primary/30 transition-colors"
+                  >
                     <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center mb-3">
                       <span className="text-primary font-bold text-sm">{i + 1}</span>
                     </div>
@@ -2401,30 +2803,50 @@ if (communicationTips.length === 0) {
           </motion.div>
 
           {overallResults.overallFeedback?.expressionAnalysis && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="mb-8"
+            >
               <div className="p-6 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
                     <Eye className="w-6 h-6 text-cyan-400" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground">Body Language Analysis</h3>
-                    <p className="text-cyan-400/70 text-sm">Insights from facial expression tracking</p>
+                    <h3 className="text-xl font-semibold text-foreground">
+                      Body Language Analysis
+                    </h3>
+                    <p className="text-cyan-400/70 text-sm">
+                      Insights from facial expression tracking
+                    </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-6">
                   <div className="p-5 rounded-2xl bg-muted/30 border border-border/50">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-foreground">Expression Confidence Score</span>
-                      <span className="text-2xl font-bold text-cyan-400">{overallResults.overallFeedback.expressionAnalysis.overallConfidence}%</span>
+                      <span className="text-2xl font-bold text-cyan-400">
+                        {overallResults.overallFeedback.expressionAnalysis.overallConfidence}%
+                      </span>
                     </div>
                     <div className="h-3 bg-muted rounded-full overflow-hidden">
-                      <motion.div initial={{ width: 0 }} animate={{ width: `${overallResults.overallFeedback.expressionAnalysis.overallConfidence}%` }} transition={{ delay: 0.6, duration: 1 }} className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" />
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: `${overallResults.overallFeedback.expressionAnalysis.overallConfidence}%`,
+                        }}
+                        transition={{ delay: 0.6, duration: 1 }}
+                        className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+                      />
                     </div>
                   </div>
                   <div className="p-5 rounded-2xl bg-muted/30 border border-border/50">
                     <p className="text-muted-foreground text-sm mb-2">AI Feedback</p>
-                    <p className="text-foreground/90 leading-relaxed">{overallResults.overallFeedback.expressionAnalysis.feedback}</p>
+                    <p className="text-foreground/90 leading-relaxed">
+                      {overallResults.overallFeedback.expressionAnalysis.feedback}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -2432,15 +2854,24 @@ if (communicationTips.length === 0) {
           )}
 
           {overallResults.answers && overallResults.answers.length > 0 && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="mb-8"
+            >
               <div className="p-6 rounded-3xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-border backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center">
                     <MessageSquare className="w-6 h-6 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground">Question-by-Question Analysis</h3>
-                    <p className="text-muted-foreground text-sm">Detailed breakdown of each response</p>
+                    <h3 className="text-xl font-semibold text-foreground">
+                      Question-by-Question Analysis
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      Detailed breakdown of each response
+                    </p>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -2452,8 +2883,17 @@ if (communicationTips.length === 0) {
             </motion.div>
           )}
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="flex flex-wrap gap-4">
-            <Button onClick={resetInterview} variant="primary" className="flex-1 !py-5 !rounded-2xl flex items-center justify-center gap-3 !text-lg font-semibold min-w-[200px]">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="flex flex-wrap gap-4"
+          >
+            <Button
+              onClick={resetInterview}
+              variant="primary"
+              className="flex-1 !py-5 !rounded-2xl flex items-center justify-center gap-3 !text-lg font-semibold min-w-[200px]"
+            >
               <Mic className="w-6 h-6" />
               Start New Interview
             </Button>
@@ -2465,22 +2905,44 @@ if (communicationTips.length === 0) {
               <Share2 className="w-6 h-6" />
               Share My Score
             </Button>
-            <Button onClick={() => navigate('/dashboard')} variant="outline" className="flex-1 !py-5 !rounded-2xl flex items-center justify-center gap-3 !text-lg font-semibold min-w-[200px]">
+            <Button
+              onClick={() => navigate('/dashboard')}
+              variant="outline"
+              className="flex-1 !py-5 !rounded-2xl flex items-center justify-center gap-3 !text-lg font-semibold min-w-[200px]"
+            >
               Back to Dashboard
               <ArrowRight className="w-6 h-6" />
             </Button>
           </motion.div>
 
           {shareOpen && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 rounded-2xl bg-card border border-border flex flex-wrap items-center gap-3">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 p-4 rounded-2xl bg-card border border-border flex flex-wrap items-center gap-3"
+            >
               <p className="text-sm text-muted-foreground flex-1 min-w-[200px]">
                 Capture your score as an image and share it on LinkedIn, X/Twitter, or download it.
               </p>
-              <Button onClick={handleShare} disabled={shareBusy} variant="primary" className="!py-2 !text-sm">
-                {shareBusy ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Share2 className="w-4 h-4 mr-1.5" />}
+              <Button
+                onClick={handleShare}
+                disabled={shareBusy}
+                variant="primary"
+                className="!py-2 !text-sm"
+              >
+                {shareBusy ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+                ) : (
+                  <Share2 className="w-4 h-4 mr-1.5" />
+                )}
                 Share Image
               </Button>
-              <Button onClick={handleDownloadShare} disabled={shareBusy} variant="outline" className="!py-2 !text-sm">
+              <Button
+                onClick={handleDownloadShare}
+                disabled={shareBusy}
+                variant="outline"
+                className="!py-2 !text-sm"
+              >
                 <Download className="w-4 h-4 mr-1.5" />
                 Download PNG
               </Button>
@@ -2499,4 +2961,4 @@ if (communicationTips.length === 0) {
   }
 
   return null;
-};
+}

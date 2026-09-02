@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function TropicalParadise() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Tropical Paradise Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Tropical leaf patterns, vibrant greens, hot pinks, and sunny yellows. Palm tree silhouettes, exotic flower accents. Summer vacation energy.
+            Tropical leaf patterns, vibrant greens, hot pinks, and sunny yellows. Palm tree
+            silhouettes, exotic flower accents. Summer vacation energy.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

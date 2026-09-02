@@ -1,26 +1,19 @@
-import data from "../../../../../data/dummy_data.json";
-import { motion } from "framer-motion";
+import data from '../../../../../data/dummy_data.json';
+import { motion } from 'framer-motion';
 
 export default function Skills() {
   return (
     <section className="py-24 px-6">
       <div className="max-w-7xl mx-auto">
-
         {/* Heading */}
         <div className="text-center mb-20">
-
           <h2 className="text-5xl font-bold mb-6">
-            My Work{" "}
-            <span className="text-blue-500">
-              Skills
-            </span>
+            My Work <span className="text-blue-500">Skills</span>
           </h2>
-
         </div>
 
         {/* Skills Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-
           {data.skills.map((skill, index) => (
             <motion.div
               key={index}
@@ -44,20 +37,14 @@ export default function Skills() {
                 transition-all
               "
             >
-
               {/* Icon */}
-              <div className="text-6xl mb-6">
-                {skill.icon}
-              </div>
+              <div className="text-6xl mb-6">{skill.icon}</div>
 
               {/* Name */}
-              <h3 className="text-2xl font-semibold mb-8">
-                {skill.name}
-              </h3>
+              <h3 className="text-2xl font-semibold mb-8">{skill.name}</h3>
 
               {/* Progress */}
               <div className="w-full">
-
                 <div
                   className="
                     h-4
@@ -89,16 +76,11 @@ export default function Skills() {
                   />
                 </div>
 
-                <div className="mt-3 text-sm font-semibold text-indigo-400">
-                  {skill.level}%
-                </div>
-
+                <div className="mt-3 text-sm font-semibold text-indigo-400">{skill.level}%</div>
               </div>
             </motion.div>
           ))}
-
         </div>
-
       </div>
     </section>
   );

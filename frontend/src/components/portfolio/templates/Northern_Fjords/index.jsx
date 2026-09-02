@@ -1,37 +1,24 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React from "react";
+import { usePortfolio } from '../../../../context/PortfolioContext';
+import React from 'react';
 
 export default function NorthernFjords() {
   const { portfolioData: data } = usePortfolio();
 
   return (
     <div className="bg-[#0b1b2b] text-white min-h-screen">
-
       {/* HERO */}
       <section className="h-screen flex flex-col items-center justify-center text-center px-6 bg-gradient-to-b from-black/60 to-[#0b1b2b]">
-        <h1 className="text-5xl md:text-7xl font-bold">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-300 mt-4">
-          {data.personal.title}
-        </p>
-        <p className="text-gray-400 mt-2">
-          {data.personal.location}
-        </p>
+        <h1 className="text-5xl md:text-7xl font-bold">{data.personal.name}</h1>
+        <p className="text-xl md:text-2xl text-gray-300 mt-4">{data.personal.title}</p>
+        <p className="text-gray-400 mt-2">{data.personal.location}</p>
       </section>
 
       {/* ABOUT */}
       <section className="py-20 px-6 max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
-        <img
-          src={data.personal.avatar}
-          className="rounded-2xl w-full object-cover"
-          alt="avatar"
-        />
+        <img src={data.personal.avatar} className="rounded-2xl w-full object-cover" alt="avatar" />
         <div>
           <h2 className="text-3xl font-bold mb-4">About</h2>
-          <p className="text-gray-300 leading-relaxed">
-            {data.personal.bio}
-          </p>
+          <p className="text-gray-300 leading-relaxed">{data.personal.bio}</p>
         </div>
       </section>
 
@@ -59,9 +46,7 @@ export default function NorthernFjords() {
               <img src={project.image} className="h-40 w-full object-cover" />
               <div className="p-4">
                 <h3 className="font-bold">{project.title}</h3>
-                <p className="text-gray-400 text-sm mt-2">
-                  {project.description}
-                </p>
+                <p className="text-gray-400 text-sm mt-2">{project.description}</p>
               </div>
             </div>
           ))}
@@ -106,11 +91,8 @@ export default function NorthernFjords() {
 
         <p className="text-gray-400 mb-6">{data.personal.bio}</p>
 
-        <p className="text-sm text-gray-500">
-          Email: {data.socials.email}
-        </p>
+        <p className="text-sm text-gray-500">Email: {data.socials.email}</p>
       </section>
-
     </div>
   );
 }

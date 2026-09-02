@@ -1,30 +1,30 @@
-import React, {useId} from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { User, LineChart, Shield, Brain, Code2, Target } from "lucide-react";
+import React, { useId } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { User, LineChart, Shield, Brain, Code2, Target } from 'lucide-react';
 
 const skills = [
   {
     icon: Brain,
-    title: "Analytical Thinking",
-    desc: "Strong focus on structured problem solving, financial reasoning, and decision modeling.",
+    title: 'Analytical Thinking',
+    desc: 'Strong focus on structured problem solving, financial reasoning, and decision modeling.',
   },
   {
     icon: LineChart,
-    title: "Market-Oriented Mindset",
-    desc: "Understanding of data trends, risk behavior, and performance-driven systems.",
+    title: 'Market-Oriented Mindset',
+    desc: 'Understanding of data trends, risk behavior, and performance-driven systems.',
   },
   {
     icon: Code2,
-    title: "Full-Stack Development",
-    desc: "Building responsive, scalable web applications with modern frameworks.",
+    title: 'Full-Stack Development',
+    desc: 'Building responsive, scalable web applications with modern frameworks.',
   },
 ];
 
 const highlights = [
-  "Focus on finance + technology intersection",
-  "Building portfolio-grade UI systems",
-  "Interest in trading systems & analytics dashboards",
-  "Strong foundation in frontend architecture",
+  'Focus on finance + technology intersection',
+  'Building portfolio-grade UI systems',
+  'Interest in trading systems & analytics dashboards',
+  'Strong foundation in frontend architecture',
 ];
 
 const container = {
@@ -55,9 +55,11 @@ export default function About() {
             fill="transparent"
             initial={prefersReducedMotion ? false : { pathLength: 0 }}
             animate={prefersReducedMotion ? { pathLength: 1 } : { pathLength: 0 }}
-           transition={
-             prefersReducedMotion ? { duration: 0 } : { duration: 5, repeat: Infinity, ease: "easeInOut" }
-          }
+            transition={
+              prefersReducedMotion
+                ? { duration: 0 }
+                : { duration: 5, repeat: Infinity, ease: 'easeInOut' }
+            }
           />
           <defs>
             <linearGradient id={gradientId}>
@@ -86,31 +88,22 @@ export default function About() {
           </div>
 
           <h2 className="text-4xl md:text-6xl font-semibold leading-tight">
-            I Build Systems Where{" "}
-            <span className="text-emerald-400 block font-extrabold">
-              Finance Meets Code
-            </span>
+            I Build Systems Where{' '}
+            <span className="text-emerald-400 block font-extrabold">Finance Meets Code</span>
           </h2>
 
           <p className="text-slate-400 mt-5 max-w-2xl leading-relaxed">
-            I’m a developer with a strong interest in financial systems,
-            analytics, and performance-driven applications. I enjoy building
-            interfaces that turn complex data into clear decisions.
+            I’m a developer with a strong interest in financial systems, analytics, and
+            performance-driven applications. I enjoy building interfaces that turn complex data into
+            clear decisions.
           </p>
         </motion.div>
 
         {/* GRID */}
         <div className="grid lg:grid-cols-2 gap-12">
           {/* LEFT */}
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="space-y-6"
-          >
-            <h3 className="text-xl font-semibold text-white/90 mb-4">
-              Core Strengths
-            </h3>
+          <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
+            <h3 className="text-xl font-semibold text-white/90 mb-4">Core Strengths</h3>
 
             {skills.map((s, i) => {
               const Icon = s.icon;
@@ -156,22 +149,17 @@ export default function About() {
             <div className="mt-6 flex flex-col gap-3 border-t border-white/10 rounded-lg p-4 bg-white/5">
               <div className="flex items-center gap-2 text-emerald-400">
                 <Shield className="w-4 h-4" />
-                <span className="text-xs tracking-wide uppercase">
-                  Currently Exploring
-                </span>
+                <span className="text-xs tracking-wide uppercase">Currently Exploring</span>
               </div>
 
               <p className="text-sm text-slate-400 leading-relaxed">
-                Financial dashboards, trading system UI design, and
-                performance-heavy frontend architectures focused on real-time
-                data visualization.
+                Financial dashboards, trading system UI design, and performance-heavy frontend
+                architectures focused on real-time data visualization.
               </p>
 
               <div className="flex items-center gap-2 mt-3 text-xs text-slate-500">
                 <LineChart className="w-4 h-4 text-emerald-400" />
-                <span>
-                  Building systems that turn complexity into actionable insight
-                </span>
+                <span>Building systems that turn complexity into actionable insight</span>
               </div>
             </div>
           </motion.div>

@@ -92,10 +92,10 @@ function PortfolioDemoPreview({ videoUrl, posterUrl, heading }) {
           <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-4">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-400 to-cyan-500 p-0.5 shadow-md">
-                <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=AlexRivera" 
-                  alt="Dev Avatar" 
-                  className="w-full h-full rounded-[10px] bg-slate-950" 
+                <img
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=AlexRivera"
+                  alt="Dev Avatar"
+                  className="w-full h-full rounded-[10px] bg-slate-950"
                 />
               </div>
               <div>
@@ -103,7 +103,7 @@ function PortfolioDemoPreview({ videoUrl, posterUrl, heading }) {
                 <p className="text-[11px] text-emerald-300 font-medium">Senior Software Engineer</p>
               </div>
             </div>
-            
+
             <p className="text-xs text-slate-300 leading-relaxed mb-4">
               Building high-performance web applications and neural codebase graph analyzers.
             </p>
@@ -126,9 +126,21 @@ function PortfolioDemoPreview({ videoUrl, posterUrl, heading }) {
 
           <div className="space-y-3">
             {[
-              { title: 'Minimal Dark Fluid', badge: 'Active Theme', color: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10' },
-              { title: 'GitHub OAuth Synced', badge: 'Auto-Update', color: 'text-cyan-400 border-cyan-500/20 bg-cyan-500/10' },
-              { title: 'Custom Domain Connected', badge: 'SSL Live', color: 'text-indigo-400 border-indigo-500/20 bg-indigo-500/10' }
+              {
+                title: 'Minimal Dark Fluid',
+                badge: 'Active Theme',
+                color: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10',
+              },
+              {
+                title: 'GitHub OAuth Synced',
+                badge: 'Auto-Update',
+                color: 'text-cyan-400 border-cyan-500/20 bg-cyan-500/10',
+              },
+              {
+                title: 'Custom Domain Connected',
+                badge: 'SSL Live',
+                color: 'text-indigo-400 border-indigo-500/20 bg-indigo-500/10',
+              },
             ].map((item, index) => (
               <div
                 key={item.title}
@@ -140,7 +152,9 @@ function PortfolioDemoPreview({ videoUrl, posterUrl, heading }) {
                   </span>
                   <span className="text-xs font-semibold text-slate-200">{item.title}</span>
                 </div>
-                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${item.color}`}>
+                <span
+                  className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${item.color}`}
+                >
                   {item.badge}
                 </span>
               </div>
@@ -159,13 +173,7 @@ function PortfolioDemoPreview({ videoUrl, posterUrl, heading }) {
   );
 }
 
-function DefaultVideoSection({
-  heading,
-  subheading,
-  videoUrl,
-  posterUrl,
-  caption,
-}) {
+function DefaultVideoSection({ heading, subheading, videoUrl, posterUrl, caption }) {
   return (
     <section className="relative z-10 bg-background py-24 sm:py-32">
       <div className="container mx-auto max-w-6xl px-4 md:px-6">
@@ -332,9 +340,7 @@ export default function FeatureVideoSection({
           </div>
 
           {caption && (
-            <p className="mt-5 text-center text-sm leading-6 text-slate-400">
-              {caption}
-            </p>
+            <p className="mt-5 text-center text-sm leading-6 text-slate-400">{caption}</p>
           )}
         </MotionDiv>
       </div>

@@ -121,7 +121,9 @@ export default function Projects({ data }) {
 
               <div className="p-6">
                 <h3 className="text-xl font-bold text-[#F1F0FF]">{project?.title}</h3>
-                <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-[#8884A8]">{project?.description}</p>
+                <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-[#8884A8]">
+                  {project?.description}
+                </p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {(project?.techStack || []).slice(0, 3).map((tech) => (
                     <span

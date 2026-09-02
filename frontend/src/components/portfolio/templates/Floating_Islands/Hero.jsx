@@ -34,22 +34,14 @@ export default function Hero({ personal, socials }) {
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             className="mx-auto mb-6 w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden ring-4 ring-sky-300/50 shadow-lg shadow-sky-300/30"
           >
-            <img
-              src={personal.avatar}
-              alt={personal.name}
-              className="w-full h-full object-cover"
-            />
+            <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
           </motion.div>
 
           {/* Name */}
-          <h1 className="text-4xl md:text-6xl font-bold text-slate-800 mb-3">
-            {personal.name}
-          </h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-slate-800 mb-3">{personal.name}</h1>
 
           {/* Title */}
-          <p className="text-lg md:text-xl text-sky-600 font-medium mb-4">
-            {personal.title}
-          </p>
+          <p className="text-lg md:text-xl text-sky-600 font-medium mb-4">{personal.title}</p>
 
           {/* Animated Tagline */}
           <motion.p

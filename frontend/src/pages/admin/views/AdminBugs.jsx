@@ -61,20 +61,31 @@ const AdminBugs = () => {
                 </tr>
               ) : (
                 bugs.map((bug) => (
-                  <tr key={bug._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <tr
+                    key={bug._id}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  >
                     <td className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
                       {bug.userEmail}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-gray-900 dark:text-white mb-1">{bug.title}</div>
-                      <div className="text-gray-500 dark:text-gray-400 whitespace-pre-wrap">{bug.description}</div>
+                      <div className="font-semibold text-gray-900 dark:text-white mb-1">
+                        {bug.title}
+                      </div>
+                      <div className="text-gray-500 dark:text-gray-400 whitespace-pre-wrap">
+                        {bug.description}
+                      </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-                        bug.status === 'open' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
-                        bug.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' :
-                        'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                      }`}>
+                      <span
+                        className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
+                          bug.status === 'open'
+                            ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                            : bug.status === 'in-progress'
+                              ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                              : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                        }`}
+                      >
                         {bug.status.toUpperCase()}
                       </span>
                     </td>
@@ -87,7 +98,7 @@ const AdminBugs = () => {
             </tbody>
           </table>
         </div>
-        
+
         {/* Pagination */}
         {!loading && totalPages > 1 && (
           <div className="flex items-center justify-between p-4 border-t border-gray-100 dark:border-gray-700">
@@ -99,7 +110,8 @@ const AdminBugs = () => {
               Previous
             </button>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Page <span className="font-semibold text-gray-900 dark:text-white">{page}</span> of <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
+              Page <span className="font-semibold text-gray-900 dark:text-white">{page}</span> of{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
             </span>
             <button
               disabled={page === totalPages}

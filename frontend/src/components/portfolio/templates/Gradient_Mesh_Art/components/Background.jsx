@@ -1,16 +1,15 @@
-import React from "react";
+import React from 'react';
 
 export default function Background() {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden bg-gray-950">
-
       {/* NOISE GRID (premium texture) */}
       <div
         className="absolute inset-0 opacity-20"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.07) 1px, transparent 0)",
-          backgroundSize: "42px 42px",
+            'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.07) 1px, transparent 0)',
+          backgroundSize: '42px 42px',
         }}
       />
 
@@ -47,7 +46,6 @@ export default function Background() {
 
       {/* VIGNETTE (FOCUS CONTROL) */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.35)_55%,rgba(0,0,0,0.85)_100%)]" />
-
     </div>
   );
 }

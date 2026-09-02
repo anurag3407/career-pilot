@@ -21,17 +21,31 @@ const HeroSection = () => {
       </FadeIn>
 
       <FadeIn delay={0.1}>
-        <h1 className="text-6xl md:text-8xl font-extralight tracking-tighter text-zinc-900 mb-4">{name}</h1>
+        <h1 className="text-6xl md:text-8xl font-extralight tracking-tighter text-zinc-900 mb-4">
+          {name}
+        </h1>
       </FadeIn>
 
       <FadeIn delay={0.2}>
-        <h2 className="text-2xl md:text-4xl text-zinc-400 font-light tracking-wide max-w-2xl">{title}</h2>
+        <h2 className="text-2xl md:text-4xl text-zinc-400 font-light tracking-wide max-w-2xl">
+          {title}
+        </h2>
       </FadeIn>
 
       <FadeIn delay={0.3} className="flex gap-6 mt-16">
-        <a href="#projects" className="group relative px-8 py-3 border border-zinc-900 text-zinc-900 text-xs tracking-[0.2em] uppercase hover:bg-zinc-50 transition-colors">
+        <a
+          href="#projects"
+          className="group relative px-8 py-3 border border-zinc-900 text-zinc-900 text-xs tracking-[0.2em] uppercase hover:bg-zinc-50 transition-colors"
+        >
           <WireframeCorners />
-          <span className="flex items-center gap-2">View Projects <ArrowUpRight size={14} strokeWidth={1} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" /></span>
+          <span className="flex items-center gap-2">
+            View Projects{' '}
+            <ArrowUpRight
+              size={14}
+              strokeWidth={1}
+              className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+            />
+          </span>
         </a>
       </FadeIn>
     </section>

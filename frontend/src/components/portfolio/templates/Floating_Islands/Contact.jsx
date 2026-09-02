@@ -15,7 +15,9 @@ export default function Contact({ socials }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const subject = encodeURIComponent(`Message from ${formData.name}`);
-    const body = encodeURIComponent(`From: ${formData.name} (${formData.email})\n\n${formData.message}`);
+    const body = encodeURIComponent(
+      `From: ${formData.name} (${formData.email})\n\n${formData.message}`
+    );
     window.location.href = `mailto:${socials.email}?subject=${subject}&body=${body}`;
   };
 

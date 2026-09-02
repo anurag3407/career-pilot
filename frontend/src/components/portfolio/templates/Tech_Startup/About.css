@@ -2,15 +2,15 @@
 
 /* Scoped to .tech-startup-about instead of :root to prevent global variable pollution */
 .tech-startup-about {
-  --bg-root: #0D0B08;
+  --bg-root: #0d0b08;
   --surface-l1: #151210;
-  --surface-l2: #1E1A14;
-  --primary-accent: #E0B96A;
-  --secondary-accent: #E8724A;
-  --tertiary-accent: #8FA68E;
-  --text-primary: #FAF6EE;
-  --text-secondary: #ADA393;
-  --text-muted: #B0A090;
+  --surface-l2: #1e1a14;
+  --primary-accent: #e0b96a;
+  --secondary-accent: #e8724a;
+  --tertiary-accent: #8fa68e;
+  --text-primary: #faf6ee;
+  --text-secondary: #ada393;
+  --text-muted: #b0a090;
   --border-subtle: rgba(224, 185, 106, 0.18);
   --border-emphasis: rgba(224, 185, 106, 0.38);
 
@@ -60,7 +60,9 @@
 .reveal-section {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-section.visible {
@@ -69,12 +71,14 @@
 }
 
 .cta-primary {
-  transition: transform 150ms ease, box-shadow 150ms ease;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .cta-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 28px rgba(224, 185, 106, 0.30);
+  box-shadow: 0 10px 28px rgba(224, 185, 106, 0.3);
 }
 
 .cta-primary:active {
@@ -118,7 +122,9 @@
   border: 1px solid var(--border-subtle);
   box-shadow: inset 0 1px 0 rgba(224, 185, 106, 0.08);
   border-radius: 4px;
-  transition: border-color 300ms ease, box-shadow 300ms ease;
+  transition:
+    border-color 300ms ease,
+    box-shadow 300ms ease;
 }
 
 .glass-panel:hover {

@@ -1,5 +1,5 @@
-import React from "react";
-import { Briefcase } from "lucide-react";
+import React from 'react';
+import { Briefcase } from 'lucide-react';
 
 export default function Experience({ experience }) {
   if (!experience || experience.length === 0) return null;
@@ -14,9 +14,7 @@ export default function Experience({ experience }) {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 border-2 border-black bg-white px-5 py-2 shadow-[4px_4px_0px_#000]">
             <Briefcase size={16} />
-            <span className="font-mono text-xs uppercase tracking-widest">
-              Journey
-            </span>
+            <span className="font-mono text-xs uppercase tracking-widest">Journey</span>
           </div>
 
           <h2 className="mt-6 text-4xl md:text-5xl font-black tracking-tight text-black">
@@ -39,15 +37,13 @@ export default function Experience({ experience }) {
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
                   <div>
-                    <h3 className="text-2xl font-black text-black">
-                      {exp.title}
-                    </h3>
+                    <h3 className="text-2xl font-black text-black">{exp.title}</h3>
                     <p className="font-mono text-sm uppercase tracking-wider text-gray-600 mt-1">
                       {exp.company}
                     </p>
                   </div>
                   <div className="inline-block border border-black px-3 py-1 bg-[#f8f4ec] text-xs font-bold whitespace-nowrap">
-                    {exp.startDate} - {exp.endDate || "Present"}
+                    {exp.startDate} - {exp.endDate || 'Present'}
                   </div>
                 </div>
 

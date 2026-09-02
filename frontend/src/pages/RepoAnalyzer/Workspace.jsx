@@ -10,21 +10,20 @@ import { useNavigate } from 'react-router-dom';
 
 export default function RepoAnalyzerWorkspace() {
   const navigate = useNavigate();
-  const { 
-    repoUrl, 
-    setRepoUrl, 
-    setSessionId, 
-    setGraph, 
-    isInterviewMode, 
+  const {
+    repoUrl,
+    setRepoUrl,
+    setSessionId,
+    setGraph,
+    isInterviewMode,
     setIsInterviewMode,
     isLoading,
     setIsLoading,
-    selectedFile
+    selectedFile,
   } = useAnalyzerStore();
 
   return (
     <div className="h-full min-h-[calc(100vh-4rem)] flex flex-col bg-[#050816] overflow-hidden text-slate-200">
-      
       {/* Top Bar */}
       <div className="h-16 border-b border-white/10 bg-[#0b1120] flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-3">
@@ -35,7 +34,9 @@ export default function RepoAnalyzerWorkspace() {
         </div>
 
         <div className="flex-1 flex justify-center mx-8 relative">
-           <span className="text-slate-400 font-mono text-sm">{repoUrl || 'No Repository Loaded'}</span>
+          <span className="text-slate-400 font-mono text-sm">
+            {repoUrl || 'No Repository Loaded'}
+          </span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -65,14 +66,16 @@ export default function RepoAnalyzerWorkspace() {
 
       {/* Main Content Split */}
       <div className="flex-1 flex overflow-hidden">
-        
         {/* Left: Graph Canvas */}
         <div className="flex-1 relative border-r border-white/10">
           {!repoUrl ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-500">
               <GitMerge className="w-16 h-16 mb-4 opacity-50" />
               <p className="text-lg font-medium text-slate-300">No Repository Loaded</p>
-              <p className="text-sm mt-2 max-w-md text-center">Paste a GitHub URL above to analyze its dependency graph and chat with the architecture.</p>
+              <p className="text-sm mt-2 max-w-md text-center">
+                Paste a GitHub URL above to analyze its dependency graph and chat with the
+                architecture.
+              </p>
             </div>
           ) : (
             <GraphCanvas />
@@ -93,14 +96,12 @@ export default function RepoAnalyzerWorkspace() {
               </motion.div>
             )}
           </AnimatePresence>
-          
+
           <div className="flex-1 overflow-hidden">
             <ChatPanel />
           </div>
         </div>
-
       </div>
     </div>
   );
 }
-

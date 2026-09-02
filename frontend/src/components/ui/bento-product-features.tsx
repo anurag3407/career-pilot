@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 // Animation variants for the container to stagger children
 const containerVariants = {
@@ -23,7 +23,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: 'spring',
       stiffness: 100,
       damping: 10,
     },
@@ -72,11 +72,11 @@ export const BentoGridShowcase = ({
       animate="visible"
       className={cn(
         // Core grid layout: 1 col on mobile, 3 on desktop
-        "grid w-full grid-cols-1 gap-6 md:grid-cols-3",
+        'grid w-full grid-cols-1 gap-6 md:grid-cols-3',
         // Defines 3 explicit rows on medium screens and up
-        "md:grid-rows-3",
+        'md:grid-rows-3',
         // Use minmax to ensure cards can grow but have a minimum height
-        "auto-rows-[minmax(180px,auto)]",
+        'auto-rows-[minmax(180px,auto)]',
         className
       )}
     >

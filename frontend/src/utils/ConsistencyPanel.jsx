@@ -8,11 +8,11 @@ export default function ConsistencyPanel({ errors = [] }) {
   const severityStyles = {
     error: 'bg-red-500/10 border-red-500/20 text-red-400',
     warning: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400',
-    fallback: 'bg-muted border-border text-muted-foreground'
+    fallback: 'bg-muted border-border text-muted-foreground',
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}

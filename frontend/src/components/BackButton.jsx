@@ -1,7 +1,7 @@
-import { ArrowLeft } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 export default function BackButton({
   to,
@@ -9,21 +9,21 @@ export default function BackButton({
   fallbackTo = '/dashboard',
   className = '',
 }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleClick = () => {
     if (to) {
-      navigate(to)
-      return
+      navigate(to);
+      return;
     }
 
     if ((window.history.state?.idx ?? 0) <= 0) {
-      navigate(fallbackTo)
-      return
+      navigate(fallbackTo);
+      return;
     }
 
-    navigate(-1)
-  }
+    navigate(-1);
+  };
 
   return (
     <button
@@ -38,5 +38,5 @@ export default function BackButton({
       <ArrowLeft className="h-4 w-4" aria-hidden="true" />
       <span>{label}</span>
     </button>
-  )
+  );
 }

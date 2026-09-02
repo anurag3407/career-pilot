@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 import { useScroll } from 'framer-motion';
 
@@ -17,7 +17,6 @@ export default function RocketLaunchPortfolio() {
 
   return (
     <div className="relative w-full bg-black text-slate-100 font-sans selection:bg-orange-500/30 overflow-x-hidden">
-      
       {/* FIXED BACKGROUND ROCKET AND STARS */}
       <RocketBackground scrollYProgress={scrollYProgress} />
 
@@ -30,7 +29,6 @@ export default function RocketLaunchPortfolio() {
         <Experience experience={data?.experience} />
         <Contact personal={data?.personal} socials={data?.socials} />
       </div>
-      
     </div>
   );
 }

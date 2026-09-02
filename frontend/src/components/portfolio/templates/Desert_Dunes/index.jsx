@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useEffect, useRef } from 'react';
 
 import {
@@ -315,18 +315,9 @@ function Nav() {
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  const links = [
-    'About',
-    'Skills',
-    'Projects',
-    'Experience',
-    'Testimonials',
-    'Contact',
-  ];
+  const links = ['About', 'Skills', 'Projects', 'Experience', 'Testimonials', 'Contact'];
   const scrollTo = (id) => {
-    document
-      .getElementById(id.toLowerCase())
-      ?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: 'smooth' });
     setOpen(false);
   };
 
@@ -375,7 +366,8 @@ function Nav() {
           {/* Desktop */}
           <div className="hidden md:flex items-center gap-8">
             {links.map((link) => (
-              <button type="button"
+              <button
+                type="button"
                 key={link}
                 onClick={() => scrollTo(link)}
                 style={{
@@ -423,7 +415,8 @@ function Nav() {
           </div>
 
           {/* Hamburger */}
-          <button type="button"
+          <button
+            type="button"
             className="md:hidden"
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
@@ -647,13 +640,7 @@ function Hero() {
             }}
           >
             {name.split(' ').map((word, i) => (
-              <span key={i}>
-                {i === 0 ? (
-                  word
-                ) : (
-                  <span style={{ color: C.gold }}> {word}</span>
-                )}
-              </span>
+              <span key={i}>{i === 0 ? word : <span style={{ color: C.gold }}> {word}</span>}</span>
             ))}
           </motion.h1>
 
@@ -783,8 +770,7 @@ function Hero() {
                   paddingRight: 40,
                   marginRight: 40,
                   marginBottom: 16,
-                  borderRight:
-                    i < stats.length - 1 ? `1px solid ${C.sandDark}40` : 'none',
+                  borderRight: i < stats.length - 1 ? `1px solid ${C.sandDark}40` : 'none',
                 }}
               >
                 <div
@@ -930,11 +916,7 @@ function About() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section
-      id="about"
-      ref={ref}
-      style={{ background: C.cream, padding: '100px 24px' }}
-    >
+    <section id="about" ref={ref} style={{ background: C.cream, padding: '100px 24px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Avatar */}
@@ -1020,10 +1002,7 @@ function About() {
             >
               Crafting digital
               <br />
-              <em style={{ color: C.terracotta, fontStyle: 'italic' }}>
-                experiences
-              </em>{' '}
-              that endure
+              <em style={{ color: C.terracotta, fontStyle: 'italic' }}>experiences</em> that endure
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -1049,10 +1028,7 @@ function About() {
                 { Icon: Mail, value: email },
                 ...(phone ? [{ Icon: Phone, value: phone }] : []),
               ].map(({ Icon, value }) => (
-                <div
-                  key={value}
-                  style={{ display: 'flex', alignItems: 'center', gap: 10 }}
-                >
+                <div key={value} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div
                     style={{
                       width: 36,
@@ -1215,9 +1191,7 @@ function Skills() {
                     {cat}
                   </span>
                 </div>
-                <div
-                  style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
-                >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   {catSkills.map((skill, si) => (
                     <div key={skill.name}>
                       <div
@@ -1258,9 +1232,7 @@ function Skills() {
                       >
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={
-                            inView ? { width: `${skill.level}%` } : { width: 0 }
-                          }
+                          animate={inView ? { width: `${skill.level}%` } : { width: 0 }}
                           transition={{
                             duration: 1,
                             delay: ci * 0.1 + si * 0.08,
@@ -1426,10 +1398,7 @@ function Projects() {
                   border: `1px solid ${C.sandDark}30`,
                   backdropFilter: 'blur(8px)',
                   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                  transform:
-                    hovered === project.title
-                      ? 'translateY(-4px)'
-                      : 'translateY(0)',
+                  transform: hovered === project.title ? 'translateY(-4px)' : 'translateY(0)',
                   boxShadow:
                     hovered === project.title
                       ? `0 20px 60px ${C.shadowDeep}`
@@ -1451,8 +1420,7 @@ function Projects() {
                       height: '100%',
                       objectFit: 'cover',
                       transition: 'transform 0.5s ease',
-                      transform:
-                        hovered === project.title ? 'scale(1.05)' : 'scale(1)',
+                      transform: hovered === project.title ? 'scale(1.05)' : 'scale(1)',
                     }}
                   />
                   <div
@@ -1788,9 +1756,7 @@ function Experience() {
             >
               My Professional
               <br />
-              <em style={{ color: C.terracotta, fontStyle: 'italic' }}>
-                Journey
-              </em>
+              <em style={{ color: C.terracotta, fontStyle: 'italic' }}>Journey</em>
             </motion.h2>
             <motion.p
               initial="hidden"
@@ -1805,8 +1771,8 @@ function Experience() {
                 marginTop: 20,
               }}
             >
-              Like dunes shaped by the wind, each role has carved new skills and
-              perspectives into who I am as an engineer.
+              Like dunes shaped by the wind, each role has carved new skills and perspectives into
+              who I am as an engineer.
             </motion.p>
           </div>
 
@@ -2052,11 +2018,7 @@ function Testimonials() {
                   <Star key={si} size={14} fill={C.gold} color={C.gold} />
                 ))}
               </div>
-              <Quote
-                size={24}
-                color={`${C.gold}60`}
-                style={{ marginBottom: 12 }}
-              />
+              <Quote size={24} color={`${C.gold}60`} style={{ marginBottom: 12 }} />
               <p
                 style={{
                   fontFamily: fontItalic,
@@ -2134,8 +2096,7 @@ function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState('idle');
 
-  const handleChange = (e) =>
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const handleChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   const handleSubmit = (e) => {
     e.preventDefault();
     setStatus('sending');
@@ -2164,11 +2125,7 @@ function Contact() {
   ];
 
   return (
-    <section
-      id="contact"
-      ref={ref}
-      style={{ background: C.cream, padding: '120px 24px 80px' }}
-    >
+    <section id="contact" ref={ref} style={{ background: C.cream, padding: '120px 24px 80px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           <div>
@@ -2214,8 +2171,8 @@ function Contact() {
                 marginBottom: 40,
               }}
             >
-              Have a project in mind? I'd love to hear about it. Drop me a
-              message and I'll get back to you within 24 hours.
+              Have a project in mind? I'd love to hear about it. Drop me a message and I'll get back
+              to you within 24 hours.
             </motion.p>
             <motion.div
               initial="hidden"
@@ -2319,8 +2276,7 @@ function Contact() {
                       lineHeight: 1.6,
                     }}
                   >
-                    Thank you for reaching out. I'll be in touch before the sun
-                    sets.
+                    Thank you for reaching out. I'll be in touch before the sun sets.
                   </p>
                 </motion.div>
               ) : (
@@ -2523,8 +2479,7 @@ function Footer() {
               textAlign: 'center',
             }}
           >
-            © {new Date().getFullYear()} {data.personal.name}. Crafted with care
-            in the desert sun.
+            © {new Date().getFullYear()} {data.personal.name}. Crafted with care in the desert sun.
           </p>
           <div style={{ display: 'flex', gap: 16 }}>
             {[

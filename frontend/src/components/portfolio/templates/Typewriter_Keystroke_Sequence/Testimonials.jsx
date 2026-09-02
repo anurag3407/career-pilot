@@ -20,9 +20,7 @@ function LetterCard({ testimonial, index }) {
       </div>
 
       {/* Letter body */}
-      <p className="tks-letter-body">
-        &ldquo;{testimonial.text}&rdquo;
-      </p>
+      <p className="tks-letter-body">&ldquo;{testimonial.text}&rdquo;</p>
 
       {/* Signature */}
       <div className="tks-letter-sig">
@@ -31,7 +29,8 @@ function LetterCard({ testimonial, index }) {
             src={testimonial.avatar}
             alt={testimonial.name}
             style={{
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               objectFit: 'cover',
               border: `1px solid ${C.border}`,
               filter: 'sepia(20%)',
@@ -40,12 +39,14 @@ function LetterCard({ testimonial, index }) {
         )}
         <div>
           <div style={{ fontSize: 14 }}>{testimonial.name}</div>
-          <div style={{
-            fontSize: 11,
-            color: C.warmBrown,
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontStyle: 'normal',
-          }}>
+          <div
+            style={{
+              fontSize: 11,
+              color: C.warmBrown,
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontStyle: 'normal',
+            }}
+          >
             {testimonial.role}
           </div>
         </div>
@@ -59,8 +60,10 @@ function LetterCard({ testimonial, index }) {
         transition={{ delay: 0.4 + index * 0.1, duration: 0.3 }}
         style={{
           position: 'absolute',
-          top: 16, right: 16,
-          width: 48, height: 48,
+          top: 16,
+          right: 16,
+          width: 48,
+          height: 48,
           borderRadius: '50%',
           border: `3px solid ${C.deepRed}`,
           display: 'flex',
@@ -68,15 +71,18 @@ function LetterCard({ testimonial, index }) {
           justifyContent: 'center',
         }}
       >
-        <span style={{
-          fontSize: 8,
-          color: C.deepRed,
-          textAlign: 'center',
-          fontFamily: "'IBM Plex Mono', monospace",
-          letterSpacing: 1,
-          lineHeight: 1.3,
-        }}>
-          VERIFIED<br/>✓
+        <span
+          style={{
+            fontSize: 8,
+            color: C.deepRed,
+            textAlign: 'center',
+            fontFamily: "'IBM Plex Mono', monospace",
+            letterSpacing: 1,
+            lineHeight: 1.3,
+          }}
+        >
+          VERIFIED
+          <br />✓
         </span>
       </motion.div>
     </motion.div>
@@ -122,11 +128,13 @@ export default function Testimonials({ testimonials }) {
         </motion.div>
 
         {/* Letters grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: 28,
-        }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: 28,
+          }}
+        >
           {testimonials.map((t, i) => (
             <LetterCard key={i} testimonial={t} index={i} />
           ))}

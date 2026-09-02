@@ -32,5 +32,5 @@ export default function KPICell({ label, value, bg = '#1e40af', fg = '#ffffff', 
         {label}
       </div>
     </div>
-  )
+  );
 }

@@ -40,11 +40,24 @@ const PaperGrain = () => (
     aria-hidden="true"
   >
     <filter id="rcta-grain">
-      <feTurbulence type="fractalNoise" baseFrequency="0.72 0.68" numOctaves="4" seed="8" stitchTiles="stitch" result="noise" />
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.72 0.68"
+        numOctaves="4"
+        seed="8"
+        stitchTiles="stitch"
+        result="noise"
+      />
       <feColorMatrix type="saturate" values="0" in="noise" result="gray" />
       <feBlend in="SourceGraphic" in2="gray" mode="multiply" />
     </filter>
-    <rect width="100%" height="100%" filter="url(#rcta-grain)" opacity="1" fill="rgba(210,190,180,0.6)" />
+    <rect
+      width="100%"
+      height="100%"
+      filter="url(#rcta-grain)"
+      opacity="1"
+      fill="rgba(210,190,180,0.6)"
+    />
   </svg>
 );
 
@@ -59,25 +72,98 @@ const BackgroundWash = () => (
   >
     <defs>
       {/* Realistic watercolor displacement */}
-      <filter id="rcta-wc-main" x="-30%" y="-30%" width="160%" height="160%" colorInterpolationFilters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="5" seed="19" result="turb" />
-        <feDisplacementMap in="SourceGraphic" in2="turb" scale="55" xChannelSelector="R" yChannelSelector="G" result="disp" />
+      <filter
+        id="rcta-wc-main"
+        x="-30%"
+        y="-30%"
+        width="160%"
+        height="160%"
+        colorInterpolationFilters="sRGB"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.012 0.018"
+          numOctaves="5"
+          seed="19"
+          result="turb"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="turb"
+          scale="55"
+          xChannelSelector="R"
+          yChannelSelector="G"
+          result="disp"
+        />
         <feGaussianBlur in="disp" stdDeviation="22" result="blur" />
         <feComposite in="blur" in2="SourceGraphic" operator="over" />
       </filter>
-      <filter id="rcta-wc-mid" x="-25%" y="-25%" width="150%" height="150%" colorInterpolationFilters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.018 0.024" numOctaves="4" seed="21" result="turb" />
-        <feDisplacementMap in="SourceGraphic" in2="turb" scale="40" xChannelSelector="G" yChannelSelector="R" result="disp" />
+      <filter
+        id="rcta-wc-mid"
+        x="-25%"
+        y="-25%"
+        width="150%"
+        height="150%"
+        colorInterpolationFilters="sRGB"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.018 0.024"
+          numOctaves="4"
+          seed="21"
+          result="turb"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="turb"
+          scale="40"
+          xChannelSelector="G"
+          yChannelSelector="R"
+          result="disp"
+        />
         <feGaussianBlur in="disp" stdDeviation="16" result="blur" />
       </filter>
-      <filter id="rcta-wc-accent" x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
-        <feTurbulence type="turbulence" baseFrequency="0.03 0.025" numOctaves="3" seed="25" result="turb" />
-        <feDisplacementMap in="SourceGraphic" in2="turb" scale="28" xChannelSelector="R" yChannelSelector="B" result="disp" />
+      <filter
+        id="rcta-wc-accent"
+        x="-20%"
+        y="-20%"
+        width="140%"
+        height="140%"
+        colorInterpolationFilters="sRGB"
+      >
+        <feTurbulence
+          type="turbulence"
+          baseFrequency="0.03 0.025"
+          numOctaves="3"
+          seed="25"
+          result="turb"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="turb"
+          scale="28"
+          xChannelSelector="R"
+          yChannelSelector="B"
+          result="disp"
+        />
         <feGaussianBlur in="disp" stdDeviation="10" />
       </filter>
       <filter id="rcta-wc-ink" x="-15%" y="-15%" width="130%" height="130%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.06 0.04" numOctaves="3" seed="18" result="turb" />
-        <feDisplacementMap in="SourceGraphic" in2="turb" scale="18" xChannelSelector="R" yChannelSelector="G" result="disp" />
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.06 0.04"
+          numOctaves="3"
+          seed="18"
+          result="turb"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="turb"
+          scale="18"
+          xChannelSelector="R"
+          yChannelSelector="G"
+          result="disp"
+        />
         <feGaussianBlur in="disp" stdDeviation="3" />
       </filter>
       <filter id="rcta-bloom-soft" x="-10%" y="-10%" width="120%" height="120%">
@@ -119,18 +205,88 @@ const BackgroundWash = () => (
     </defs>
 
     {/* Primary large washes */}
-    <ellipse cx="1020" cy="310" rx="520" ry="440" fill="url(#rcta-wash-blush)" filter="url(#rcta-wc-main)" />
-    <ellipse cx="360" cy="220" rx="480" ry="400" fill="url(#rcta-wash-sky)" filter="url(#rcta-wc-main)" />
-    <ellipse cx="490" cy="720" rx="460" ry="380" fill="url(#rcta-wash-peach)" filter="url(#rcta-wc-mid)" />
-    <ellipse cx="1240" cy="680" rx="400" ry="340" fill="url(#rcta-wash-lavender)" filter="url(#rcta-wc-mid)" />
-    <ellipse cx="200" cy="540" rx="360" ry="300" fill="url(#rcta-wash-mint)" filter="url(#rcta-wc-accent)" />
-    <ellipse cx="720" cy="80" rx="380" ry="240" fill="url(#rcta-wash-coral)" filter="url(#rcta-wc-accent)" />
+    <ellipse
+      cx="1020"
+      cy="310"
+      rx="520"
+      ry="440"
+      fill="url(#rcta-wash-blush)"
+      filter="url(#rcta-wc-main)"
+    />
+    <ellipse
+      cx="360"
+      cy="220"
+      rx="480"
+      ry="400"
+      fill="url(#rcta-wash-sky)"
+      filter="url(#rcta-wc-main)"
+    />
+    <ellipse
+      cx="490"
+      cy="720"
+      rx="460"
+      ry="380"
+      fill="url(#rcta-wash-peach)"
+      filter="url(#rcta-wc-mid)"
+    />
+    <ellipse
+      cx="1240"
+      cy="680"
+      rx="400"
+      ry="340"
+      fill="url(#rcta-wash-lavender)"
+      filter="url(#rcta-wc-mid)"
+    />
+    <ellipse
+      cx="200"
+      cy="540"
+      rx="360"
+      ry="300"
+      fill="url(#rcta-wash-mint)"
+      filter="url(#rcta-wc-accent)"
+    />
+    <ellipse
+      cx="720"
+      cy="80"
+      rx="380"
+      ry="240"
+      fill="url(#rcta-wash-coral)"
+      filter="url(#rcta-wc-accent)"
+    />
 
     {/* Secondary layered mid-tone washes */}
-    <ellipse cx="840" cy="450" rx="300" ry="260" fill="rgba(240,176,210,0.22)" filter="url(#rcta-wc-mid)" />
-    <ellipse cx="580" cy="350" rx="260" ry="220" fill="rgba(168,204,248,0.2)" filter="url(#rcta-wc-accent)" />
-    <ellipse cx="1140" cy="200" rx="240" ry="200" fill="rgba(216,188,248,0.2)" filter="url(#rcta-wc-accent)" />
-    <ellipse cx="340" cy="680" rx="280" ry="230" fill="rgba(200,240,218,0.18)" filter="url(#rcta-wc-accent)" />
+    <ellipse
+      cx="840"
+      cy="450"
+      rx="300"
+      ry="260"
+      fill="rgba(240,176,210,0.22)"
+      filter="url(#rcta-wc-mid)"
+    />
+    <ellipse
+      cx="580"
+      cy="350"
+      rx="260"
+      ry="220"
+      fill="rgba(168,204,248,0.2)"
+      filter="url(#rcta-wc-accent)"
+    />
+    <ellipse
+      cx="1140"
+      cy="200"
+      rx="240"
+      ry="200"
+      fill="rgba(216,188,248,0.2)"
+      filter="url(#rcta-wc-accent)"
+    />
+    <ellipse
+      cx="340"
+      cy="680"
+      rx="280"
+      ry="230"
+      fill="rgba(200,240,218,0.18)"
+      filter="url(#rcta-wc-accent)"
+    />
 
     {/* Wet-on-wet bloom zones */}
     <circle cx="1060" cy="260" r="120" fill="rgba(248,160,196,0.28)" filter="url(#rcta-wc-ink)" />
@@ -140,20 +296,62 @@ const BackgroundWash = () => (
     <circle cx="680" cy="820" r="110" fill="rgba(248,196,148,0.24)" filter="url(#rcta-wc-ink)" />
 
     {/* Ink diffusion tendrils */}
-    <path d="M1320 180 C1240 160 1160 220 1100 180 C1040 140 1000 200 920 170" stroke="rgba(230,150,180,0.22)" strokeWidth="3" fill="none" filter="url(#rcta-wc-ink)" />
-    <path d="M540 100 C480 140 420 100 360 150 C300 200 260 160 180 190" stroke="rgba(148,192,240,0.2)" strokeWidth="2.5" fill="none" filter="url(#rcta-wc-ink)" />
-    <path d="M1360 560 C1280 520 1240 580 1160 540 C1080 500 1060 560 980 520" stroke="rgba(196,160,240,0.2)" strokeWidth="2" fill="none" filter="url(#rcta-wc-ink)" />
-    <path d="M480 720 C420 680 360 740 290 700 C220 660 180 720 100 690" stroke="rgba(148,220,190,0.18)" strokeWidth="2.5" fill="none" filter="url(#rcta-wc-ink)" />
+    <path
+      d="M1320 180 C1240 160 1160 220 1100 180 C1040 140 1000 200 920 170"
+      stroke="rgba(230,150,180,0.22)"
+      strokeWidth="3"
+      fill="none"
+      filter="url(#rcta-wc-ink)"
+    />
+    <path
+      d="M540 100 C480 140 420 100 360 150 C300 200 260 160 180 190"
+      stroke="rgba(148,192,240,0.2)"
+      strokeWidth="2.5"
+      fill="none"
+      filter="url(#rcta-wc-ink)"
+    />
+    <path
+      d="M1360 560 C1280 520 1240 580 1160 540 C1080 500 1060 560 980 520"
+      stroke="rgba(196,160,240,0.2)"
+      strokeWidth="2"
+      fill="none"
+      filter="url(#rcta-wc-ink)"
+    />
+    <path
+      d="M480 720 C420 680 360 740 290 700 C220 660 180 720 100 690"
+      stroke="rgba(148,220,190,0.18)"
+      strokeWidth="2.5"
+      fill="none"
+      filter="url(#rcta-wc-ink)"
+    />
 
     {/* Scattered micro ink drops */}
     {[
-      [1260, 140, '#f4a8c7', 7, 0.38], [920, 80, '#a8ccf4', 5, 0.35], [640, 180, '#d8b8f8', 6, 0.32],
-      [340, 120, '#a8e4c8', 4, 0.3], [140, 280, '#f4cca8', 6, 0.3], [1340, 380, '#f4a8c7', 4, 0.28],
-      [1100, 520, '#a8ccf4', 5, 0.3], [800, 680, '#d8b8f8', 5, 0.28], [440, 640, '#a8e4c8', 6, 0.26],
-      [80, 740, '#f4cca8', 4, 0.28], [1200, 760, '#f4a8c7', 5, 0.25], [700, 60, '#d8b8f8', 4, 0.3],
-      [260, 820, '#a8ccf4', 6, 0.25], [1380, 240, '#a8e4c8', 4, 0.27], [40, 460, '#f4a8c7', 5, 0.26],
+      [1260, 140, '#f4a8c7', 7, 0.38],
+      [920, 80, '#a8ccf4', 5, 0.35],
+      [640, 180, '#d8b8f8', 6, 0.32],
+      [340, 120, '#a8e4c8', 4, 0.3],
+      [140, 280, '#f4cca8', 6, 0.3],
+      [1340, 380, '#f4a8c7', 4, 0.28],
+      [1100, 520, '#a8ccf4', 5, 0.3],
+      [800, 680, '#d8b8f8', 5, 0.28],
+      [440, 640, '#a8e4c8', 6, 0.26],
+      [80, 740, '#f4cca8', 4, 0.28],
+      [1200, 760, '#f4a8c7', 5, 0.25],
+      [700, 60, '#d8b8f8', 4, 0.3],
+      [260, 820, '#a8ccf4', 6, 0.25],
+      [1380, 240, '#a8e4c8', 4, 0.27],
+      [40, 460, '#f4a8c7', 5, 0.26],
     ].map(([cx, cy, fill, r, op], i) => (
-      <circle key={i} cx={cx} cy={cy} r={r} fill={fill} opacity={op} filter="url(#rcta-bloom-soft)" />
+      <circle
+        key={i}
+        cx={cx}
+        cy={cy}
+        r={r}
+        fill={fill}
+        opacity={op}
+        filter="url(#rcta-bloom-soft)"
+      />
     ))}
   </svg>
 );
@@ -252,7 +450,6 @@ export default function ResumeCTA({ data = DEFAULT_DATA }) {
       {/* ── Main centered layout ── */}
       <div className="relative z-10 w-full max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
         <GlassCard className="px-6 py-10 sm:px-10 sm:py-14 md:px-14 md:py-16 flex flex-col items-center text-center gap-8">
-
           {/* Eyebrow tag */}
           <div
             className={`
@@ -426,7 +623,6 @@ export default function ResumeCTA({ data = DEFAULT_DATA }) {
               Preview Online
             </a>
           </div>
-
         </GlassCard>
       </div>
     </section>

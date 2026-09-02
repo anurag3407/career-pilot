@@ -1,17 +1,15 @@
-import React from "react";
-import { Mail, Github, Linkedin, Twitter } from "lucide-react";
+import React from 'react';
+import { Mail, Github, Linkedin, Twitter } from 'lucide-react';
 
 export default function Contact({ data }) {
   const { socials, personal } = data;
   return (
     <footer className="relative z-10 px-6 py-20 text-center">
-      <h2 className="text-4xl font-bold text-rose-800">
-        Let's Connect
-      </h2>
+      <h2 className="text-4xl font-bold text-rose-800">Let's Connect</h2>
 
       <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-        Interested in collaborating, building something beautiful, or just
-        saying hello? Feel free to reach out.
+        Interested in collaborating, building something beautiful, or just saying hello? Feel free
+        to reach out.
       </p>
 
       {socials.email && (
@@ -62,9 +60,7 @@ export default function Contact({ data }) {
         )}
       </div>
 
-      <p className="mt-10 text-sm text-gray-500">
-        Crafted with love inspired by Sakura blossoms
-      </p>
+      <p className="mt-10 text-sm text-gray-500">Crafted with love inspired by Sakura blossoms</p>
     </footer>
   );
 }

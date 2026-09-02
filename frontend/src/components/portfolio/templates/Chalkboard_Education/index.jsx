@@ -1,10 +1,10 @@
-import React from "react";
-import Hero from "./Hero";
-import Projects from "./Projects";
-import Experience from "./Experience";
-import Skills from "./Skills";
-import Testimonials from "./Testimonials";
-import Contact from "./Contact";
+import React from 'react';
+import Hero from './Hero';
+import Projects from './Projects';
+import Experience from './Experience';
+import Skills from './Skills';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
 
 export default function ChalkboardEducation() {
   return (

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   Linkedin,
   Search,
@@ -11,69 +11,73 @@ import {
   ArrowRight,
   Loader2,
   FileText,
-  Sparkles
-} from 'lucide-react'
-import { resumeApi } from '../services/api'
-import { toast } from 'react-hot-toast'
+  Sparkles,
+} from 'lucide-react';
+import { resumeApi } from '../services/api';
+import { toast } from 'react-hot-toast';
 
 export default function LinkedInDashboard() {
-  const navigate = useNavigate()
-  const [url, setUrl] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [isImporting, setIsImporting] = useState(false)
-  const [preview, setPreview] = useState(null)
-  const [profile, setProfile] = useState(null)
+  const navigate = useNavigate();
+  const [url, setUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [profile, setProfile] = useState(null);
 
   const normalizeUrl = (raw) => {
-    let trimmed = raw.trim()
+    let trimmed = raw.trim();
     // If user just typed a slug like "john-doe", build the full URL
     if (trimmed && !trimmed.includes('linkedin.com') && !trimmed.includes('/')) {
-      return `https://www.linkedin.com/in/${trimmed}`
+      return `https://www.linkedin.com/in/${trimmed}`;
     }
     if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
-      trimmed = `https://${trimmed}`
+      trimmed = `https://${trimmed}`;
     }
-    return trimmed
-  }
+    return trimmed;
+  };
 
   const handleSearch = async (e) => {
-    e.preventDefault()
-    if (!url.trim()) return
+    e.preventDefault();
+    if (!url.trim()) return;
 
-    const normalized = normalizeUrl(url)
+    const normalized = normalizeUrl(url);
     if (!normalized.includes('linkedin.com/in/')) {
-      return toast.error('Please enter a valid LinkedIn profile URL (linkedin.com/in/...) or a profile slug')
+      return toast.error(
+        'Please enter a valid LinkedIn profile URL (linkedin.com/in/...) or a profile slug'
+      );
     }
 
     try {
-      setIsLoading(true)
-      setPreview(null)
-      setProfile(null)
-      const response = await resumeApi.previewLinkedIn(normalized)
-      setPreview(response.preview)
-      setProfile(response.profile)
+      setIsLoading(true);
+      setPreview(null);
+      setProfile(null);
+      const response = await resumeApi.previewLinkedIn(normalized);
+      setPreview(response.preview);
+      setProfile(response.profile);
     } catch (error) {
-      toast.error(error.message || 'Failed to fetch LinkedIn profile. Make sure the URL is correct.')
+      toast.error(
+        error.message || 'Failed to fetch LinkedIn profile. Make sure the URL is correct.'
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleImport = async () => {
-    if (!profile) return
+    if (!profile) return;
 
     try {
-      setIsImporting(true)
-      const normalized = normalizeUrl(url)
-      const response = await resumeApi.importLinkedIn(normalized, profile)
-      toast.success('LinkedIn profile imported as resume!')
-      navigate(`/resume/${response.data._id || response.data.id}`)
+      setIsImporting(true);
+      const normalized = normalizeUrl(url);
+      const response = await resumeApi.importLinkedIn(normalized, profile);
+      toast.success('LinkedIn profile imported as resume!');
+      navigate(`/resume/${response.data._id || response.data.id}`);
     } catch (error) {
-      toast.error(error.message || 'Failed to import LinkedIn profile')
+      toast.error(error.message || 'Failed to import LinkedIn profile');
     } finally {
-      setIsImporting(false)
+      setIsImporting(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen pt-20 pb-12 bg-background relative overflow-hidden">
@@ -94,7 +98,8 @@ export default function LinkedInDashboard() {
             LinkedIn to Resume
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Instantly convert your LinkedIn profile into a professional resume — experience, education, and skills included.
+            Instantly convert your LinkedIn profile into a professional resume — experience,
+            education, and skills included.
           </p>
         </motion.div>
 
@@ -124,7 +129,8 @@ export default function LinkedInDashboard() {
             </button>
           </div>
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            e.g. <span className="text-foreground/70">https://linkedin.com/in/john-doe</span> or just <span className="text-foreground/70">john-doe</span>
+            e.g. <span className="text-foreground/70">https://linkedin.com/in/john-doe</span> or
+            just <span className="text-foreground/70">john-doe</span>
           </p>
         </motion.form>
 
@@ -214,7 +220,9 @@ export default function LinkedInDashboard() {
                             <p className="text-sm text-[#0077b5] mb-2">{exp.company}</p>
                           )}
                           {exp.description && (
-                            <p className="text-sm text-muted-foreground line-clamp-3">{exp.description}</p>
+                            <p className="text-sm text-muted-foreground line-clamp-3">
+                              {exp.description}
+                            </p>
                           )}
                         </div>
                       ))}
@@ -234,12 +242,8 @@ export default function LinkedInDashboard() {
                           key={i}
                           className="p-4 rounded-xl border border-border bg-card hover:border-[#0077b5]/30 transition-colors"
                         >
-                          {edu.degree && (
-                            <h4 className="font-semibold mb-1">{edu.degree}</h4>
-                          )}
-                          {edu.school && (
-                            <p className="text-sm text-[#0077b5]">{edu.school}</p>
-                          )}
+                          {edu.degree && <h4 className="font-semibold mb-1">{edu.degree}</h4>}
+                          {edu.school && <p className="text-sm text-[#0077b5]">{edu.school}</p>}
                           {edu.duration && (
                             <p className="text-xs text-muted-foreground mt-1">{edu.duration}</p>
                           )}
@@ -257,7 +261,10 @@ export default function LinkedInDashboard() {
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {preview.skills.map((skill, i) => (
-                        <span key={i} className="px-3 py-1.5 bg-[#0077b5]/10 text-[#0077b5] border border-[#0077b5]/20 rounded-lg text-sm font-medium">
+                        <span
+                          key={i}
+                          className="px-3 py-1.5 bg-[#0077b5]/10 text-[#0077b5] border border-[#0077b5]/20 rounded-lg text-sm font-medium"
+                        >
                           {skill}
                         </span>
                       ))}
@@ -277,7 +284,8 @@ export default function LinkedInDashboard() {
                       </>
                     ) : (
                       <>
-                        <FileText className="w-5 h-5" /> Import as Resume <ArrowRight className="w-4 h-4 ml-1" />
+                        <FileText className="w-5 h-5" /> Import as Resume{' '}
+                        <ArrowRight className="w-4 h-4 ml-1" />
                       </>
                     )}
                   </button>
@@ -288,5 +296,5 @@ export default function LinkedInDashboard() {
         </AnimatePresence>
       </div>
     </div>
-  )
+  );
 }

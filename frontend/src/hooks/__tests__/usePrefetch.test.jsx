@@ -43,10 +43,10 @@ describe('usePrefetch', () => {
 
   it('should not fetch duplicate requests simultaneously (deduplication)', async () => {
     const mockData = { data: [{ id: 1, title: 'Engineer' }] };
-    
+
     // Delay resolution to simulate in-flight request
     let resolveSearch;
-    const searchPromise = new Promise(resolve => {
+    const searchPromise = new Promise((resolve) => {
       resolveSearch = resolve;
     });
     jobsApi.search.mockReturnValue(searchPromise);
@@ -62,7 +62,7 @@ describe('usePrefetch', () => {
     });
 
     expect(jobsApi.search).toHaveBeenCalledTimes(1);
-    
+
     // Resolve the mock promise
     resolveSearch(mockData);
   });

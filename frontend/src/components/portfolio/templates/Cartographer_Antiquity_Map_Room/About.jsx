@@ -26,7 +26,11 @@ export default function About({ data }) {
             <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-double border-[#5d4037] p-2 bg-[#f4ebd8]">
               <div className="w-full h-full rounded-full bg-[#c4a482] flex items-center justify-center overflow-hidden">
                 {data?.personalInfo?.avatar ? (
-                  <img src={data.personalInfo.avatar} alt="Explorer" className="w-full h-full object-cover mix-blend-multiply opacity-90" />
+                  <img
+                    src={data.personalInfo.avatar}
+                    alt="Explorer"
+                    className="w-full h-full object-cover mix-blend-multiply opacity-90"
+                  />
                 ) : (
                   <span className="text-[#5d4037] font-serif text-2xl italic">Portrait</span>
                 )}
@@ -34,7 +38,9 @@ export default function About({ data }) {
             </div>
           </div>
           <div className="w-full md:w-2/3">
-            <h3 className="text-4xl font-bold mb-6 text-[#2e1d16] tracking-wide uppercase border-b-2 border-[#8d6e63] inline-block pb-2">The Explorer's Journal</h3>
+            <h3 className="text-4xl font-bold mb-6 text-[#2e1d16] tracking-wide uppercase border-b-2 border-[#8d6e63] inline-block pb-2">
+              The Explorer's Journal
+            </h3>
             <div className="prose prose-stone text-[#3e2723] font-serif leading-loose text-lg whitespace-pre-wrap">
               {about}
             </div>

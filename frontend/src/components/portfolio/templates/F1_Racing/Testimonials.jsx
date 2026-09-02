@@ -6,11 +6,14 @@ export default function Testimonials({ data }) {
   let testimonials = data?.testimonials;
   if (!testimonials || testimonials.length === 0) return null;
   if (typeof testimonials === 'string') {
-    testimonials = [{ author: "Colleague", content: testimonials, role: "Team Member" }];
+    testimonials = [{ author: 'Colleague', content: testimonials, role: 'Team Member' }];
   }
 
   return (
-    <section id="testimonials" className="relative py-20 bg-[#070709] border-b border-neutral-900 text-white overflow-hidden selection:bg-[#E10600] selection:text-white">
+    <section
+      id="testimonials"
+      className="relative py-20 bg-[#070709] border-b border-neutral-900 text-white overflow-hidden selection:bg-[#E10600] selection:text-white"
+    >
       {/* Background Decor */}
       <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none -z-10" />
       <div className="absolute left-0 top-1/4 w-[400px] h-[400px] bg-[#ffe600]/5 blur-[120px] rounded-full pointer-events-none -z-10" />
@@ -45,7 +48,11 @@ export default function Testimonials({ data }) {
                   <motion.div
                     key={bar}
                     animate={{ height: [10, Math.random() * 20 + 10, 10] }}
-                    transition={{ repeat: Infinity, duration: 0.8 + Math.random(), ease: "easeInOut" }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 0.8 + Math.random(),
+                      ease: 'easeInOut',
+                    }}
                     className="w-1 bg-[#ffe600] rounded-t-sm"
                   />
                 ))}
@@ -57,7 +64,7 @@ export default function Testimonials({ data }) {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold font-mono tracking-tight text-white uppercase flex items-center gap-2">
-                    {t.author} 
+                    {t.author}
                     {t.role && (
                       <span className="text-[10px] bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded-sm tracking-widest">
                         {t.role}

@@ -9,7 +9,7 @@ export const useProjectVisualizerStore = create(
       sessionId: null,
       status: 'idle', // 'idle' | 'analyzing' | 'complete' | 'error'
       error: null,
-      
+
       // Analysis data
       stats: null,
       modules: [],
@@ -19,8 +19,7 @@ export const useProjectVisualizerStore = create(
       suggestions: [],
       architectureSummary: '',
       dependencies: null,
-      
-      
+
       // GitHub enrichment
       github: null,
       contributors: [],
@@ -31,7 +30,7 @@ export const useProjectVisualizerStore = create(
       activityDetailed: null,
       activityLoading: false,
       activityError: null,
-      
+
       // UI state
       viewMode: 'modules', // 'modules' | 'files' | 'dependencies'
       selectedModule: null,
@@ -41,31 +40,32 @@ export const useProjectVisualizerStore = create(
       activeTab: 'architecture', // 'architecture' | 'modules' | 'risks' | 'contributors'
       inspectorOpen: false,
       chatExpanded: false,
-      
+
       // Chat
       messages: [],
       isStreaming: false,
       chatMode: 'onboarding', // 'onboarding' | 'qa' | 'interview'
-      
+
       // Actions
       setRepoUrl: (url) => set({ repoUrl: url }),
       setSessionId: (id) => set({ sessionId: id }),
       setStatus: (status) => set({ status }),
       setError: (error) => set({ error }),
-      
-      setAnalysisData: (data) => set({
-        stats: data.stats,
-        modules: data.modules,
-        fileGraph: data.fileGraph,
-        moduleGraph: data.moduleGraph,
-        risks: data.risks,
-        suggestions: data.suggestions,
-        architectureSummary: data.architectureSummary,
-        github: data.github,
-        dependencies: data.dependencies,
-        status: 'complete',
-      }),
-      
+
+      setAnalysisData: (data) =>
+        set({
+          stats: data.stats,
+          modules: data.modules,
+          fileGraph: data.fileGraph,
+          moduleGraph: data.moduleGraph,
+          risks: data.risks,
+          suggestions: data.suggestions,
+          architectureSummary: data.architectureSummary,
+          github: data.github,
+          dependencies: data.dependencies,
+          status: 'complete',
+        }),
+
       setViewMode: (mode) => set({ viewMode: mode }),
       setSelectedModule: (mod) => set({ selectedModule: mod, inspectorOpen: true }),
       setSelectedFile: (file) => set({ selectedFile: file, inspectorOpen: true }),
@@ -74,7 +74,7 @@ export const useProjectVisualizerStore = create(
       setActiveTab: (tab) => set({ activeTab: tab }),
       setInspectorOpen: (open) => set({ inspectorOpen: open }),
       setChatExpanded: (expanded) => set({ chatExpanded: expanded }),
-      
+
       setContributors: (contributors) => set({ contributors }),
       setCommits: (commits) => set({ commits }),
 
@@ -83,26 +83,48 @@ export const useProjectVisualizerStore = create(
       setActivityDetailed: (activityDetailed) => set({ activityDetailed }),
       setActivityLoading: (activityLoading) => set({ activityLoading }),
       setActivityError: (activityError) => set({ activityError }),
-      
+
       // Chat actions
       setChatMode: (mode) => set({ chatMode: mode }),
-      setMessages: (msgs) => set({ messages: typeof msgs === 'function' ? msgs(get().messages) : msgs }),
+      setMessages: (msgs) =>
+        set({ messages: typeof msgs === 'function' ? msgs(get().messages) : msgs }),
       addMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
       setIsStreaming: (streaming) => set({ isStreaming: streaming }),
-      
+
       // Reset
-      reset: () => set({
-        repoUrl: '', sessionId: null, status: 'idle', error: null,
-        stats: null, modules: [], fileGraph: { nodes: [], edges: [] },
-        moduleGraph: { nodes: [], edges: [] }, risks: [], suggestions: [],
-        architectureSummary: '', github: null, contributors: [], commits: [],
-        activity: null, activityDetailed: null, activityLoading: false, activityError: null,
-        dependencies: null,
-        viewMode: 'modules', selectedModule: null, selectedFile: null,
-        fileContent: '', searchQuery: '', activeTab: 'architecture',
-        inspectorOpen: false, chatExpanded: false,
-        messages: [], isStreaming: false, chatMode: 'onboarding',
-      }),
+      reset: () =>
+        set({
+          repoUrl: '',
+          sessionId: null,
+          status: 'idle',
+          error: null,
+          stats: null,
+          modules: [],
+          fileGraph: { nodes: [], edges: [] },
+          moduleGraph: { nodes: [], edges: [] },
+          risks: [],
+          suggestions: [],
+          architectureSummary: '',
+          github: null,
+          contributors: [],
+          commits: [],
+          activity: null,
+          activityDetailed: null,
+          activityLoading: false,
+          activityError: null,
+          dependencies: null,
+          viewMode: 'modules',
+          selectedModule: null,
+          selectedFile: null,
+          fileContent: '',
+          searchQuery: '',
+          activeTab: 'architecture',
+          inspectorOpen: false,
+          chatExpanded: false,
+          messages: [],
+          isStreaming: false,
+          chatMode: 'onboarding',
+        }),
     }),
     {
       name: 'project-visualizer-store',

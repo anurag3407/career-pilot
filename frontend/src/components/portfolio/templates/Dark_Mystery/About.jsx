@@ -63,7 +63,9 @@ export default function About({
 
             <div className="relative border-l border-amber-200/25 pl-5">
               <p className="font-serif text-2xl text-stone-100 sm:text-3xl">{personal.name}</p>
-              <p className="mt-2 text-sm uppercase tracking-[0.24em] text-stone-400">{personal.title}</p>
+              <p className="mt-2 text-sm uppercase tracking-[0.24em] text-stone-400">
+                {personal.title}
+              </p>
               <div className="mt-5 flex items-center gap-2 text-sm text-emerald-100/75">
                 <MapPin className="h-4 w-4 text-emerald-200/80" />
                 {personal.location}
@@ -100,7 +102,9 @@ export default function About({
                 >
                   <Icon className="mb-5 h-5 w-5 text-red-200/80 transition duration-300 group-hover:text-amber-100" />
                   <p className="font-serif text-3xl text-stone-50">{item.value}</p>
-                  <p className="mt-2 text-xs uppercase tracking-[0.2em] text-stone-500">{item.label}</p>
+                  <p className="mt-2 text-xs uppercase tracking-[0.2em] text-stone-500">
+                    {item.label}
+                  </p>
                 </div>
               );
             })}

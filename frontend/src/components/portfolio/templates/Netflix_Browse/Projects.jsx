@@ -1,13 +1,13 @@
-import { useRef } from "react";
-import { motion } from "framer-motion";
-import { Github, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Github, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Projects({ projects }) {
   const rowRef = useRef(null);
 
   const scroll = (dir) => {
     if (rowRef.current) {
-      rowRef.current.scrollBy({ left: dir * 340, behavior: "smooth" });
+      rowRef.current.scrollBy({ left: dir * 340, behavior: 'smooth' });
     }
   };
 
@@ -22,14 +22,16 @@ export default function Projects({ projects }) {
           </span>
         </h2>
         <div className="flex gap-2">
-          <button type="button"
+          <button
+            type="button"
             onClick={() => scroll(-1)}
             className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#E50914] flex items-center justify-center transition-colors"
             aria-label="Scroll left"
           >
             <ChevronLeft className="w-4 h-4 text-white" />
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={() => scroll(1)}
             className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#E50914] flex items-center justify-center transition-colors"
             aria-label="Scroll right"
@@ -43,7 +45,7 @@ export default function Projects({ projects }) {
       <div
         ref={rowRef}
         className="flex gap-4 overflow-x-auto pb-4 px-4 md:px-12 scrollbar-hide"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {projects.map((project, i) => (
           <ProjectCard key={i} project={project} index={i} />
@@ -62,7 +64,7 @@ function ProjectCard({ project, index }) {
       viewport={{ once: true }}
       whileHover={{ scale: 1.06, zIndex: 10 }}
       className="relative flex-shrink-0 w-72 md:w-80 rounded-lg overflow-hidden cursor-pointer group"
-      style={{ transformOrigin: "center bottom" }}
+      style={{ transformOrigin: 'center bottom' }}
     >
       {/* Thumbnail */}
       <div className="relative h-44 overflow-hidden">
@@ -118,9 +120,7 @@ function ProjectCard({ project, index }) {
             </span>
           ))}
           {project.techStack.length > 3 && (
-            <span className="text-[10px] text-[#737373] px-1">
-              +{project.techStack.length - 3}
-            </span>
+            <span className="text-[10px] text-[#737373] px-1">+{project.techStack.length - 3}</span>
           )}
         </div>
       </div>

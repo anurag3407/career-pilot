@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -7,11 +7,11 @@ const ScrollToTop = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const mainContent = document.querySelector("main");
+    const mainContent = document.querySelector('main');
     if (mainContent) {
       mainContent.scrollTo({
         top: 0,
-        behavior: "smooth",
+        behavior: 'smooth',
       });
     }
   }, [pathname]);

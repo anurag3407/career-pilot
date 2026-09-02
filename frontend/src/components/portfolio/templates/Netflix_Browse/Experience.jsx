@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { Briefcase, Calendar } from "lucide-react";
+import { motion } from 'framer-motion';
+import { Briefcase, Calendar } from 'lucide-react';
 
 export default function Experience({ experience }) {
   return (
@@ -17,7 +17,7 @@ export default function Experience({ experience }) {
       {/* Horizontal scroll row */}
       <div
         className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {experience.map((exp, i) => (
           <motion.div
@@ -42,7 +42,7 @@ export default function Experience({ experience }) {
               </div>
               {/* Episode number style */}
               <span className="text-[#737373] text-3xl font-black leading-none">
-                {String(i + 1).padStart(2, "0")}
+                {String(i + 1).padStart(2, '0')}
               </span>
             </div>
 

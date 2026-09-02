@@ -16,21 +16,25 @@ const Skills = () => (
           </div>
           <div className="flex flex-wrap gap-3">
             {data.skills
-              .filter(s => s.category === category || (category === 'Tools' && !['Frontend', 'Backend'].includes(s.category)))
+              .filter(
+                (s) =>
+                  s.category === category ||
+                  (category === 'Tools' && !['Frontend', 'Backend'].includes(s.category))
+              )
               .map((skill, i) => (
-              <motion.div
-                key={i}
-                className="px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-200 text-sm font-medium cursor-pointer"
-                whileHover={{ 
-                  scale: 1.1, 
-                  backgroundColor: "rgba(192, 132, 252, 0.2)",
-                  borderColor: "rgba(192, 132, 252, 0.5)",
-                  color: "#fff"
-                }}
-              >
-                {skill.name}
-              </motion.div>
-            ))}
+                <motion.div
+                  key={i}
+                  className="px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-200 text-sm font-medium cursor-pointer"
+                  whileHover={{
+                    scale: 1.1,
+                    backgroundColor: 'rgba(192, 132, 252, 0.2)',
+                    borderColor: 'rgba(192, 132, 252, 0.5)',
+                    color: '#fff',
+                  }}
+                >
+                  {skill.name}
+                </motion.div>
+              ))}
           </div>
         </GlassCard>
       ))}

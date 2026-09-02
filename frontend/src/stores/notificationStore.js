@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export const useNotificationStore = create((set, get) => ({
-  // STATE 
+  // STATE
   notifications: [], // Array of notification objects: { id, message, type, isRead, timestamp }
 
   // GETTERS (DERIVED STATE)
@@ -10,8 +10,8 @@ export const useNotificationStore = create((set, get) => ({
     return get().notifications.filter((n) => !n.isRead).length;
   },
 
-  //  ACTIONS 
-  
+  //  ACTIONS
+
   /**
    * Adds a new notification to the global state.
    * @param {Object} notification - The notification details.
@@ -52,9 +52,7 @@ export const useNotificationStore = create((set, get) => ({
    */
   markAsRead: (id) => {
     set((state) => ({
-      notifications: state.notifications.map((n) =>
-        n.id === id ? { ...n, isRead: true } : n
-      ),
+      notifications: state.notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
     }));
   },
 

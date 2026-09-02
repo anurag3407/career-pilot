@@ -18,15 +18,15 @@ export default function Experience() {
             Work Experience
           </h2>
         </div>
-        
+
         <div className="space-y-8">
           {experience.map((exp, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="p-8 bg-white/60 backdrop-blur-md rounded-3xl border border-white/80 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group"
             >
               <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-purple-300 to-pink-300 opacity-70 group-hover:opacity-100 transition-opacity"></div>
-              
+
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 pl-4">
                 <div>
                   <h3 className="text-2xl font-bold text-slate-700">{exp.title}</h3>
@@ -36,9 +36,7 @@ export default function Experience() {
                   {exp.startDate} - {exp.endDate}
                 </div>
               </div>
-              <p className="text-slate-600 leading-relaxed pl-4">
-                {exp.description}
-              </p>
+              <p className="text-slate-600 leading-relaxed pl-4">{exp.description}</p>
             </div>
           ))}
         </div>

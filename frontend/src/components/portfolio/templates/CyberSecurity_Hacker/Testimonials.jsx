@@ -8,12 +8,17 @@ function DecryptText({ text, speed = 30 }) {
   useEffect(() => {
     let iteration = 0;
     const interval = setInterval(() => {
-      setDisplayed(text.split('').map((letter, index) => {
-        if (index < iteration) {
-          return text[index];
-        }
-        return chars[Math.floor(Math.random() * chars.length)];
-      }).join(''));
+      setDisplayed(
+        text
+          .split('')
+          .map((letter, index) => {
+            if (index < iteration) {
+              return text[index];
+            }
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join('')
+      );
 
       if (iteration >= text.length) {
         clearInterval(interval);
@@ -32,10 +37,11 @@ export default function Testimonials({ testimonials }) {
   return (
     <section className="relative w-full py-24 bg-[#010502] font-mono overflow-hidden">
       {/* Background patterns */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+      <div
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
           backgroundImage: 'radial-gradient(#00ff41 1px, transparent 1px)',
-          backgroundSize: '24px 24px'
+          backgroundSize: '24px 24px',
         }}
       />
 
@@ -43,7 +49,9 @@ export default function Testimonials({ testimonials }) {
         <div className="flex items-center gap-4 mb-16 border-b border-[#00ff41]/20 pb-6">
           <ShieldAlert size={32} className="text-[#ffcc00]" />
           <div>
-            <div className="text-[#ffcc00] text-[10px] tracking-widest mb-1">// INTERCEPTED COMMS</div>
+            <div className="text-[#ffcc00] text-[10px] tracking-widest mb-1">
+              // INTERCEPTED COMMS
+            </div>
             <h2 className="text-3xl font-bold text-[#00ff41] tracking-[0.2em] uppercase">
               VOUCH_LOGS
             </h2>
@@ -56,7 +64,10 @@ export default function Testimonials({ testimonials }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {testimonials.map((test, i) => (
-            <div key={i} className="group relative border border-[#00ff41]/20 bg-[#000401] p-6 hover:border-[#00ff41]/60 transition-colors">
+            <div
+              key={i}
+              className="group relative border border-[#00ff41]/20 bg-[#000401] p-6 hover:border-[#00ff41]/60 transition-colors"
+            >
               {/* Top Bar */}
               <div className="flex items-center justify-between border-b border-[#00ff41]/10 pb-3 mb-4">
                 <div className="flex items-center gap-2 text-[#00ff41]/60 text-xs">

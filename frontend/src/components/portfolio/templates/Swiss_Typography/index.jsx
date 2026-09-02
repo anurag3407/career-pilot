@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -34,7 +34,10 @@ function Label({ children }) {
   const { portfolioData: data } = usePortfolio();
 
   return (
-    <span className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase" style={{ color: ACCENT }}>
+    <span
+      className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase"
+      style={{ color: ACCENT }}
+    >
       {children}
     </span>
   );
@@ -121,7 +124,10 @@ function Hero() {
                 variants={fadeUp}
                 className="px-5 md:px-8 py-5 md:py-8"
               >
-                <div className="text-2xl md:text-4xl font-black leading-none" style={{ color: ACCENT }}>
+                <div
+                  className="text-2xl md:text-4xl font-black leading-none"
+                  style={{ color: ACCENT }}
+                >
                   {value}
                 </div>
                 <div className="text-[10px] text-gray-400 uppercase tracking-widest mt-1 font-bold">
@@ -227,7 +233,10 @@ function Skills() {
                       <span className="w-28 md:w-36 text-xs md:text-sm font-semibold text-black shrink-0">
                         {skill.name}
                       </span>
-                      <div className="flex-1 relative" style={{ height: '2px', backgroundColor: '#e5e7eb' }}>
+                      <div
+                        className="flex-1 relative"
+                        style={{ height: '2px', backgroundColor: '#e5e7eb' }}
+                      >
                         <motion.div
                           initial={{ scaleX: 0 }}
                           whileInView={{ scaleX: 1 }}
@@ -385,7 +394,10 @@ function Experience() {
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">
                   {job.period}
                 </p>
-                <p className="text-xs font-black uppercase tracking-widest" style={{ color: ACCENT }}>
+                <p
+                  className="text-xs font-black uppercase tracking-widest"
+                  style={{ color: ACCENT }}
+                >
                   {job.company}
                 </p>
               </div>
@@ -439,7 +451,9 @@ function Testimonials() {
                 }}
               />
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-black">{t.name}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-black">
+                  {t.name}
+                </p>
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest">{t.role}</p>
               </div>
             </div>

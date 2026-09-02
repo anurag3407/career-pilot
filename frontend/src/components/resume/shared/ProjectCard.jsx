@@ -25,7 +25,7 @@ export default function ProjectCard({
     border: card ? '1px solid #e2e8f0' : 'none',
     borderRadius: card ? 4 : 0,
     marginBottom: card ? '3mm' : '4mm',
-  }
+  };
   return (
     <article style={wrap}>
       <h3
@@ -68,5 +68,5 @@ export default function ProjectCard({
         </a>
       )}
     </article>
-  )
+  );
 }

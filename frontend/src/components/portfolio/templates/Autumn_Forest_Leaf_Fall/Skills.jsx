@@ -6,7 +6,7 @@ export default function Skills({ skills }) {
 
   return (
     <section className="max-w-5xl mx-auto">
-      <motion.h3 
+      <motion.h3
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
@@ -14,7 +14,7 @@ export default function Skills({ skills }) {
       >
         Skills & Expertise
       </motion.h3>
-      
+
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {skills.map((skill, index) => (
           <motion.div
@@ -30,8 +30,8 @@ export default function Skills({ skills }) {
             </span>
             {skill.level && (
               <div className="w-full bg-stone-900 h-1.5 mt-3 rounded-full overflow-hidden">
-                <div 
-                  className="bg-amber-600 h-full rounded-full" 
+                <div
+                  className="bg-amber-600 h-full rounded-full"
                   style={{ width: `${skill.level}%` }}
                 />
               </div>

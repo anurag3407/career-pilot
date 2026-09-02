@@ -1,20 +1,20 @@
-import data from "../../../../data/dummy_data.json";
-import Background   from "./Background";
-import Hero         from "./Hero";
-import Marquee      from "./Marquee";
-import About        from "./About";
-import Skills       from "./Skills";
-import Projects     from "./Projects";
-import Experience   from "./Experience";
-import Testimonials from "./Testimonials";
-import Contact      from "./Contact";
-import Footer       from "./Footer";
+import data from '../../../../data/dummy_data.json';
+import Background from './Background';
+import Hero from './Hero';
+import Marquee from './Marquee';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
+import Footer from './Footer';
 
 const marqueeTags = [
-  ...(data.skills?.slice(0, 6).map(s => s.name) || []),
-  "Open to work",
-  "Design + Code",
-  "Based globally",
+  ...(data.skills?.slice(0, 6).map((s) => s.name) || []),
+  'Open to work',
+  'Design + Code',
+  'Based globally',
 ];
 
 export default function DribbbleShotsPortfolio() {

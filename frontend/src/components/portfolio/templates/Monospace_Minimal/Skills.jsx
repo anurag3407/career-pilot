@@ -10,8 +10,8 @@ export default function Skills({ skills }) {
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {skills.map((skill, i) => (
-            <div 
-              key={i} 
+            <div
+              key={i}
               className="px-4 py-3 border border-foreground/20 text-center hover:bg-foreground hover:text-background transition-colors duration-200 cursor-default"
             >
               <span className="text-sm tracking-wider">{skill.name}</span>

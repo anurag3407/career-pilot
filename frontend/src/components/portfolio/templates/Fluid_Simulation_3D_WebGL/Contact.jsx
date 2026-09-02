@@ -15,26 +15,30 @@ export default function Contact({ data }) {
 
     // Trigger visual blast wave
     const buttonRect = e.target.querySelector('button[type="submit"]').getBoundingClientRect();
-    window.dispatchEvent(new CustomEvent('fluid-burst', {
-      detail: {
-        x: buttonRect.left + buttonRect.width / 2,
-        y: buttonRect.top + buttonRect.height / 2,
-        count: 120, // Huge blast!
-        color: '#a855f7' // Purple explosion
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-burst', {
+        detail: {
+          x: buttonRect.left + buttonRect.width / 2,
+          y: buttonRect.top + buttonRect.height / 2,
+          count: 120, // Huge blast!
+          color: '#a855f7', // Purple explosion
+        },
+      })
+    );
 
     // Trigger visual currents
-    window.dispatchEvent(new CustomEvent('fluid-flow', {
-      detail: {
-        x: buttonRect.left + buttonRect.width / 2,
-        y: buttonRect.top + buttonRect.height / 2,
-        dx: 0,
-        dy: -12,
-        radius: 400,
-        strength: 8
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-flow', {
+        detail: {
+          x: buttonRect.left + buttonRect.width / 2,
+          y: buttonRect.top + buttonRect.height / 2,
+          dx: 0,
+          dy: -12,
+          radius: 400,
+          strength: 8,
+        },
+      })
+    );
 
     setSubmitted(true);
     setFormState({ name: '', email: '', message: '' });
@@ -43,20 +47,24 @@ export default function Contact({ data }) {
 
   const handleInputFocus = (e) => {
     // Little puff of current on focus
-    window.dispatchEvent(new CustomEvent('fluid-burst', {
-      detail: {
-        x: e.clientX || window.innerWidth / 2,
-        y: e.clientY || window.innerHeight / 2,
-        count: 8,
-        color: '#06b6d4'
-      }
-    }));
+    window.dispatchEvent(
+      new CustomEvent('fluid-burst', {
+        detail: {
+          x: e.clientX || window.innerWidth / 2,
+          y: e.clientY || window.innerHeight / 2,
+          count: 8,
+          color: '#06b6d4',
+        },
+      })
+    );
   };
 
   return (
-    <section id="contact-section" className="relative py-28 px-6 md:px-12 bg-slate-950/20 backdrop-blur-[2px] border-t border-slate-900 overflow-hidden text-white">
+    <section
+      id="contact-section"
+      className="relative py-28 px-6 md:px-12 bg-slate-950/20 backdrop-blur-[2px] border-t border-slate-900 overflow-hidden text-white"
+    >
       <div className="max-w-5xl mx-auto relative z-10 space-y-16">
-        
         {/* Title */}
         <div className="text-center space-y-4 max-w-xl mx-auto">
           <motion.h2
@@ -73,24 +81,25 @@ export default function Contact({ data }) {
             viewport={{ once: true }}
             className="text-slate-400 text-sm md:text-base leading-relaxed"
           >
-            Send a message into the flow network. Submitting the form releases a high-density velocity wave from the button node.
+            Send a message into the flow network. Submitting the form releases a high-density
+            velocity wave from the button node.
           </motion.p>
         </div>
 
         {/* Grid split */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-stretch">
-          
           {/* Left Column: Info card */}
           <div className="md:col-span-5 bg-slate-900/40 border border-slate-800/80 backdrop-blur-md p-8 rounded-2xl shadow-xl flex flex-col justify-between space-y-8 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1.5 h-full bg-purple-500" />
-            
+
             <div className="space-y-6 pl-2">
               <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-purple-400" />
                 Connection Portal
               </h3>
               <p className="text-slate-400 text-sm leading-relaxed">
-                Have an inquiry or project proposal? Reach out directly via the form, or use the connection markers below.
+                Have an inquiry or project proposal? Reach out directly via the form, or use the
+                connection markers below.
               </p>
             </div>
 
@@ -102,7 +111,9 @@ export default function Contact({ data }) {
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase tracking-widest font-bold">Location Node</span>
+                    <span className="block text-[10px] text-slate-500 uppercase tracking-widest font-bold">
+                      Location Node
+                    </span>
                     <span className="text-slate-200 text-sm font-medium">{personal.location}</span>
                   </div>
                 </div>
@@ -115,8 +126,10 @@ export default function Contact({ data }) {
                     <Mail className="w-4 h-4" />
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase tracking-widest font-bold">Email Address</span>
-                    <a 
+                    <span className="block text-[10px] text-slate-500 uppercase tracking-widest font-bold">
+                      Email Address
+                    </span>
+                    <a
                       href={`mailto:${socials.email || personal.email}`}
                       className="text-slate-200 text-sm font-medium hover:text-purple-400 transition"
                     >
@@ -134,7 +147,6 @@ export default function Contact({ data }) {
 
           {/* Right Column: Message Form */}
           <div className="md:col-span-7 bg-slate-900/40 border border-slate-800/80 backdrop-blur-md p-8 rounded-2xl shadow-xl flex flex-col justify-between relative overflow-hidden">
-            
             <AnimatePresence mode="wait">
               {submitted ? (
                 <motion.div
@@ -148,7 +160,8 @@ export default function Contact({ data }) {
                   </div>
                   <h3 className="text-xl font-bold text-slate-100">Flow Packet Dispatched!</h3>
                   <p className="text-slate-400 text-sm max-w-sm leading-relaxed">
-                    Thank you. Your message has been successfully injected into the stream and is traveling to my terminal.
+                    Thank you. Your message has been successfully injected into the stream and is
+                    traveling to my terminal.
                   </p>
                 </motion.div>
               ) : (
@@ -218,11 +231,8 @@ export default function Contact({ data }) {
                 </motion.form>
               )}
             </AnimatePresence>
-
           </div>
-
         </div>
-
       </div>
     </section>
   );

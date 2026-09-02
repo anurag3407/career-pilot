@@ -6,9 +6,24 @@ import { usePortfolio } from './PortfolioContext';
 /* ─── PR Status badge ─────────────────────────────────────────── */
 function StatusBadge({ status = 'merged' }) {
   const styles = {
-    merged: { color: '#BC8CFF', bg: 'rgba(188,140,255,0.1)', border: 'rgba(188,140,255,0.25)', label: 'Merged' },
-    open:   { color: '#3FB950', bg: 'rgba(63,185,80,0.1)',   border: 'rgba(63,185,80,0.25)',   label: 'Open'   },
-    closed: { color: '#F85149', bg: 'rgba(248,81,73,0.1)',   border: 'rgba(248,81,73,0.25)',   label: 'Closed' },
+    merged: {
+      color: '#BC8CFF',
+      bg: 'rgba(188,140,255,0.1)',
+      border: 'rgba(188,140,255,0.25)',
+      label: 'Merged',
+    },
+    open: {
+      color: '#3FB950',
+      bg: 'rgba(63,185,80,0.1)',
+      border: 'rgba(63,185,80,0.25)',
+      label: 'Open',
+    },
+    closed: {
+      color: '#F85149',
+      bg: 'rgba(248,81,73,0.1)',
+      border: 'rgba(248,81,73,0.25)',
+      label: 'Closed',
+    },
   };
   const s = styles[status] || styles.merged;
   return (
@@ -66,9 +81,7 @@ function PRCard({ testimonial, index, inView }) {
             <MessageSquare size={12} className="text-[#8B949E]" />
             <span className="text-[#8B949E] text-xs font-mono">Review comment</span>
           </div>
-          <p className="text-[#C9D1D9] text-sm leading-relaxed">
-            "{testimonial.text}"
-          </p>
+          <p className="text-[#C9D1D9] text-sm leading-relaxed">"{testimonial.text}"</p>
         </div>
 
         {/* Reviewer info */}
@@ -101,9 +114,8 @@ function PRCard({ testimonial, index, inView }) {
         <div className="font-mono text-xs text-[#484F58] flex items-center gap-2 pt-1 border-t border-[#21262D]">
           <Check size={10} className="text-[#BC8CFF]" />
           <span>
-            <span className="text-[#BC8CFF]">{testimonial.name?.split(' ')[0]}</span>
-            {' '}merged this review into{' '}
-            <span className="text-[#3FB950]">main</span>
+            <span className="text-[#BC8CFF]">{testimonial.name?.split(' ')[0]}</span> merged this
+            review into <span className="text-[#3FB950]">main</span>
           </span>
         </div>
       </div>
@@ -115,7 +127,7 @@ function PRCard({ testimonial, index, inView }) {
 export default function Testimonials() {
   const { portfolioData } = usePortfolio();
   const { testimonials } = portfolioData;
-  const ref    = useRef(null);
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
@@ -126,7 +138,6 @@ export default function Testimonials() {
       aria-label="Testimonials — Pull Requests"
     >
       <div className="max-w-5xl mx-auto space-y-8">
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -165,12 +176,7 @@ export default function Testimonials() {
         {/* PR grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {testimonials.map((t, i) => (
-            <PRCard
-              key={`${t.name}-${i}`}
-              testimonial={t}
-              index={i}
-              inView={inView}
-            />
+            <PRCard key={`${t.name}-${i}`} testimonial={t} index={i} inView={inView} />
           ))}
         </div>
       </div>

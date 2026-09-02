@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronUp, Settings, Cpu } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { useAIConfigStore, PROVIDER_META } from "../../stores/useAIConfigStore";
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronUp, Settings, Cpu } from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { useAIConfigStore, PROVIDER_META } from '../../stores/useAIConfigStore';
 
 export default function AIProviderIndicator({ open, animate }) {
   const [showPopover, setShowPopover] = useState(false);
@@ -19,15 +19,15 @@ export default function AIProviderIndicator({ open, animate }) {
   const configuredProviders = getConfiguredProviders();
   const activeMeta = activeProvider ? PROVIDER_META[activeProvider] : null;
 
-  const icon = activeMeta?.icon ?? "🤖";
-  const label = activeMeta?.name ?? "Select Provider";
+  const icon = activeMeta?.icon ?? '🤖';
+  const label = activeMeta?.name ?? 'Select Provider';
   const activeModel =
     activeProvider && providers[activeProvider]?.model
       ? providers[activeProvider].model
-      : activeMeta?.defaultModel ?? "";
+      : (activeMeta?.defaultModel ?? '');
 
   // Color dot based on provider status
-  const dotColor = activeProvider ? "bg-emerald-400" : "bg-zinc-400";
+  const dotColor = activeProvider ? 'bg-emerald-400' : 'bg-zinc-400';
 
   // Close popover on outside click
   useEffect(() => {
@@ -44,8 +44,8 @@ export default function AIProviderIndicator({ open, animate }) {
       }
     };
 
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
   }, [showPopover]);
 
   const handleSelect = (provider) => {
@@ -60,8 +60,8 @@ export default function AIProviderIndicator({ open, animate }) {
         ref={buttonRef}
         onClick={() => setShowPopover((prev) => !prev)}
         className={cn(
-          "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold",
-          !open && animate && "justify-center"
+          'flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold',
+          !open && animate && 'justify-center'
         )}
       >
         {/* Icon + status dot */}
@@ -69,7 +69,7 @@ export default function AIProviderIndicator({ open, animate }) {
           {icon}
           <span
             className={cn(
-              "absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-card",
+              'absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-card',
               dotColor
             )}
           />
@@ -77,7 +77,7 @@ export default function AIProviderIndicator({ open, animate }) {
 
         <motion.span
           animate={{
-            display: animate ? (open ? "inline-block" : "none") : "inline-block",
+            display: animate ? (open ? 'inline-block' : 'none') : 'inline-block',
             opacity: animate ? (open ? 1 : 0) : 1,
           }}
           transition={{ duration: 0.2 }}
@@ -88,7 +88,7 @@ export default function AIProviderIndicator({ open, animate }) {
 
         <motion.span
           animate={{
-            display: animate ? (open ? "inline-block" : "none") : "inline-block",
+            display: animate ? (open ? 'inline-block' : 'none') : 'inline-block',
             opacity: animate ? (open ? 1 : 0) : 1,
           }}
           transition={{ duration: 0.2 }}
@@ -96,8 +96,8 @@ export default function AIProviderIndicator({ open, animate }) {
         >
           <ChevronUp
             className={cn(
-              "w-4 h-4 transition-transform duration-200",
-              showPopover ? "rotate-0" : "rotate-180"
+              'w-4 h-4 transition-transform duration-200',
+              showPopover ? 'rotate-0' : 'rotate-180'
             )}
           />
         </motion.span>
@@ -111,7 +111,7 @@ export default function AIProviderIndicator({ open, animate }) {
             initial={{ opacity: 0, y: 8, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute bottom-full left-0 right-0 mb-2 z-50 bg-card border border-border rounded-xl shadow-2xl overflow-hidden"
           >
             {/* Heading */}
@@ -123,15 +123,12 @@ export default function AIProviderIndicator({ open, animate }) {
 
             {/* Provider list */}
             <div className="px-2 pb-2 flex flex-col gap-0.5">
-
-
               {/* Configured providers */}
               {configuredProviders.map((key) => {
                 const meta = PROVIDER_META[key];
                 if (!meta) return null;
 
-                const model =
-                  providers[key]?.model || meta.defaultModel || "";
+                const model = providers[key]?.model || meta.defaultModel || '';
                 const isActive = activeProvider === key;
 
                 return (
@@ -139,26 +136,18 @@ export default function AIProviderIndicator({ open, animate }) {
                     key={key}
                     onClick={() => handleSelect(key)}
                     className={cn(
-                      "flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left transition-all cursor-pointer",
+                      'flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left transition-all cursor-pointer',
                       isActive
-                        ? "bg-muted text-foreground"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        ? 'bg-muted text-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                     )}
                   >
-                    <span className="text-base shrink-0 leading-none">
-                      {meta.icon}
-                    </span>
+                    <span className="text-base shrink-0 leading-none">{meta.icon}</span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold truncate">
-                        {meta.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {model}
-                      </p>
+                      <p className="text-sm font-semibold truncate">{meta.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{model}</p>
                     </div>
-                    {isActive && (
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-                    )}
+                    {isActive && <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />}
                   </button>
                 );
               })}
@@ -169,7 +158,7 @@ export default function AIProviderIndicator({ open, animate }) {
               <button
                 onClick={() => {
                   setShowPopover(false);
-                  navigate("/settings");
+                  navigate('/settings');
                 }}
                 className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
               >

@@ -69,7 +69,10 @@ export default function Hero({ data }) {
             {data.personal?.name}
           </motion.h1>
 
-          <motion.p variants={item} className="mt-6 max-w-2xl text-xl leading-relaxed text-[#526053] md:text-2xl">
+          <motion.p
+            variants={item}
+            className="mt-6 max-w-2xl text-xl leading-relaxed text-[#526053] md:text-2xl"
+          >
             {data.personal?.title}
           </motion.p>
 
@@ -93,7 +96,10 @@ export default function Hero({ data }) {
             </a>
           </motion.div>
 
-          <motion.div variants={item} className="mt-10 flex items-center gap-3 text-sm text-[#6F746B]">
+          <motion.div
+            variants={item}
+            className="mt-10 flex items-center gap-3 text-sm text-[#6F746B]"
+          >
             <MapPin size={17} className="text-[#C58A63]" />
             {data.personal?.location}
           </motion.div>
@@ -113,8 +119,12 @@ export default function Hero({ data }) {
             <div className="mt-4 grid grid-cols-3 gap-3">
               {stats.map((stat) => (
                 <div key={stat.label} className="rounded-2xl bg-[#F7F3EA] p-4 text-center">
-                  <p className="scandi-serif text-2xl font-semibold text-[#315343]">{stat.value}+</p>
-                  <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-[#8B7D6B]">{stat.label}</p>
+                  <p className="scandi-serif text-2xl font-semibold text-[#315343]">
+                    {stat.value}+
+                  </p>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-[#8B7D6B]">
+                    {stat.label}
+                  </p>
                 </div>
               ))}
             </div>

@@ -1,29 +1,29 @@
-import React from "react";
+import React from 'react';
 
 const colors = [
   {
-    name: "Lavender Dream",
-    hex: "#CDB4DB",
+    name: 'Lavender Dream',
+    hex: '#CDB4DB',
   },
   {
-    name: "Peach Glow",
-    hex: "#FFC8A2",
+    name: 'Peach Glow',
+    hex: '#FFC8A2',
   },
   {
-    name: "Sky Mist",
-    hex: "#A2D2FF",
+    name: 'Sky Mist',
+    hex: '#A2D2FF',
   },
   {
-    name: "Mint Splash",
-    hex: "#BDE0C4",
+    name: 'Mint Splash',
+    hex: '#BDE0C4',
   },
   {
-    name: "Rose Blush",
-    hex: "#FFAFCC",
+    name: 'Rose Blush',
+    hex: '#FFAFCC',
   },
   {
-    name: "Soft Sand",
-    hex: "#E9D8A6",
+    name: 'Soft Sand',
+    hex: '#E9D8A6',
   },
 ];
 
@@ -50,8 +50,8 @@ const PaintPalette = () => {
           </h2>
 
           <p className="text-gray-600 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
-            A dreamy collection of soft watercolor-inspired shades crafted for
-            artistic and elegant portfolio designs.
+            A dreamy collection of soft watercolor-inspired shades crafted for artistic and elegant
+            portfolio designs.
           </p>
         </div>
 
@@ -77,9 +77,7 @@ const PaintPalette = () => {
               </h3>
 
               {/* Hex Code */}
-              <p className="text-center text-gray-600 font-medium">
-                {color.hex}
-              </p>
+              <p className="text-center text-gray-600 font-medium">{color.hex}</p>
             </div>
           ))}
         </div>

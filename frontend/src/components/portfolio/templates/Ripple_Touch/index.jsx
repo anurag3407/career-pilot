@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 
 /**
@@ -22,9 +22,12 @@ export default function RippleTouch() {
           </span>
           <h2 className="text-2xl font-bold text-gray-200 mb-3">Ripple Touch Template</h2>
           <p className="text-gray-400 mb-6 leading-relaxed">
-            Material Design ripple effects on every interactive element. Expanding circles from click point. Clean, Google-inspired design language.
+            Material Design ripple effects on every interactive element. Expanding circles from
+            click point. Clean, Google-inspired design language.
           </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+          <p className="text-cyan-400 font-semibold">
+            Open an issue to contribute and build this template!
+          </p>
         </div>
       </div>
     </div>

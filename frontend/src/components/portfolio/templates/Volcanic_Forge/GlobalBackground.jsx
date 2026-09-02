@@ -5,33 +5,35 @@ const PARTICLE_BRIGHTNESS = 2.0;
 const PARTICLE_SPEED = 1.8;
 
 export default function GlobalBackground() {
-  const emberConfigs = useMemo(() => (
-    Array.from({ length: 40 }, (_, index) => {
-      const size = Math.random() * 4 + 1;
-      const duration = (Math.random() * 10 + 10) / Math.max(PARTICLE_SPEED, 0.1);
-      const delay = Math.random() * 10;
-      const startX = Math.random() * 100;
-      const driftX = (Math.random() - 0.5) * 200;
-      const opacityPeak = Math.random() * 0.8 + 0.2;
-      const blur = Math.min(PARTICLE_BRIGHTNESS, 3);
-      const glowSpread = 10 * PARTICLE_BRIGHTNESS;
-      const glowBlur = 2 * PARTICLE_BRIGHTNESS;
+  const emberConfigs = useMemo(
+    () =>
+      Array.from({ length: 40 }, (_, index) => {
+        const size = Math.random() * 4 + 1;
+        const duration = (Math.random() * 10 + 10) / Math.max(PARTICLE_SPEED, 0.1);
+        const delay = Math.random() * 10;
+        const startX = Math.random() * 100;
+        const driftX = (Math.random() - 0.5) * 200;
+        const opacityPeak = Math.random() * 0.8 + 0.2;
+        const blur = Math.min(PARTICLE_BRIGHTNESS, 3);
+        const glowSpread = 10 * PARTICLE_BRIGHTNESS;
+        const glowBlur = 2 * PARTICLE_BRIGHTNESS;
 
-      return {
-        key: `ember-${index}`,
-        size,
-        duration,
-        delay,
-        startX,
-        driftX,
-        opacityPeak,
-        blur,
-        glowSpread,
-        glowBlur,
-      };
-    })
-  ), []);
-  
+        return {
+          key: `ember-${index}`,
+          size,
+          duration,
+          delay,
+          startX,
+          driftX,
+          opacityPeak,
+          blur,
+          glowSpread,
+          glowBlur,
+        };
+      }),
+    []
+  );
+
   return (
     <>
       {/* 
@@ -45,7 +47,7 @@ export default function GlobalBackground() {
           backgroundSize: '300px 300px',
         }}
       />
-      
+
       {/* FLOATING EMBERS */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         {emberConfigs.map((config) => {
@@ -58,10 +60,19 @@ export default function GlobalBackground() {
                 height: config.size,
                 left: `${config.startX}vw`,
                 filter: `blur(${config.blur}px) brightness(${PARTICLE_BRIGHTNESS})`,
-                boxShadow: `0 0 ${config.glowSpread}px ${config.glowBlur}px rgba(249, 115, 22, ${0.5 * Math.min(PARTICLE_BRIGHTNESS, 2)})`
+                boxShadow: `0 0 ${config.glowSpread}px ${config.glowBlur}px rgba(249, 115, 22, ${0.5 * Math.min(PARTICLE_BRIGHTNESS, 2)})`,
               }}
-              animate={{ y: ['10vh', '-110vh'], x: [0, config.driftX], opacity: [0, config.opacityPeak, 0] }}
-              transition={{ duration: config.duration, repeat: Infinity, delay: config.delay, ease: 'linear' }}
+              animate={{
+                y: ['10vh', '-110vh'],
+                x: [0, config.driftX],
+                opacity: [0, config.opacityPeak, 0],
+              }}
+              transition={{
+                duration: config.duration,
+                repeat: Infinity,
+                delay: config.delay,
+                ease: 'linear',
+              }}
             />
           );
         })}

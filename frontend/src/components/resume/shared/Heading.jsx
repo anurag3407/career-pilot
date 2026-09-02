@@ -34,5 +34,5 @@ export default function Heading({
     >
       {title}
     </h2>
-  )
+  );
 }

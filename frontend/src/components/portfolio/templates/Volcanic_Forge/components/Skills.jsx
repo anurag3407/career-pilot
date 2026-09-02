@@ -11,7 +11,7 @@ export default function Skills({ skills }) {
         <LavaAnimate className="flex! w-full" particleCount={90} formedDelay={1800} meltAmount={3}>
           <div className="w-full">
             <SectionHeader title="Skills" />
-            
+
             {/* Added mt-12 for spacing below header */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 w-full mt-12">
               {skills.map((skill, idx) => (

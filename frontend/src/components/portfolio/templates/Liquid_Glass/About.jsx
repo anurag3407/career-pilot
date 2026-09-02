@@ -1,8 +1,8 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { User, MapPin, Mail, Github, Globe } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { User, MapPin, Mail, Github, Globe } from 'lucide-react';
 
-const GlassCard = ({ children, className = "" }) => (
+const GlassCard = ({ children, className = '' }) => (
   <div
     className={`rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${className}`}
   >
@@ -12,7 +12,7 @@ const GlassCard = ({ children, className = "" }) => (
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 };
 
 const stagger = {
@@ -47,18 +47,23 @@ export default function About({ data }) {
               </div>
               <div className="space-y-4">
                 {[
-                  { label: "Email", value: data.socials.email, icon: <Mail size={14} /> },
-                  { label: "GitHub", value: data.socials.github, icon: <Github size={14} /> },
-                  { label: "Website", value: data.socials.website, icon: <Globe size={14} /> },
-                ].filter(s => s.value).map(({ label, value, icon }) => (
-                  <div key={label} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                    <span className="text-cyan-400">{icon}</span>
-                    <div>
-                      <div className="text-white/40 text-xs">{label}</div>
-                      <div className="text-white/80 text-sm">{value}</div>
+                  { label: 'Email', value: data.socials.email, icon: <Mail size={14} /> },
+                  { label: 'GitHub', value: data.socials.github, icon: <Github size={14} /> },
+                  { label: 'Website', value: data.socials.website, icon: <Globe size={14} /> },
+                ]
+                  .filter((s) => s.value)
+                  .map(({ label, value, icon }) => (
+                    <div
+                      key={label}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10"
+                    >
+                      <span className="text-cyan-400">{icon}</span>
+                      <div>
+                        <div className="text-white/40 text-xs">{label}</div>
+                        <div className="text-white/80 text-sm">{value}</div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           </GlassCard>

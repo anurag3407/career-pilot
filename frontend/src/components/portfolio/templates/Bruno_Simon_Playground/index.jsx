@@ -18,19 +18,22 @@ const fallbackData = {
   projects: [
     {
       title: 'Physics Portfolio',
-      description: 'A kinetic portfolio world with game-like navigation, collectible case studies, and responsive 3D scenes.',
+      description:
+        'A kinetic portfolio world with game-like navigation, collectible case studies, and responsive 3D scenes.',
       technologies: ['React', 'Three.js', 'GSAP'],
       liveUrl: '#',
     },
     {
       title: 'Launch Control',
-      description: 'Analytics dashboard for creative teams shipping campaigns with clear milestones and real-time delivery status.',
+      description:
+        'Analytics dashboard for creative teams shipping campaigns with clear milestones and real-time delivery status.',
       technologies: ['Next.js', 'Node.js', 'Postgres'],
       liveUrl: '#',
     },
     {
       title: 'Tiny Game Lab',
-      description: 'A set of browser experiments exploring physics, collisions, and delightful onboarding interactions.',
+      description:
+        'A set of browser experiments exploring physics, collisions, and delightful onboarding interactions.',
       technologies: ['Canvas', 'TypeScript', 'Vite'],
       liveUrl: '#',
     },
@@ -39,14 +42,17 @@ const fallbackData = {
     {
       title: 'Senior Creative Developer',
       company: 'Playground Studio',
-      description: 'Led production of interactive brand experiences and high-performance frontend systems.',
+      description:
+        'Led production of interactive brand experiences and high-performance frontend systems.',
     },
   ],
 };
 
-const getSkillName = (skill) => (typeof skill === 'string' ? skill : skill?.name || 'Creative Tech');
+const getSkillName = (skill) =>
+  typeof skill === 'string' ? skill : skill?.name || 'Creative Tech';
 const getProjectTitle = (project) => project?.title || project?.name || 'Untitled Project';
-const getProjectTech = (project) => project?.technologies || project?.techStack || project?.tech || [];
+const getProjectTech = (project) =>
+  project?.technologies || project?.techStack || project?.tech || [];
 
 export default function BrunoSimonPlayground({ portfolioData: propData }) {
   const context = usePortfolio() || {};
@@ -70,11 +76,14 @@ export default function BrunoSimonPlayground({ portfolioData: propData }) {
     return () => window.removeEventListener('pointermove', handlePointerMove);
   }, []);
 
-  const stats = useMemo(() => [
-    { label: 'Projects', value: `${projects.length}+`, icon: Rocket },
-    { label: 'Skills', value: `${skills.length}+`, icon: Zap },
-    { label: 'XP Stops', value: `${experience.length}+`, icon: Trophy },
-  ], [experience.length, projects.length, skills.length]);
+  const stats = useMemo(
+    () => [
+      { label: 'Projects', value: `${projects.length}+`, icon: Rocket },
+      { label: 'Skills', value: `${skills.length}+`, icon: Zap },
+      { label: 'XP Stops', value: `${experience.length}+`, icon: Trophy },
+    ],
+    [experience.length, projects.length, skills.length]
+  );
 
   return (
     <div className="min-h-screen overflow-hidden bg-[#f7d55a] text-[#171717] selection:bg-[#171717] selection:text-[#f7d55a]">
@@ -95,12 +104,19 @@ export default function BrunoSimonPlayground({ portfolioData: propData }) {
       />
 
       <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-6 py-6 md:px-10">
-        <a href="#top" className="rounded-full border-4 border-[#171717] bg-white px-5 py-2 font-black uppercase tracking-tight bruno-card">
+        <a
+          href="#top"
+          className="rounded-full border-4 border-[#171717] bg-white px-5 py-2 font-black uppercase tracking-tight bruno-card"
+        >
           {personal.name || fallbackData.personal.name}
         </a>
         <nav className="hidden items-center gap-2 md:flex">
           {['garage', 'missions', 'skills', 'contact'].map((item) => (
-            <a key={item} href={`#${item}`} className="rounded-full border-2 border-[#171717] bg-white/70 px-4 py-2 text-sm font-black uppercase hover:bg-[#ff6f42] hover:text-white">
+            <a
+              key={item}
+              href={`#${item}`}
+              className="rounded-full border-2 border-[#171717] bg-white/70 px-4 py-2 text-sm font-black uppercase hover:bg-[#ff6f42] hover:text-white"
+            >
               {item}
             </a>
           ))}
@@ -117,30 +133,49 @@ export default function BrunoSimonPlayground({ portfolioData: propData }) {
               {personal.name || fallbackData.personal.name}
             </h1>
             <p className="mt-7 max-w-2xl rounded-[2rem] border-4 border-[#171717] bg-white p-6 text-xl font-bold leading-relaxed bruno-card md:text-2xl">
-              {personal.title || fallbackData.personal.title} building interactive portfolios with game-feel, motion, and a little chaos.
+              {personal.title || fallbackData.personal.title} building interactive portfolios with
+              game-feel, motion, and a little chaos.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <a href="#missions" className="rounded-full border-4 border-[#171717] bg-[#ff6f42] px-7 py-4 font-black uppercase text-white bruno-card transition hover:-translate-y-1">
+              <a
+                href="#missions"
+                className="rounded-full border-4 border-[#171717] bg-[#ff6f42] px-7 py-4 font-black uppercase text-white bruno-card transition hover:-translate-y-1"
+              >
                 Start Engine
               </a>
-              <a href={`mailto:${personal.email || ''}`} className="rounded-full border-4 border-[#171717] bg-white px-7 py-4 font-black uppercase bruno-card transition hover:-translate-y-1">
+              <a
+                href={`mailto:${personal.email || ''}`}
+                className="rounded-full border-4 border-[#171717] bg-white px-7 py-4 font-black uppercase bruno-card transition hover:-translate-y-1"
+              >
                 Say Hello
               </a>
             </div>
           </div>
 
           <div className="relative min-h-[520px]">
-            <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-[#171717] bg-[#4c68ff] bruno-card md:h-96 md:w-96" style={{ animation: 'bruno-bob 4s ease-in-out infinite' }} />
+            <div
+              className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-[#171717] bg-[#4c68ff] bruno-card md:h-96 md:w-96"
+              style={{ animation: 'bruno-bob 4s ease-in-out infinite' }}
+            />
             <div className="absolute inset-x-0 bottom-20 h-20 rounded-full border-4 border-[#171717] bg-[linear-gradient(90deg,#171717_0_20px,transparent_20px_70px)] bg-[length:140px_100%] bruno-road" />
-            <div className="absolute bottom-28 left-1/2 w-[330px] -translate-x-1/2 md:w-[460px]" style={{ animation: 'bruno-drive 3s ease-in-out infinite' }}>
+            <div
+              className="absolute bottom-28 left-1/2 w-[330px] -translate-x-1/2 md:w-[460px]"
+              style={{ animation: 'bruno-drive 3s ease-in-out infinite' }}
+            >
               <div className="relative h-44 rounded-[3rem] border-4 border-[#171717] bg-[#ff6f42] bruno-card">
                 <div className="absolute left-16 top-[-54px] h-24 w-48 rounded-t-[4rem] border-4 border-b-0 border-[#171717] bg-white md:left-24 md:w-64" />
                 <div className="absolute left-24 top-[-30px] h-14 w-20 rounded-t-[2rem] border-4 border-[#171717] bg-[#8ed7ff] md:left-36" />
                 <div className="absolute right-14 top-[-30px] h-14 w-20 rounded-t-[2rem] border-4 border-[#171717] bg-[#8ed7ff]" />
                 <div className="absolute -left-8 top-16 h-16 w-16 rounded-full border-4 border-[#171717] bg-white" />
                 <div className="absolute -right-8 top-16 h-16 w-16 rounded-full border-4 border-[#171717] bg-white" />
-                <div className="absolute bottom-[-38px] left-16 h-24 w-24 rounded-full border-8 border-[#171717] bg-white" style={{ animation: 'bruno-spin 1s linear infinite' }} />
-                <div className="absolute bottom-[-38px] right-16 h-24 w-24 rounded-full border-8 border-[#171717] bg-white" style={{ animation: 'bruno-spin 1s linear infinite' }} />
+                <div
+                  className="absolute bottom-[-38px] left-16 h-24 w-24 rounded-full border-8 border-[#171717] bg-white"
+                  style={{ animation: 'bruno-spin 1s linear infinite' }}
+                />
+                <div
+                  className="absolute bottom-[-38px] right-16 h-24 w-24 rounded-full border-8 border-[#171717] bg-white"
+                  style={{ animation: 'bruno-spin 1s linear infinite' }}
+                />
                 <div className="absolute bottom-[-10px] left-0 right-0 mx-auto h-10 w-32 rounded-t-full border-4 border-[#171717] bg-[#171717]" />
               </div>
             </div>
@@ -149,10 +184,15 @@ export default function BrunoSimonPlayground({ portfolioData: propData }) {
 
         <section id="garage" className="grid gap-5 py-12 md:grid-cols-3">
           {stats.map(({ label, value, icon: Icon }) => (
-            <div key={label} className="rounded-[2rem] border-4 border-[#171717] bg-white p-7 bruno-card">
+            <div
+              key={label}
+              className="rounded-[2rem] border-4 border-[#171717] bg-white p-7 bruno-card"
+            >
               <Icon className="mb-6 h-9 w-9" />
               <div className="text-6xl font-black tracking-[-0.08em]">{value}</div>
-              <div className="mt-2 font-black uppercase tracking-widest text-[#4c68ff]">{label}</div>
+              <div className="mt-2 font-black uppercase tracking-widest text-[#4c68ff]">
+                {label}
+              </div>
             </div>
           ))}
         </section>
@@ -160,24 +200,50 @@ export default function BrunoSimonPlayground({ portfolioData: propData }) {
         <section id="missions" className="py-16">
           <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
-              <p className="font-black uppercase tracking-[0.3em] text-[#4c68ff]">Project Missions</p>
-              <h2 className="text-5xl font-black uppercase tracking-[-0.06em] md:text-7xl">Pick a checkpoint</h2>
+              <p className="font-black uppercase tracking-[0.3em] text-[#4c68ff]">
+                Project Missions
+              </p>
+              <h2 className="text-5xl font-black uppercase tracking-[-0.06em] md:text-7xl">
+                Pick a checkpoint
+              </h2>
             </div>
-            <p className="max-w-xl rounded-3xl border-4 border-[#171717] bg-white p-5 font-bold bruno-card">{personal.bio || fallbackData.personal.bio}</p>
+            <p className="max-w-xl rounded-3xl border-4 border-[#171717] bg-white p-5 font-bold bruno-card">
+              {personal.bio || fallbackData.personal.bio}
+            </p>
           </div>
           <div className="grid gap-6 lg:grid-cols-3">
             {projects.slice(0, 6).map((project, index) => (
-              <a key={getProjectTitle(project)} href={project.liveUrl || project.link || project.githubUrl || '#'} className="group rounded-[2rem] border-4 border-[#171717] bg-white p-6 bruno-card transition hover:-translate-y-2">
+              <a
+                key={getProjectTitle(project)}
+                href={project.liveUrl || project.link || project.githubUrl || '#'}
+                className="group rounded-[2rem] border-4 border-[#171717] bg-white p-6 bruno-card transition hover:-translate-y-2"
+              >
                 <div className="mb-8 flex items-center justify-between">
-                  <span className="grid h-14 w-14 place-items-center rounded-2xl border-4 border-[#171717] bg-[#f7d55a] text-2xl font-black">{index + 1}</span>
-                  <span className="rounded-full border-2 border-[#171717] bg-[#ff6f42] px-3 py-1 text-xs font-black uppercase text-white">Mission</span>
+                  <span className="grid h-14 w-14 place-items-center rounded-2xl border-4 border-[#171717] bg-[#f7d55a] text-2xl font-black">
+                    {index + 1}
+                  </span>
+                  <span className="rounded-full border-2 border-[#171717] bg-[#ff6f42] px-3 py-1 text-xs font-black uppercase text-white">
+                    Mission
+                  </span>
                 </div>
-                <h3 className="text-3xl font-black uppercase leading-none tracking-[-0.04em]">{getProjectTitle(project)}</h3>
-                <p className="mt-4 min-h-24 font-bold text-[#3b3b3b]">{project.description || 'A playful portfolio checkpoint with polished interactions.'}</p>
+                <h3 className="text-3xl font-black uppercase leading-none tracking-[-0.04em]">
+                  {getProjectTitle(project)}
+                </h3>
+                <p className="mt-4 min-h-24 font-bold text-[#3b3b3b]">
+                  {project.description ||
+                    'A playful portfolio checkpoint with polished interactions.'}
+                </p>
                 <div className="mt-6 flex flex-wrap gap-2">
-                  {getProjectTech(project).slice(0, 4).map((tech) => (
-                    <span key={tech} className="rounded-full border-2 border-[#171717] bg-[#8ed7ff] px-3 py-1 text-xs font-black uppercase">{tech}</span>
-                  ))}
+                  {getProjectTech(project)
+                    .slice(0, 4)
+                    .map((tech) => (
+                      <span
+                        key={tech}
+                        className="rounded-full border-2 border-[#171717] bg-[#8ed7ff] px-3 py-1 text-xs font-black uppercase"
+                      >
+                        {tech}
+                      </span>
+                    ))}
                 </div>
               </a>
             ))}
@@ -186,28 +252,60 @@ export default function BrunoSimonPlayground({ portfolioData: propData }) {
 
         <section id="skills" className="grid gap-8 py-16 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="rounded-[2rem] border-4 border-[#171717] bg-[#4c68ff] p-8 text-white bruno-card">
-            <h2 className="text-5xl font-black uppercase leading-none tracking-[-0.05em]">Toolbox unlocked</h2>
-            <p className="mt-6 font-bold text-white/85">A bright, arcade-like skill board inspired by interactive web playgrounds.</p>
+            <h2 className="text-5xl font-black uppercase leading-none tracking-[-0.05em]">
+              Toolbox unlocked
+            </h2>
+            <p className="mt-6 font-bold text-white/85">
+              A bright, arcade-like skill board inspired by interactive web playgrounds.
+            </p>
           </div>
           <div className="flex flex-wrap content-start gap-4">
             {skills.map((skill, index) => (
-              <span key={`${getSkillName(skill)}-${index}`} className="rounded-[1.25rem] border-4 border-[#171717] bg-white px-5 py-4 text-xl font-black uppercase bruno-card transition hover:rotate-2 hover:bg-[#ff6f42] hover:text-white">
+              <span
+                key={`${getSkillName(skill)}-${index}`}
+                className="rounded-[1.25rem] border-4 border-[#171717] bg-white px-5 py-4 text-xl font-black uppercase bruno-card transition hover:rotate-2 hover:bg-[#ff6f42] hover:text-white"
+              >
                 {getSkillName(skill)}
               </span>
             ))}
           </div>
         </section>
 
-        <section id="contact" className="rounded-[2.5rem] border-4 border-[#171717] bg-white p-8 bruno-card md:p-12">
+        <section
+          id="contact"
+          className="rounded-[2.5rem] border-4 border-[#171717] bg-white p-8 bruno-card md:p-12"
+        >
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
-              <p className="mb-3 flex items-center gap-2 font-black uppercase tracking-[0.25em] text-[#ff6f42]"><MapPin className="h-4 w-4" /> {personal.location || 'Available worldwide'}</p>
-              <h2 className="text-5xl font-black uppercase leading-none tracking-[-0.06em] md:text-7xl">Ready for the next lap?</h2>
+              <p className="mb-3 flex items-center gap-2 font-black uppercase tracking-[0.25em] text-[#ff6f42]">
+                <MapPin className="h-4 w-4" /> {personal.location || 'Available worldwide'}
+              </p>
+              <h2 className="text-5xl font-black uppercase leading-none tracking-[-0.06em] md:text-7xl">
+                Ready for the next lap?
+              </h2>
             </div>
             <div className="flex flex-wrap gap-3">
-              <a href={socials.github || '#'} className="rounded-full border-4 border-[#171717] bg-[#171717] p-4 text-white transition hover:-translate-y-1" aria-label="GitHub"><Github /></a>
-              <a href={socials.linkedin || '#'} className="rounded-full border-4 border-[#171717] bg-[#4c68ff] p-4 text-white transition hover:-translate-y-1" aria-label="LinkedIn"><Linkedin /></a>
-              <a href={`mailto:${personal.email || ''}`} className="rounded-full border-4 border-[#171717] bg-[#ff6f42] p-4 text-white transition hover:-translate-y-1" aria-label="Email"><Mail /></a>
+              <a
+                href={socials.github || '#'}
+                className="rounded-full border-4 border-[#171717] bg-[#171717] p-4 text-white transition hover:-translate-y-1"
+                aria-label="GitHub"
+              >
+                <Github />
+              </a>
+              <a
+                href={socials.linkedin || '#'}
+                className="rounded-full border-4 border-[#171717] bg-[#4c68ff] p-4 text-white transition hover:-translate-y-1"
+                aria-label="LinkedIn"
+              >
+                <Linkedin />
+              </a>
+              <a
+                href={`mailto:${personal.email || ''}`}
+                className="rounded-full border-4 border-[#171717] bg-[#ff6f42] p-4 text-white transition hover:-translate-y-1"
+                aria-label="Email"
+              >
+                <Mail />
+              </a>
             </div>
           </div>
         </section>

@@ -1,6 +1,6 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React, { useState, useEffect } from 'react';
-import "./styles.css";
+import './styles.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Code,
@@ -21,7 +21,7 @@ import {
   Github,
   Linkedin,
   Mail,
-  X
+  X,
 } from 'lucide-react';
 
 /* ─────────────────────────────────────────────
@@ -35,13 +35,13 @@ const C = {
   border: '#1e293b',
   highlight: '#38bdf8',
   categories: {
-    personal: '#fb7185',    // Rose
-    skills: '#34d399',      // Emerald
-    projects: '#818cf8',    // Indigo
-    experience: '#fbbf24',  // Amber
-    education: '#a78bfa',   // Violet
-    socials: '#38bdf8',     // Sky
-  }
+    personal: '#fb7185', // Rose
+    skills: '#34d399', // Emerald
+    projects: '#818cf8', // Indigo
+    experience: '#fbbf24', // Amber
+    education: '#a78bfa', // Violet
+    socials: '#38bdf8', // Sky
+  },
 };
 
 /* ─────────────────────────────────────────────
@@ -54,44 +54,68 @@ const generateElements = (data) => {
 
   // 1. Personal Elements
   elements.push({
-    id: 'P1', number: atomicNumber++, symbol: 'Me', name: 'About', category: 'personal',
+    id: 'P1',
+    number: atomicNumber++,
+    symbol: 'Me',
+    name: 'About',
+    category: 'personal',
     description: data.personal?.bio || 'Passionate developer crafting digital experiences.',
-    icon: <User size={24} />
+    icon: <User size={24} />,
   });
   elements.push({
-    id: 'P2', number: atomicNumber++, symbol: 'Ro', name: 'Role', category: 'personal',
+    id: 'P2',
+    number: atomicNumber++,
+    symbol: 'Ro',
+    name: 'Role',
+    category: 'personal',
     description: data.personal?.role || 'Software Engineer',
-    icon: <Briefcase size={24} />
+    icon: <Briefcase size={24} />,
   });
 
   // 2. Skills
   const skillCategories = ['Frontend', 'Backend', 'Database', 'Tools'];
-  const skillIcons = [<Layout size={24}/>, <Terminal size={24}/>, <Database size={24}/>, <Settings size={24}/>];
-  
+  const skillIcons = [
+    <Layout size={24} />,
+    <Terminal size={24} />,
+    <Database size={24} />,
+    <Settings size={24} />,
+  ];
+
   // Group skills or just list top 10
   const topSkills = (data.skills || []).slice(0, 10);
   topSkills.forEach((skill, idx) => {
     elements.push({
-      id: `S${idx}`, number: atomicNumber++, 
-      symbol: skill.name.substring(0, 2).toUpperCase(), 
-      name: skill.name, 
+      id: `S${idx}`,
+      number: atomicNumber++,
+      symbol: skill.name.substring(0, 2).toUpperCase(),
+      name: skill.name,
       category: 'skills',
       description: `Proficiency: ${skill.level}%`,
-      icon: skillIcons[idx % skillIcons.length]
+      icon: skillIcons[idx % skillIcons.length],
     });
   });
 
   // 3. Projects
   const projects = (data.projects || []).slice(0, 6);
   projects.forEach((proj, idx) => {
-    const symbol = proj.title.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase() || `P${idx}`;
+    const symbol =
+      proj.title
+        .split(' ')
+        .map((w) => w[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase() || `P${idx}`;
     elements.push({
-      id: `Pr${idx}`, number: atomicNumber++, symbol, name: proj.title, category: 'projects',
+      id: `Pr${idx}`,
+      number: atomicNumber++,
+      symbol,
+      name: proj.title,
+      category: 'projects',
       description: proj.description,
       link: proj.link,
       github: proj.github,
       tech: proj.tech,
-      icon: <Monitor size={24} />
+      icon: <Monitor size={24} />,
     });
   });
 
@@ -99,27 +123,55 @@ const generateElements = (data) => {
   const exp = (data.experience || []).slice(0, 4);
   exp.forEach((job, idx) => {
     elements.push({
-      id: `E${idx}`, number: atomicNumber++, 
-      symbol: job.company.substring(0, 2).toUpperCase(), 
-      name: job.company, 
+      id: `E${idx}`,
+      number: atomicNumber++,
+      symbol: job.company.substring(0, 2).toUpperCase(),
+      name: job.company,
       category: 'experience',
       description: `${job.role} (${job.period})`,
       details: job.description,
-      icon: <Briefcase size={24} />
+      icon: <Briefcase size={24} />,
     });
   });
 
   // 5. Socials & Contact
   if (data.socials) {
-    if (data.socials.github) elements.push({ id: 'C1', number: atomicNumber++, symbol: 'Gh', name: 'GitHub', category: 'socials', link: data.socials.github, icon: <Github size={24}/> });
-    if (data.socials.linkedin) elements.push({ id: 'C2', number: atomicNumber++, symbol: 'In', name: 'LinkedIn', category: 'socials', link: data.socials.linkedin, icon: <Linkedin size={24}/> });
-    if (data.socials.email) elements.push({ id: 'C3', number: atomicNumber++, symbol: 'Em', name: 'Email', category: 'socials', link: `mailto:${data.socials.email}`, icon: <Mail size={24}/> });
+    if (data.socials.github)
+      elements.push({
+        id: 'C1',
+        number: atomicNumber++,
+        symbol: 'Gh',
+        name: 'GitHub',
+        category: 'socials',
+        link: data.socials.github,
+        icon: <Github size={24} />,
+      });
+    if (data.socials.linkedin)
+      elements.push({
+        id: 'C2',
+        number: atomicNumber++,
+        symbol: 'In',
+        name: 'LinkedIn',
+        category: 'socials',
+        link: data.socials.linkedin,
+        icon: <Linkedin size={24} />,
+      });
+    if (data.socials.email)
+      elements.push({
+        id: 'C3',
+        number: atomicNumber++,
+        symbol: 'Em',
+        name: 'Email',
+        category: 'socials',
+        link: `mailto:${data.socials.email}`,
+        icon: <Mail size={24} />,
+      });
   }
 
   // Fill remaining slots to make a nice grid (optional padding)
   // We'll arrange them in a dynamic grid using CSS Grid rather than a strict 18-column table to ensure responsiveness,
   // but styled exactly like periodic elements.
-  
+
   return elements;
 };
 
@@ -130,7 +182,7 @@ const ElementCard = ({ element, onClick, isSelected }) => {
   const { portfolioData: dummyData } = usePortfolio();
 
   const color = C.categories[element.category] || C.highlight;
-  
+
   return (
     <motion.div
       layoutId={`element-${element.id}`}
@@ -156,15 +208,21 @@ const ElementCard = ({ element, onClick, isSelected }) => {
           {React.cloneElement(element.icon, { size: 16, strokeWidth: 2.5 })}
         </span>
       </div>
-      
+
       <div className="text-center w-full my-auto">
-        <h2 className="text-2xl md:text-3xl font-black tracking-tight" style={{ color: isSelected ? '#000' : color }}>
+        <h2
+          className="text-2xl md:text-3xl font-black tracking-tight"
+          style={{ color: isSelected ? '#000' : color }}
+        >
           {element.symbol}
         </h2>
       </div>
-      
+
       <div className="text-center w-full overflow-hidden">
-        <p className="text-[10px] md:text-xs font-semibold truncate uppercase tracking-wider" style={{ color: isSelected ? '#000' : color }}>
+        <p
+          className="text-[10px] md:text-xs font-semibold truncate uppercase tracking-wider"
+          style={{ color: isSelected ? '#000' : color }}
+        >
           {element.name}
         </p>
       </div>
@@ -193,7 +251,8 @@ const DetailsPanel = ({ element, onClose }) => {
         boxShadow: `0 10px 40px -10px ${color}30`,
       }}
     >
-      <button type="button" 
+      <button
+        type="button"
         onClick={onClose}
         className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors"
         style={{ color: C.textMuted }}
@@ -202,7 +261,7 @@ const DetailsPanel = ({ element, onClose }) => {
       </button>
 
       <div className="flex items-center gap-4 mb-8">
-        <div 
+        <div
           className="w-20 h-20 rounded-lg flex items-center justify-center text-4xl font-black"
           style={{ backgroundColor: color, color: '#000' }}
         >
@@ -210,7 +269,10 @@ const DetailsPanel = ({ element, onClose }) => {
         </div>
         <div>
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">{element.name}</h2>
-          <div className="flex items-center gap-2 text-sm uppercase tracking-wider font-semibold" style={{ color }}>
+          <div
+            className="flex items-center gap-2 text-sm uppercase tracking-wider font-semibold"
+            style={{ color }}
+          >
             {element.category} &bull; Element {element.number}
           </div>
         </div>
@@ -223,17 +285,33 @@ const DetailsPanel = ({ element, onClose }) => {
 
         {element.details && (
           <div className="mb-6">
-            <h3 className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: C.textMuted }}>Details</h3>
-            <p className="text-base leading-relaxed" style={{ color: C.textMain }}>{element.details}</p>
+            <h3
+              className="text-sm font-bold uppercase tracking-widest mb-3"
+              style={{ color: C.textMuted }}
+            >
+              Details
+            </h3>
+            <p className="text-base leading-relaxed" style={{ color: C.textMain }}>
+              {element.details}
+            </p>
           </div>
         )}
 
         {element.tech && (
           <div className="mb-6">
-            <h3 className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: C.textMuted }}>Technologies</h3>
+            <h3
+              className="text-sm font-bold uppercase tracking-widest mb-3"
+              style={{ color: C.textMuted }}
+            >
+              Technologies
+            </h3>
             <div className="flex flex-wrap gap-2">
               {element.tech.map((t, i) => (
-                <span key={i} className="px-3 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: `${color}20`, color, border: `1px solid ${color}40` }}>
+                <span
+                  key={i}
+                  className="px-3 py-1 rounded-full text-xs font-semibold"
+                  style={{ backgroundColor: `${color}20`, color, border: `1px solid ${color}40` }}
+                >
                   {t}
                 </span>
               ))}
@@ -243,9 +321,9 @@ const DetailsPanel = ({ element, onClose }) => {
 
         {element.link && (
           <div className="mt-8 flex gap-4">
-            <a 
-              href={element.link} 
-              target="_blank" 
+            <a
+              href={element.link}
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-transform hover:scale-105"
               style={{ backgroundColor: color, color: '#000' }}
@@ -253,9 +331,9 @@ const DetailsPanel = ({ element, onClose }) => {
               <ExternalLink size={18} /> View Live
             </a>
             {element.github && (
-              <a 
-                href={element.github} 
-                target="_blank" 
+              <a
+                href={element.github}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-colors"
                 style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#fff' }}
@@ -273,13 +351,13 @@ const DetailsPanel = ({ element, onClose }) => {
 export default function InteractiveTablePortfolio({ portfolioData }) {
   const { portfolioData: dummyData } = usePortfolio();
 
-  
   const data = {
     personal: { ...dummyData.personal, ...portfolioData?.personal },
     socials: { ...dummyData.socials, ...portfolioData?.socials },
     skills: dummyData.skills,
     projects: portfolioData?.projects?.length > 0 ? portfolioData.projects : dummyData.projects,
-    experience: portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience,
+    experience:
+      portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience,
   };
 
   const [elements, setElements] = useState([]);
@@ -294,14 +372,22 @@ export default function InteractiveTablePortfolio({ portfolioData }) {
 
   const categories = ['all', ...Object.keys(C.categories)];
 
-  const filteredElements = elements.filter(el => activeCategory === 'all' || el.category === activeCategory);
+  const filteredElements = elements.filter(
+    (el) => activeCategory === 'all' || el.category === activeCategory
+  );
 
   return (
-    <div className="min-h-screen w-full font-sans selection:bg-sky-500/30" style={{ backgroundColor: C.bgDark, color: C.textMain }}>
-      
+    <div
+      className="min-h-screen w-full font-sans selection:bg-sky-500/30"
+      style={{ backgroundColor: C.bgDark, color: C.textMain }}
+    >
       {/* Header */}
       <header className="pt-12 pb-8 px-6 md:px-12 max-w-7xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+        >
           <div>
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-2">
               {data.personal.name}
@@ -313,14 +399,21 @@ export default function InteractiveTablePortfolio({ portfolioData }) {
 
           {/* Legend / Filters */}
           <div className="flex flex-wrap gap-3">
-            {categories.map(cat => (
-              <button type="button"
+            {categories.map((cat) => (
+              <button
+                type="button"
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all"
                 style={{
-                  backgroundColor: activeCategory === cat ? (cat === 'all' ? '#fff' : C.categories[cat]) : 'transparent',
-                  color: activeCategory === cat ? '#000' : (cat === 'all' ? '#fff' : C.categories[cat]),
+                  backgroundColor:
+                    activeCategory === cat
+                      ? cat === 'all'
+                        ? '#fff'
+                        : C.categories[cat]
+                      : 'transparent',
+                  color:
+                    activeCategory === cat ? '#000' : cat === 'all' ? '#fff' : C.categories[cat],
                   border: `1px solid ${cat === 'all' ? '#ffffff40' : C.categories[cat]}`,
                 }}
               >
@@ -334,10 +427,9 @@ export default function InteractiveTablePortfolio({ portfolioData }) {
       {/* Main Content Area */}
       <main className="px-6 md:px-12 pb-24 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 h-[800px]">
-          
           {/* Periodic Table Grid */}
           <div className="lg:col-span-8 h-full overflow-y-auto pr-2 custom-scrollbar">
-            <motion.div 
+            <motion.div
               layout
               className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 md:gap-4"
             >
@@ -350,8 +442,8 @@ export default function InteractiveTablePortfolio({ portfolioData }) {
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <ElementCard 
-                      element={el} 
+                    <ElementCard
+                      element={el}
                       isSelected={selectedElement?.id === el.id}
                       onClick={setSelectedElement}
                     />
@@ -365,29 +457,28 @@ export default function InteractiveTablePortfolio({ portfolioData }) {
           <div className="lg:col-span-4 h-[600px] lg:h-full sticky top-8">
             <AnimatePresence mode="wait">
               {selectedElement ? (
-                <DetailsPanel 
-                  key={selectedElement.id} 
-                  element={selectedElement} 
+                <DetailsPanel
+                  key={selectedElement.id}
+                  element={selectedElement}
                   onClose={() => setSelectedElement(null)}
                 />
               ) : (
-                <motion.div 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   className="h-full rounded-xl border border-dashed flex items-center justify-center p-8 text-center"
                   style={{ borderColor: C.border, color: C.textMuted }}
                 >
-                  <p className="text-lg">Select an element from the table to view its properties.</p>
+                  <p className="text-lg">
+                    Select an element from the table to view its properties.
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-
         </div>
       </main>
-
-
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import React from 'react';
 import GlobalBackground from './GlobalBackground';
 import LavaAnimate from './LavaAnimate';
@@ -25,7 +25,7 @@ export default function VolcanicForgeTemplate() {
         </LavaAnimate>
 
         <About personal={personal} stats={stats} skills={skills} />
-        
+
         <Skills skills={skills} />
 
         <Projects projects={projects} />
@@ -36,7 +36,9 @@ export default function VolcanicForgeTemplate() {
       </main>
 
       <footer className="py-8 text-center text-stone-600 text-sm border-t border-stone-900 relative z-10 bg-stone-950/80 backdrop-blur-md">
-        <p>© {new Date().getFullYear()} {personal.name}. Forged with Volcanic Template.</p>
+        <p>
+          © {new Date().getFullYear()} {personal.name}. Forged with Volcanic Template.
+        </p>
       </footer>
     </div>
   );

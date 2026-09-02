@@ -14,23 +14,23 @@ function hashStr(str) {
 
 /* ─── Commit type label ───────────────────────────────────────── */
 function commitType(index, total) {
-  if (index === 0)           return { label: 'release', color: '#F0883E', icon: TagIcon };
-  if (index === total - 1)  return { label: 'init',    color: '#BC8CFF', icon: GitBranch };
-  if (index % 3 === 0)      return { label: 'feat',    color: '#3FB950', icon: GitCommit };
-  return                           { label: 'feat',    color: '#58A6FF', icon: GitCommit };
+  if (index === 0) return { label: 'release', color: '#F0883E', icon: TagIcon };
+  if (index === total - 1) return { label: 'init', color: '#BC8CFF', icon: GitBranch };
+  if (index % 3 === 0) return { label: 'feat', color: '#3FB950', icon: GitCommit };
+  return { label: 'feat', color: '#58A6FF', icon: GitCommit };
 }
 
 /* ─── Single commit node ──────────────────────────────────────── */
 function CommitNode({ job, index, total, inView }) {
-  const isFirst   = index === 0;
-  const isLast    = index === total - 1;
+  const isFirst = index === 0;
+  const isLast = index === total - 1;
   const isCurrent = /present/i.test(job.period || '') || isFirst;
-  const sha       = useMemo(() => hashStr(`${job.company}${job.role}${index}`), [job, index]);
+  const sha = useMemo(() => hashStr(`${job.company}${job.role}${index}`), [job, index]);
   const { label: ctype, color, icon: CIcon } = commitType(index, total);
 
   // Diff stat fake but seeded
-  const added   = useMemo(() => (hashStr(job.role + 'a') % 4000) + 500, [job.role]);
-  const removed = useMemo(() => (hashStr(job.role + 'r') % 200)  + 10,  [job.role]);
+  const added = useMemo(() => (hashStr(job.role + 'a') % 4000) + 500, [job.role]);
+  const removed = useMemo(() => (hashStr(job.role + 'r') % 200) + 10, [job.role]);
 
   // Version tag for releases
   const version = isFirst ? 'v3.0' : isLast ? 'v1.0' : index === 1 ? 'v2.0' : null;
@@ -58,9 +58,7 @@ function CommitNode({ job, index, total, inView }) {
         {/* Commit dot */}
         <div
           className={`w-4 h-4 rounded-full border-2 flex items-center justify-center z-10 transition-all ${
-            isCurrent
-              ? 'shadow-lg'
-              : ''
+            isCurrent ? 'shadow-lg' : ''
           }`}
           style={{
             borderColor: color,
@@ -68,9 +66,7 @@ function CommitNode({ job, index, total, inView }) {
             boxShadow: isCurrent ? `0 0 12px ${color}80` : 'none',
           }}
         >
-          {isCurrent && (
-            <div className="w-1.5 h-1.5 rounded-full bg-white" />
-          )}
+          {isCurrent && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
         </div>
 
         {/* Connector line below */}
@@ -103,7 +99,11 @@ function CommitNode({ job, index, total, inView }) {
             {version && (
               <span
                 className="flex items-center gap-1 border rounded px-1.5 py-0.5 text-[10px]"
-                style={{ color: '#BC8CFF', borderColor: '#BC8CFF40', backgroundColor: 'rgba(188,140,255,0.1)' }}
+                style={{
+                  color: '#BC8CFF',
+                  borderColor: '#BC8CFF40',
+                  backgroundColor: 'rgba(188,140,255,0.1)',
+                }}
               >
                 <TagIcon size={9} />
                 {version}
@@ -134,7 +134,10 @@ function CommitNode({ job, index, total, inView }) {
             </div>
 
             {/* Description */}
-            <p className="text-[#8B949E] text-sm leading-relaxed border-l-2 pl-3" style={{ borderColor: color + '50' }}>
+            <p
+              className="text-[#8B949E] text-sm leading-relaxed border-l-2 pl-3"
+              style={{ borderColor: color + '50' }}
+            >
               {job.description}
             </p>
 
@@ -147,7 +150,9 @@ function CommitNode({ job, index, total, inView }) {
                     <div
                       key={i}
                       className="w-2 h-2 rounded-sm"
-                      style={{ backgroundColor: i < Math.ceil((added / 5000) * 5) ? '#3FB950' : '#21262D' }}
+                      style={{
+                        backgroundColor: i < Math.ceil((added / 5000) * 5) ? '#3FB950' : '#21262D',
+                      }}
                     />
                   ))}
                 </div>
@@ -159,7 +164,9 @@ function CommitNode({ job, index, total, inView }) {
                     <div
                       key={i}
                       className="w-2 h-2 rounded-sm"
-                      style={{ backgroundColor: i < Math.ceil((removed / 250) * 2) ? '#F85149' : '#21262D' }}
+                      style={{
+                        backgroundColor: i < Math.ceil((removed / 250) * 2) ? '#F85149' : '#21262D',
+                      }}
                     />
                   ))}
                 </div>
@@ -177,7 +184,7 @@ function CommitNode({ job, index, total, inView }) {
 export default function Experience() {
   const { portfolioData } = usePortfolio();
   const { experience } = portfolioData;
-  const ref    = useRef(null);
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
@@ -188,7 +195,6 @@ export default function Experience() {
       aria-label="Experience"
     >
       <div className="max-w-3xl mx-auto space-y-8">
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -204,7 +210,8 @@ export default function Experience() {
             </h2>
           </div>
           <p className="text-[#8B949E] font-mono text-sm pl-9">
-            # {experience.length} commits on branch <span className="text-[#3FB950]">career/main</span>
+            # {experience.length} commits on branch{' '}
+            <span className="text-[#3FB950]">career/main</span>
           </p>
         </motion.div>
 

@@ -1,8 +1,8 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Briefcase } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Briefcase } from 'lucide-react';
 
-const GlassCard = ({ children, className = "" }) => (
+const GlassCard = ({ children, className = '' }) => (
   <div
     className={`rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${className}`}
   >
@@ -12,7 +12,7 @@ const GlassCard = ({ children, className = "" }) => (
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 };
 
 const stagger = {
@@ -57,7 +57,10 @@ export default function Experience({ data }) {
                   <p className="text-white/60 text-sm leading-relaxed mb-3">{exp.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {(exp.techStack || []).map((tech) => (
-                      <span key={tech} className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-400/20 text-cyan-300 text-xs">
+                      <span
+                        key={tech}
+                        className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-400/20 text-cyan-300 text-xs"
+                      >
                         {tech}
                       </span>
                     ))}

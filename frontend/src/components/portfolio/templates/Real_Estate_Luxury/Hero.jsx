@@ -48,8 +48,7 @@ export default function Hero({ data }) {
     <section
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-24 text-center"
       style={{
-        background:
-          'radial-gradient(ellipse at 50% 100%, rgba(201,169,110,0.08) 0%, #0A0A0F 60%)',
+        background: 'radial-gradient(ellipse at 50% 100%, rgba(201,169,110,0.08) 0%, #0A0A0F 60%)',
       }}
     >
       <div className="absolute inset-0 opacity-[0.03] [background-image:linear-gradient(#C9A96E_1px,transparent_1px),linear-gradient(90deg,#C9A96E_1px,transparent_1px)] [background-size:72px_72px]" />
