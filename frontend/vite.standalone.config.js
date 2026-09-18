@@ -15,23 +15,30 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
  * 
  * Usage: npm run build:portfolio
  */
-export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
+export default defineConfig(({ mode }) => {
+  const isProduction = mode === 'production';
+
+  return {
+    esbuild: isProduction ? {
+      drop: ['debugger'],
+    } : undefined,
+    plugins: [
+      react(),
+      tailwindcss(),
+    ],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
     },
-  },
-  build: {
-    outDir: 'dist-portfolio',
-    emptyOutDir: true,
-    rollupOptions: {
-      input: path.resolve(__dirname, 'standalone.html'),
+    build: {
+      outDir: 'dist-portfolio',
+      emptyOutDir: true,
+      rollupOptions: {
+        input: path.resolve(__dirname, 'standalone.html'),
+      },
+      // Inline small assets to reduce number of files to deploy
+      assetsInlineLimit: 8192,
     },
-    // Inline small assets to reduce number of files to deploy
-    assetsInlineLimit: 8192,
-  },
+  };
 })
