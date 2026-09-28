@@ -65,7 +65,7 @@
 
 **Career Pilot** is a full-stack, AI-first **career operating system** that turns job hunting from a chaotic, multi-tab slog into a single workflow. It's not a single-purpose resume builder — it's a unified platform that combines **resumes, mock interviews, job search & tracking, portfolio publishing, GitHub intelligence, fellowships, paid challenges, community, outreach, and admin tooling** behind one authenticated dashboard.
 
-Powered by **multi-provider AI** (OpenAI, Anthropic Claude, Groq, Google Gemini, OpenRouter and a Bring-Your-Own-Key path), Career Pilot writes your resume, critiques it like an ATS, runs you through mock interviews with an avatar, tracks every job application on a kanban board, deploys a designer-grade portfolio to Netlify / Cloudflare Pages / GitHub Pages, parses your GitHub for risk and impact, and emails recruiters on your behalf — all from the same Express + React app.
+Powered by **multi-provider AI** (OpenAI, Anthropic Claude, Groq, Google Gemini, OpenRouter, Requesty and a Bring-Your-Own-Key path), Career Pilot writes your resume, critiques it like an ATS, runs you through mock interviews with an avatar, tracks every job application on a kanban board, deploys a designer-grade portfolio to Netlify / Cloudflare Pages / GitHub Pages, parses your GitHub for risk and impact, and emails recruiters on your behalf — all from the same Express + React app.
 
 It's modular by design: the Express backend exposes 30+ route groups, the React frontend has 50+ pages across feature hubs, and contributors can pick up **good-first-issue** tickets in any one of them without having to grok the rest of the system.
 
@@ -370,7 +370,7 @@ A bag of focused, deterministic AI utilities that compose with everything else.
 | **Company Research** | AI-driven company intelligence report. |
 | **Keyword Optimizer** | Finds high-value keywords missing from your resume for a target role. |
 | **Weekly Digest** | Personalized email of new jobs, alerts fired, interview stats, and application status. |
-| **Multi-Provider AI** | `aiProviders.js` routes between OpenAI, Anthropic Claude, Groq, Gemini, OpenRouter. BYOK via `extractAIProvider` middleware. |
+| **Multi-Provider AI** | `aiProviders.js` routes between OpenAI, Anthropic Claude, Groq, Gemini, OpenRouter, Requesty. BYOK via `extractAIProvider` middleware. |
 
 **Routes**: `/enhance`, `/skill-gap`, `/cover-letter`, `/email-generator`, `/linkedin-optimizer`, `/linkedin-dashboard`, `/analytics`
 
