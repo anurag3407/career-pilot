@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import Button from './Button'
 import DragHandle from './DragHandle'
-
+import { Trophy, FileText, GraduationCap, Users, Globe, Lightbulb, Mic, Zap, FolderOpen } from 'lucide-react'
 // ─── Icons (inline SVG to keep zero extra deps) ────────────────────────────
 
 const Icon = ({ path, size = 16, className = '' }) => (
@@ -41,14 +41,14 @@ const ICONS = {
 // ─── Suggested section presets ─────────────────────────────────────────────
 
 const SECTION_PRESETS = [
-  { label: 'Awards & Honors',    icon: '🏆' },
-  { label: 'Publications',       icon: '📄' },
-  { label: 'Certifications',     icon: '🎓' },
-  { label: 'Volunteer Work',     icon: '🤝' },
-  { label: 'Languages',          icon: '🌐' },
-  { label: 'Patents',            icon: '💡' },
-  { label: 'Conferences',        icon: '🎤' },
-  { label: 'Hobbies & Interests',icon: '⚡' },
+  { label: 'Awards & Honors',    icon: <Trophy size={14} /> },
+  { label: 'Publications',       icon: <FileText size={14} /> },
+  { label: 'Certifications',     icon: <GraduationCap size={14} /> },
+  { label: 'Volunteer Work',     icon: <Users size={14} /> },
+  { label: 'Languages',          icon: <Globe size={14} /> },
+  { label: 'Patents',            icon: <Lightbulb size={14} /> },
+  { label: 'Conferences',        icon: <Mic size={14} /> },
+  { label: 'Hobbies & Interests',icon: <Zap size={14} /> },
 ]
 
 // ─── Entry default factory ─────────────────────────────────────────────────
@@ -608,7 +608,7 @@ export default function CustomSection({ sections = [], onSectionsChange }) {
       {/* Section list */}
       {sections.length === 0 && !showAddPanel && (
         <div className="flex flex-col items-center justify-center py-10 rounded-2xl border border-dashed border-border text-center">
-          <span className="text-3xl mb-2">📂</span>
+          <FolderOpen size={32} className="mb-2 text-muted-foreground/60" />
           <p className="text-sm text-muted-foreground">No custom sections yet.</p>
           <p className="text-xs text-muted-foreground mt-1">
             Click <strong>Add Section</strong> to get started.
