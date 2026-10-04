@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+
 import { Mail, Zap, Code2 } from 'lucide-react';
 import { SectionHeading } from './Shared';
 import data from '../../../../data/dummy_data.json';
@@ -15,9 +14,9 @@ export default function Contact() {
           initial={{ scale: 0.95, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
-          className="bg-gradient-to-br from-zinc-900 to-zinc-950 p-12 rounded-[3rem] border border-zinc-800 shadow-2xl mb-16 relative overflow-hidden group"
+          className="bg-linear-to-br from-zinc-900 to-zinc-950 p-12 rounded-[3rem] border border-zinc-800 shadow-2xl mb-16 relative overflow-hidden group"
         >
-          <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-tr from-cyan-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
           
           <h2 className="text-4xl md:text-5xl font-black text-white mb-6 relative z-10">Let's Build Together</h2>
           <p className="text-zinc-400 mb-10 max-w-xl mx-auto text-lg relative z-10">
