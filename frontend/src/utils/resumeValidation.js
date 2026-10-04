@@ -45,14 +45,15 @@ export function validatePhone(digits) {
   return ''
 }
 
-/** LinkedIn: must start with https://linkedin.com/in/ */
+/** LinkedIn: must start with https://linkedin.com/in/ (www. is optional). */
 export function validateLinkedIn(url) {
   const trimmed = (url || '').trim()
   if (!trimmed) return '' // optional field
-  if (!trimmed.startsWith('https://www.linkedin.com/in/')) {
-    return 'LinkedIn URL must start with https://www.linkedin.com/in/'
+  const match = trimmed.match(/^https:\/\/(?:www\.)?linkedin\.com\/in\/(.*)$/)
+  if (!match) {
+    return 'LinkedIn URL must start with https://linkedin.com/in/ or https://www.linkedin.com/in/'
   }
-  const profile = trimmed.replace('https://www.linkedin.com/in/', '')
+  const profile = match[1]
   if (!profile || profile.length < 2) return 'Please include a valid LinkedIn profile path.'
   return ''
 }
