@@ -2056,3 +2056,15 @@ export const bugsApi = {
     return handleResponse(response);
   }
 };
+
+export const githubReadmeApi = {
+  async generate(prompt) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/github/readme/generate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ prompt })
+    });
+    return handleResponse(response);
+  }
+};

@@ -3,6 +3,7 @@ import express from 'express';
 import collaborationRoutes from './routes/collaboration.js';
 import roastRoutes from './routes/roast.js';
 import portfolioGithubRoutes from './routes/portfolioGithub.js';
+import githubReadmeRoutes from './routes/githubReadme.js';
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -339,6 +340,7 @@ import('./routes/payments.js').then((module) => {
 app.use('/api/collaboration', collaborationRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/portfolio/github', portfolioGithubRoutes);
+app.use('/api/github/readme', githubReadmeRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/gdpr', gdprRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
