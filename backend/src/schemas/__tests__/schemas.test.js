@@ -645,7 +645,7 @@ describe('payments.schema — verifyPaymentSchema', () => {
 });
 
 // ─── Two-Factor Auth ──────────────────────────────────────────────────────────
-import { enable2FASchema, tokenOnlySchema, backupCodeSchema } from '../twoFactor.schema.js';
+import { enable2FASchema, tokenOnlySchema, backupCodeSchema, verifyLoginSchema } from '../twoFactor.schema.js';
 
 describe('twoFactor.schema — enable2FASchema', () => {
   test('accepts valid body', () => {
@@ -675,6 +675,34 @@ describe('twoFactor.schema — backupCodeSchema', () => {
   test('accepts code', () => {
     const result = backupCodeSchema.safeParse({ code: 'XXXX-YYYY' });
     assert.ok(result.success);
+  });
+});
+
+describe('twoFactor.schema — verifyLoginSchema', () => {
+  test('accepts token with optional email', () => {
+    const result = verifyLoginSchema.safeParse({
+      email: 'alice@example.com',
+      token: '123456',
+    });
+    assert.ok(result.success);
+    assert.equal(result.data.useBackup, false);
+  });
+
+  test('accepts backup login payload', () => {
+    const result = verifyLoginSchema.safeParse({
+      token: 'ABCD-1234',
+      useBackup: true,
+    });
+    assert.ok(result.success);
+    assert.equal(result.data.useBackup, true);
+  });
+
+  test('rejects invalid email when provided', () => {
+    const result = verifyLoginSchema.safeParse({
+      email: 'not-an-email',
+      token: '123456',
+    });
+    assert.ok(!result.success);
   });
 });
 
