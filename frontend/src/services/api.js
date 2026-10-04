@@ -923,6 +923,19 @@ export const aiApi = {
       body: JSON.stringify({ code, code_verifier: codeVerifier })
     })
     return handleResponse(response)
+  },
+
+  // Inline resume autocomplete (ghost text). `signal` lets the caller abort
+  // an in-flight request when the user keeps typing.
+  async resumeSuggestion({ sectionName, field, text }, signal) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/resume-suggestion`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ sectionName, field, text }),
+      signal
+    })
+    return handleResponse(response)
   }
 }
 
