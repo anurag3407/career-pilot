@@ -592,6 +592,75 @@ export const sendPasswordResetEmail = async ({ email, resetLink }) => {
   }
 };
 
+export const sendDeadlineReminderEmail = async ({
+  userEmail,
+  userName = 'there',
+  jobsDueToday = [],
+  jobsDueSoon = []
+}) => {
+  if (!userEmail) throw new Error('No recipient email address provided');
+  if (!jobsDueToday.length && !jobsDueSoon.length) throw new Error('No jobs to remind about');
+
+  const formatJob = (job) => {
+    const title = escapeHtml(job.title);
+    const company = escapeHtml(job.company);
+    const dl = job.deadline ? new Date(job.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+    const applyLink = job.applyLink && isSafeExternalUrl(job.applyLink) ? job.applyLink : null;
+    const linkHtml = applyLink
+      ? `<a href="${escapeHtml(applyLink)}" style="color:#6366f1;font-weight:bold;">Apply Now</a>`
+      : '';
+    return `<div style="margin:10px 0;padding:12px;border-left:3px solid #6366f1;background:#f8f8ff;border-radius:4px;">
+      <strong>${title}</strong> at ${company}<br>
+      <span style="color:#6b7280;font-size:13px;">Deadline: ${dl}</span>
+      ${linkHtml ? `<br>${linkHtml}` : ''}
+    </div>`;
+  };
+
+  const todaySection = jobsDueToday.length
+    ? `<h3 style="color:#ef4444;">🔴 Closing Today</h3>${jobsDueToday.map(formatJob).join('')}`
+    : '';
+  const soonSection = jobsDueSoon.length
+    ? `<h3 style="color:#f59e0b;">⚠️ Closing Within 48 Hours</h3>${jobsDueSoon.map(formatJob).join('')}`
+    : '';
+
+  const html = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;">
+    <h2 style="color:#1f2937;">Application Deadline Reminder</h2>
+    <p>Hi ${escapeHtml(userName)},</p>
+    <p>You have job applications with upcoming deadlines. Don't miss your chance to apply!</p>
+    ${todaySection}
+    ${soonSection}
+    <p style="color:#6b7280;font-size:12px;margin-top:24px;">
+      Manage your applications at careerpilot. To stop these reminders, remove the deadline from the job in your tracker.
+    </p>
+  </div>`;
+
+  try {
+    if (isExternalServiceConfigured) {
+      return await callEmailService('/api/send-deadline-reminder', {
+        userEmail,
+        userName,
+        jobsDueToday,
+        jobsDueSoon,
+        html
+      });
+    }
+
+    const transport = await initLocalTransporter();
+    const totalJobs = jobsDueToday.length + jobsDueSoon.length;
+    const info = await transport.sendMail({
+      from: `"careerpilot Tracker" <${process.env.EMAIL_USER}>`,
+      to: userEmail,
+      subject: `⏰ ${totalJobs} Application Deadline${totalJobs > 1 ? 's' : ''} Coming Up`,
+      html
+    });
+    console.log('Deadline reminder email sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending deadline reminder email:', error);
+    throw new Error(`Failed to send deadline reminder email: ${error.message}`);
+  }
+};
+
 export { handleBounceNotification } from "./bounceHandler.js";
 
 // Export for testing purposes only

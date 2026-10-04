@@ -10,6 +10,7 @@ import {
   companyResearchSchema,
   trackJobSchema,
   updateTrackedJobSchema,
+  deadlineSchema,
 } from '../schemas/jobTracker.schema.js';
 
 function isValidWebUrl(str) {
@@ -43,9 +44,16 @@ router.post('/research', verifyToken, extractAIProvider, aiRateLimiter, validate
 // Get all tracked jobs for a user
 router.get('/', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
+  const { sort } = req.query;
+
+  let sortQuery = { createdAt: -1 };
+  if (sort === 'deadline') {
+    // Nulls last: jobs with deadline asc, then jobs without deadline
+    sortQuery = { deadline: 1, createdAt: -1 };
+  }
 
   const userJobs = await TrackedJob.find({ userId })
-    .sort({ createdAt: -1 })
+    .sort(sortQuery)
     .lean();
 
   // Transform _id to id for frontend compatibility
@@ -112,7 +120,8 @@ router.post('/', verifyToken, validate(trackJobSchema), asyncHandler(async (req,
     salary,
     applyLink,
     description,
-    status = 'saved'
+    status = 'saved',
+    deadline
   } = req.body;
 
   if (!title || !company) {
@@ -133,6 +142,7 @@ router.post('/', verifyToken, validate(trackJobSchema), asyncHandler(async (req,
 
   const trackedJob = await TrackedJob.create({
     userId,
+    userEmail: req.user.email || null,
     jobId: jobId || `manual-${Date.now()}`,
     title,
     company,
@@ -142,6 +152,7 @@ router.post('/', verifyToken, validate(trackJobSchema), asyncHandler(async (req,
     applyLink: applyLink || null,
     description: description || null,
     status,
+    deadline: deadline ? new Date(deadline) : null,
     notes: []
   });
 
@@ -161,6 +172,7 @@ router.post('/', verifyToken, validate(trackJobSchema), asyncHandler(async (req,
       description: trackedJob.description,
       status: trackedJob.status,
       notes: trackedJob.notes,
+      deadline: trackedJob.deadline,
       createdAt: trackedJob.createdAt,
       updatedAt: trackedJob.updatedAt
     }
@@ -210,6 +222,39 @@ router.put('/:trackerId', verifyToken, validate(updateTrackedJobSchema), asyncHa
   res.json({
     success: true,
     message: 'Job updated successfully',
+    data: {
+      id: updatedJob._id.toString(),
+      ...updatedJob,
+      _id: undefined
+    }
+  });
+}));
+
+// Update job deadline
+router.patch('/:trackerId/deadline', verifyToken, validate(deadlineSchema), asyncHandler(async (req, res) => {
+  const { trackerId } = req.params;
+  const userId = req.user.uid;
+  const { deadline } = req.body;
+
+  const updatedJob = await TrackedJob.findOneAndUpdate(
+    { _id: trackerId, userId },
+    {
+      $set: {
+        deadline: deadline ? new Date(deadline) : null,
+        'deadlineReminderSent.today': false,
+        'deadlineReminderSent.fortyEightHour': false
+      }
+    },
+    { new: true, runValidators: true }
+  ).lean();
+
+  if (!updatedJob) {
+    throw new ApiError(404, 'Tracked job not found');
+  }
+
+  res.json({
+    success: true,
+    message: deadline ? 'Deadline set successfully' : 'Deadline removed',
     data: {
       id: updatedJob._id.toString(),
       ...updatedJob,
