@@ -5,6 +5,7 @@
   "scripts": {
     "build": "npm run build --prefix frontend",
     "install:frontend": "npm install --prefix frontend",
-    "build:portfolio": "npm run build:portfolio --prefix frontend"
+    "build:portfolio": "npm run build:portfolio --prefix frontend",
+    "test:e2e": "npm run test --prefix e2e"
   }
 }
