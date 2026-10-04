@@ -9,6 +9,7 @@ import Proposal from '../models/Proposal.model.js';
 import { FellowshipChatRoom, FellowshipMessage } from '../models/FellowshipChat.model.js';
 import { sendProposalApprovalEmail, sendVerificationEmail } from '../services/mailService.js';
 import { sanitizeMessageContent } from '../utils/sanitizeMessage.js';
+import EscrowPayment from '../models/EscrowPayment.model.js';
 
 const router = express.Router();
 
@@ -456,6 +457,15 @@ router.put('/proposals/:id/status', verifyToken, asyncHandler(async (req, res) =
 
     if (!challenge || challenge.corporateId !== req.user.uid) {
         throw new ApiError(403, 'Only the challenge creator can update proposal status');
+    }
+    if (status === 'accepted') {
+        const escrow = await EscrowPayment.findOne({
+        proposalId: req.params.id,
+        status: 'verified'
+        });
+        if (!escrow) {
+            throw new ApiError(422, 'Escrow payment must be verified before accepting a proposal');
+        }
     }
 
     proposal.status = status;
