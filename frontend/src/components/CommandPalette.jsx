@@ -8,6 +8,9 @@ import {
   FileText,
   TrendingUp,
   Clock,
+  ArrowUp,
+  ArrowDown,
+  CornerDownLeft,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -312,8 +315,8 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
 
         <div className="flex items-center justify-between border-t border-white/10 px-5 py-3 text-xs text-gray-500">
           <div className="flex items-center gap-3">
-            <span>↑↓ Navigate</span>
-            <span>↵ Select</span>
+            <span className="flex items-center gap-0.5"><ArrowUp size={12} /><ArrowDown size={12} className="mr-0.5" /> Navigate</span>
+            <span className="flex items-center gap-1"><CornerDownLeft size={12} /> Select</span>
           </div>
 
           <div className="flex items-center gap-2">
