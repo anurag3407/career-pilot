@@ -379,6 +379,7 @@ import {
   resumeTextJobRoleSchema,
   beforeAfterSchema,
   generateEmailSchema,
+  resumeScoreSchema,
   optimizeLinkedInSchema,
 } from '../enhance.schema.js';
 
