@@ -435,35 +435,37 @@ export const processAlert = async (alertData) => {
 
         // Always send email if there are jobs
         if (jobsToSend.length > 0) {
+            // Use the current email from the database to ensure accuracy
+            const recipientEmail = currentEmail;
+            const recipientName = alertExists.userName || userName || 'Job Seeker';
+
+            console.log(`\n${'='.repeat(60)}`);
+            console.log(`📧 SENDING EMAIL NOW`);
+            console.log(`${'='.repeat(60)}`);
+            console.log(`📬 To: ${recipientEmail}`);
+            console.log(`👤 Name: ${recipientName}`);
+            console.log(`🎯 Alert: "${title}"`);
+            console.log(`📊 Jobs Count: ${jobsToSend.length}`);
+            console.log(`${'='.repeat(60)}\n`);
+
+            // Emit socket event to user about new jobs found
+            emitNewJobsFound(userId, {
+                alertId,
+                alertTitle: title,
+                jobCount: jobsToSend.length,
+                jobs: jobsToSend.map(job => ({
+                    title: job.title,
+                    company: job.company,
+                    location: job.location,
+                    applyLink: job.applyLink
+                }))
+            });
+
+            // First try: send email and emit success
+            let emailResult;
             try {
-                // Use the current email from the database to ensure accuracy
-                const recipientEmail = currentEmail;
-                const recipientName = alertExists.userName || userName || 'Job Seeker';
-
-                console.log(`\n${'='.repeat(60)}`);
-                console.log(`📧 SENDING EMAIL NOW`);
-                console.log(`${'='.repeat(60)}`);
-                console.log(`📬 To: ${recipientEmail}`);
-                console.log(`👤 Name: ${recipientName}`);
-                console.log(`🎯 Alert: "${title}"`);
-                console.log(`📊 Jobs Count: ${jobsToSend.length}`);
-                console.log(`${'='.repeat(60)}\n`);
-
-                // Emit socket event to user about new jobs found
-                emitNewJobsFound(userId, {
-                    alertId,
-                    alertTitle: title,
-                    jobCount: jobsToSend.length,
-                    jobs: jobsToSend.map(job => ({
-                        title: job.title,
-                        company: job.company,
-                        location: job.location,
-                        applyLink: job.applyLink
-                    }))
-                });
-
                 console.log(`⏳ Calling email service...`);
-                const emailResult = await sendJobAlertEmail({
+                emailResult = await sendJobAlertEmail({
                     userEmail: recipientEmail,
                     userName: recipientName,
                     alertTitle: title,
@@ -487,6 +489,46 @@ export const processAlert = async (alertData) => {
                     messageId: emailResult.messageId
                 });
 
+                consecutiveFailures = 0; // Reset on successful send
+            } catch (emailError) {
+                console.error('❌ Failed to send email:', emailError.message);
+
+                // Emit socket event about email failure
+                emitEmailFailed(userId, {
+                    alertId,
+                    alertTitle: title,
+                    error: emailError.message
+                });
+
+                // Log failed notifications without swallowing persistence errors
+                const logResults = await Promise.allSettled(
+                    jobsToSend.map(job =>
+                        NotificationLog.create({
+                            userId,
+                            alertId,
+                            jobListingId: job._id,
+                            externalJobId: job.externalId,
+                            emailStatus: 'failed',
+                            errorMessage: emailError.message
+                        })
+                    )
+                );
+
+                logResults.forEach((result, index) => {
+                    if (result.status === 'rejected') {
+                        console.warn(
+                            `⚠️ Failed to write failure log for job ${index}:`,
+                            result.reason
+                        );
+                    }
+                });
+
+                // Rethrow so BullMQ can retry transient email failures
+                throw emailError;
+            }
+
+            // Second try: persist notifications and update alert stats
+            try {
                 // Log all notifications
                 const notificationPromises = jobsToSend.map(async job => {
                     try {
@@ -528,29 +570,8 @@ export const processAlert = async (alertData) => {
                 });
 
                 console.log(`✉️ Email sent with ${jobsToSend.length} jobs`);
-                consecutiveFailures = 0; // Reset on success
-
-            } catch (emailError) {
-                console.error('❌ Failed to send email:', emailError.message);
-
-                // Emit socket event about email failure
-                emitEmailFailed(userId, {
-                    alertId,
-                    alertTitle: title,
-                    error: emailError.message
-                });
-
-                // Log failed notifications
-                await Promise.all(jobsToSend.map(job =>
-                    NotificationLog.create({
-                        userId,
-                        alertId,
-                        jobListingId: job._id,
-                        externalJobId: job.externalId,
-                        emailStatus: 'failed',
-                        errorMessage: emailError.message
-                    }).catch(() => { })
-                ));
+            } catch (persistError) {
+                console.warn('⚠️ Failed to persist notifications or update alert:', persistError.message);
             }
         }
 
