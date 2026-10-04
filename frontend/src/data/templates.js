@@ -1,5 +1,20 @@
 export const templates = [
   {
+    id: "Librarian_Dewey_Decimal_Card_Catalog",
+    title: "Librarian Dewey Decimal Card Catalog",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Interactive",
+    author: "System",
+    views: 0,
+    rating: 0,
+    image: "/template-previews/Librarian_Dewey_Decimal_Card_Catalog.png",
+    createdAt: "2026-07-09",
+    description: "A retro library card-catalog portfolio where every section is a drawer of index cards — complete with Dewey Decimal stamps, typewriter fonts, and satisfying pull-out animations.",
+    isComplete: true
+  },
+
+{
     id: "MySpace_2005",
     title: "MySpace 2005",
     category: "Portfolio",
