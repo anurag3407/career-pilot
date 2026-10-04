@@ -323,6 +323,7 @@ app.use('/api/fetchjobs', jobsRoutes);
 app.use('/api/salary', salaryRoutes);
 app.use('/api/job-tracker', jobTrackerRoutes);
 app.use('/api/job-alerts', jobAlertRoutes);
+app.use('/api/project-visualizer', projectVisualizerRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
