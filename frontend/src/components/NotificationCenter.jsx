@@ -5,6 +5,29 @@ import { useNavigate } from "react-router-dom";
 import { useSocket } from "../hooks/useSocket";
 import { cn } from "../lib/utils";
 
+function NotificationAnnouncer({ notifications }) {
+    const [announcement, setAnnouncement] = useState("");
+
+    useEffect(() => {
+        const unread = notifications.filter(n => !n.read);
+        const latest = unread.length > 0 ? unread[0] : null;
+        if (latest) {
+            const title = getTitle(latest);
+            setAnnouncement(`New notification: ${title}`);
+        }
+    }, [notifications]);
+
+    return (
+        <div
+            aria-live="polite"
+            aria-atomic="true"
+            className="sr-only"
+        >
+            {announcement}
+        </div>
+    );
+}
+
 function timeAgo(date) {
   const diff = (Date.now() - new Date(date)) / 1000;
   if (diff < 60) return "just now";
@@ -71,6 +94,7 @@ export default function NotificationCenter() {
 
   return (
     <div className="relative" ref={panelRef}>
+      <NotificationAnnouncer notifications={notifications} />
       {/* Bell button */}
       <button
         onClick={() => setOpen((v) => !v)}
