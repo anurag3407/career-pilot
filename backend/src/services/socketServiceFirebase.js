@@ -1,6 +1,7 @@
 import { db } from '../config/firebase.js';
 import { FieldValue } from 'firebase-admin/firestore';
 import { presenceService } from './presenceService.js';
+import { assertConversationMember, assertChannelMember, assertFellowshipMember } from './socketAuthz.js';
 
 // Collection references
 const channelsRef = db.collection('channels');
@@ -30,13 +31,14 @@ export const setupSocketHandlers = (io, socket) => {
   // Join a channel
   socket.on('join_channel', async (channelId) => {
     try {
-      const channelDoc = await channelsRef.doc(channelId).get();
-      if (!channelDoc.exists) {
-        socket.emit('error', { message: 'Channel not found' });
+      let channel;
+      try {
+        channel = await assertChannelMember(user.uid, channelId);
+      } catch (authErr) {
+        socket.emit('error', { message: authErr.message === 'UNAUTHORIZED' ? 'Not authorized to join this channel' : authErr.message });
         return;
       }
 
-      const channel = channelDoc.data();
       socket.join(`channel:${channelId}`);
       console.log(`${user.name} joined channel: ${channel.name}`);
 
@@ -94,6 +96,14 @@ export const setupSocketHandlers = (io, socket) => {
 
       if (!content || !content.trim()) {
         socket.emit('error', { message: 'Message content is required' });
+        return;
+      }
+
+      // Verify user is a member of this channel before sending
+      try {
+        await assertChannelMember(user.uid, channelId);
+      } catch (authErr) {
+        socket.emit('error', { message: authErr.message === 'UNAUTHORIZED' ? 'Not authorized to send messages in this channel' : authErr.message });
         return;
       }
 
@@ -366,13 +376,15 @@ export const setupSocketHandlers = (io, socket) => {
   // Send direct message
   socket.on('send_direct_message', async ({ conversationId, receiverId, content }) => {
     try {
-      const convDoc = await conversationsRef.doc(conversationId).get();
-      if (!convDoc.exists) {
-        socket.emit('error', { message: 'Conversation not found' });
+      // Verify the sender is actually a participant in this conversation
+      let conversation;
+      try {
+        conversation = await assertConversationMember(user.uid, conversationId);
+      } catch (authErr) {
+        socket.emit('error', { message: authErr.message === 'UNAUTHORIZED' ? 'Not authorized to send messages in this conversation' : authErr.message });
         return;
       }
 
-      const conversation = convDoc.data();
       const receiver = conversation.participants.find(p => p.uid === receiverId);
 
       const dmData = {
@@ -433,6 +445,14 @@ export const setupSocketHandlers = (io, socket) => {
   // Mark messages as read
   socket.on('mark_messages_read', async ({ conversationId }) => {
     try {
+      // Verify user belongs to this conversation before marking read
+      try {
+        await assertConversationMember(user.uid, conversationId);
+      } catch (authErr) {
+        socket.emit('error', { message: authErr.message === 'UNAUTHORIZED' ? 'Not authorized to access this conversation' : authErr.message });
+        return;
+      }
+
       // Get unread messages for this user
       const unreadSnapshot = await directMessagesRef
         .where('conversationId', '==', conversationId)
@@ -617,7 +637,13 @@ export const setupSocketHandlers = (io, socket) => {
 
   // ============ FELLOWSHIP CHAT EVENTS ============
 
-  socket.on('join_fellowship_chat', ({ roomId }) => {
+  socket.on('join_fellowship_chat', async ({ roomId }) => {
+    try {
+      await assertFellowshipMember(user.uid, roomId);
+    } catch (authErr) {
+      socket.emit('error', { message: authErr.message === 'UNAUTHORIZED' ? 'Not authorized to join this fellowship room' : authErr.message });
+      return;
+    }
     socket.join(`fellowship:${roomId}`);
     console.log(`${user.name} joined fellowship chat: ${roomId}`);
   });
@@ -626,7 +652,13 @@ export const setupSocketHandlers = (io, socket) => {
     socket.leave(`fellowship:${roomId}`);
   });
 
-  socket.on('fellowship_message', ({ roomId, message }) => {
+  socket.on('fellowship_message', async ({ roomId, message }) => {
+    try {
+      await assertFellowshipMember(user.uid, roomId);
+    } catch (authErr) {
+      socket.emit('error', { message: authErr.message === 'UNAUTHORIZED' ? 'Not authorized to send messages in this fellowship room' : authErr.message });
+      return;
+    }
     socket.to(`fellowship:${roomId}`).emit('fellowship_message', {
       roomId,
       message
