@@ -60,6 +60,5 @@ function generateFavicon(name = "") {
  console.log(generateFavicon("Alice"))
 */
 
-module.exports = {
-  generateFavicon,
-};
+export {generateFavicon};
+
