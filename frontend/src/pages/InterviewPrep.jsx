@@ -22,6 +22,51 @@ const CodeEditor = lazy(() => import('../components/interview/CodeEditor'));
 const CodingQuestionCard = lazy(() => import('../components/interview/CodingQuestionCard'));
 const ShareCard = lazy(() => import('../components/ShareCard'));
 
+class EditorErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("Monaco Editor crashed:", error, errorInfo);
+  }
+
+  handleReset = () => {
+    this.setState({ hasError: false });
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full min-h-[300px] w-full p-6 bg-muted/30 border border-dashed border-border rounded-lg text-center">
+          <AlertTriangle className="w-8 h-8 text-destructive mb-2 animate-pulse" />
+          <h3 className="text-md font-semibold text-foreground mb-1">
+            Editor Encountered a Glitch
+          </h3>
+          <p className="text-xs text-muted-foreground max-w-sm mb-4">
+            The code editor crashed unexpectedly. Click below to re-initialize it.
+          </p>
+          <button
+            type="button"
+            onClick={this.handleReset}
+            className="flex items-center gap-2 px-3 py-1.5 bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium rounded-md transition-colors"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Reload Editor</span>
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 // Device and browser detection utilities
 const isMobileDevice = () => {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -1735,13 +1780,15 @@ ${updatedProgress.level}`
                       </Button>
                     </div>
                     <Suspense fallback={<div className="h-32 flex items-center justify-center text-muted-foreground text-sm">Loading editor…</div>}>
-                      <CodeEditor
-                        language={formData.codingLanguage}
-                        value={code}
-                        onChange={setCode}
-                        height="320px"
-                      />
-                    </Suspense>
+                      <EditorErrorBoundary>
+                             <CodeEditor
+                               language={formData.codingLanguage}
+                               value={code}
+                               onChange={setCode}
+                               height="320px"
+                       />
+                     </EditorErrorBoundary>
+                     </Suspense>
                   </div>
                   <textarea
                     value={textAnswer}
