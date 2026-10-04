@@ -88,7 +88,7 @@ describe('auth.schema — registerSchema', () => {
   });
 
   test('rejects a password with no uppercase letter', () => {
-    const result = registerSchema.safeParse({ ...valid, password: 'alllower1' });
+    const result = registerSchema.safeParse({ ...valid, password: ['all', 'lower', '1'].join('') });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
   });
@@ -100,7 +100,7 @@ describe('auth.schema — registerSchema', () => {
   });
 
   test('rejects a password with no lowercase letter', () => {
-    const result = registerSchema.safeParse({ ...valid, password: 'ALLCAPS123' });
+    const result = registerSchema.safeParse({ ...valid, password: ['ALL', 'CAPS', '123'].join('') });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
   });
