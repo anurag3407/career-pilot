@@ -13,6 +13,7 @@ import { SocketProvider } from './context/SocketProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import CommandPalette from './components/CommandPalette';
 import BackToTop from './components/BackToTop';
@@ -189,7 +190,11 @@ function ProtectedRoute({ children }) {
     );
   }
 
-  return <AppLayout>{children}</AppLayout>;
+  return (
+    <ErrorBoundary>
+      <AppLayout>{children}</AppLayout>
+    </ErrorBoundary>
+  );
 }
 
 
