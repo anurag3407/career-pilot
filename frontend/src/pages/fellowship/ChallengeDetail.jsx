@@ -26,6 +26,9 @@ const CATEGORIES = {
     marketing: { label: 'Marketing', icon: '📈' },
 }
 
+const MIN_AMOUNT = 100
+const MAX_AMOUNT = 500000
+
 export default function ChallengeDetail() {
     const { id } = useParams()
     const navigate = useNavigate()
@@ -37,7 +40,23 @@ export default function ChallengeDetail() {
     const [coverLetter, setCoverLetter] = useState('')
     const [estimatedDays, setEstimatedDays] = useState('')
     const [portfolioLinks, setPortfolioLinks] = useState('')
+    const [proposedAmount, setProposedAmount] = useState('')
+    const [amountError, setAmountError] = useState('')
     const [applied, setApplied] = useState(false)
+
+    const handleAmountChange = (e) => {
+        const val = Number(e.target.value)
+        setProposedAmount(e.target.value)
+        if (e.target.value === '' || Number.isNaN(val)) {
+            setAmountError('')
+        } else if (val < MIN_AMOUNT) {
+            setAmountError(`Minimum amount is ₹${MIN_AMOUNT}`)
+        } else if (val > MAX_AMOUNT) {
+            setAmountError(`Maximum amount is ₹${MAX_AMOUNT.toLocaleString('en-IN')}`)
+        } else {
+            setAmountError('')
+        }
+    }
 
     const loadChallenge = useCallback(async () => {
         try {
@@ -65,11 +84,18 @@ export default function ChallengeDetail() {
             return
         }
 
+        // Escrow / proposal amount validation
+        const proposedNum = Number(proposedAmount)
+        if (!proposedAmount || Number.isNaN(proposedNum) || proposedNum < MIN_AMOUNT || proposedNum > MAX_AMOUNT) {
+            setAmountError(`Amount must be between ₹${MIN_AMOUNT} and ₹${MAX_AMOUNT.toLocaleString('en-IN')}`)
+            return
+        }
+
         setApplying(true)
         try {
             await fellowshipApi.applyToChallenge(id, {
                 coverLetter,
-                proposedPrice: challenge.price,
+                proposedPrice: proposedNum,
                 estimatedDays: parseInt(estimatedDays),
                 portfolioLinks: portfolioLinks.split('\n').filter(l => l.trim())
             })
@@ -269,6 +295,26 @@ export default function ChallengeDetail() {
                     </div>
 
                     <div>
+                        <label className="block text-sm text-muted-foreground mb-2">Proposed Amount (₹) *</label>
+                        <span className="block text-xs text-gray-400 mb-1">Min: ₹100 · Max: ₹5,00,000</span>
+                        <div className="relative">
+                            <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <input
+                                type="number"
+                                value={proposedAmount}
+                                onChange={handleAmountChange}
+                                placeholder="e.g., 5000"
+                                min={MIN_AMOUNT}
+                                max={MAX_AMOUNT}
+                                className="w-full pl-10 pr-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
+                            />
+                        </div>
+                        {amountError && (
+                            <p className="text-red-500 text-sm mt-1">{amountError}</p>
+                        )}
+                    </div>
+
+                    <div>
                         <label className="block text-sm text-muted-foreground mb-2">Portfolio Links (optional, one per line)</label>
                         <textarea
                             value={portfolioLinks}
@@ -288,8 +334,8 @@ export default function ChallengeDetail() {
                         </button>
                         <button
                             onClick={handleApply}
-                            disabled={applying}
-                            className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                            disabled={applying || !!amountError}
+                            className={`flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 ${!!amountError ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             {applying ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                             {applying ? 'Submitting...' : 'Submit Proposal'}

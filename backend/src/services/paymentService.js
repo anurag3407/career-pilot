@@ -1,6 +1,10 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
+// Escrow amount limits (paise). ₹1 = 100 paise.
+const MIN_ESCROW_AMOUNT = 10000;    // ₹100 minimum
+const MAX_ESCROW_AMOUNT = 50000000; // ₹5,00,000 maximum
+
 let razorpayInstance = null;
 
 const getRazorpay = () => {
@@ -44,6 +48,18 @@ export const createOrder = async (amount, receipt, notes = {}) => {
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
         throw new Error('Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your .env file.');
     }
+
+    // Escrow amount validation (paise)
+    if (!amount || typeof amount !== 'number') {
+        throw new Error('Invalid amount: must be a number.');
+    }
+    if (amount < MIN_ESCROW_AMOUNT) {
+        throw new Error(`Amount too low. Minimum escrow amount is ₹${MIN_ESCROW_AMOUNT / 100}.`);
+    }
+    if (amount > MAX_ESCROW_AMOUNT) {
+        throw new Error(`Amount too high. Maximum escrow amount is ₹${MAX_ESCROW_AMOUNT / 100}.`);
+    }
+
     const options = {
         amount: Math.round(amount * 100), // Razorpay expects amount in paise
         currency: 'INR',
