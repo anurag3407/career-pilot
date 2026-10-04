@@ -72,7 +72,7 @@ export default function Testimonials() {
                 <img
                   src={t.avatar}
                   className="w-12 h-12 rounded-full border border-white/10"
-                />
+                 alt={t.name ? `${t.name} profile photo` : "Profile avatar"}/>
 
                 <div>
                   <h4 className="font-semibold text-white">{t.name}</h4>
