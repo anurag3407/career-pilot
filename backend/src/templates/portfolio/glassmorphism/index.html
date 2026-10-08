@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{portfolio.title}}</title>
+
+  <!-- Google Fonts: Space Grotesk (headings) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Animated gradient background orbs (CSS-only decoration) -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb--1"></div>
+    <div class="orb orb--2"></div>
+    <div class="orb orb--3"></div>
+  </div>
+
+  <!-- ======================
+       STICKY NAV
+       ====================== -->
+  <nav class="nav" id="nav" aria-label="Main navigation">
+    <div class="container nav__inner">
+      <a class="nav__logo" href="#hero">{{portfolio.owner.name}}</a>
+      <button class="nav__toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="nav-links">
+        <li><a class="nav__link" href="#about">About</a></li>
+        <li><a class="nav__link" href="#projects">Projects</a></li>
+        <li><a class="nav__link" href="#skills">Skills</a></li>
+        <li><a class="nav__link" href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ======================
+         HERO SECTION
+         {{portfolio.owner.name}}     - Full name
+         {{portfolio.owner.avatar}}   - Profile picture URL
+         {{portfolio.owner.bio}}      - Short bio
+         {{portfolio.owner.location}} - Location
+         ====================== -->
+    <section class="hero" id="hero">
+      <div class="container hero__inner">
+        <div class="glass hero__card">
+          {{#if portfolio.owner.avatar}}
+            <img
+              class="hero__avatar"
+              src="{{portfolio.owner.avatar}}"
+              alt="{{portfolio.owner.name}}"
+            >
+          {{/if}}
+          <h1 class="hero__name">{{portfolio.owner.name}}</h1>
+          {{#if portfolio.owner.bio}}
+            <p class="hero__bio">{{portfolio.owner.bio}}</p>
+          {{/if}}
+          {{#if portfolio.owner.location}}
+            <p class="hero__location">
+              <svg class="hero__location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+              </svg>
+              {{portfolio.owner.location}}
+            </p>
+          {{/if}}
+          <div class="hero__social">
+            {{#if portfolio.owner.github}}
+              <a class="glass-btn" href="{{portfolio.owner.github}}" target="_blank" rel="noopener noreferrer">GitHub</a>
+            {{/if}}
+            {{#if portfolio.owner.linkedin}}
+              <a class="glass-btn" href="{{portfolio.owner.linkedin}}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            {{/if}}
+            {{#if portfolio.owner.twitter}}
+              <a class="glass-btn" href="{{portfolio.owner.twitter}}" target="_blank" rel="noopener noreferrer">Twitter</a>
+            {{/if}}
+            {{#if portfolio.owner.website}}
+              <a class="glass-btn" href="{{portfolio.owner.website}}" target="_blank" rel="noopener noreferrer">Website</a>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================
+         ABOUT SECTION
+         {{stats.totalStars}}      - Total stars
+         {{stats.totalForks}}      - Total forks
+         {{stats.totalRepos}}      - Total repos
+         {{stats.followers}}       - Followers
+         {{stats.contributions}}   - Total contributions
+         ====================== -->
+    <section class="about section" id="about">
+      <div class="container">
+        <h2 class="section__heading">About Me</h2>
+        <div class="about__grid">
+
+          <div class="glass about__bio-card">
+            <p class="about__bio">{{portfolio.owner.bio}}</p>
+            {{#if portfolio.owner.location}}
+              <p class="about__detail">
+                <span class="about__label">Location</span>
+                {{portfolio.owner.location}}
+              </p>
+            {{/if}}
+            {{#if portfolio.owner.website}}
+              <p class="about__detail">
+                <span class="about__label">Website</span>
+                <a href="{{portfolio.owner.website}}" target="_blank" rel="noopener noreferrer">
+                  {{portfolio.owner.website}}
+                </a>
+              </p>
+            {{/if}}
+          </div>
+
+          <div class="stats__grid">
+            <div class="glass stat-card">
+              <span class="stat-card__value">{{stats.totalRepos}}</span>
+              <span class="stat-card__label">Repos</span>
+            </div>
+            <div class="glass stat-card">
+              <span class="stat-card__value">{{stats.totalStars}}</span>
+              <span class="stat-card__label">Stars</span>
+            </div>
+            <div class="glass stat-card">
+              <span class="stat-card__value">{{stats.totalForks}}</span>
+              <span class="stat-card__label">Forks</span>
+            </div>
+            <div class="glass stat-card">
+              <span class="stat-card__value">{{stats.followers}}</span>
+              <span class="stat-card__label">Followers</span>
+            </div>
+            <div class="glass stat-card stat-card--wide">
+              <span class="stat-card__value">{{stats.contributions}}</span>
+              <span class="stat-card__label">Contributions</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================
+         PROJECTS SECTION
+         {{repos}}            - Array of repositories
+         {{this.name}}        - Repo name
+         {{this.description}} - Repo description
+         {{this.url}}         - Repo URL
+         {{this.stars}}       - Star count
+         {{this.language}}    - Primary language
+         {{this.forks}}       - Fork count
+         ====================== -->
+    <section class="projects section" id="projects">
+      <div class="container">
+        <h2 class="section__heading">Projects</h2>
+        <div class="projects__grid">
+          {{#each repos}}
+            <article class="glass project-card">
+              <div class="project-card__body">
+                <h3 class="project-card__name">
+                  <a href="{{this.url}}" target="_blank" rel="noopener noreferrer">
+                    {{this.name}}
+                  </a>
+                </h3>
+                {{#if this.description}}
+                  <p class="project-card__desc">{{this.description}}</p>
+                {{/if}}
+              </div>
+              <footer class="project-card__footer">
+                {{#if this.language}}
+                  <span class="skill-chip">{{this.language}}</span>
+                {{/if}}
+                <span class="project-card__stat">&#9733; {{this.stars}}</span>
+                <span class="project-card__stat">&#128440; {{this.forks}}</span>
+              </footer>
+            </article>
+          {{/each}}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================
+         SKILLS SECTION
+         Skill chips driven by script.js PORTFOLIO.skills array
+         ====================== -->
+    <section class="skills section" id="skills">
+      <div class="container">
+        <h2 class="section__heading">Skills</h2>
+        <div class="glass skills__card">
+          <div class="skills__chips" id="skills-chips">
+            <!-- Populated by script.js -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================
+         CONTACT SECTION
+         ====================== -->
+    <section class="contact section" id="contact">
+      <div class="container contact__inner">
+        <h2 class="section__heading section__heading--center">Get in Touch</h2>
+        <p class="contact__intro">Have a project in mind or just want to say hello?</p>
+
+        <form class="glass contact-form" action="#" method="POST">
+          <div class="contact-form__row">
+            <label class="contact-form__label" for="cf-name">Name</label>
+            <input
+              class="contact-form__input"
+              type="text"
+              id="cf-name"
+              name="name"
+              placeholder="Jane Smith"
+              autocomplete="name"
+              required
+              aria-required="true"
+            >
+          </div>
+          <div class="contact-form__row">
+            <label class="contact-form__label" for="cf-email">Email</label>
+            <input
+              class="contact-form__input"
+              type="email"
+              id="cf-email"
+              name="email"
+              placeholder="jane@example.com"
+              autocomplete="email"
+              required
+              aria-required="true"
+            >
+          </div>
+          <div class="contact-form__row">
+            <label class="contact-form__label" for="cf-message">Message</label>
+            <textarea
+              class="contact-form__input contact-form__textarea"
+              id="cf-message"
+              name="message"
+              rows="5"
+              placeholder="Your message..."
+              required
+              aria-required="true"
+            ></textarea>
+          </div>
+          <button class="glass-btn glass-btn--primary" type="submit">Send Message</button>
+        </form>
+
+        <div class="contact__links">
+          {{#if portfolio.owner.github}}
+            <a href="{{portfolio.owner.github}}" target="_blank" rel="noopener noreferrer">GitHub</a>
+          {{/if}}
+          {{#if portfolio.owner.linkedin}}
+            <a href="{{portfolio.owner.linkedin}}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          {{/if}}
+          {{#if portfolio.owner.twitter}}
+            <a href="{{portfolio.owner.twitter}}" target="_blank" rel="noopener noreferrer">Twitter</a>
+          {{/if}}
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================
+       FOOTER
+       ====================== -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__name">{{portfolio.owner.name}}</p>
+      <p class="site-footer__credit">© <span id="year"></span> Built with career-pilot</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
