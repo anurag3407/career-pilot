@@ -8,37 +8,44 @@ import { pwaOptions } from './pwaOptions.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-export default defineConfig({
-  base: process.env.VITE_CDN_URL || '/',
-  test: {
-    environment: 'jsdom',
-    setupFiles: './src/test/setup.jsx',
-    globals: true,
-  },
+export default defineConfig(({ mode }) => {
+  const isProduction = mode === 'production';
 
-  plugins: [
-    react(),
-    tailwindcss(),
-    VitePWA(pwaOptions),
-  ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
+  return {
+    base: process.env.VITE_CDN_URL || '/',
+    esbuild: isProduction ? {
+      drop: ['debugger'],
+    } : undefined,
+    test: {
+      environment: 'jsdom',
+      setupFiles: './src/test/setup.jsx',
+      globals: true,
     },
-  },
-  server: {
-    port: 5173,
 
-    proxy: {
-      '/api': {
-        target: process.env.IS_DOCKER ? 'http://backend_container:5002' : 'http://localhost:5002',
-        changeOrigin: true,
-        configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
-            console.log('proxy error', err);
-          });
+    plugins: [
+      react(),
+      tailwindcss(),
+      VitePWA(pwaOptions),
+    ],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
+    },
+    server: {
+      port: 5173,
+
+      proxy: {
+        '/api': {
+          target: process.env.IS_DOCKER ? 'http://backend_container:5002' : 'http://localhost:5002',
+          changeOrigin: true,
+          configure: (proxy, _options) => {
+            proxy.on('error', (err, _req, _res) => {
+              console.log('proxy error', err);
+            });
+          },
         },
       },
     },
-  },
+  };
 })
