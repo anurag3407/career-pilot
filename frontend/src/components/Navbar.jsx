@@ -50,7 +50,7 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 gap-4">
 
           {/* Logo */}
           <Link to="/" onClick={handleHomeClick} className="flex items-center gap-2.5 group">
@@ -136,7 +136,7 @@ export default function Navbar() {
                 Dashboard
               </Link>
             ) : (
-              <>
+              <div className="flex items-center gap-1.5">
                 <Link
                   to="/login"
                   className="px-4 py-2 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors"
@@ -149,7 +149,7 @@ export default function Navbar() {
                 >
                   Get Started
                 </Link>
-              </>
+              </div>
             )}
           </div>
 
@@ -171,6 +171,7 @@ export default function Navbar() {
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
+
         </div>
       </div>
 
