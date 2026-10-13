@@ -126,7 +126,7 @@ export default function PolygonMorph() {
 
         {/* Futuristic CTA Area */}
         <div className="mt-20 text-center">
-          <button className="group relative inline-flex items-center gap-3 px-8 py-3.5 bg-transparent rounded-lg font-mono text-sm tracking-wider text-cyan-400 font-medium transition-all duration-300 overflow-hidden border border-cyan-500/30 hover:border-cyan-400 hover:text-white">
+          <button type="button" className="group relative inline-flex items-center gap-3 px-8 py-3.5 bg-transparent rounded-lg font-mono text-sm tracking-wider text-cyan-400 font-medium transition-all duration-300 overflow-hidden border border-cyan-500/30 hover:border-cyan-400 hover:text-white">
             
             {/* Morphing background layer on hover */}
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />

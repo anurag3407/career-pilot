@@ -247,15 +247,15 @@ export default function TwilightHorizon() {
 
       {/* ── Navbar ── */}
       <nav className="th-nav">
-        <button className="th-nav-link th-serif" onClick={() => scrollTo("hero")} style={{ color: C.amber, fontSize: 14, letterSpacing: 3, fontStyle: "italic" }}>
+        <button type="button" className="th-nav-link th-serif" onClick={() => scrollTo("hero")} style={{ color: C.amber, fontSize: 14, letterSpacing: 3, fontStyle: "italic" }}>
           {data.personal.name.split(" ")[0]}
         </button>
         <div className="th-nav-desktop">
           {sections.map((s) => (
-            <button key={s} className="th-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
+            <button type="button" key={s} className="th-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
           ))}
         </div>
-        <button className="th-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+        <button type="button" className="th-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           {[0,1,2].map(i => (
             <div key={i} style={{ width: 22, height: 1.5, background: i === 1 ? C.amber : C.text, margin: "5px 0", transition: "all .25s",
               transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(4px,5px)" : i === 2 ? "rotate(-45deg) translate(4px,-5px)" : "none") : "none",
@@ -268,7 +268,7 @@ export default function TwilightHorizon() {
         {menuOpen && (
           <motion.div className="th-mobile-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
             {sections.map((s) => (
-              <button key={s} className="th-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
+              <button type="button" key={s} className="th-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
                 <span style={{ color: C.amber, marginRight: 8 }}>✦</span>{s}
               </button>
             ))}
@@ -332,8 +332,8 @@ export default function TwilightHorizon() {
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }}
             style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center", marginBottom: 48 }}>
-            <button className="th-btn th-btn-primary" onClick={() => scrollTo("projects")}>Explore Work</button>
-            <button className="th-btn th-btn-ghost" onClick={() => scrollTo("contact")}>Connect</button>
+            <button type="button" className="th-btn th-btn-primary" onClick={() => scrollTo("projects")}>Explore Work</button>
+            <button type="button" className="th-btn th-btn-ghost" onClick={() => scrollTo("contact")}>Connect</button>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.75 }}>
             <div className="th-stats">

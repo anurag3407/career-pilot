@@ -1,24 +1,7 @@
-import admin from 'firebase-admin';
+import { createClerkClient, verifyToken } from '@clerk/express';
 
-const decodeBase64Url = (value) => {
-  const base64 = value.replace(/-/g, '+').replace(/_/g, '/');
-  const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
-  return Buffer.from(padded, 'base64').toString('utf8');
-};
+const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
 
-// Helper function to decode JWT payload without verification (for development only)
-const decodeTokenPayload = (token) => {
-  try {
-    const parts = token.split('.');
-    if (parts.length !== 3) return null;
-    const payload = decodeBase64Url(parts[1]);
-    return JSON.parse(payload);
-  } catch {
-    return null;
-  }
-};
-
-// Socket.IO authentication middleware
 export const socketAuthMiddleware = async (socket, next) => {
   try {
     const token = socket.handshake.auth.token;
@@ -28,36 +11,33 @@ export const socketAuthMiddleware = async (socket, next) => {
     }
 
     try {
-      const decodedToken = await admin.auth().verifyIdToken(token);
+      const decoded = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY });
+      const userId = decoded.userId || decoded.sub;
+      
+      const user = await clerkClient.users.getUser(userId);
+      const email = user.emailAddresses.find(e => e.id === user.primaryEmailAddressId)?.emailAddress || user.emailAddresses[0]?.emailAddress;
+
       socket.user = {
-        uid: decodedToken.uid,
-        email: decodedToken.email,
-        name: decodedToken.name || decodedToken.email?.split('@')[0],
-        picture: decodedToken.picture || null,
-        emailVerified: decodedToken.email_verified
+        uid: user.id,
+        email: email,
+        name: user.fullName || user.username || email?.split('@')[0],
+        picture: user.imageUrl,
+        emailVerified: true
       };
       next();
-    } catch (firebaseError) {
-      // Development mode bypass - extract user info from token without verification
+    } catch (clerkError) {
       if (process.env.ALLOW_DEV_SOCKET_AUTH === 'true' || (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true')) {
-        console.warn('Firebase Admin verification failed, using token payload with ALLOW_DEV_SOCKET_AUTH');
-        const tokenPayload = decodeTokenPayload(token);
-        
-        if (tokenPayload && tokenPayload.user_id) {
-          socket.user = {
-            uid: tokenPayload.user_id,
-            email: tokenPayload.email || 'unknown@example.com',
-            name: tokenPayload.name || tokenPayload.email?.split('@')[0] || 'User',
-            picture: tokenPayload.picture || null,
-            emailVerified: tokenPayload.email_verified || false
-          };
-          next();
-        } else {
-          console.error('Could not extract user info from token');
-          next(new Error('Invalid authentication token'));
-        }
+        console.warn('Clerk verification failed, using dev bypass');
+        socket.user = {
+          uid: 'dev-user-001',
+          email: 'dev@example.com',
+          name: 'User',
+          picture: null,
+          emailVerified: true
+        };
+        next();
       } else {
-        console.error('Socket auth error:', firebaseError.message);
+        console.error('Socket auth error:', clerkError.message);
         next(new Error('Invalid authentication token'));
       }
     }

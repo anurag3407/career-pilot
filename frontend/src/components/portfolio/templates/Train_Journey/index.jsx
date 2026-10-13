@@ -654,7 +654,7 @@ function BoardingIntro({ onDone, reduced }) {
         />
       </div>
 
-      <button
+      <button type="button"
         onClick={skip}
         className="absolute bottom-8 right-8 rounded-full border border-white/15 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-slate-400 transition-colors hover:border-amber-400/50 hover:text-amber-200"
       >
@@ -1345,7 +1345,7 @@ function TrainHUD({
             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-amber-400">
               <Gauge className="h-4 w-4 animate-pulse" /> Cabin Instruments
             </div>
-            <button
+            <button type="button"
               onClick={() => {
                 setIsOpen(false);
                 playFlapClick();
@@ -1404,7 +1404,7 @@ function TrainHUD({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Window Presets</div>
-                <button
+                <button type="button"
                   onClick={() => {
                     setAutoSky(true);
                     playFlapClick();
@@ -1420,7 +1420,7 @@ function TrainHUD({
               </div>
               <div className="grid grid-cols-4 gap-1">
                 {Object.keys(PRESETS).map((key) => (
-                  <button
+                  <button type="button"
                     key={key}
                     onClick={() => {
                       setPreset(key);
@@ -1444,7 +1444,7 @@ function TrainHUD({
             <div className="border-t border-white/5 pt-3 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <button
+                  <button type="button"
                     onClick={() => {
                       if (!audioCtx) {
                         startAudio(volume);
@@ -1470,7 +1470,7 @@ function TrainHUD({
                   <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Ambient Engine</span>
                 </div>
 
-                <button
+                <button type="button"
                   onClick={() => {
                     if (!audioCtx) startAudio(volume);
                     onPlayHorn();

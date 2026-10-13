@@ -1,7 +1,6 @@
 import { Queue, Worker } from 'bullmq';
 import dotenv from 'dotenv';
-import { db } from '../config/firebase.js';
-import { FieldValue } from 'firebase-admin/firestore';
+
 import { getIO } from '../config/socket.js';
 import redisManager from '../config/redis.js';
 
@@ -10,7 +9,7 @@ dotenv.config();
 const QUEUE_NAME = 'post-scheduler';
 let postSchedulerQueue = null;
 let worker = null;
-const postsRef = db.collection('posts');
+const postsRef = null;
 
 /**
  * Initialize the post scheduler queue and worker.

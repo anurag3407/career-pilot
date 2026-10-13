@@ -368,7 +368,7 @@ function Nav() {
             Hire Me ▶
           </a>
 
-          <button onClick={() => setOpen(o => !o)} className="flex md:hidden"
+          <button type="button" onClick={() => setOpen(o => !o)} className="flex md:hidden"
             style={{ background: 'none', border: `1px solid ${C.tape}`, color: C.cream,
               cursor: 'pointer', padding: '5px 7px', display: 'flex' }}>
             {open ? <X size={20} /> : <Menu size={20} />}
@@ -772,7 +772,7 @@ function Projects() {
                 transition={{ delay: i * 0.07, duration: 0.45 }}>
 
                 {/* Track row — clickable to expand */}
-                <button
+                <button type="button"
                   onClick={() => setActiveTrack(isActive ? null : i)}
                   style={{ width: '100%', background: isActive ? '#FFF4E0' : (i % 2 === 0 ? '#FFF8EC' : '#FFF3E8'),
                     border: 'none', borderBottom: `1px solid ${C.light}44`,
@@ -1043,7 +1043,7 @@ function Contact() {
                   <p style={{ color: C.light, fontFamily: C.mono, fontSize: '0.84rem' }}>
                     I'll play it back soon. ▶
                   </p>
-                  <button onClick={() => { setStatus('idle'); setForm({ name:'',email:'',message:'' }); }}
+                  <button type="button" onClick={() => { setStatus('idle'); setForm({ name:'',email:'',message:'' }); }}
                     className="cm-btn" style={{ background: C.orange, color: '#FAF0E0',
                       marginTop: 24 }}>
                     Record Another ◉

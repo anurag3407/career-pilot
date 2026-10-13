@@ -234,7 +234,7 @@ export default function MemoryPolaroids() {
               </div>
 
               {/* Like button */}
-              <button
+              <button type="button"
                 onClick={() => toggleLike(p.id)}
                 className="absolute bottom-2 right-3 transition-transform duration-150 hover:scale-125 active:scale-90"
                 aria-label="Like"

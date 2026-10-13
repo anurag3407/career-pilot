@@ -1,65 +1,39 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles } from 'lucide-react';
-import { cn } from '../../lib/utils';
 
 export default function FeatureCTA({
-  heading = "Ready to transform your career?",
-  subheading = "Join thousands of professionals who have already accelerated their job search with our AI tools.",
-  primaryCtaText = "Get Started for Free",
-  primaryCtaLink = "/register",
-  guaranteeText = "No credit card required. Free forever plan available."
+  heading = 'Ready to get started?',
+  subheading = 'Use CareerPilot as one connected, free career workspace.',
+  primaryCtaText = 'Get started',
+  primaryCtaLink = '/register',
+  guaranteeText = 'No credit card required.',
 }) {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden bg-background border-t border-border">
-      {/* Decorative Background */}
-      <div className="absolute inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-7xl">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 rounded-[100px] blur-3xl" />
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background to-transparent" />
-      </div>
+    <section className="relative overflow-hidden border-t border-border bg-background py-20 sm:py-24">
+      <div className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 mx-auto h-72 max-w-4xl -translate-y-1/2 rounded-[100px] bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 blur-3xl" />
 
       <div className="container relative z-10 mx-auto px-4 md:px-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="mx-auto max-w-3xl text-center"
-        >
-          <div className="inline-flex items-center justify-center rounded-full bg-card/50 px-3 py-1 text-sm font-medium text-foreground ring-1 ring-inset ring-border mb-8 backdrop-blur-md">
-            <Sparkles className="h-4 w-4 text-amber-400 mr-2" />
-            Start your journey today
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="mb-7 inline-flex items-center rounded-full border border-border bg-card/70 px-4 py-1.5 text-sm font-medium text-foreground backdrop-blur-md">
+            <Sparkles className="mr-2 h-4 w-4 text-primary" aria-hidden="true" />
+            One connected workspace
           </div>
-          
-          <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl mb-6">
+          <h2 className="mb-5 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             {heading}
           </h2>
-          
-          <p className="mx-auto max-w-2xl text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed">
+          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground">
             {subheading}
           </p>
-
-          <div className="flex flex-col items-center justify-center gap-4">
-            <Link
-              to={primaryCtaLink}
-              className="group relative inline-flex items-center justify-center rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground shadow-[0_0_40px_-10px_var(--color-primary)] transition-all hover:bg-primary/90 hover:shadow-[0_0_60px_-10px_var(--color-primary)] hover:-translate-y-1 overflow-hidden"
-            >
-              {/* Shimmer Effect */}
-              <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
-                <div className="relative h-full w-8 bg-white/20" />
-              </div>
-              <span className="relative z-10 flex items-center">
-                {primaryCtaText}
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </span>
-            </Link>
-            
-            <p className="text-sm text-muted-foreground mt-2 font-medium">
-              {guaranteeText}
-            </p>
-          </div>
-        </motion.div>
+          <Link
+            to={primaryCtaLink}
+            className="group inline-flex items-center justify-center rounded-xl bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-primary/30"
+          >
+            {primaryCtaText}
+            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+          </Link>
+          <p className="mt-4 text-sm text-muted-foreground">{guaranteeText}</p>
+        </div>
       </div>
     </section>
   );

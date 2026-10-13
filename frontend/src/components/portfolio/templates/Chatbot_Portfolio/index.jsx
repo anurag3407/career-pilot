@@ -257,7 +257,7 @@ export default function ChatbotPortfolio() {
       {/* FIX: SUGGESTIONS (added spacing + visual separation) */}
       <div className="px-4 py-3 border-t border-gray-800 bg-gray-950/60 backdrop-blur flex flex-wrap gap-2">
         {suggestions.map((s, i) => (
-          <button
+          <button type="button"
             key={i}
             onClick={() => setInput(s)}
             className="text-xs px-3 py-1 bg-gray-800 rounded-full hover:bg-gray-700 transition"
@@ -276,7 +276,7 @@ export default function ChatbotPortfolio() {
           placeholder="Ask about me..."
           className="flex-1 px-4 py-2 rounded-xl bg-gray-900 border border-gray-700"
         />
-        <button
+        <button type="button"
           onClick={handleSend}
           className="bg-cyan-600 px-4 py-2 rounded-xl hover:bg-cyan-700"
         >

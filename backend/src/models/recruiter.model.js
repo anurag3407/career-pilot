@@ -4,8 +4,9 @@ const recruiterSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
       required: true,
+      index: true,
     },
     username: {
       type: String,
@@ -14,6 +15,7 @@ const recruiterSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
+      index: true,
     },
     resumeUrl: {
       type: String,
@@ -35,7 +37,7 @@ const recruiterSchema = new mongoose.Schema(
 
 recruiterSchema.index(
   { userId: 1, jobTitle: 1 },
-  { unique: true }
+  { unique: true, background: true }
 );
 
 const recruiterModel = mongoose.model(

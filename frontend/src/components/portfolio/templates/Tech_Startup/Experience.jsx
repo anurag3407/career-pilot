@@ -21,7 +21,7 @@ export default function Experience({ experience }) {
           {/* Tabs */}
           <div className="flex md:flex-col overflow-x-auto hide-scrollbar md:w-48 border-b md:border-b-0 md:border-l border-[#233554]">
             {experience.map((exp, index) => (
-              <button
+              <button type="button"
                 key={index}
                 onClick={() => setActiveTabId(index)}
                 className={`text-left px-5 py-3 font-mono text-sm whitespace-nowrap transition-all duration-200 border-b-2 md:border-b-0 md:border-l-2 -ml-[2px] ${

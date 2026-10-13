@@ -31,15 +31,26 @@ export default function InlineElementEditor({
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
   const popoverRef = useRef(null);
+  const inputRef = useRef(null);
 
-  // Close on Escape
+  // Auto-focus the input on mount
+  useEffect(() => {
+    const t = setTimeout(() => inputRef.current?.focus(), 60);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Close on Escape, save on Cmd/Ctrl+Enter
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') onClose();
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        onCommit({ slug, value: valueRef.current, color });
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, [onClose, onCommit, slug, color]);
 
   // Click outside to close
   useEffect(() => {
@@ -90,6 +101,14 @@ export default function InlineElementEditor({
     setTimeout(() => setSaved(false), 1200);
   }, [color, onCommit, slug, value]);
 
+  // Enter to save for single-line text inputs
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter' && kind === 'text' && !e.shiftKey) {
+      e.preventDefault();
+      onCommit({ slug, value: valueRef.current, color });
+    }
+  }, [kind, onCommit, slug, color]);
+
   // Popover positioning with simple viewport clamping
   const POPOVER_W = 320;
   const left = Math.min(Math.max(position?.x ?? 0, 8), window.innerWidth - POPOVER_W - 8);
@@ -98,11 +117,12 @@ export default function InlineElementEditor({
   return (
     <div
       ref={popoverRef}
+      data-editor-popover
       role="dialog"
       aria-label={`Edit ${label}`}
       className={cn(
-        'fixed z-[10000] w-[320px] rounded-xl border border-neutral-800 bg-[#0a0a0d]/95 backdrop-blur-md',
-        'shadow-2xl shadow-black/60 text-white p-3 space-y-2.5'
+        'absolute z-[100] w-[320px] rounded-xl border border-neutral-700 bg-[#0a0a0d]/98 backdrop-blur-xl',
+        'shadow-2xl shadow-black/80 text-white p-3.5 space-y-2.5'
       )}
       style={{ left, top }}
       onMouseDown={(e) => e.stopPropagation()}
@@ -129,23 +149,26 @@ export default function InlineElementEditor({
       {/* Text input */}
       {kind === 'textarea' ? (
         <textarea
+          ref={inputRef}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           rows={4}
           className={cn(
-            'w-full rounded-md bg-neutral-950 border border-neutral-800 px-2.5 py-2',
-            'text-xs text-white placeholder-neutral-600 resize-none',
+            'w-full rounded-lg bg-neutral-950 border border-neutral-700 px-3 py-2.5',
+            'text-xs text-white placeholder-neutral-600 resize-none leading-relaxed',
             'focus:outline-none focus:border-[#E10600] focus:ring-1 focus:ring-[#E10600]/40'
           )}
           placeholder={`Enter ${label.toLowerCase()}...`}
         />
       ) : (
         <input
+          ref={inputRef}
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          onKeyDown={handleKeyDown}
           className={cn(
-            'w-full rounded-md bg-neutral-950 border border-neutral-800 px-2.5 py-2',
+            'w-full rounded-lg bg-neutral-950 border border-neutral-700 px-3 py-2.5',
             'text-xs text-white placeholder-neutral-600',
             'focus:outline-none focus:border-[#E10600] focus:ring-1 focus:ring-[#E10600]/40'
           )}
@@ -182,7 +205,7 @@ export default function InlineElementEditor({
           disabled={enhancing}
           className={cn(
             'flex-1 inline-flex items-center justify-center gap-1.5',
-            'rounded-md border border-[#E10600]/40 bg-[#E10600]/10 px-2.5 py-2',
+            'rounded-lg border border-[#E10600]/40 bg-[#E10600]/10 px-2.5 py-2',
             'text-xs font-medium text-[#ff6655] hover:bg-[#E10600]/20 hover:border-[#E10600]/60',
             'disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
           )}
@@ -195,7 +218,7 @@ export default function InlineElementEditor({
           ) : (
             <>
               <Wand2 className="h-3.5 w-3.5" />
-              ✨ Enhance
+              ✨ AI Enhance
             </>
           )}
         </button>
@@ -204,14 +227,14 @@ export default function InlineElementEditor({
           onClick={handleSave}
           className={cn(
             'flex-1 inline-flex items-center justify-center gap-1.5',
-            'rounded-md bg-emerald-500 hover:bg-emerald-400 px-2.5 py-2',
+            'rounded-lg bg-emerald-500 hover:bg-emerald-400 px-2.5 py-2',
             'text-xs font-semibold text-black transition-colors'
           )}
         >
           {saved ? (
             <>
               <Check className="h-3.5 w-3.5" />
-              Saved
+              Saved ✓
             </>
           ) : (
             <>
@@ -220,6 +243,11 @@ export default function InlineElementEditor({
             </>
           )}
         </button>
+      </div>
+
+      {/* Keyboard hint */}
+      <div className="text-[9px] font-mono text-neutral-600 text-center uppercase tracking-widest">
+        {kind === 'text' ? 'Enter to save · ' : ''}⌘+Enter to save · Esc to close
       </div>
     </div>
   );

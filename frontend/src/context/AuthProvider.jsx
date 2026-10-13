@@ -1,183 +1,119 @@
-import { useState, useEffect } from 'react'
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  GoogleAuthProvider,
-  GithubAuthProvider,
-  signInWithPopup,
-  updateProfile
-} from 'firebase/auth'
-import { auth } from '../config/firebase'
+import { useEffect, useMemo, useState } from 'react'
+import { useUser, useAuth, useClerk } from '@clerk/clerk-react'
 import { AuthContext } from './AuthContext'
 import { authApi } from '../services/api'
 
-/**
- * Provider component that manages and exposes the Firebase authentication state and methods.
- *
- * @param {object} props - The component props.
- * @param {React.ReactNode} props.children - The children elements.
- * @returns {React.JSX.Element} The rendered Provider component.
- */
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+const clerkConfigured = Boolean(import.meta.env.VITE_CLERK_PUBLISHABLE_KEY)
+
+function ClerkAuthState({ children }) {
+  const { isLoaded, isSignedIn, user: clerkUser } = useUser()
+  const { getToken: getClerkToken, signOut } = useAuth()
+  const clerk = useClerk()
+
+  const [mappedUser, setMappedUser] = useState(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [checkingAdmin, setCheckingAdmin] = useState(false)
 
   useEffect(() => {
-    // If firebase initialization was skipped, unblock the loading state immediately
-    // and provide a mock user for local development.
-    if (!auth) {
-      if (import.meta.env.DEV) {
-        setUser({
-          uid: 'dev-user-001',
-          email: 'dev@example.com',
-          displayName: 'Local Dev User',
-          isAdmin: true,
-          getIdToken: async () => 'mock-dev-token'
-        });
-      }
-      setLoading(false);
-      return;
-    }
+    let cancelled = false
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setLoading(true)
-        try {
-          const response = await authApi.getProfile()
-          if (response?.success && response?.user) {
-            firebaseUser.isAdmin = !!response.user.isAdmin
-            if (response.user.name) {
-              firebaseUser.displayName = response.user.name
-            }
-          } else {
-            firebaseUser.isAdmin = false
+    if (isLoaded && isSignedIn && clerkUser) {
+      setCheckingAdmin(true)
+
+      const user = {
+        uid: clerkUser.id,
+        email: clerkUser.primaryEmailAddress?.emailAddress,
+        displayName:
+          clerkUser.fullName ||
+          clerkUser.username ||
+          clerkUser.primaryEmailAddress?.emailAddress?.split('@')[0],
+        photoURL: clerkUser.imageUrl,
+        isAdmin: false,
+      }
+
+      authApi
+        .getProfile()
+        .then((res) => {
+          if (cancelled) return
+          if (res?.success && res?.user) {
+            user.isAdmin = !!res.user.isAdmin
+            setIsAdmin(user.isAdmin)
           }
-        } catch (error) {
-          console.error('Failed to fetch user profile for admin check:', error)
-          firebaseUser.isAdmin = false
+        })
+        .catch((err) => {
+          console.error('Failed to fetch user profile for admin check:', err)
+        })
+        .finally(() => {
+          if (cancelled) return
+          setMappedUser(user)
+          setCheckingAdmin(false)
+        })
+    } else {
+      setMappedUser(null)
+      setIsAdmin(false)
+      setCheckingAdmin(false)
+    }
+
+    return () => {
+      cancelled = true
+    }
+  }, [isLoaded, isSignedIn, clerkUser])
+
+  const value = useMemo(
+    () => ({
+      user: mappedUser,
+      loading: !isLoaded || (isSignedIn && checkingAdmin),
+      isAdmin,
+      signup: () => clerk.redirectToSignUp(),
+      login: () => clerk.redirectToSignIn(),
+      loginWithGoogle: () => clerk.redirectToSignIn({ strategy: 'oauth_google' }),
+      loginWithLinkedIn: () => clerk.redirectToSignIn({ strategy: 'oauth_linkedin' }),
+      loginWithGitHub: () => clerk.redirectToSignIn({ strategy: 'oauth_github' }),
+      logout: () => signOut(),
+      getToken: async () => {
+        if (!isSignedIn) return null
+        try {
+          return await getClerkToken()
+        } catch (err) {
+          console.error('Failed to get Clerk token', err)
+          return null
         }
-        setUser(firebaseUser)
-      } else {
-        setUser(null)
-      }
-      setLoading(false)
-    })
+      },
+      isMockAuth: false,
+      isClerkConfigured: true,
+    }),
+    [mappedUser, isLoaded, isSignedIn, checkingAdmin, isAdmin, clerk, getClerkToken, signOut],
+  )
 
-    return unsubscribe
-  }, [])
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
 
-  /**
-   * Registers a new user with an email, password, and display name.
-   *
-   * @param {string} email - The email address.
-   * @param {string} password - The password.
-   * @param {string} displayName - The user's display name.
-   * @returns {Promise<object>} The Firebase user object.
-   */
-  const signup = async (email, password, displayName) => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const result = await createUserWithEmailAndPassword(auth, email, password)
-    if (displayName) {
-      await updateProfile(result.user, { displayName })
-    }
-    return result.user
-  }
+function PublicPreviewAuthState({ children }) {
+  const value = useMemo(
+    () => ({
+      user: null,
+      loading: false,
+      isAdmin: false,
+      isClerkConfigured: false,
+      signup: () => {},
+      login: () => {},
+      loginWithGoogle: () => {},
+      loginWithLinkedIn: () => {},
+      loginWithGitHub: () => {},
+      logout: async () => {},
+      getToken: async () => null,
+      isMockAuth: false,
+    }),
+    [],
+  )
 
-  /**
-   * Logs in a user with an email and password.
-   *
-   * @param {string} email - The email address.
-   * @param {string} password - The password.
-   * @returns {Promise<object>} The Firebase user object.
-   */
-  const login = async (email, password) => {
-    if (!auth && import.meta.env.DEV) {
-      const mockUser = {
-        uid: 'dev-user-001',
-        email: 'dev@example.com',
-        displayName: 'Local Dev User',
-        getIdToken: async () => 'mock-dev-token'
-      };
-      setUser(mockUser);
-      return mockUser;
-    }
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const result = await signInWithEmailAndPassword(auth, email, password)
-    return result.user
-  }
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
 
-  /**
-   * Logs in a user using Google Sign-In popup.
-   *
-   * @returns {Promise<object>} The Firebase user object.
-   */
-  const loginWithGoogle = async () => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const provider = new GoogleAuthProvider()
-    const result = await signInWithPopup(auth, provider)
-    return result.user
-  }
-
-  /**
-   * Redirects the user to the LinkedIn authentication flow.
-   */
-  const loginWithLinkedIn = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
-    window.location.href = `${apiUrl}/api/auth/linkedin`
-  }
-
-  /**
-   * Logs in a user using GitHub Sign-In popup.
-   *
-   * @returns {Promise<object>} The Firebase user object.
-   */
-  const loginWithGitHub = async () => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const provider = new GithubAuthProvider()
-    provider.addScope('user:email')
-    const result = await signInWithPopup(auth, provider)
-    return result.user
-  }
-
-  /**
-   * Signs the user out of the current session.
-   *
-   * @returns {Promise<void>}
-   */
-  const logout = async () => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    await signOut(auth)
-  }
-
-  /**
-   * Retrieves the current user's Firebase ID token.
-   *
-   * @returns {Promise<string|null>} The token string, or null if no user is authenticated.
-   */
-  const getToken = async () => {
-    if (!user) return null
-    return await user.getIdToken()
-  }
-
-  const value = {
-    user,
-    loading,
-    isAdmin: loading ? undefined : (user?.isAdmin ?? false),
-    signup,
-    login,
-    loginWithGoogle,
-    loginWithLinkedIn,
-    loginWithGitHub,
-    logout,
-    getToken,
-    isMockAuth: !auth // Helper flag indicating local offline development
-  }
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+export function AuthProvider({ children }) {
+  return clerkConfigured ? (
+    <ClerkAuthState>{children}</ClerkAuthState>
+  ) : (
+    <PublicPreviewAuthState>{children}</PublicPreviewAuthState>
   )
 }

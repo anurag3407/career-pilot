@@ -279,7 +279,7 @@ export default function InfiniteZoomMandelbrotSet() {
           {/* Depth progress */}
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             {SECTIONS.map((s, i) => (
-              <button
+              <button type="button"
                 key={s.id}
                 onClick={() => goTo(i)}
                 style={{
@@ -330,7 +330,7 @@ export default function InfiniteZoomMandelbrotSet() {
                     </div>
                   ))}
                 </div>
-                <button onClick={next} className="mbs-btn" style={{ background: C.accent, color: "#fff" }}>
+                <button type="button" onClick={next} className="mbs-btn" style={{ background: C.accent, color: "#fff" }}>
                   <ZoomIn size={14} /> Begin Zoom Journey
                 </button>
               </Panel>
@@ -493,7 +493,7 @@ export default function InfiniteZoomMandelbrotSet() {
                     </a>
                   ))}
                 </div>
-                <button onClick={() => goTo(0)} className="mbs-btn" style={{ background: "transparent", color: C.dim, border: `1px solid ${C.border}`, fontSize: 11 }}>
+                <button type="button" onClick={() => goTo(0)} className="mbs-btn" style={{ background: "transparent", color: C.dim, border: `1px solid ${C.border}`, fontSize: 11 }}>
                   ↑ Back to Surface
                 </button>
               </Panel>
@@ -507,7 +507,7 @@ export default function InfiniteZoomMandelbrotSet() {
           position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)",
           display: "flex", alignItems: "center", gap: 14, zIndex: 40,
         }}>
-          <button
+          <button type="button"
             onClick={prev}
             disabled={sectionIdx === 0}
             style={{
@@ -529,7 +529,7 @@ export default function InfiniteZoomMandelbrotSet() {
             {sectionIdx + 1} / {SECTIONS.length} — {section.label}
           </div>
 
-          <button
+          <button type="button"
             onClick={next}
             disabled={sectionIdx === SECTIONS.length - 1}
             style={{

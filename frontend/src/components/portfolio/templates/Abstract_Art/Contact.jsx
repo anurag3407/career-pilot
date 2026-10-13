@@ -65,7 +65,7 @@ export default function Contact({ data }) {
                   className="w-full bg-white/80 border-none rounded-2xl px-6 py-4 focus:ring-4 focus:ring-pink-100 outline-none transition-all placeholder:text-gray-400 text-gray-800 resize-none"
                 ></textarea>
               </div>
-              <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-purple-500 text-white font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+              <button type="button" className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-purple-500 text-white font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
                 <span>Send Message</span>
                 <Send className="w-5 h-5" />
               </button>

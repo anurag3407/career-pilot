@@ -51,16 +51,8 @@ const fellowshipProfileSchema = new mongoose.Schema({
     challengeCount: {
         type: Number,
         default: 0
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
-});
+}, { timestamps: true });
 
 const hashVerificationCode = (code) => {
     const salt = crypto.randomBytes(16).toString('hex');
@@ -75,10 +67,7 @@ const compareVerificationCode = (code, stored) => {
     return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(storedHash, 'hex'));
 };
 
-
 fellowshipProfileSchema.pre('save', function () {
-    this.updatedAt = new Date();
-
     if (this.isModified('verificationCode') && this.verificationCode) {
         if (!this.verificationCode.includes(':')) {
             this.verificationCode = hashVerificationCode(this.verificationCode);

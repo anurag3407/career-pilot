@@ -51,7 +51,7 @@ export default function NavBar() {
         <div className="max-w-6xl mx-auto px-4 h-12 flex items-center justify-between font-mono text-xs">
 
           {/* Logo */}
-          <button
+          <button type="button"
             onClick={() => scrollTo('hero')}
             id="nav-logo"
             aria-label="Go to top"
@@ -68,7 +68,7 @@ export default function NavBar() {
           {/* Desktop links */}
           <div className="hidden md:flex items-center gap-1" role="list">
             {NAV_LINKS.map(link => (
-              <button
+              <button type="button"
                 key={link.id}
                 id={`nav-${link.id}`}
                 onClick={() => scrollTo(link.id)}
@@ -104,7 +104,7 @@ export default function NavBar() {
                 theme:
               </span>
               {Object.values(TERMINAL_THEMES).map(t => (
-                <button
+                <button type="button"
                   key={t.id}
                   id={`theme-btn-${t.id}`}
                   onClick={() => setThemeId(t.id)}
@@ -129,7 +129,7 @@ export default function NavBar() {
             </div>
 
             {/* Mobile hamburger */}
-            <button
+            <button type="button"
               id="nav-mobile-toggle"
               onClick={() => setMobileOpen(o => !o)}
               className="md:hidden transition-colors p-1"
@@ -159,7 +159,7 @@ export default function NavBar() {
           >
             <div className="px-4 py-3 space-y-0.5">
               {NAV_LINKS.map(link => (
-                <button
+                <button type="button"
                   key={link.id}
                   id={`nav-mobile-${link.id}`}
                   onClick={() => scrollTo(link.id)}

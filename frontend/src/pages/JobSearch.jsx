@@ -47,6 +47,7 @@ export default function JobSearch() {
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
+  const [matchScored, setMatchScored] = useState(true)
   const [savedJobs, setSavedJobs] = useState(new Set())
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState({
@@ -126,6 +127,7 @@ export default function JobSearch() {
     const cachedData = getCachedJobSearch(searchQuery, filters)
     if (cachedData) {
       setJobs(cachedData)
+      setMatchScored(cachedData.some((job) => typeof job?.matchScore === 'number'))
       if (cachedData.length === 0) {
         toast('No jobs found. Try different keywords.', { icon: '🔍' })
       } else {
@@ -139,6 +141,7 @@ export default function JobSearch() {
     try {
       const response = await jobsApi.search(searchQuery, filters)
       setJobs(response.data || [])
+      setMatchScored(response.matchScored !== false)
 
       if (response.data?.length === 0) {
         toast('No jobs found. Try different keywords.', { icon: '🔍' })
@@ -487,9 +490,19 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
           >
             {/* Results Header */}
             <div className="flex justify-between items-center mb-6">
-              <p className="text-muted-foreground">
-                Found <span className="font-semibold text-foreground">{jobs.length}</span> jobs for "{searchQuery}"
-              </p>
+              <div>
+                <p className="text-muted-foreground">
+                  Found <span className="font-semibold text-foreground">{jobs.length}</span> jobs for "{searchQuery}"
+                </p>
+                {!matchScored && (
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Add a resume to see how well each role matches you.{' '}
+                    <Link to="/upload" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                      Upload resume
+                    </Link>
+                  </p>
+                )}
+              </div>
               <Link to="/job-tracker">
                 <Button variant="ghost" className="flex items-center gap-2">
                   <Bookmark className="w-4 h-4" />
@@ -629,9 +642,9 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
               <div className="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Zap className="w-7 h-7 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Quick Apply</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Apply with confidence</h3>
               <p className="text-muted-foreground text-sm">
-                Apply to multiple jobs with your optimized resume in just one click
+                Open employer applications with a tailored, ATS-safe resume ready
               </p>
             </div>
 
@@ -639,9 +652,9 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
               <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Target className="w-7 h-7 text-green-400" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Smart Matching</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Search &amp; save</h3>
               <p className="text-muted-foreground text-sm">
-                AI-powered job recommendations based on your skills and experience
+                Filter listings by role, work type, experience level, and location, then save the best matches
               </p>
             </div>
 

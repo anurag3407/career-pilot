@@ -1,12 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const RiskSummaryChart = ({ risks }) => {
-  const [dashArrays, setDashArrays] = useState({});
-  const [dashOffsets, setDashOffsets] = useState({});
+  const hasRisks = Boolean(risks && risks.length > 0);
 
-  if (!risks || risks.length === 0) {
+  const { counts, dashArrays, dashOffsets, total, circumference } = useMemo(() => {
+    const riskList = hasRisks ? risks : [];
+    const severityCounts = {
+      critical: riskList.filter(r => r.severity === 'critical').length,
+      high: riskList.filter(r => r.severity === 'high').length,
+      medium: riskList.filter(r => r.severity === 'medium').length,
+      low: riskList.filter(r => r.severity === 'low').length,
+    };
+    const riskTotal = riskList.length;
+    const radius = 60;
+    const circleLength = 2 * Math.PI * radius;
+    const arrays = {};
+    const offsets = {};
+    let offset = 0;
+
+    ['critical', 'high', 'medium', 'low'].forEach(severity => {
+      const count = severityCounts[severity];
+      if (count > 0) {
+        const length = (count / riskTotal) * circleLength;
+        arrays[severity] = `${length} ${circleLength - length}`;
+        offsets[severity] = -offset;
+        offset += length;
+      }
+    });
+
+    return {
+      counts: severityCounts,
+      dashArrays: arrays,
+      dashOffsets: offsets,
+      total: riskTotal,
+      circumference: circleLength,
+    };
+  }, [hasRisks, risks]);
+
+  if (!hasRisks) {
     return (
       <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-full flex flex-col items-center justify-center text-center">
         <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-4 border border-green-500/30">
@@ -17,40 +50,6 @@ const RiskSummaryChart = ({ risks }) => {
       </div>
     );
   }
-
-  const counts = {
-    critical: risks.filter(r => r.severity === 'critical').length,
-    high: risks.filter(r => r.severity === 'high').length,
-    medium: risks.filter(r => r.severity === 'medium').length,
-    low: risks.filter(r => r.severity === 'low').length,
-  };
-
-  const total = risks.length;
-  const radius = 60;
-  const circumference = 2 * Math.PI * radius;
-
-  // Calculate svg stroke offsets for the donut chart segments
-  useEffect(() => {
-    let offset = 0;
-    const arrays = {};
-    const offsets = {};
-
-    ['critical', 'high', 'medium', 'low'].forEach(severity => {
-      const count = counts[severity];
-      if (count > 0) {
-        const percentage = count / total;
-        const length = percentage * circumference;
-        
-        arrays[severity] = `${length} ${circumference - length}`;
-        offsets[severity] = -offset;
-        
-        offset += length;
-      }
-    });
-
-    setDashArrays(arrays);
-    setDashOffsets(offsets);
-  }, [risks, total, circumference]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const colors = {
     critical: '#ef4444',

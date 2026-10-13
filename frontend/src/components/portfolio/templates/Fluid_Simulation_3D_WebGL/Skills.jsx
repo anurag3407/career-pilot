@@ -133,7 +133,7 @@ export default function Skills({ data }) {
             const isActive = activeCategory === cat;
             const style = cat === 'All' ? categoryStyles.Other : getStyle(cat);
             return (
-              <button
+              <button type="button"
                 key={idx}
                 onClick={() => setActiveCategory(cat)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border cursor-pointer ${

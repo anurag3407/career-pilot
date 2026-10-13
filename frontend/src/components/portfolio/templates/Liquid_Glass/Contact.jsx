@@ -74,7 +74,7 @@ export default function Contact({ data }) {
               placeholder="Your Message"
               className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-400/60 backdrop-blur-sm transition-all mb-4 resize-none"
             />
-            <button className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500/40 to-purple-500/40 hover:from-cyan-500/60 hover:to-purple-500/60 border border-white/20 text-white font-semibold text-sm backdrop-blur-sm transition-all">
+            <button type="button" className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500/40 to-purple-500/40 hover:from-cyan-500/60 hover:to-purple-500/60 border border-white/20 text-white font-semibold text-sm backdrop-blur-sm transition-all">
               Send Message
             </button>
           </GlassCard>

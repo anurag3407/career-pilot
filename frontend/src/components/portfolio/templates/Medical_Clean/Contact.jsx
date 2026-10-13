@@ -302,7 +302,7 @@ export default function Contact({ data = {} }) {
                     Thank you for reaching out. Our office will contact you within one
                     business day.
                   </p>
-                  <button
+                  <button type="button"
                     onClick={() => setStatus('idle')}
                     className="mt-6 text-xs font-semibold text-teal-600 hover:underline"
                   >

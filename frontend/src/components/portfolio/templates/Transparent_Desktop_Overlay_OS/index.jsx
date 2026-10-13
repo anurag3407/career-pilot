@@ -89,7 +89,7 @@ function OSWindow({
       >
         {/* Left Windows Actions */}
         <div className="flex items-center space-x-2 shrink-0">
-          <button
+          <button type="button"
             onClick={(e) => {
               e.stopPropagation();
               onClose();
@@ -99,7 +99,7 @@ function OSWindow({
           >
             <X className="w-2.5 h-2.5 text-rose-950 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
-          <button
+          <button type="button"
             onClick={(e) => {
               e.stopPropagation();
               onMinimize();
@@ -109,7 +109,7 @@ function OSWindow({
           >
             <Minus className="w-2.5 h-2.5 text-amber-950 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
-          <button
+          <button type="button"
             onClick={(e) => {
               e.stopPropagation();
               onMaximize();
@@ -431,9 +431,9 @@ export default function TransparentDesktopOverlayOS() {
             <Globe className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '15s' }} />
             <span className="font-mono tracking-wider">CP_OS</span>
           </div>
-          <button className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors">File</button>
-          <button className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors">View</button>
-          <button
+          <button type="button" className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors">File</button>
+          <button type="button" className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors">View</button>
+          <button type="button"
             onClick={() => openWindow('contact')}
             className="hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors text-rose-400 hover:text-rose-300"
           >
@@ -467,7 +467,7 @@ export default function TransparentDesktopOverlayOS() {
                 const Icon = app.icon;
                 const isOpen = windowStates[app.id].isOpen && !windowStates[app.id].isMinimized;
                 return (
-                  <button
+                  <button type="button"
                     key={app.id}
                     onClick={() => openWindow(app.id)}
                     className="flex flex-col items-center justify-center p-2 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 group transition-all text-center select-none cursor-pointer"
@@ -938,7 +938,7 @@ export default function TransparentDesktopOverlayOS() {
                       {app.title}
                     </div>
 
-                    <button
+                    <button type="button"
                       onClick={() => {
                         if (isOpen && !isMinimized && isFocused) {
                           minimizeWindow(app.id);
@@ -993,7 +993,7 @@ export default function TransparentDesktopOverlayOS() {
             {/* Mobile Tab Navigation */}
             <div className="flex overflow-x-auto py-1 space-x-2 scrollbar-none shrink-0 select-none">
               {apps.map((app) => (
-                <button
+                <button type="button"
                   key={app.id}
                   onClick={() => setActiveTab(app.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer border ${
@@ -1196,7 +1196,7 @@ export default function TransparentDesktopOverlayOS() {
                 const Icon = app.icon;
                 const isActive = activeTab === app.id;
                 return (
-                  <button
+                  <button type="button"
                     key={app.id}
                     onClick={() => setActiveTab(app.id)}
                     className={`p-2 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${

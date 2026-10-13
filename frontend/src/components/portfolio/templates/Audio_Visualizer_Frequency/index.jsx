@@ -159,7 +159,7 @@ export default function Audio_Visualizer_Frequency({ portfolioData }) {
 
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           {SECTIONS.map(s => (
-            <button
+            <button type="button"
               key={s}
               onClick={() => setActive(s)}
               style={{
@@ -182,7 +182,7 @@ export default function Audio_Visualizer_Frequency({ portfolioData }) {
             </button>
           ))}
 
-          <button
+          <button type="button"
             onClick={() => setPlaying(p => !p)}
             style={{
               width: "36px",
@@ -292,7 +292,7 @@ export default function Audio_Visualizer_Frequency({ portfolioData }) {
               </div>
 
               <div style={{ display: "flex", gap: "16px" }}>
-                <button
+                <button type="button"
                   onClick={() => setActive("projects")}
                   style={{
                     padding: "14px 32px",
@@ -308,7 +308,7 @@ export default function Audio_Visualizer_Frequency({ portfolioData }) {
                 >
                   See My Work ◆
                 </button>
-                <button
+                <button type="button"
                   onClick={() => setActive("contact")}
                   style={{
                     padding: "14px 32px",

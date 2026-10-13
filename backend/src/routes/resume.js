@@ -1,5 +1,6 @@
 import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
+import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { paginate, paginatedResponse } from '../middleware/paginate.js';
 import Resume from '../models/Resume.model.js';
@@ -17,6 +18,7 @@ import {
 import { scrapeLinkedInProfile, profileToResumeText } from '../services/linkedinImporter.js';
 import { fetchGitHubProfile, convertGitHubToResumeText } from '../services/githubImporter.js';
 import { getDefaultProvider } from '../config/aiProviders.js';
+import { analyzeResume } from '../services/resumeService.js';
 
 const router = express.Router();
 
@@ -435,7 +437,12 @@ router.post('/import/github/preview', verifyToken, asyncHandler(async (req, res)
     throw new ApiError(400, 'GitHub username is required');
   }
 
-  const profileData = await fetchGitHubProfile(username.trim());
+  let cleanUsername = username.trim();
+  cleanUsername = cleanUsername.replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@/, '');
+  cleanUsername = cleanUsername.split('/')[0].trim();
+
+  const githubToken = req.headers['x-github-token'] || null;
+  const profileData = await fetchGitHubProfile(cleanUsername, githubToken);
   res.json({
     success: true,
     preview: profileData
@@ -451,7 +458,9 @@ router.post('/import/github', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(400, 'GitHub username or profile data is required');
   }
 
-  const profile = cachedProfile || await fetchGitHubProfile(username.trim());
+  let cleanUsername = username ? username.trim().replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@/, '').split('/')[0].trim() : '';
+  const githubToken = req.headers['x-github-token'] || null;
+  const profile = cachedProfile || await fetchGitHubProfile(cleanUsername, githubToken);
   const resumeText = convertGitHubToResumeText(profile);
   const title = `${profile.name || username} GitHub Profile — Imported ${new Date().toLocaleDateString()}`;
 
@@ -575,7 +584,9 @@ ${text}`;
   }
 }));
 
-router.post('/score', asyncHandler(async (req, res) => {
+// NOTE: this endpoint spends a hosted AI call, so it must stay behind
+// authentication and the AI rate limiter like every other AI route.
+router.post('/score', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -585,38 +596,11 @@ router.post('/score', asyncHandler(async (req, res) => {
     });
   }
 
+  const analysisResult = await analyzeResume(resumeText);
+
   res.json({
     success: true,
-    data: {
-      overallScore: 82,
-      sections: {
-        summary: {
-          score: 80,
-          feedback: "Good professional summary"
-        },
-        skills: {
-          score: 85,
-          feedback: "Skills are relevant"
-        },
-        experience: {
-          score: 78,
-          feedback: "Add more quantified achievements"
-        },
-        education: {
-          score: 88,
-          feedback: "Education section is clear"
-        },
-        projects: {
-          score: 79,
-          feedback: "Projects need more impact metrics"
-        }
-      },
-      topSuggestions: [
-        "Add measurable achievements",
-        "Improve project descriptions",
-        "Use stronger action verbs"
-      ]
-    }
+    data: analysisResult
   });
 }));
 

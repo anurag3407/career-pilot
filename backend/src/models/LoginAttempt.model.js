@@ -4,7 +4,6 @@ const loginAttemptSchema = new mongoose.Schema({
   ip: {
     type: String,
     required: true,
-    unique: true,
     index: true
   },
   email: {
@@ -24,5 +23,7 @@ const loginAttemptSchema = new mongoose.Schema({
 // Index for rate-limit checks combining IP + email
 loginAttemptSchema.index({ ip: 1, email: 1 }, { background: true });
 loginAttemptSchema.index({ lockoutUntil: 1 }, { background: true, sparse: true });
+// Automatically expire login attempt logs after 24 hours of inactivity
+loginAttemptSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 86400, background: true });
 
 export default mongoose.model('LoginAttempt', loginAttemptSchema);

@@ -658,15 +658,19 @@ const PortfolioBuilderHero = ({
     { label: 'Sections', value: '5', color: 'bg-violet-400' },
   ];
 
-  const deployTargets = ['GitHub Pages', 'Cloudflare', 'Netlify', 'Vercel'];
+  const previewInitials = previewName && previewName !== 'Your Name'
+    ? previewName
+        .split(' ')
+        .filter(Boolean)
+        .map((part) => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'AM';
 
-  const previewInitials = previewName
-    .split(' ')
-    .filter(Boolean)
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase() || 'YN';
+  const displayName = previewName && previewName !== 'Your Name' ? previewName : 'Anurag Mishra';
+
+  const [lens, setLens] = useState('developer'); // 'developer' (01 · The Build) or 'designer' (02 · The Studio)
 
   const primaryButton = (
     <span className="inline-flex items-center justify-center gap-2">
@@ -793,6 +797,7 @@ const PortfolioBuilderHero = ({
           </MotionDiv>
         </div>
 
+        {/* RIGHT SIDE REALISTIC PORTFOLIO SITE MOCKUP (ANURAG MISHRA REFERENCE) */}
         <MotionDiv
           variants={previewV}
           initial="hidden"
@@ -800,94 +805,198 @@ const PortfolioBuilderHero = ({
           className="relative mx-auto w-full max-w-xl lg:max-w-none"
           aria-label="Portfolio Builder preview mockup"
         >
-          <div className="absolute -inset-6 rounded-[2rem] bg-emerald-400/10 blur-3xl" />
+          <div className="absolute -inset-6 rounded-[2.5rem] bg-emerald-500/15 blur-3xl" />
 
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 p-4 shadow-2xl shadow-emerald-950/30 backdrop-blur-xl sm:p-5">
-            <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-300">
-                  Portfolio preview
-                </p>
-                <p className="mt-1 text-sm text-slate-400">
-                  Sample layout generated from portfolio details
-                </p>
-              </div>
-              <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-300">
-                Ready
-              </span>
-            </div>
-
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-300 to-sky-400 text-sm font-black text-slate-950 shadow-lg shadow-emerald-500/20">
-                    {previewInitials}
-                  </div>
-                  <p className="mt-5 text-2xl font-black text-white">
-                    {previewName}
-                  </p>
-                  <p className="mt-2 max-w-sm text-sm leading-6 text-slate-400">
-                    Frontend developer portfolio with projects, skills,
-                    experience, and contact sections.
-                  </p>
-                </div>
-
-                <div className="rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-300">
-                  Published
+          {/* Browser Frame */}
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-[#08080a] shadow-2xl shadow-emerald-950/40 backdrop-blur-2xl">
+            
+            {/* Safari/Browser Header Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-[#0d0d12] px-4 py-3">
+              <div className="flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-rose-500/80" />
+                <span className="h-3 w-3 rounded-full bg-amber-500/80" />
+                <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
+                
+                <div className="ml-3 flex items-center gap-2 rounded-lg bg-black/50 px-3 py-1 text-xs font-mono text-slate-300 border border-white/10">
+                  <span className="text-emerald-400">🔒</span>
+                  <span>https://anurag-mishra-one.vercel.app</span>
                 </div>
               </div>
 
-              <div className="mt-6 grid grid-cols-3 gap-3">
-                {previewHighlights.map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-2xl border border-white/10 bg-slate-900/80 p-3"
-                  >
-                    <div className={cn('mb-3 h-2 w-8 rounded-full', item.color)} />
-                    <div className="text-xl font-black text-white">
-                      {item.value}
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      {item.label}
+              <div className="flex items-center gap-2 text-xs font-mono">
+                <span className="text-[10px] text-slate-400 uppercase tracking-widest hidden sm:inline">Choose Lens</span>
+                <span className="rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-[11px] font-bold text-emerald-300">
+                  Live Portfolio
+                </span>
+              </div>
+            </div>
+
+            {/* DUAL-LENS PORTFOLIO CONTAINER (ANURAG MISHRA) */}
+            <div className="p-5">
+              
+              {/* Header Identity Bar */}
+              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-indigo-500 p-0.5 shadow-lg shadow-emerald-500/20">
+                    <div className="h-full w-full rounded-[10px] bg-slate-950 flex items-center justify-center font-bold text-white font-mono text-sm">
+                      {previewInitials}
                     </div>
                   </div>
-                ))}
+                  <div>
+                    <h3 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                      {displayName}
+                      <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    </h3>
+                    <p className="text-xs text-slate-400 font-mono">
+                      Two worlds, one mind — Designer & Developer
+                    </p>
+                  </div>
+                </div>
+
+                <a 
+                  href="https://anurag-mishra-one.vercel.app/" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white hover:bg-emerald-500/20 hover:border-emerald-500/30 transition-all flex items-center gap-1 font-mono"
+                >
+                  Visit Site ↗
+                </a>
               </div>
 
-              <div className="mt-6 space-y-3">
-                {['AI Resume Builder', 'GitHub Project Visualizer', 'CareerPilot Dashboard'].map(
-                  (project) => (
-                    <div
-                      key={project}
-                      className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3"
-                    >
-                      <span className="text-sm font-semibold text-slate-200">
-                        {project}
+              {/* Lens Toggle Switcher: 01 Developer vs 02 Designer */}
+              <div className="grid grid-cols-2 gap-2 my-4 p-1 rounded-xl bg-white/5 border border-white/10 text-xs font-mono">
+                <button
+                  onClick={() => setLens('developer')}
+                  className={cn(
+                    "py-2 rounded-lg transition-all flex items-center justify-center gap-2 font-bold",
+                    lens === 'developer'
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-md"
+                      : "text-slate-400 hover:text-slate-200"
+                  )}
+                >
+                  <span>01 · The Build</span>
+                  <span className="text-[10px] font-normal text-slate-400">(Developer)</span>
+                </button>
+                
+                <button
+                  onClick={() => setLens('designer')}
+                  className={cn(
+                    "py-2 rounded-lg transition-all flex items-center justify-center gap-2 font-bold",
+                    lens === 'designer'
+                      ? "bg-purple-500/20 text-purple-300 border border-purple-500/30 shadow-md"
+                      : "text-slate-400 hover:text-slate-200"
+                  )}
+                >
+                  <span>02 · The Studio</span>
+                  <span className="text-[10px] font-normal text-slate-400">(Designer)</span>
+                </button>
+              </div>
+
+              {/* DEVELOPER LENS VIEW */}
+              {lens === 'developer' && (
+                <div className="space-y-3 font-sans">
+                  <div className="p-4 rounded-2xl bg-slate-900/90 border border-emerald-500/30">
+                    <div className="flex items-center justify-between mb-2 font-mono text-xs">
+                      <span className="text-emerald-300 font-bold uppercase tracking-wider">Engineering Systems That Scale</span>
+                      <span className="text-slate-500">Full-Stack & Systems</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                      Building high-performance web applications, distributed AST parsers, AI career tooling, and scalable cloud architectures.
+                    </p>
+
+                    {/* Code Stack Badges */}
+                    <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
+                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">TypeScript</span>
+                      <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">React / Next.js</span>
+                      <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">Node.js</span>
+                      <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20">Rust</span>
+                      <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Python</span>
+                    </div>
+                  </div>
+
+                  {/* Real Project Card 1 */}
+                  <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-emerald-500/40 transition-all">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-mono text-sm font-bold text-white flex items-center gap-2">
+                        🚀 CareerPilot OS
                       </span>
-                      <span className="text-xs font-medium text-emerald-300">
-                        Featured
+                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        Featured Build
                       </span>
                     </div>
-                  )
-                )}
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      AI-powered career operating system for resume roasters, codebase visualizers, and 3D portfolio generators.
+                    </p>
+                  </div>
+
+                  {/* Real Project Card 2 */}
+                  <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-emerald-500/40 transition-all">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-mono text-sm font-bold text-white flex items-center gap-2">
+                        ⚡ Codebase Architecture Graph
+                      </span>
+                      <span className="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
+                        AST Parser
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      3D interactive graph canvas parsing module call trees and cross-boundary function relationships in 10s.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* DESIGNER LENS VIEW */}
+              {lens === 'designer' && (
+                <div className="space-y-3 font-sans">
+                  <div className="p-4 rounded-2xl bg-purple-950/40 border border-purple-500/30">
+                    <div className="flex items-center justify-between mb-2 font-mono text-xs">
+                      <span className="text-purple-300 font-bold uppercase tracking-wider">Designing Things That Mean Something</span>
+                      <span className="text-slate-500">UI/UX & Craft</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                      Creating high-craft digital products, fluid motion micro-interactions, responsive design systems, and typography-driven interfaces.
+                    </p>
+
+                    {/* Design Skills */}
+                    <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
+                      <span className="px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Design Systems</span>
+                      <span className="px-2 py-0.5 rounded bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/20">Figma / Craft</span>
+                      <span className="px-2 py-0.5 rounded bg-pink-500/10 text-pink-300 border border-pink-500/20">Framer Motion</span>
+                      <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">Typography</span>
+                    </div>
+                  </div>
+
+                  {/* Design Project Card 1 */}
+                  <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-purple-500/40 transition-all">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-mono text-sm font-bold text-white flex items-center gap-2">
+                        ✨ Minimalist Studio Portfolio
+                      </span>
+                      <span className="text-[10px] font-mono text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
+                        Design System
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Custom typography-first studio lens with smooth scroll transitions and interactive cursor shaders.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Footer Bar */}
+              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                  Deployed on Vercel
+                </span>
+                <span className="text-slate-400">
+                  © 2026 Anurag Mishra
+                </span>
               </div>
+
             </div>
 
-            <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4">
-              <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
-                Powers deploys to
-              </p>
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-                {deployTargets.map((target) => (
-                  <span
-                    key={target}
-                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-semibold text-slate-300"
-                  >
-                    {target}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
         </MotionDiv>
       </div>

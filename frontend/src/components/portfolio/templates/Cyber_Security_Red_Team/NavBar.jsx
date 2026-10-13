@@ -136,7 +136,7 @@ export function NavBar() {
           <span className="text-[#FF2B2B] opacity-0 group-hover:opacity-100 animate-pulse font-bold">_</span>
         </a>
 
-        <button className="lg:hidden text-[#9A9A9A] hover:text-[#FF2B2B] transition-colors" onClick={() => setOpen(!open)}>
+        <button type="button" className="lg:hidden text-[#9A9A9A] hover:text-[#FF2B2B] transition-colors" onClick={() => setOpen(!open)}>
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>

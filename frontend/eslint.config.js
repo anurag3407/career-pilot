@@ -4,13 +4,22 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: [
+  'dist/**',
+  'coverage/**',
+  'node_modules/**',
+  'public/**',
+  'scripts/**',
+  'vite.config.js',
+  'vite.standalone.config.js',
+  'src/components/portfolio/templates/**',
+] },
   js.configs.recommended,
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['src/**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
-      globals: globals.browser,
+      globals: { ...globals.browser, ...globals.node },
       parserOptions: {
         ecmaFeatures: { jsx: true },
         sourceType: 'module',
@@ -29,8 +38,17 @@ export default [
       'react-hooks/static-components': 'off',
       'no-empty': 'off',
       'react-hooks/exhaustive-deps': 'warn',
-      'no-undef': 'warn',
-      'react-compiler/react-compiler': 'off'
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-undef': 'error',
+    },
+  },
+  {
+    files: ['src/**/__tests__/**/*.{js,jsx}', 'src/**/*.test.{js,jsx}', '.storybook/**/*.{js,jsx}'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node, ...globals.vitest },
+    },
+    rules: {
+      'no-console': 'off',
     },
   },
 ]

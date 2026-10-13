@@ -99,7 +99,7 @@ export default function FeatureLandingHero({
             {/* Stats Strip */}
             {stats && stats.length > 0 && (
               <motion.div variants={itemVariants} className="pt-8 border-t border-border mt-8">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   {stats.map((stat, i) => (
                     <div key={i} className="flex flex-col">
                       <span className="text-2xl sm:text-3xl font-bold text-foreground">

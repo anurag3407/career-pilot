@@ -253,15 +253,15 @@ export default function DuotoneBold() {
 
       {/* ── Navbar ── */}
       <nav className="dt-nav">
-        <button className="dt-nav-link" onClick={() => scrollTo("hero")} style={{ color: C.orange, fontSize: 16, fontWeight: 800, letterSpacing: 4 }}>
+        <button type="button" className="dt-nav-link" onClick={() => scrollTo("hero")} style={{ color: C.orange, fontSize: 16, fontWeight: 800, letterSpacing: 4 }}>
           {data.personal.name.split(" ")[0].toUpperCase()}
         </button>
         <div className="dt-nav-desktop">
           {sections.map((s) => (
-            <button key={s} className="dt-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
+            <button type="button" key={s} className="dt-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
           ))}
         </div>
-        <button className="dt-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+        <button type="button" className="dt-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           {[0,1,2].map(i => (
             <div key={i} style={{ width: 24, height: 2, background: i === 1 ? C.orange : C.white, margin: "4px 0", transition: "all .2s",
               transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(4px,5px)" : i === 2 ? "rotate(-45deg) translate(4px,-5px)" : "none") : "none",
@@ -275,7 +275,7 @@ export default function DuotoneBold() {
           <motion.div className="dt-mobile-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
             style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {sections.map((s) => (
-              <button key={s} className="dt-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
+              <button type="button" key={s} className="dt-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
                 <span style={{ color: C.orange, marginRight: 8 }}>→</span>{s}
               </button>
             ))}
@@ -312,10 +312,10 @@ export default function DuotoneBold() {
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}
               style={{ display: "flex", flexWrap: "wrap", gap: 16, marginBottom: 48 }}>
-              <button className="dt-btn dt-btn-primary" onClick={() => scrollTo("projects")}>
+              <button type="button" className="dt-btn dt-btn-primary" onClick={() => scrollTo("projects")}>
                 <span>View Work</span><ArrowRight size={14} />
               </button>
-              <button className="dt-btn dt-btn-outline" onClick={() => scrollTo("contact")}>
+              <button type="button" className="dt-btn dt-btn-outline" onClick={() => scrollTo("contact")}>
                 <span>Get In Touch</span>
               </button>
             </motion.div>

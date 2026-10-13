@@ -187,7 +187,7 @@ export default function One_Pixel_Master({ portfolioData }) {
         </div>
         <div style={{ display: "flex", gap: "4px" }}>
           {SECTIONS.map(s => (
-            <button key={s} onClick={() => setActive(s)} style={{
+            <button type="button" key={s} onClick={() => setActive(s)} style={{
               padding: "8px 18px",
               borderRadius: "100px",
               border: "none",
@@ -263,7 +263,7 @@ export default function One_Pixel_Master({ portfolioData }) {
             </div>
 
             <div style={{ display: "flex", gap: "16px" }}>
-              <button onClick={() => setActive("projects")} style={{
+              <button type="button" onClick={() => setActive("projects")} style={{
                 padding: "16px 40px",
                 borderRadius: "100px",
                 border: `1px solid ${ACCENT}44`,
@@ -281,7 +281,7 @@ export default function One_Pixel_Master({ portfolioData }) {
               >
                 View My Work ◈
               </button>
-              <button onClick={() => setActive("contact")} style={{
+              <button type="button" onClick={() => setActive("contact")} style={{
                 padding: "16px 40px",
                 borderRadius: "100px",
                 border: "1px solid rgba(255,255,255,0.1)",

@@ -62,7 +62,7 @@ function NavBar({ active, onNav }) {
         {/* Desktop links */}
         <div className="hidden md:flex" style={{ gap: '1.75rem' }}>
           {NAV_LINKS.map(({ id, label }) => (
-            <button key={id} onClick={() => handleNav(id)}
+            <button type="button" key={id} onClick={() => handleNav(id)}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
                 fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.15em',
@@ -77,7 +77,7 @@ function NavBar({ active, onNav }) {
         </div>
 
         {/* Hamburger */}
-        <button
+        <button type="button"
           className="md:hidden flex flex-col justify-center items-center gap-[5px] w-9 h-9"
           onClick={() => setOpen(o => !o)}
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
@@ -103,7 +103,7 @@ function NavBar({ active, onNav }) {
               boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
             }}>
             {NAV_LINKS.map(({ id, label }) => (
-              <button key={id} onClick={() => handleNav(id)}
+              <button type="button" key={id} onClick={() => handleNav(id)}
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   width: '100%', padding: '1rem 1.5rem',

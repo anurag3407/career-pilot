@@ -153,7 +153,7 @@ export default function InvoiceSection({ data }) {
 
               {/* Download Button */}
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 20 }}>
-                <button className="fi-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 22px', borderRadius: 8, fontSize: 14, fontWeight: 600 }}>
+                <button type="button" className="fi-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 22px', borderRadius: 8, fontSize: 14, fontWeight: 600 }}>
                   <Download size={16} />
                   Download Invoice
                 </button>
@@ -177,7 +177,7 @@ export default function InvoiceSection({ data }) {
 
               <div style={{ maxHeight: 300, overflowY: 'auto' }}>
                 {(projects || []).slice(0, 5).map((proj, i) => (
-                  <button
+                  <button type="button"
                     key={i}
                     onClick={() => setActiveProject(i)}
                     style={{
@@ -212,7 +212,7 @@ export default function InvoiceSection({ data }) {
                     <span style={{ fontSize: 12, fontWeight: 600, color: '#1E40AF' }}>{s.value}</span>
                   </div>
                 ))}
-                <button className="fi-btn-outline" style={{ width: '100%', marginTop: 12, padding: '8px', borderRadius: 8, fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                <button type="button" className="fi-btn-outline" style={{ width: '100%', marginTop: 12, padding: '8px', borderRadius: 8, fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                   <CheckCircle2 size={13} />
                   Request Quote
                 </button>

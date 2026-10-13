@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import semver from 'semver';
-import fetch from 'node-fetch';
+
 
 export const parseDependencyFiles = async (repoPath) => {
   const manifests = [];

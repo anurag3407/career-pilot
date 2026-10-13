@@ -73,7 +73,7 @@ function CloneCommand({ username }) {
     <div className="flex items-center gap-2 bg-[#161B22] border border-[#30363D] rounded-md px-3 py-2 font-mono text-xs text-[#8B949E] group">
       <span className="text-[#3FB950]">$</span>
       <span className="flex-1 truncate text-white">{cmd}</span>
-      <button
+      <button type="button"
         onClick={copy}
         aria-label="Copy clone command"
         id="clone-copy-btn"
@@ -272,7 +272,7 @@ export default function Hero() {
               transition={{ delay: 1.15, duration: 0.5 }}
               className="flex flex-wrap gap-3"
             >
-              <button
+              <button type="button"
                 id="hero-clone-btn"
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                 className="flex items-center gap-2 bg-[#238636] hover:bg-[#2EA043] border border-[#3FB950]/50 text-white rounded-md px-4 py-2 text-sm font-medium transition-all"

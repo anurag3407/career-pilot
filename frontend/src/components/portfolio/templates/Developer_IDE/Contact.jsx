@@ -41,7 +41,7 @@ export default function Contact({ personal, socials }) {
           <div className="mt-8 mb-4 border-t border-[#30363d] pt-8 flex flex-col items-center font-sans">
             <p className="text-[#8b949e] mb-6 text-center">{"// Run the command above or reach out directly:"}</p>
             <div className="flex gap-4">
-              <button 
+              <button type="button" 
                 onClick={handleCopy}
                 className="px-6 py-2 rounded-md bg-[#21262d] border border-[#30363d] hover:border-[#8b949e] transition-colors text-[#e6edf3] font-medium"
               >

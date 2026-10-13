@@ -286,7 +286,7 @@ export default function MenuBoard({ data }) {
             {/* Menu Category Selection Tags - styled like hanging chalkboard tags */}
             <div className="flex gap-2.5 mb-0 overflow-x-auto pb-2 scrollbar-hide select-none">
               {categories.map((cat) => (
-                <button
+                <button type="button"
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
                   className={`flex items-center gap-2 px-6 py-3.5 rounded-t-2xl font-serif text-sm tracking-wider uppercase transition-all duration-300 relative border-b-0 ${
@@ -418,7 +418,7 @@ export default function MenuBoard({ data }) {
                                   <ExternalLink className="w-3.5 h-3.5" />
                                 </a>
                               )}
-                              <button
+                              <button type="button"
                                 onClick={() => addToOrder(item)}
                                 disabled={isAdded}
                                 className={`flex items-center gap-1.5 text-xs font-mono font-extrabold px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
@@ -610,7 +610,7 @@ export default function MenuBoard({ data }) {
                       <p className="text-xs text-stone-200 leading-relaxed mb-4 font-semibold">{brewedCup.desc}</p>
                       
                       <div className="flex flex-wrap gap-2.5 items-center justify-center md:justify-start">
-                        <button
+                        <button type="button"
                           onClick={() => {
                             addToOrder({
                               id: `custom-brew-${Date.now()}`,
@@ -627,7 +627,7 @@ export default function MenuBoard({ data }) {
                           Add custom brew to order
                         </button>
                         
-                        <button
+                        <button type="button"
                           onClick={() => setBrewedCup(null)}
                           className="border border-stone-600 hover:bg-stone-800 text-stone-200 font-mono text-xs px-4 py-2.5 rounded-xl font-bold flex items-center gap-1.5 transition-all cursor-pointer"
                         >
@@ -642,7 +642,7 @@ export default function MenuBoard({ data }) {
                     <p className="text-xs text-amber-100 font-semibold max-w-md leading-relaxed mb-5">
                       Select a Base, Flavor Syrup, and Sweetener in the panel above, then activate the brewer to generate a custom project card recipe.
                     </p>
-                    <button
+                    <button type="button"
                       onClick={handleBrew}
                       disabled={!brewBase || !brewFlavor || !brewSweetener}
                       className={`font-mono text-sm px-6 py-3 rounded-xl font-black uppercase tracking-wider transition-all duration-300 cursor-pointer ${
@@ -725,7 +725,7 @@ export default function MenuBoard({ data }) {
                             </div>
                             <div className="flex items-center gap-2 font-mono">
                               <span className="font-extrabold text-[#2c1a11]">{item.price}</span>
-                              <button 
+                              <button type="button" 
                                 onClick={() => removeFromOrder(item.id)}
                                 className="text-stone-400 hover:text-red-700 hover:bg-stone-200/50 p-1 rounded transition-colors cursor-pointer"
                                 title="Remove item"
@@ -763,7 +763,7 @@ export default function MenuBoard({ data }) {
 
                 {/* Receipt Footer Action - Highly visible buttons */}
                 <div className="mt-8">
-                  <button
+                  <button type="button"
                     disabled={orderItems.length === 0}
                     onClick={() => setShowInquiryModal(true)}
                     className="w-full font-mono text-xs font-black uppercase tracking-widest py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer bg-amber-900 text-white hover:bg-[#522b13] shadow-md shadow-amber-900/20 active:translate-y-[1px] disabled:bg-stone-300 disabled:text-stone-600 disabled:border disabled:border-stone-400/60 disabled:shadow-none disabled:cursor-not-allowed"

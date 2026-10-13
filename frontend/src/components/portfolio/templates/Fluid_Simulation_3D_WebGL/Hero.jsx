@@ -109,7 +109,7 @@ export default function Hero({ data }) {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4"
           >
-            <button
+            <button type="button"
               onClick={handleEnterFlow}
               onMouseEnter={triggerHoverBurst}
               className="px-8 py-3.5 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 font-bold rounded-xl flex items-center gap-2.5 transition-all shadow-lg shadow-cyan-500/20 hover:scale-105 active:scale-95 cursor-pointer text-sm tracking-wide"

@@ -126,7 +126,7 @@ export default function Projects() {
 
                 {/* Like / save / views — Dribbble style */}
                 <div className="flex items-center gap-4 pt-3 border-t border-[#f5f5f5]">
-                  <button
+                  <button type="button"
                     onClick={() => setLiked(p => ({ ...p, [i]: !p[i] }))}
                     className="flex items-center gap-1.5"
                   >
@@ -139,7 +139,7 @@ export default function Projects() {
                     <span className="text-[#ccc] text-[10px]">{(42 + i * 11) + (liked[i] ? 1 : 0)}</span>
                   </button>
 
-                  <button
+                  <button type="button"
                     onClick={() => setSaved(p => ({ ...p, [i]: !p[i] }))}
                     className="flex items-center gap-1.5"
                   >

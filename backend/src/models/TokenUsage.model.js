@@ -25,11 +25,10 @@ const tokenUsageSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+}, { timestamps: true });
+
+tokenUsageSchema.index({ userId: 1, createdAt: -1 }, { background: true });
+tokenUsageSchema.index({ userId: 1, provider: 1, createdAt: -1 }, { background: true });
 
 const TokenUsage = mongoose.model('TokenUsage', tokenUsageSchema);
 

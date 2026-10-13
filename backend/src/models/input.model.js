@@ -72,5 +72,8 @@ const inputSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+inputSchema.index({ user: 1, createdAt: -1 }, { background: true });
+
 const inputModel = mongoose.model("input", inputSchema);
 export default inputModel;

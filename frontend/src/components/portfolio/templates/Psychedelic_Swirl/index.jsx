@@ -515,7 +515,7 @@ function Nav() {
           </a>
 
           {/* Mobile hamburger */}
-          <button onClick={() => setOpen(o => !o)} style={{
+          <button type="button" onClick={() => setOpen(o => !o)} style={{
             background: 'none', border: 'none', color: C.text, cursor: 'pointer', padding: 6,
           }} className="flex md:hidden">
             {open ? <X size={26} /> : <Menu size={26} />}
@@ -1151,7 +1151,7 @@ function Contact() {
                     Far Out! ✿
                   </h3>
                   <p style={{ color: C.sub }}>Thanks for reaching out! I'll get back to you soon.</p>
-                  <button onClick={() => { setStatus('idle'); setForm({ name: '', email: '', message: '' }); }}
+                  <button type="button" onClick={() => { setStatus('idle'); setForm({ name: '', email: '', message: '' }); }}
                     style={{ marginTop: 24, background: 'none', border: `1.5px solid ${C.border}`,
                       color: C.muted, padding: '8px 20px', borderRadius: 20, cursor: 'pointer',
                       fontSize: '0.88rem', transition: 'color 0.2s' }}

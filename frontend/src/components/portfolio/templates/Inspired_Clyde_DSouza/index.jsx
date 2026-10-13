@@ -41,7 +41,7 @@ const InspiredClydeDSouza = ({ portfolioData }) => {
           >
             {/* Chat Header */}
             <div className="bg-[#008f7a] p-6 text-white text-center relative">
-              <button 
+              <button type="button" 
                 onClick={() => setIsChatOpen(false)}
                 className="absolute top-3 right-3 text-white/80 hover:text-white"
               >
@@ -65,10 +65,10 @@ const InspiredClydeDSouza = ({ portfolioData }) => {
 
             {/* Chat Footer Tabs */}
             <div className="border-t border-gray-100 bg-white flex">
-              <button className="flex-1 py-3 flex items-center justify-center text-[#008f7a] hover:bg-gray-50">
+              <button type="button" className="flex-1 py-3 flex items-center justify-center text-[#008f7a] hover:bg-gray-50">
                 <Home size={20} />
               </button>
-              <button className="flex-1 py-3 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600">
+              <button type="button" className="flex-1 py-3 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600">
                 <MessageSquare size={20} />
               </button>
             </div>

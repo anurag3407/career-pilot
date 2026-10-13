@@ -72,7 +72,7 @@ export default function ResumeCTA() {
 
           {/* CTA Buttons */}
           <div className="mt-16 flex flex-col items-center justify-center gap-5 sm:flex-row">
-            <button className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 px-9 py-4 text-lg font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-105 hover:shadow-[0_0_35px_rgba(250,204,21,0.6)]">
+            <button type="button" className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 px-9 py-4 text-lg font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-105 hover:shadow-[0_0_35px_rgba(250,204,21,0.6)]">
               Download Resume
               <Download
                 size={22}
@@ -80,7 +80,7 @@ export default function ResumeCTA() {
               />
             </button>
 
-            <button className="group flex items-center gap-3 rounded-full border border-yellow-400/40 bg-white/5 px-9 py-4 text-lg font-black uppercase tracking-wide text-yellow-300 backdrop-blur-md transition-all duration-300 hover:border-yellow-300 hover:bg-yellow-400 hover:text-black">
+            <button type="button" className="group flex items-center gap-3 rounded-full border border-yellow-400/40 bg-white/5 px-9 py-4 text-lg font-black uppercase tracking-wide text-yellow-300 backdrop-blur-md transition-all duration-300 hover:border-yellow-300 hover:bg-yellow-400 hover:text-black">
               Explore Portfolio
               <ArrowRight
                 size={22}

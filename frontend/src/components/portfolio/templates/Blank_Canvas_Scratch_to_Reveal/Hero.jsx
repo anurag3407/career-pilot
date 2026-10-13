@@ -63,7 +63,7 @@ export default function Hero() {
           className="flex flex-wrap items-center justify-center gap-4"
         >
           {/* Premium White/Black luxury button */}
-          <button 
+          <button type="button" 
             onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
             className="px-8 py-3.5 rounded-xl bg-white hover:bg-slate-200 text-black font-semibold transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_35px_rgba(255,255,255,0.25)] flex items-center gap-2 cursor-pointer group"
           >

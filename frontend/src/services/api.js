@@ -1,4 +1,3 @@
-import { auth } from '../config/firebase'
 import { decryptKey } from '../utils/encryption'
 
 export const apiEvents = new EventTarget();
@@ -7,9 +6,9 @@ const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 // Helper to get auth headers
 async function getAuthHeaders() {
-const user = auth?.currentUser
+const session = window.Clerk?.session
 
-if (!user) {
+if (!session) {
   if (import.meta.env.DEV) {
     return {
       Authorization: `Bearer mock-dev-token`,
@@ -19,7 +18,7 @@ if (!user) {
   throw new Error('Not authenticated')
 }
 
-const token = await user.getIdToken()
+const token = await session.getToken()
 
 const headers = {
   Authorization: `Bearer ${token}`,
@@ -172,10 +171,10 @@ export const authApi = {
 export const uploadApi = {
   // Upload PDF and extract text
   async uploadPdf(file, options = {}) {
-    const user = auth?.currentUser
-    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
+    const session = window.Clerk?.session
+    if (!session && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-    const token = user ? await user.getIdToken() : 'mock-dev-token'
+    const token = session ? await session.getToken() : 'mock-dev-token'
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -193,10 +192,10 @@ export const uploadApi = {
 
   // Extract text from PDF (re-process)
   async extractText(file, options = {}) {
-    const user = auth?.currentUser
-    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
+    const session = window.Clerk?.session
+    if (!session && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-    const token = user ? await user.getIdToken() : 'mock-dev-token'
+    const token = session ? await session.getToken() : 'mock-dev-token'
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -325,10 +324,10 @@ export const resumeApi = {
 
   // Download resume as PDF
   async downloadPdf(resumeId, version = 'enhanced') {
-    const user = auth?.currentUser
-    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
+    const session = window.Clerk?.session
+    if (!session && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-    const token = user ? await user.getIdToken() : 'mock-dev-token'
+    const token = session ? await session.getToken() : 'mock-dev-token'
     const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}`, {
       method: 'GET',
       headers: {
@@ -500,6 +499,16 @@ export const portfolioApi = {
     });
     return handleResponse(response);
   },
+  // Validate a deploy provider token (cloudflare | netlify | github)
+  async validateDeployToken(provider, token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/validate-token`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ provider, token })
+    })
+    return handleResponse(response)
+  },
   // Deploy portfolio to Cloudflare Pages
   async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();
@@ -509,6 +518,54 @@ export const portfolioApi = {
       body: JSON.stringify({ slug, sections, templateId, title, provider, token })
     });
     return handleResponse(response);
+  }
+}
+
+// ============ SALARY API ============
+export const salaryApi = {
+  // Estimate a salary band for a role / location / level
+  async estimate({ title, location, experienceLevel }) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/salary/estimate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ title, location, experienceLevel })
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ OUTREACH API ============
+export const outreachApi = {
+  // Start an outreach generation job (async; poll or listen on socket)
+  async generate(companyUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/outreach/generate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ companyUrl })
+    })
+    return handleResponse(response)
+  },
+
+  // Get the status and drafts of a generation job
+  async getById(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/outreach/${id}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // List the user's outreach records
+  async getAll() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/outreach`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
   }
 }
 
@@ -608,6 +665,17 @@ export const enhanceApi = {
       method: 'POST',
       headers,
       body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Predict possible career paths from a resume profile
+  async careerTrajectory(resumeData) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/career-trajectory`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeData })
     })
     return handleResponse(response)
   },
@@ -842,6 +910,17 @@ export const aiApi = {
       method: 'POST',
       headers,
       body: JSON.stringify({ provider, apiKey, ...config })
+    })
+    return handleResponse(response)
+  },
+
+  // Exchange OpenRouter PKCE auth code for API key
+  async openRouterOAuthExchange(code, codeVerifier) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/openrouter/oauth-exchange`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code, code_verifier: codeVerifier })
     })
     return handleResponse(response)
   }

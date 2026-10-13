@@ -135,7 +135,7 @@ export default function Testimonials({ data }) {
 
             {/* Navigation */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-              <button onClick={prev} style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+              <button type="button" onClick={prev} style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
                 onMouseOver={e => e.currentTarget.style.background = 'rgba(37,99,235,0.5)'}
                 onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
               >
@@ -144,7 +144,7 @@ export default function Testimonials({ data }) {
               <div style={{ fontSize: 12, color: '#64748B', fontWeight: 600 }}>
                 {active + 1}/{testimonials?.length}
               </div>
-              <button onClick={next} style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+              <button type="button" onClick={next} style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
                 onMouseOver={e => e.currentTarget.style.background = 'rgba(37,99,235,0.5)'}
                 onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
               >
@@ -156,7 +156,7 @@ export default function Testimonials({ data }) {
           {/* Dots */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 24, position: 'relative', zIndex: 1 }}>
             {(testimonials || []).map((_, di) => (
-              <button
+              <button type="button"
                 key={di}
                 onClick={() => setActive(di)}
                 style={{ width: di === active ? 20 : 8, height: 8, borderRadius: 4, background: di === active ? '#2563EB' : 'rgba(255,255,255,0.2)', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0 }}

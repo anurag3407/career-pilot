@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 import { createSocketOptions } from './socketOptions.js';
 import { socketAuthMiddleware } from '../middleware/socketAuth.js';
-import { setupSocketHandlers } from '../services/socketServiceFirebase.js';
+
 import { presenceService } from '../services/presenceService.js';
 
 let io = null;
@@ -57,8 +57,7 @@ if (process.env.NODE_ENV !== 'production') {
       timestamp: new Date()
     });
 
-    // Setup all socket event handlers
-    setupSocketHandlers(io, socket);
+
 
     // Handle channel presence subscription
     socket.on('join_channel', async (channelId) => {

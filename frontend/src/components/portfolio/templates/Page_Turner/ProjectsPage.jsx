@@ -56,8 +56,8 @@ const ProjectsPage = React.forwardRef(function ProjectsPage(_, ref) {
           <div className="shrink-0 pt-3 border-t border-slate-800 flex justify-between items-center">
             <span className="text-[9px] font-mono text-slate-600">PAGE {currentPage + 1} / {totalPages || 1}</span>
             <div className="flex gap-2">
-              <button disabled={currentPage === 0} onClick={() => setCurrentPage(p => p - 1)} className="px-3 py-1 text-[9px] border border-cyan-500/30 text-cyan-400 disabled:opacity-20 uppercase font-mono">Prev</button>
-              <button disabled={currentPage >= totalPages - 1} onClick={() => setCurrentPage(p => p + 1)} className="px-3 py-1 text-[9px] border border-cyan-500/30 text-cyan-400 disabled:opacity-20 uppercase font-mono">Next</button>
+              <button type="button" disabled={currentPage === 0} onClick={() => setCurrentPage(p => p - 1)} className="px-3 py-1 text-[9px] border border-cyan-500/30 text-cyan-400 disabled:opacity-20 uppercase font-mono">Prev</button>
+              <button type="button" disabled={currentPage >= totalPages - 1} onClick={() => setCurrentPage(p => p + 1)} className="px-3 py-1 text-[9px] border border-cyan-500/30 text-cyan-400 disabled:opacity-20 uppercase font-mono">Next</button>
             </div>
           </div>
         </div>

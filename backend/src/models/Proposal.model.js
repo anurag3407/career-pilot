@@ -46,16 +46,8 @@ const proposalSchema = new mongoose.Schema({
     corporateFeedback: {
         type: String,
         default: null
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
-});
+}, { timestamps: true });
 
 proposalSchema.index({ challengeId: 1, studentId: 1 }, { unique: true, background: true });
 proposalSchema.index({ studentId: 1, status: 1 }, { background: true });
@@ -63,10 +55,6 @@ proposalSchema.index({ studentId: 1, createdAt: -1 }, { background: true });
 proposalSchema.index({ challengeId: 1, createdAt: -1 }, { background: true });
 proposalSchema.index({ challengeId: 1, status: 1 }, { background: true });
 proposalSchema.index({ challengeId: 1, status: 1, createdAt: -1 }, { background: true });
-
-proposalSchema.pre('save', function () {
-    this.updatedAt = new Date();
-});
 
 const Proposal = mongoose.model('Proposal', proposalSchema);
 

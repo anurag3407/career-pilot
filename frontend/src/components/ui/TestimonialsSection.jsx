@@ -1,28 +1,28 @@
 import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
-import { TestimonialsColumn } from "./testimonials-columns";
+import { Star } from "lucide-react";
 
 const testimonials = [
   {
-    text: "careerpilot's AI resume enhancement is incredible. It helped me tailor my resume perfectly for each application. Landed my dream job in 3 weeks!",
+    text: "careerpilot's AI resume enhancement is incredible. Landed my dream job in 3 weeks!",
     image: "https://randomuser.me/api/portraits/women/1.jpg",
     name: "Sarah Chen",
     role: "Software Engineer at Google",
+    featured: true,
   },
   {
-    text: "The job tracking feature kept me organized throughout my search. The AI suggestions were spot-on. Highly recommend to any serious job seeker.",
+    text: "The job tracking feature kept me organized throughout my search. Highly recommend.",
     image: "https://randomuser.me/api/portraits/men/2.jpg",
     name: "Michael Rodriguez",
     role: "Product Manager at Meta",
   },
   {
-    text: "Finally, a platform that understands what job seekers actually need. Simple, powerful, and the dark mode is gorgeous!",
+    text: "Finally, a platform that understands what job seekers actually need.",
     image: "https://randomuser.me/api/portraits/women/3.jpg",
     name: "Emily Johnson",
     role: "UX Designer at Apple",
   },
   {
-    text: "The AI matching is incredibly accurate. Found positions I never would have discovered on my own. Complete game changer for my career.",
+    text: "The AI matching is incredibly accurate. Complete game changer for my career.",
     image: "https://randomuser.me/api/portraits/men/4.jpg",
     name: "David Kim",
     role: "Data Scientist at Netflix",
@@ -34,19 +34,19 @@ const testimonials = [
     role: "Engineering Lead at Stripe",
   },
   {
-    text: "Clean interface, powerful features. The job alerts kept me updated on perfect matches. Worth every minute spent on this platform.",
+    text: "Clean interface, powerful features. Worth every minute spent on this platform.",
     image: "https://randomuser.me/api/portraits/men/6.jpg",
     name: "James Wilson",
     role: "Frontend Dev at Vercel",
   },
   {
-    text: "The mock interview feature gave me the confidence I needed. Practiced system design questions and aced my final round.",
+    text: "The mock interview feature gave me the confidence I needed. Aced my final round.",
     image: "https://randomuser.me/api/portraits/women/7.jpg",
     name: "Amanda Foster",
     role: "Backend Engineer at Spotify",
   },
   {
-    text: "Fellowship challenges helped me build real portfolio projects while earning. The community support is unmatched.",
+    text: "Fellowship challenges helped me build real portfolio projects while earning.",
     image: "https://randomuser.me/api/portraits/men/8.jpg",
     name: "Ryan Martinez",
     role: "Full Stack Dev at Airbnb",
@@ -59,124 +59,100 @@ const testimonials = [
   },
 ];
 
-const firstColumn = testimonials.slice(0, 3);
-const secondColumn = testimonials.slice(3, 6);
-const thirdColumn = testimonials.slice(6, 9);
-
-const trustStats = [
+const stats = [
   { value: "4.9/5", label: "Average rating" },
   { value: "50K+", label: "Job seekers" },
   { value: "3x", label: "More interviews" },
   { value: "92%", label: "Would recommend" },
 ];
 
+function TestimonialCard({ t, index }) {
+  const rotation = [-1.5, 0.8, -0.5, 1.2, -0.8, 0.5, -1, 0.8, -0.5][index % 9];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.5, delay: index * 0.06 }}
+      whileHover={{ rotate: 0, scale: 1.02 }}
+      style={{ rotate: `${rotation}deg` }}
+      className={`rounded-2xl border border-border bg-card/60 p-6 backdrop-blur-sm transition-shadow duration-300 hover:shadow-xl ${
+        t.featured ? "md:col-span-2 border-primary/20" : ""
+      }`}
+    >
+      <div className="mb-4 flex gap-1">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+        ))}
+      </div>
+      <p className={`font-medium leading-relaxed text-foreground ${t.featured ? "text-lg md:text-xl" : "text-sm"}`}>
+        "{t.text}"
+      </p>
+      <div className="mt-5 flex items-center gap-3">
+        <img
+          src={t.image}
+          alt={t.name}
+          width={36}
+          height={36}
+          className="h-9 w-9 rounded-full border border-border object-cover"
+        />
+        <div>
+          <p className="text-sm font-bold text-foreground">{t.name}</p>
+          <p className="text-xs text-muted-foreground">{t.role}</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function TestimonialsSection() {
   return (
-    <section className="relative overflow-hidden py-28 lg:py-36">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[400px] w-[760px] -translate-x-1/2 rounded-full bg-secondary/[0.08] blur-[150px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-32 lg:py-40">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          viewport={{ once: true }}
-          className="mx-auto mb-12 flex max-w-2xl flex-col items-center text-center"
-        >
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 backdrop-blur-md">
-            <span className="flex">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-              ))}
-            </span>
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
-              Success Stories
-            </span>
-          </div>
-
-          <h2 className="mt-6 text-4xl font-black tracking-tight text-foreground md:text-6xl">
-            Loved by <span className="gradient-text-animated">thousands</span> of
-            job seekers
-          </h2>
-          <p className="mt-6 max-w-md text-lg font-medium text-muted-foreground">
-            Join the community of professionals who accelerated their careers
-            with careerpilot.
-          </p>
-        </motion.div>
-
-        {/* Featured testimonial */}
-        <motion.figure
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mx-auto mb-16 max-w-3xl overflow-hidden rounded-[2rem] border border-border bg-card/50 p-8 text-center shadow-2xl shadow-primary/5 backdrop-blur-xl md:p-12"
-        >
-          <div className="absolute -inset-x-10 -top-10 h-32 bg-primary/10 blur-3xl" />
-          <Quote className="relative mx-auto mb-6 h-10 w-10 text-primary/40" />
-          <blockquote className="relative text-xl font-medium leading-relaxed text-foreground md:text-2xl">
-            "careerpilot didn't just improve my resume — it changed how I
-            approach my entire career. I went from zero callbacks to multiple
-            offers in under a month."
-          </blockquote>
-          <figcaption className="relative mt-8 flex items-center justify-center gap-4">
-            <img
-              src="https://randomuser.me/api/portraits/women/1.jpg"
-              alt="Sarah Chen"
-              width={52}
-              height={52}
-              className="h-14 w-14 rounded-full border-2 border-border object-cover"
-            />
-            <div className="text-left">
-              <div className="text-base font-black tracking-tight text-foreground">
-                Sarah Chen
-              </div>
-              <div className="text-sm font-bold uppercase tracking-tight text-muted-foreground">
-                Software Engineer at Google
-              </div>
-            </div>
-          </figcaption>
-        </motion.figure>
-
-        {/* Trust stats bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mx-auto mb-16 grid max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-3xl border border-border bg-border/60 md:grid-cols-4"
+          className="mb-16"
         >
-          {trustStats.map((s) => (
-            <div
-              key={s.label}
-              className="bg-card/40 px-6 py-6 text-center backdrop-blur-sm"
-            >
-              <div className="text-2xl font-black text-foreground md:text-3xl">
-                {s.value}
-              </div>
-              <div className="mt-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">
+            007 — Stories
+          </span>
+          <h2 className="mt-4 text-4xl font-black leading-[0.95] tracking-tighter text-foreground md:text-7xl">
+            Real people.
+            <br />
+            <span className="text-muted-foreground/40">Real results.</span>
+          </h2>
+        </motion.div>
+
+        {/* Stats strip */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-16 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border/40 md:grid-cols-4"
+        >
+          {stats.map((s) => (
+            <div key={s.label} className="bg-background/80 px-6 py-5 text-center">
+              <div className="text-2xl font-black text-foreground md:text-3xl">{s.value}</div>
+              <div className="mt-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 {s.label}
               </div>
             </div>
           ))}
         </motion.div>
 
-        {/* Marquee columns */}
-        <div className="mask-[linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] flex max-h-200 justify-center gap-6 overflow-hidden">
-          <TestimonialsColumn testimonials={firstColumn} duration={25} />
-          <TestimonialsColumn
-            testimonials={secondColumn}
-            className="hidden md:block"
-            duration={35}
-          />
-          <TestimonialsColumn
-            testimonials={thirdColumn}
-            className="hidden lg:block"
-            duration={30}
-          />
+        {/* Masonry grid */}
+        <div className="columns-1 gap-5 md:columns-2 lg:columns-3">
+          {testimonials.map((t, i) => (
+            <div key={t.name} className="mb-5 break-inside-avoid">
+              <TestimonialCard t={t} index={i} />
+            </div>
+          ))}
         </div>
       </div>
     </section>

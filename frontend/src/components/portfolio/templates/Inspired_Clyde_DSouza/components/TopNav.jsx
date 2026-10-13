@@ -7,7 +7,7 @@ const TopNav = ({ activeTab, setActiveTab }) => {
   return (
     <div className="flex flex-wrap gap-2 md:gap-3 mb-8">
       {tabs.map((tab) => (
-        <button
+        <button type="button"
           key={tab}
           onClick={() => setActiveTab(tab)}
           className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-colors z-10

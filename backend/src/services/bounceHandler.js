@@ -1,7 +1,7 @@
 import User from "../models/User.model.js";
 import NotificationLog from "../models/NotificationLog.model.js";
 import JobAlert from "../models/JobAlert.model.js";
-import admin from "../config/firebase.js";
+
 
 export const handleBounceNotification = async ({
   email,
@@ -25,15 +25,6 @@ export const handleBounceNotification = async ({
     const jobAlert = await JobAlert.findOne({ userEmail: email });
     let userId = jobAlert?.userId;
 
-    // Fallback: Retrieve from Firebase Admin if configured
-    if (!userId) {
-      try {
-        const firebaseUser = await admin.auth().getUserByEmail(email);
-        userId = firebaseUser?.uid;
-      } catch (fbError) {
-        // Ignore if Firebase Admin is uninitialized or not configured
-      }
-    }
 
     // Fallback: If in development, default to 'dev-user' if email matches
     if (!userId && process.env.NODE_ENV === "development") {

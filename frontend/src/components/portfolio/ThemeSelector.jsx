@@ -1,9 +1,8 @@
 import { useState } from 'react'
-const ENABLE_PREMIUM_THEMES = import.meta.env.VITE_ENABLE_PREMIUM_THEMES === 'true'
 const THEMES = [
   { id: 'minimal', name: 'Minimal', supportsDarkMode: true, lightPreview: '#ffffff', darkPreview: '#1a1a1a', accent: '#6366f1', isPremium: false },
-  { id: 'professional', name: 'Professional', supportsDarkMode: true, lightPreview: '#f8fafc', darkPreview: '#0f172a', accent: '#0ea5e9', isPremium: true },
-  { id: 'creative', name: 'Creative', supportsDarkMode: false, lightPreview: '#fdf4ff', darkPreview: null, accent: '#d946ef', isPremium: true },
+  { id: 'professional', name: 'Professional', supportsDarkMode: true, lightPreview: '#f8fafc', darkPreview: '#0f172a', accent: '#0ea5e9', isPremium: false },
+  { id: 'creative', name: 'Creative', supportsDarkMode: false, lightPreview: '#fdf4ff', darkPreview: null, accent: '#d946ef', isPremium: false },
   { id: 'bold', name: 'Bold', supportsDarkMode: true, lightPreview: '#fff7ed', darkPreview: '#1c1917', accent: '#f97316', isPremium: false },
   {
   id: 'digital-dna',
@@ -32,18 +31,25 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
         {THEMES.map((t) => {
           const isSelected = selectedTheme === t.id
           const previewColor = isDarkPreview && t.supportsDarkMode ? t.darkPreview : t.lightPreview
-          const isDisabled = ENABLE_PREMIUM_THEMES && t.isPremium
 
           return (
             <div 
               key={t.id} 
               onClick={() => {
-                if (isDisabled) return
                 if (onSelectTheme) onSelectTheme(t.id)
               }} 
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  if (onSelectTheme) onSelectTheme(t.id)
+                }
+              }}
+              aria-pressed={isSelected}
+              aria-label={`${t.name} theme${t.supportsDarkMode ? ', supports dark mode' : ''}`}
               className={`relative rounded-xl border-2 overflow-hidden transition-all flex flex-col ${
-                isDisabled ? 'cursor-not-allowed opacity-90 border-border bg-background' 
-                : isSelected ? 'cursor-pointer border-cyan-500 shadow-[0_0_15px_rgba(34,211,238,0.25)] scale-105 bg-card/80' 
+                isSelected ? 'cursor-pointer border-cyan-500 shadow-[0_0_15px_rgba(34,211,238,0.25)] scale-105 bg-card/80' 
                 : 'cursor-pointer border-border/50 hover:border-cyan-500/50 bg-background/50 hover:bg-card/50'
               }`}
             >
@@ -51,13 +57,6 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
                 <span className="absolute top-2 left-2 z-10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-white uppercase bg-gradient-to-r from-amber-400 to-amber-600 rounded-full shadow-sm">
                   Premium
                 </span>
-              )}
-              {isDisabled && (
-                <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/60 backdrop-blur-[2px]">
-                  <span className="px-3 py-1 text-sm font-semibold text-foreground bg-card/90 rounded-md shadow-sm border border-border">
-                    Coming Soon
-                  </span>
-                </div>
               )}
               <div className="h-28 w-full flex items-center justify-center border-b border-border/50 transition-colors" style={{ backgroundColor: previewColor }}>
                 <div className="w-8 h-8 rounded-full shadow-md" style={{ backgroundColor: t.accent }} />
@@ -70,7 +69,7 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
                   </div>
                 )}
               </div>
-              {isSelected && !isDisabled && (
+              {isSelected && (
                 <div className="absolute top-2 right-2 z-10 bg-cyan-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md">✓</div>
               )}
             </div>

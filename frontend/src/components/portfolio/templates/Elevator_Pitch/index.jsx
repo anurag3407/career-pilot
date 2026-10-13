@@ -65,7 +65,7 @@ export default function ElevatorPitchPortfolio() {
 
           <div className="flex gap-1.5 md:gap-2 pr-1 md:pr-2">
              {[1, 2, 3, 4, 5].map(floor => (
-                <button
+                <button type="button"
                   key={floor}
                   onClick={() => scrollToFloor(floor)}
                   className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-xs md:text-sm transition-all duration-300 relative

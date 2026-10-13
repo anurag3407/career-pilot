@@ -18,9 +18,9 @@ const Testimonials = ({ data }) => {
       </div>
 
       <div className="relative max-w-4xl mx-auto">
-        <button onClick={() => setCurrent((p) => (p - 1 + testimonials.length) % testimonials.length)}
+        <button type="button" onClick={() => setCurrent((p) => (p - 1 + testimonials.length) % testimonials.length)}
           className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 z-20 p-2 bg-purple-600 text-white rounded-full hover:bg-purple-500"><ChevronLeft className="w-6 h-6" /></button>
-        <button onClick={() => setCurrent((p) => (p + 1) % testimonials.length)}
+        <button type="button" onClick={() => setCurrent((p) => (p + 1) % testimonials.length)}
           className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 z-20 p-2 bg-purple-600 text-white rounded-full hover:bg-purple-500"><ChevronRight className="w-6 h-6" /></button>
 
         <AnimatePresence mode="wait">

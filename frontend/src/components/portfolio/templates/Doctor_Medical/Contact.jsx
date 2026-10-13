@@ -49,7 +49,7 @@ export default function Contact({ data }) {
               <h3 className="text-xl font-bold text-white mb-6">Send a Message</h3>
               <div className="space-y-4">
                 <input type="text" placeholder="Your Name" className="w-full bg-white/5 border border-white/10 text-white text-sm rounded-xl px-4 py-3 focus:outline-none" />
-                <button className="w-full bg-blue-600 text-white font-semibold text-sm px-6 py-3.5 rounded-xl">Send Message</button>
+                <button type="button" className="w-full bg-blue-600 text-white font-semibold text-sm px-6 py-3.5 rounded-xl">Send Message</button>
               </div>
             </div>
           </div>

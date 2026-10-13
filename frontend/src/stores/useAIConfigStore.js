@@ -30,7 +30,20 @@ export const PROVIDER_META = {
     keyUrl: 'https://openrouter.ai/keys',
     defaultModel: 'openai/gpt-4o-mini',
     color: 'violet',
-    models: [], // Fetched dynamically
+    models: [
+      { id: 'google/gemini-2.0-flash-exp:free', name: 'Google: Gemini 2.0 Flash (Free)', isFree: true, price: 'Free' },
+      { id: 'meta-llama/llama-3.3-70b-instruct:free', name: 'Meta: Llama 3.3 70B (Free)', isFree: true, price: 'Free' },
+      { id: 'deepseek/deepseek-r1:free', name: 'DeepSeek: R1 (Free)', isFree: true, price: 'Free' },
+      { id: 'deepseek/deepseek-chat:free', name: 'DeepSeek: V3 (Free)', isFree: true, price: 'Free' },
+      { id: 'qwen/qwen-2.5-coder-32b-instruct:free', name: 'Qwen: 2.5 Coder 32B (Free)', isFree: true, price: 'Free' },
+      { id: 'openai/gpt-4o-mini', name: 'OpenAI: GPT-4o Mini', isFree: false, price: '$0.15 / 1M prompt' },
+      { id: 'openai/gpt-4o', name: 'OpenAI: GPT-4o', isFree: false, price: '$2.50 / 1M prompt' },
+      { id: 'anthropic/claude-3.5-sonnet', name: 'Anthropic: Claude 3.5 Sonnet', isFree: false, price: '$3.00 / 1M prompt' },
+      { id: 'anthropic/claude-3-haiku', name: 'Anthropic: Claude 3 Haiku', isFree: false, price: '$0.25 / 1M prompt' },
+      { id: 'google/gemini-2.5-flash', name: 'Google: Gemini 2.5 Flash', isFree: false, price: '$0.15 / 1M prompt' },
+      { id: 'meta-llama/llama-3.3-70b-instruct', name: 'Meta: Llama 3.3 70B Instruct', isFree: false, price: '$0.70 / 1M prompt' },
+      { id: 'mistralai/mistral-large-2411', name: 'Mistral: Mistral Large 2411', isFree: false, price: '$2.00 / 1M prompt' }
+    ],
   },
   groq: {
     name: 'Groq',

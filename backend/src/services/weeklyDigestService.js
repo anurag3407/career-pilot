@@ -14,8 +14,15 @@ import cron from 'node-cron';
 
 import { sendWeeklyDigestEmail } from './mailService.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+let _filename = '';
+let _dirname = '';
+try {
+  _filename = typeof __filename !== 'undefined' ? __filename : fileURLToPath(import.meta.url);
+  _dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(_filename);
+} catch (e) {
+  _filename = process.cwd() + '/mock.js';
+  _dirname = process.cwd();
+}
 
 // Initialize Gemini AI with validation
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -131,7 +138,7 @@ SKILL_RECOMMENDATIONS:
 
 const buildDigestHtml = async ({ user, insights, trackedJobs }) => {
   const templatePath = path.join(
-    __dirname,
+    _dirname,
     '../templates/emails/weekly-digest.html'
   );
 

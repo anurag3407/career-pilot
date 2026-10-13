@@ -141,7 +141,7 @@ function Nav({ personal }) {
         </div>
 
         {/* Hamburger button (mobile) */}
-        <button
+        <button type="button"
           className="vr-hamburger"
           onClick={() => setMenuOpen(prev => !prev)}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -632,7 +632,7 @@ function Testimonials({ testimonials }) {
           </AnimatePresence>
           <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
             {testimonials.map((_, i) => (
-              <button key={i} onClick={() => setActive(i)} style={{
+              <button type="button" key={i} onClick={() => setActive(i)} style={{
                 width: i === active ? 26 : 8, height: 8, borderRadius: 99,
                 background: i === active ? T.indigo : T.border,
                 border: 'none', cursor: 'pointer', transition: 'all 0.3s',

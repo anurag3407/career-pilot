@@ -38,19 +38,19 @@ export default function FinderWindow({ title, children, defaultOpen = true, icon
         className="h-10 flex items-center justify-between px-4 bg-gradient-to-b from-white/80 to-white/40 dark:from-white/10 dark:to-transparent border-b border-gray-200 dark:border-white/10 select-none cursor-default"
       >
         <div className="flex gap-2 w-16">
-          <button 
+          <button type="button" 
             onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
             className="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 shadow-inner flex items-center justify-center group"
           >
             <span className="opacity-0 group-hover:opacity-100 text-[8px] text-red-900 leading-none">✕</span>
           </button>
-          <button 
+          <button type="button" 
             onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
             className="w-3.5 h-3.5 rounded-full bg-yellow-500 hover:bg-yellow-600 shadow-inner flex items-center justify-center group"
           >
             <span className="opacity-0 group-hover:opacity-100 text-[8px] text-yellow-900 leading-none">−</span>
           </button>
-          <button 
+          <button type="button" 
             onClick={(e) => { e.stopPropagation(); setIsFullscreen(!isFullscreen); }}
             className="w-3.5 h-3.5 rounded-full bg-green-500 hover:bg-green-600 shadow-inner flex items-center justify-center group"
           >

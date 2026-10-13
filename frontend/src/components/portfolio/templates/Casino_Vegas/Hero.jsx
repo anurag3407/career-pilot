@@ -39,12 +39,12 @@ export default function Hero({ data }) {
         </p>
 
         <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
-          <button className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 to-red-500 px-8 py-4 font-black uppercase tracking-wider text-black transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(250,204,21,0.6)]">
+          <button type="button" className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 to-red-500 px-8 py-4 font-black uppercase tracking-wider text-black transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(250,204,21,0.6)]">
             See Projects
             <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
           </button>
           
-          <button className="group flex items-center gap-3 rounded-full border-2 border-yellow-500/50 bg-black/50 px-8 py-4 font-black uppercase tracking-wider text-yellow-400 backdrop-blur-md transition-all hover:bg-yellow-500/10 hover:shadow-[0_0_30px_rgba(250,204,21,0.2)]">
+          <button type="button" className="group flex items-center gap-3 rounded-full border-2 border-yellow-500/50 bg-black/50 px-8 py-4 font-black uppercase tracking-wider text-yellow-400 backdrop-blur-md transition-all hover:bg-yellow-500/10 hover:shadow-[0_0_30px_rgba(250,204,21,0.2)]">
             Download CV
             <Download size={20} className="transition-transform group-hover:translate-y-1" />
           </button>

@@ -96,7 +96,7 @@ export default function Experience() {
             }`}
           >
             {experienceData.map((exp) => (
-              <button
+              <button type="button"
                 key={exp.id}
                 onClick={() => setActiveId(exp.id)}
                 className={`relative flex flex-col items-start gap-2 rounded-2xl border p-5 text-left transition-all duration-300 ${

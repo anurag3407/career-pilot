@@ -12,4 +12,7 @@ const resumeCommentSchema = new mongoose.Schema({
   resolvedAt: { type: Date }
 }, { timestamps: true });
 
+resumeCommentSchema.index({ resumeId: 1, createdAt: -1 }, { background: true });
+resumeCommentSchema.index({ shareToken: 1, createdAt: -1 }, { background: true });
+
 export default mongoose.model('ResumeComment', resumeCommentSchema);

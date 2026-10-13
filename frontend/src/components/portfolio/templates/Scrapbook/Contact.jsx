@@ -54,7 +54,7 @@ export default function Contact({ personal, socials }) {
                    <label className="sb-body text-[#a07850] block mb-1">Message:</label>
                    <textarea placeholder="Write something nice..." rows="3" className="w-full bg-transparent border-b-[1.5px] border-[#d4b896] focus:border-[#e05a3a] outline-none sb-hand text-[22px] text-[#4a3828] px-2 py-1 resize-none placeholder-[#d4b896]" />
                  </div>
-                 <button className="flex items-center gap-2 sb-marker text-xl bg-[#2d1f0e] text-[#fffdf5] px-6 py-3 hover:bg-[#e05a3a] transition-colors transform hover:-rotate-2 w-fit mt-4 shadow-[3px_3px_0px_rgba(224,90,58,0.5)] border border-[#2d1f0e]">
+                 <button type="button" className="flex items-center gap-2 sb-marker text-xl bg-[#2d1f0e] text-[#fffdf5] px-6 py-3 hover:bg-[#e05a3a] transition-colors transform hover:-rotate-2 w-fit mt-4 shadow-[3px_3px_0px_rgba(224,90,58,0.5)] border border-[#2d1f0e]">
                    <Send size={20} /> Send Mail
                  </button>
                </form>

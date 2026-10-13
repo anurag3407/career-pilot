@@ -87,7 +87,7 @@ export default function Contact({ data }) {
                     className="w-full bg-[#f4ebd8] border border-[#c4a482] px-4 py-3 text-[#3e2723] font-serif focus:outline-none focus:border-[#5d4037] transition-colors resize-none"
                   ></textarea>
                 </div>
-                <button className="w-full py-4 border-2 border-[#5d4037] text-[#5d4037] font-bold tracking-widest uppercase hover:bg-[#5d4037] hover:text-[#f4ebd8] transition-colors flex items-center justify-center gap-2">
+                <button type="button" className="w-full py-4 border-2 border-[#5d4037] text-[#5d4037] font-bold tracking-widest uppercase hover:bg-[#5d4037] hover:text-[#f4ebd8] transition-colors flex items-center justify-center gap-2">
                   <span>Dispatch</span>
                   <Send className="w-4 h-4" />
                 </button>

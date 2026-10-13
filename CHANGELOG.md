@@ -1,3 +1,136 @@
+# [1.276.0](https://github.com/anurag3407/career-pilot/compare/v1.275.1...v1.276.0) (2026-10-03)
+
+
+### Features
+
+* add salary estimator, outreach generator, career trajectory & visualizer workspace ([58e6911](https://github.com/anurag3407/career-pilot/commit/58e6911efb70de3a49c94959fedab422bc49344f))
+
+## [1.275.1](https://github.com/anurag3407/career-pilot/compare/v1.275.0...v1.275.1) (2026-08-07)
+
+
+### Bug Fixes
+
+* **db:** harden database schemas, pooling, indexing, and migration runner for production readiness ([f1bac30](https://github.com/anurag3407/career-pilot/commit/f1bac30116a5a85464f7760fdfb4cbc4ee8e0d60))
+
+# [1.275.0](https://github.com/anurag3407/career-pilot/compare/v1.274.3...v1.275.0) (2026-07-27)
+
+
+### Features
+
+* Add PWA Support and Offline Caching ([#4438](https://github.com/anurag3407/career-pilot/issues/4438)) ([f73cf6a](https://github.com/anurag3407/career-pilot/commit/f73cf6abe37a28273161953f99dcbfbf7cd2eaee))
+
+## [1.274.3](https://github.com/anurag3407/career-pilot/compare/v1.274.2...v1.274.3) (2026-07-24)
+
+
+### Bug Fixes
+
+* **portfolio-github:** allow null token in schema and pass undefined in frontend to resolve 400 validation error ([7c87f89](https://github.com/anurag3407/career-pilot/commit/7c87f890815a22dc1c350b93f634a115b1f9956c))
+
+## [1.274.2](https://github.com/anurag3407/career-pilot/compare/v1.274.1...v1.274.2) (2026-07-24)
+
+
+### Bug Fixes
+
+* **settings:** deduplicate OpenRouter models to prevent duplicate key warning ([375279a](https://github.com/anurag3407/career-pilot/commit/375279a48f811eb434d7b241cea93d369a8d9e19))
+
+## [1.274.1](https://github.com/anurag3407/career-pilot/compare/v1.274.0...v1.274.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* **frontend:** resolve build and test issues across components and setup ([35b55c8](https://github.com/anurag3407/career-pilot/commit/35b55c8e51a3f405d86b7ce45731f378d6a5f59c))
+
+# [1.274.0](https://github.com/anurag3407/career-pilot/compare/v1.273.0...v1.274.0) (2026-07-24)
+
+
+### Features
+
+* **aiEditor:** enhance F1PreviewPane and InlineElementEditor for improved editing experience ([807df68](https://github.com/anurag3407/career-pilot/commit/807df68a10b730d7658f789f3ac831dba1471d4e))
+
+# [1.273.0](https://github.com/anurag3407/career-pilot/compare/v1.272.0...v1.273.0) (2026-07-24)
+
+
+### Bug Fixes
+
+* replace console.log with ESLint rule + structured logger ([e5dc291](https://github.com/anurag3407/career-pilot/commit/e5dc29193fb71bce8fde278ed05e64199bcd7e77))
+
+
+### Features
+
+* Add MySpace 2005 portfolio template ([1907184](https://github.com/anurag3407/career-pilot/commit/1907184ba6bd7a6a02cae733f41df77e72c37c38))
+* implement AI-powered resume scoring to replace hardcoded endpoint ([9f29f6c](https://github.com/anurag3407/career-pilot/commit/9f29f6c4f0000b767b272c0311c30e8dbceff10e)), closes [#4365](https://github.com/anurag3407/career-pilot/issues/4365)
+
+# [1.272.0](https://github.com/anurag3407/career-pilot/compare/v1.271.6...v1.272.0) (2026-07-24)
+
+
+### Features
+
+* **landing:** redesign Powerful AI tools section with Forge system ([e5f6960](https://github.com/anurag3407/career-pilot/commit/e5f6960255acc239df91f572f69a14e9bbe3d041))
+
+## [1.271.6](https://github.com/anurag3407/career-pilot/compare/v1.271.5...v1.271.6) (2026-07-24)
+
+
+### Bug Fixes
+
+* **redis:** dynamic import for redis-memory-server in development mode ([165d0af](https://github.com/anurag3407/career-pilot/commit/165d0af0b856c51e97ab36d7c6f3de653940f645))
+
+## [1.271.5](https://github.com/anurag3407/career-pilot/compare/v1.271.4...v1.271.5) (2026-07-24)
+
+
+### Bug Fixes
+
+* **deploy:** update Dockerfile npm command, package.json scripts, and add .npmrc for Render auto-deploy ([df578ca](https://github.com/anurag3407/career-pilot/commit/df578ca636fafc3805eb379fb4749cb09805d37a))
+
+## [1.271.4](https://github.com/anurag3407/career-pilot/compare/v1.271.3...v1.271.4) (2026-07-23)
+
+
+### Bug Fixes
+
+* **socket:** gracefully handle socket 404/xhr poll error on Netlify and Vercel deployments ([949c8d1](https://github.com/anurag3407/career-pilot/commit/949c8d17d677f8547a0bac1623c06550c2d24efc))
+
+## [1.271.3](https://github.com/anurag3407/career-pilot/compare/v1.271.2...v1.271.3) (2026-07-23)
+
+
+### Bug Fixes
+
+* **linkedin:** remove top-level await in linkedinImporter for Vercel deployment stability ([6ba0ca8](https://github.com/anurag3407/career-pilot/commit/6ba0ca84f319b38d76ec82d6b5433b872a1a6777))
+
+## [1.271.2](https://github.com/anurag3407/career-pilot/compare/v1.271.1...v1.271.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* **backend:** add serverless db connection handling and caching ([3930975](https://github.com/anurag3407/career-pilot/commit/3930975673e63e89f60393e346937e87356c9f5f))
+* update auth routes for clerk wildcard paths ([54f02a6](https://github.com/anurag3407/career-pilot/commit/54f02a62017981e0b916fc40fdf75b9bff3860d1))
+
+## [1.271.1](https://github.com/anurag3407/career-pilot/compare/v1.271.0...v1.271.1) (2026-07-22)
+
+
+### Bug Fixes
+
+* remove generated lint report artifacts ([#4406](https://github.com/anurag3407/career-pilot/issues/4406)) ([#4408](https://github.com/anurag3407/career-pilot/issues/4408)) ([2960d51](https://github.com/anurag3407/career-pilot/commit/2960d512d964e0403d8b1f4ac44870d257af71bc))
+
+# [1.271.0](https://github.com/anurag3407/career-pilot/compare/v1.270.0...v1.271.0) (2026-07-17)
+
+
+### Features
+
+* migrate deployment environment to Vercel and Netlify ([f75d128](https://github.com/anurag3407/career-pilot/commit/f75d128b33fc180578d7b042e54dc5f8b6f17f54))
+
+# [1.270.0](https://github.com/anurag3407/career-pilot/compare/v1.269.1...v1.270.0) (2026-07-16)
+
+
+### Features
+
+* add-Macintosh-1984-Classic-template ([#4396](https://github.com/anurag3407/career-pilot/issues/4396)) ([1883435](https://github.com/anurag3407/career-pilot/commit/18834356fa101e27260edb0c75cd137f1481f133))
+
+## [1.269.1](https://github.com/anurag3407/career-pilot/compare/v1.269.0...v1.269.1) (2026-07-12)
+
+
+### Bug Fixes
+
+* add explicit type attribute to button elements (templates) ([#4395](https://github.com/anurag3407/career-pilot/issues/4395)) ([2fb66e1](https://github.com/anurag3407/career-pilot/commit/2fb66e13be4850bac24426e2353613e88369ea75))
+
 # 1.0.0 (2026-07-09)
 
 

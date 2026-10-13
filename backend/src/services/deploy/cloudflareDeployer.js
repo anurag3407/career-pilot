@@ -1,11 +1,11 @@
 import crypto from 'crypto';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 const CF_API = 'https://api.cloudflare.com/client/v4';
 
@@ -210,10 +210,20 @@ export async function deploy(portfolioId, htmlContent, assets = {}) {
       NO_D3_WARNING: 'true'
     };
     
-    // The --commit-dirty=true flag suppresses git warnings
-    const cmd = `npx wrangler pages deploy "${tmpDir}" --project-name "${projectName}" --branch main --commit-dirty=true`;
+    // Use execFile with argument array to avoid shell command injection
+    const args = [
+      'wrangler',
+      'pages',
+      'deploy',
+      tmpDir,
+      '--project-name',
+      projectName,
+      '--branch',
+      'main',
+      '--commit-dirty=true',
+    ];
     
-    const { stdout, stderr } = await execAsync(cmd, { env });
+    const { stdout, stderr } = await execFileAsync('npx', args, { env });
     
     if (stderr && stderr.includes('Error:')) {
       throw new Error(`Wrangler error: ${stderr}`);

@@ -1077,7 +1077,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                     { id: 'nd', label: 'ND / WORK' },
                     { id: 'cdu', label: 'CDU / COMMS' }
                   ].map((tab) => (
-                    <button
+                    <button type="button"
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
                       className={`font-mono text-[9px] font-bold px-2.5 py-1 rounded transition-all cursor-pointer ${activeTab === tab.id
@@ -1091,7 +1091,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
+                  <button type="button"
                     onClick={handleReplay}
                     className="flex items-center justify-center w-6 h-6 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
                     title="Replay Flight Intro"
@@ -1226,7 +1226,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   <div className="col-span-4 flex flex-col justify-center gap-2 border-r border-slate-800/80 pr-2">
                     <span className="font-mono text-[8px] text-slate-500 uppercase tracking-widest mb-1">Radar Targets</span>
                     {projects.map((proj, idx) => (
-                      <button
+                      <button type="button"
                         key={idx}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -1326,7 +1326,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                   <div className="h-[22%] bg-black/40 border border-slate-800/80 rounded p-2 flex items-center justify-around relative overflow-hidden">
                     <div className="absolute w-[80%] h-0.5 bg-dashed border-t border-sky-500/30 top-1/2 left-10 -translate-y-1/2 pointer-events-none" />
                     {experience.map((exp, idx) => (
-                      <button
+                      <button type="button"
                         key={idx}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -1447,7 +1447,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                 {/* FMC Left side line select keys */}
                 <div className="col-span-2 flex flex-col gap-1.5 justify-around h-full py-1">
                   {[1, 2, 3, 4].map((i) => (
-                    <button
+                    <button type="button"
                       key={i}
                       onClick={() => setActiveTab(i === 1 ? 'pfd' : i === 2 ? 'mfd' : i === 3 ? 'nd' : 'cdu')}
                       className="w-8 h-4 bg-slate-900 border border-slate-700 rounded-sm hover:bg-[#00d2ff]/20 transition-all cursor-pointer"
@@ -1458,7 +1458,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                 {/* Main letter pad buttons */}
                 <div className="col-span-8 h-full grid grid-cols-6 gap-1.5 p-1 bg-slate-950 border border-slate-800 rounded">
                   {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'].map((char) => (
-                    <button
+                    <button type="button"
                       key={char}
                       onClick={() => {
                         if (char === 'B') setActiveTab('pfd');
@@ -1476,7 +1476,7 @@ export default function Commercial_Pilot_Cockpit({ data: localData, portfolioDat
                 {/* FMC Right side function select keys */}
                 <div className="col-span-2 flex flex-col gap-1.5 justify-around h-full py-1">
                   {['INIT', 'RTE', 'DEP', 'ARR'].map((fn, idx) => (
-                    <button
+                    <button type="button"
                       key={fn}
                       onClick={() => setActiveTab(idx === 0 ? 'pfd' : idx === 1 ? 'mfd' : idx === 2 ? 'nd' : 'cdu')}
                       className="h-4 bg-[#2a303a] border border-slate-700 rounded-sm text-[7px] font-bold font-mono text-slate-400 hover:text-white flex items-center justify-center active:scale-95 transition-transform cursor-pointer"

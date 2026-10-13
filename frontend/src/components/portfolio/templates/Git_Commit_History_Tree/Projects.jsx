@@ -42,7 +42,7 @@ function ProjectCard({ project, index, inView }) {
         style={{ backgroundColor: theme.bg, borderColor: theme.border }}
       >
         {/* Branch name header */}
-        <button
+        <button type="button"
           onClick={() => setExpanded(v => !v)}
           className="w-full flex items-center gap-3 px-4 py-3 border-b text-left hover:opacity-90 transition-all"
           style={{ borderColor: theme.border }}

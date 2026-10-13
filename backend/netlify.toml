@@ -1,0 +1,15 @@
+[build]
+  command = "npm install --legacy-peer-deps"
+  functions = "netlify/functions"
+
+[build.environment]
+  NETLIFY = "true"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["typescript", "jsdom"]
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200

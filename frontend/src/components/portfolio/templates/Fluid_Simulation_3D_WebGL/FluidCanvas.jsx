@@ -393,7 +393,7 @@ export default function FluidCanvas() {
 
       {/* Floating Simulation Settings Panel (Interactive controls) */}
       <div className="absolute bottom-6 left-6 z-40 pointer-events-auto select-none font-sans text-xs">
-        <button
+        <button type="button"
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 px-3 py-2 bg-slate-900/80 border border-slate-700/50 backdrop-blur-md rounded-lg text-slate-300 hover:text-white transition-all shadow-lg hover:shadow-cyan-500/10 cursor-pointer"
         >
@@ -408,7 +408,7 @@ export default function FluidCanvas() {
                 <Layers className="w-3.5 h-3.5 text-cyan-400" />
                 Flow Dynamics Solver
               </span>
-              <button 
+              <button type="button" 
                 onClick={() => setIsPaused(!isPaused)} 
                 className="p-1 hover:bg-slate-800 rounded transition"
                 title={isPaused ? "Play" : "Pause"}
@@ -514,7 +514,7 @@ export default function FluidCanvas() {
                   { id: 'magma', label: 'Magma', class: 'bg-orange-500 border-orange-400 text-orange-100' },
                   { id: 'acid', label: 'Acid', class: 'bg-emerald-500 border-emerald-400 text-emerald-100' }
                 ].map(mode => (
-                  <button
+                  <button type="button"
                     key={mode.id}
                     onClick={() => setColorMode(mode.id)}
                     className={`px-1 py-1 rounded text-[10px] border font-bold transition cursor-pointer text-center ${
@@ -541,7 +541,7 @@ export default function FluidCanvas() {
                 <span>Vector Grid</span>
               </label>
 
-              <button
+              <button type="button"
                 onClick={triggerReset}
                 className="flex items-center gap-1 hover:text-white transition cursor-pointer bg-slate-800 px-2 py-1 rounded"
               >

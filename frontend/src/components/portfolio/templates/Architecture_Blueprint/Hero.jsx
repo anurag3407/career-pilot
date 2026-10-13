@@ -81,7 +81,7 @@ export default function Hero() {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-6 pt-4">
-            <button className="group relative px-8 py-4 bg-cyan-950/40 border border-cyan-500 text-cyan-300 font-semibold uppercase tracking-widest overflow-hidden hover:bg-cyan-900/60 transition-all duration-300">
+            <button type="button" className="group relative px-8 py-4 bg-cyan-950/40 border border-cyan-500 text-cyan-300 font-semibold uppercase tracking-widest overflow-hidden hover:bg-cyan-900/60 transition-all duration-300">
               <span className="relative z-10 flex items-center gap-3">
                 Examine Blueprints
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
@@ -93,7 +93,7 @@ export default function Hero() {
               <div className="absolute top-0 left-0 w-full h-px bg-cyan-400/50 -translate-y-full group-hover:translate-y-[60px] transition-transform duration-1000 ease-in-out"></div>
             </button>
 
-            <button className="px-8 py-4 text-cyan-500/80 font-medium uppercase tracking-widest hover:text-cyan-300 transition-colors flex items-center gap-3 border border-transparent hover:border-cyan-800/50">
+            <button type="button" className="px-8 py-4 text-cyan-500/80 font-medium uppercase tracking-widest hover:text-cyan-300 transition-colors flex items-center gap-3 border border-transparent hover:border-cyan-800/50">
               <Compass className="w-5 h-5" />
               Begin Draft
             </button>

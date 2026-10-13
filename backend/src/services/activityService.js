@@ -5,10 +5,16 @@ import { fileURLToPath } from 'url';
 
 const execFileAsync = promisify(execFile);
 
-// Resolve the backend root regardless of where the Node process is started.
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const BACKEND_ROOT = path.resolve(__dirname, '..', '..');
+let _filename = '';
+let _dirname = '';
+try {
+  _filename = typeof __filename !== 'undefined' ? __filename : fileURLToPath(import.meta.url);
+  _dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(_filename);
+} catch (e) {
+  _filename = process.cwd() + '/mock.js';
+  _dirname = process.cwd();
+}
+const BACKEND_ROOT = path.resolve(_dirname, '..', '..');
 const ANALYZER_PATH = path.join('activity', 'analyzer.py');
 
 const DEFAULT_TIMEOUT_MS = 90_000;

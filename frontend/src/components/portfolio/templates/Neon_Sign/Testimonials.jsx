@@ -171,7 +171,7 @@ export default function Testimonials({ data }) {
             {/* Dot indicators */}
             <div className="flex gap-2">
               {testimonials.map((_, i) => (
-                <button
+                <button type="button"
                   key={i}
                   onClick={() => setCurrent(i)}
                   className="transition-all duration-300 rounded-full cursor-pointer"

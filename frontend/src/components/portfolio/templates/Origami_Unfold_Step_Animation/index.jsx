@@ -199,7 +199,7 @@ export default function Origami_Unfold_Step_Animation({ data: localData, portfol
       />
 
       <div className="absolute top-4 right-4 flex items-center gap-2 text-neutral-400 font-mono text-xs z-50">
-        <button 
+        <button type="button" 
           onClick={handleReplay} 
           className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-neutral-900/60 border border-neutral-800 hover:bg-neutral-800 hover:text-white transition-all pointer-events-auto cursor-pointer"
         >

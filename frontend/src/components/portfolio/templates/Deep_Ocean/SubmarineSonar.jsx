@@ -287,7 +287,7 @@ export default function SubmarineSonar() {
               <div className="text-lg font-bold text-cyan-300 tracking-wider">{sysTime || '18:10:02'}</div>
             </div>
             <div className="h-8 w-px bg-cyan-500/20" />
-            <button 
+            <button type="button" 
               onClick={() => { setSoundEnabled(!soundEnabled); playSonarPing(soundEnabled ? 440 : 880); }}
               className={`p-2 rounded-lg transition-all border ${
                 soundEnabled 
@@ -374,7 +374,7 @@ export default function SubmarineSonar() {
                     <div className={`absolute -inset-3 rounded-full border border-cyan-400 bg-cyan-500/5 radar-ping-ring pointer-events-none ${isSelected ? '[animation-duration:1.2s] border-cyan-300 bg-cyan-400/10' : ''}`} />
                     
                     {/* Interactive central blip element */}
-                    <button
+                    <button type="button"
                       onClick={() => selectContact(contact)}
                       className={`relative w-3.5 h-3.5 rounded-full border transition-all duration-300 cursor-pointer ${
                         isSelected 
@@ -454,7 +454,7 @@ export default function SubmarineSonar() {
                 { id: 'projects', label: 'PROJ', icon: FolderGit2 },
                 { id: 'milestones', label: 'MILE', icon: Layers },
               ].map(({ id, label, icon: Icon }) => (
-                <button
+                <button type="button"
                   key={id}
                   onClick={() => { setActiveCategory(id); playSonarPing(700); }}
                   className={`flex flex-col items-center justify-center gap-1.5 py-3.5 px-1 rounded-xl text-center font-mono transition-all border cursor-pointer ${
@@ -547,7 +547,7 @@ export default function SubmarineSonar() {
 
                   {/* Pull Request Mock Button */}
                   <div className="mt-8 border-t border-cyan-500/10 pt-6">
-                    <button
+                    <button type="button"
                       onClick={() => { 
                         playSonarPing(980); 
                         setTimeout(() => {
