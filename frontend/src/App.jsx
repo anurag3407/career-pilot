@@ -149,6 +149,22 @@ const GithubReadmeGeneratorLanding = lazy(() => import('./pages/features/GithubR
 const GithubReadmeGenerator = lazy(() => import('./pages/GithubReadmeGenerator'));
 
 import ScrollToTop from "./components/ScrollToTop";
+import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
+import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
+import CeramicMinimal from './components/portfolio/templates/Ceramic_Minimal/index.jsx';
+import TestSocialLinks from './pages/TestSocialLinks';
+import ZineCollage from './components/portfolio/templates/ZineCollage';
+import TransparentDesktopOverlayOS from './components/portfolio/templates/Transparent_Desktop_Overlay_OS/index.jsx';
+import Commercial_Pilot_Cockpit from './components/portfolio/templates/Commercial_Pilot_Cockpit/index.jsx';
+import Book_Page_Flip_3D_Render from './components/portfolio/templates/Book_Page_Flip_3D_Render/index.jsx';
+import IKEA_Assembly_Manual from './components/portfolio/templates/IKEA_Assembly_Manual/index.jsx';
+import MichelinStarChefPlating from './components/portfolio/templates/Michelin_Star_Chef_Plating/index.jsx';
+import SommelierWineCellarRacks from './components/portfolio/templates/Sommelier_Wine_Cellar_Racks/index.jsx';
+import MinimalDarkFluid from './components/portfolio/templates/Minimal_Dark_Fluid/index.jsx';
+import TerminalSkills from './components/portfolio/templates/Terminal_Skills/index.jsx';
+import ChiragChrgTheme from './components/portfolio/templates/ChiragChrg_Theme/index.jsx';
+import InspiredDevJadiya from "./components/portfolio/templates/Inspired_Dev_Jadiya";
+import Film_Director_Clapperboard from './components/portfolio/templates/Film_Director_Clapperboard/index.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -323,39 +339,8 @@ function AppRoutes() {
 
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
 
-        <Route path="/templates/rainforest-canopy" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><RainforestCanopy /></Suspense>} />
-        <Route path="/templates/northern-fjords" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><NorthernFjords /></Suspense>} />
-        <Route path="/templates/duotone-bold" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><DuotoneBold /></Suspense>} />
-        <Route path="/templates/chromatic-glitch" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ChromaticGlitch /></Suspense>} />
-        <Route path="/templates/swiss-typography" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><SwissTypography /></Suspense>} />
-
-        <Route path="/templates/desert-dunes" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><DesertDunes /></Suspense>} />
-        <Route path="/templates/psychedelic-swirl" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><PsychedelicSwirl /></Suspense>} />
-        <Route path="/templates/memphis-pop" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MemphisPop /></Suspense>} />
-        <Route path="/templates/cassette-mixtape" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><CassetteMixtape /></Suspense>} />
-        <Route path="/templates/hidden-easter-egg-scavenger-hunt" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><HiddenEasterEggScavengerHunt /></Suspense>} />
-        <Route path="/templates/magnetic-dock" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MagneticDock /></Suspense>} />
-        <Route path="/templates/ocean-depths" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><OceanDepths /></Suspense>} />
-        <Route path="/templates/neon-cityscape" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><NeonCityscape /></Suspense>} />
-        <Route path="/templates/planetary-orbit" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><PlanetaryOrbit /></Suspense>} />
-        <Route path="/templates/low-poly-terrain" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><LowPolyTerrain /></Suspense>} />
-        <Route path="/templates/high-fashion" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><HighFashion /></Suspense>} />
-        <Route path="/templates/typographic-wheatpaste-poster-wall" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><TypographicWheatpastePosterWall /></Suspense>} />
-        <Route path="/templates/digital-manifesto-scroll" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><DigitalManifestoScroll /></Suspense>} />
-
-        <Route path="/templates/zine-collage" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ZineCollage /></Suspense>} />
-        <Route path="/templates/chatbot" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ChatbotPortfolio /></Suspense>} />
-        <Route path="/templates/glassmorphism" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><GlassmorphismTemplate /></Suspense>} />
-        <Route path="/templates/transparent-desktop-overlay-os" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><TransparentDesktopOverlayOS /></Suspense>} />
-        <Route path="/templates/commercial-pilot-cockpit" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><CommercialPilotCockpit /></Suspense>} />
-        <Route path="/templates/book-page-flip-3d-render" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><BookPageFlip3DRender /></Suspense>} />
-        <Route path="/templates/ikea-assembly-manual" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><IKEAAssemblyManual /></Suspense>} />
-        <Route path="/templates/michelin-star-chef-plating" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MichelinStarChefPlating /></Suspense>} />
-        <Route path="/templates/sommelier-wine-cellar-racks" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><SommelierWineCellarRacks /></Suspense>} />
-        <Route path="/templates/minimal-dark-fluid" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MinimalDarkFluid /></Suspense>} />
-        <Route path="/templates/terminal-skills" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><TerminalSkills /></Suspense>} />
-        <Route path="/templates/chiragchrg-theme" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ChiragChrgTheme /></Suspense>} />
-        <Route path="/templates/film-director-clapperboard" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><FilmDirectorClapperboard /></Suspense>} />
+        <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
+        <Route path="/templates/ceramic-minimal" element={<CeramicMinimal />} />
         {/* Core Protected Routes */}
         <Route
           path="/dashboard"
