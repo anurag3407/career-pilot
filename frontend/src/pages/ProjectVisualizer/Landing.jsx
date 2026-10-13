@@ -13,7 +13,7 @@ import { cn } from '../../lib/utils';
 
 import Navbar from '../../components/Navbar';
 
-export default function ProjectVisualizerLanding() {
+export default function ProjectVisualizerLanding({ embedded = false }) {
   const [url, setUrl] = useState('');
   const [history, setHistory] = useState([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
@@ -90,8 +90,8 @@ export default function ProjectVisualizerLanding() {
 
   const features = [
     {
-      title: "3D Architecture Graph",
-      desc: "Interactive visual module dependency graph rendering files, imports, and cross-boundary function calls.",
+      title: "Architecture Graph",
+      desc: "Interactive visual module dependency graph rendering folders, imports, and structural relationships.",
       icon: <GitBranch className="w-6 h-6 text-cyan-400" />,
       badge: "3D Graph Engine",
       color: "from-cyan-500/20 via-cyan-500/10 to-transparent",
@@ -99,7 +99,7 @@ export default function ProjectVisualizerLanding() {
     },
     {
       title: "Dependency Scanner",
-      desc: "Automated inspection of node modules, lock files, and packages for known vulnerabilities and security flags.",
+      desc: "Review parsed dependency information and structural risks alongside code health signals.",
       icon: <Package className="w-6 h-6 text-amber-400" />,
       badge: "Security & Risk",
       color: "from-amber-500/20 via-amber-500/10 to-transparent",
@@ -107,7 +107,7 @@ export default function ProjectVisualizerLanding() {
     },
     {
       title: "Context-Aware Codebase AI",
-      desc: "Ask deep questions, discover logic flows, and query exact line references with custom LLM embeddings.",
+      desc: "Ask questions with codebase context, discover module flows, and verify details in the file viewer.",
       icon: <Bot className="w-6 h-6 text-violet-400" />,
       badge: "AI Assistant",
       color: "from-violet-500/20 via-violet-500/10 to-transparent",
@@ -142,28 +142,28 @@ export default function ProjectVisualizerLanding() {
   const faqs = [
     {
       question: "How long does it take to analyze a repository?",
-      answer: "Most medium-to-large repositories are fully parsed in 5 to 12 seconds. Our AST parsing engine runs in parallel to extract module dependencies and file hierarchies almost instantly."
+      answer: "Analysis time depends on repository size and GitHub availability. The parser extracts module dependencies and file hierarchies, while generated analyses remain available in your history."
     },
     {
       question: "Does this work with private GitHub repositories?",
-      answer: "Yes! Once you authenticate with your GitHub account, Project Visualizer can securely read private repos with zero code storage on our servers."
+      answer: "The current workflow ingests repository files into a temporary analysis session. Check your deployment's GitHub token configuration before using private repositories; public repositories are supported by default."
     },
     {
       question: "What programming languages are supported?",
-      answer: "We support JavaScript, TypeScript, Python, Rust, Go, Java, C/C++, PHP, Ruby, Kotlin, and Swift out of the box."
+      answer: "Architecture analysis supports many common source and config formats, including JavaScript, TypeScript, Python, Go, Rust, Java, Kotlin, Ruby, PHP, C/C++, C#, Swift, Vue, Svelte, CSS, SQL, and infrastructure files. Import-depth detail varies by language."
     },
     {
       question: "Can I export the architecture diagrams?",
-      answer: "Absolutely. You can export generated interactive graphs as High-Res SVG, PNG, or JSON formats to drop directly into your team docs or pull requests."
+      answer: "You can review generated architecture maps in-app and export AI-generated guides such as contribution documentation. Graph image export is not currently included."
     },
     {
       question: "How does the AI Codebase Chat work?",
-      answer: "We construct an AST and vector index of your repository files. When you ask a question, the AI looks up exact structural references and gives precise line-level explanations."
+      answer: "We build a structural summary of the repository and pass that context to your configured AI provider. Answers are grounded in the generated codebase structure, though you should verify critical references in source files."
     }
   ];
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden font-sans relative">
+    <div className="min-h-screen bg-background text-foreground selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden font-sans relative">
       
       {/* Dynamic Ambient Background Glows */}
       <div className="fixed top-0 left-1/4 -translate-x-1/2 w-[700px] h-[500px] bg-cyan-600/15 rounded-full blur-[140px] pointer-events-none z-0 animate-pulse" style={{ animationDuration: '8s' }} />
@@ -180,7 +180,7 @@ export default function ProjectVisualizerLanding() {
       />
 
       {/* Main Global Landing Navbar */}
-      <Navbar />
+      {!embedded && <Navbar />}
 
       {/* Main Content Area */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24">
@@ -236,7 +236,7 @@ export default function ProjectVisualizerLanding() {
             <form onSubmit={(e) => handleSubmit(e)} className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-3xl blur-xl opacity-30 group-hover:opacity-60 transition duration-700"></div>
               
-              <div className="relative flex items-center bg-[#0d121d]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-2.5 shadow-2xl transition-all">
+              <div className="relative flex items-center bg-card/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-2.5 shadow-2xl transition-all">
                 <Search className="w-6 h-6 text-cyan-400 ml-3 mr-3 shrink-0" />
                 <input
                   type="text"
@@ -303,7 +303,7 @@ export default function ProjectVisualizerLanding() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5 }}
-          className="max-w-5xl mx-auto my-16 rounded-3xl bg-[#0b0f19]/90 border border-white/10 p-4 sm:p-6 shadow-2xl backdrop-blur-xl relative overflow-hidden"
+          className="max-w-5xl mx-auto my-16 rounded-3xl bg-card/90 border border-white/10 p-4 sm:p-6 shadow-2xl backdrop-blur-xl relative overflow-hidden"
         >
           {/* Header Controls Bar */}
           <div className="flex flex-wrap items-center justify-between gap-4 pb-4 mb-4 border-b border-white/10">
@@ -546,9 +546,9 @@ export default function ProjectVisualizerLanding() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
             {[
-              { num: "01", title: "Paste Repository", desc: "Input any public or authenticated private GitHub repo URL." },
+              { num: "01", title: "Paste Repository", desc: "Input a public GitHub repository URL (or a private repository if your deployment is configured for it)." },
               { num: "02", title: "Neural Code Parsing", desc: "Our engine builds AST diagrams, call trees, and health metrics." },
-              { num: "03", title: "Explore & Ask AI", desc: "Navigate interactive 3D graphs, inspect files, and chat with AI." }
+              { num: "03", title: "Explore & Ask AI", desc: "Navigate interactive graphs, inspect files, and chat with AI." }
             ].map((step, i) => (
               <div key={i} className="relative p-6 rounded-2xl bg-[#0a0e17] border border-white/10 text-center flex flex-col items-center">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 text-white font-mono font-bold text-lg flex items-center justify-center shadow-lg shadow-cyan-500/20 mb-4">

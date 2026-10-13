@@ -1,49 +1,39 @@
-import { describe, test, expect, vi } from 'vitest'
+import { describe, test, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Login from '../pages/Login'
 
 vi.mock('../hooks/useAuth', () => ({
   useAuth: () => ({
-    login: vi.fn(),
-    loginWithGoogle: vi.fn(),
-    loginWithLinkedIn: vi.fn(),
+    user: null,
+    loading: false,
   }),
 }))
 
-vi.mock('../services/api', () => ({
-  twoFactorApi: {
-    verify: vi.fn(),
-    verifyBackup: vi.fn(),
-  },
+vi.mock('../components/Navbar', () => ({
+  default: () => <div>Mock Navbar</div>,
 }))
 
-vi.mock('../components/Navbar', () => ({
-    default: () => <div>Mock Navbar</div>,
-  }))
-
 describe('Login page', () => {
-  test('renders sign in form', () => {
+  test('renders a safe preview state when Clerk is not configured', () => {
     render(
       <MemoryRouter>
         <Login />
-      </MemoryRouter>
+      </MemoryRouter>,
     )
 
     expect(screen.getByRole('heading', { name: /welcome back/i })).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/you@example.com/i)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/••••••••/i)).toBeInTheDocument()
+    expect(screen.getByText(/authentication is not configured/i)).toBeInTheDocument()
   })
 
-  test('renders sign in button', () => {
+  test('keeps users in the product flow with template and home links', () => {
     render(
       <MemoryRouter>
         <Login />
-      </MemoryRouter>
+      </MemoryRouter>,
     )
 
-    expect(
-      screen.getByRole('button', { name: /sign in/i })
-    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /browse templates/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /back to home/i })).toBeInTheDocument()
   })
 })

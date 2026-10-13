@@ -71,5 +71,6 @@ jobSchema.index({ isActive: 1, employmentType: 1, createdAt: -1 }, { background:
 jobSchema.index({ jobType: 1, experienceLevel: 1, isActive: 1 }, { background: true });
 jobSchema.index({ expiresAt: 1 }, { background: true });
 jobSchema.index({ 'salary.min': 1, 'salary.max': 1 }, { background: true });
+jobSchema.index({ recruiterEmail: 1 }, { background: true, sparse: true });
 
 export default mongoose.model('Job', jobSchema);

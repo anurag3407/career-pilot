@@ -29,10 +29,10 @@ const items = [
     desc: "Create role-specific resume versions. Tailor your experience for every opportunity.",
   },
   {
-    title: "Quick Apply",
+    title: "Apply Workflow",
     icon: Zap,
     badge: "New",
-    desc: "Apply to multiple jobs with one click. Maximize your reach with minimal effort.",
+    desc: "Open employer applications in one organized flow, then track every stage from saved to offer.",
   },
 ];
 

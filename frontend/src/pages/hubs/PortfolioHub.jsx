@@ -266,7 +266,7 @@ export default function PortfolioHub() {
         to="/templates"
         icon={LayoutTemplate}
         title="Portfolio Templates"
-        description="Choose from curated premium developer templates. Fully responsive and customizable."
+        description="Choose from curated developer templates. Fully responsive and customizable."
         color="primary"
       />
       <ToolCard

@@ -71,6 +71,8 @@ fellowshipChatRoomSchema.index({ corporateId: 1, status: 1, lastMessageAt: -1 },
 fellowshipChatRoomSchema.index({ challengeId: 1, status: 1 }, { background: true });
 fellowshipChatRoomSchema.index({ paymentStatus: 1, corporateId: 1 }, { background: true });
 fellowshipChatRoomSchema.index({ challengeId: 1, studentId: 1 }, { background: true });
+fellowshipChatRoomSchema.index({ razorpayOrderId: 1 }, { background: true, sparse: true });
+fellowshipChatRoomSchema.index({ razorpayPaymentId: 1 }, { background: true, sparse: true });
 
 const FellowshipChatRoom = mongoose.model('FellowshipChatRoom', fellowshipChatRoomSchema);
 

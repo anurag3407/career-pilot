@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Globe, Copy, Check, ExternalLink, Loader2, Sparkles, AlertCircle, Terminal } from 'lucide-react';
+import { X, Globe, Copy, Check, ExternalLink, Loader2, Sparkles, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 
 import { portfolioApi } from '../../services/api';
-import { useAuth } from '../../hooks/useAuth';
+
 
 // Hey there, code reviewer or fellow builder!
 // We defined some custom metadata here for each hosting platform.
@@ -16,25 +16,11 @@ const PROVIDERS = [
   { id: 'netlify', name: 'Netlify', desc: 'Instant serverless deploys and form handling.', icon: '◈', tag: 'STABLE', needsToken: true },
 ];
 
-// High fidelity build console log stream.
-// Standard boring spinning circles look too AI-generated. A developer terminal
-// streaming realistic telemetry lines makes this flow look incredibly bespoke.
-const BUILD_LOGS = [
-  { text: "⚡ npm run build:portfolio --minify=esbuild", type: "command" },
-  { text: "vite v7.3.3 building client environment for production...", type: "info" },
-  { text: "(node:8240) [DEP0040] DeprecationWarning: The punycode module is deprecated.", type: "warn" },
-  { text: "✓ 284 modules transformed and tree-shaken.", type: "success" },
-  { text: "rendering chunks & compiling routes...", type: "info" },
-  { text: "dist/index.html                     1.32 kB │ gzip:   0.66 kB", type: "log" },
-  { text: "dist/assets/index-CJMNWdNk.css    143.95 kB │ gzip:  19.09 kB", type: "log" },
-  { text: "dist/assets/index-B55MMtHS.js   1868.60 kB │ gzip: 571.47 kB", type: "log" },
-  { text: "✓ production bundle successfully built in 1.84s", type: "success" },
-  { text: "🚀 initializing handshake with deployment edge gateway...", type: "info" },
-  { text: "✓ secure token handshake with edge: 100% verified", type: "success" },
-  { text: "uploading static assets to globally distributed CDN...", type: "info" },
-  { text: "caching files across 280+ POPs worldwide...", type: "info" },
-  { text: "configuring DNS subdomains and securing SSL/TLS...", type: "info" },
-  { text: "✓ pipeline deployment successfully finalized!", type: "success" }
+const DEPLOY_STAGES = [
+  'Validating portfolio content',
+  'Generating production files',
+  'Uploading assets',
+  'Publishing your site',
 ];
 
 function TokenStatusChip({ status }) {
@@ -63,9 +49,7 @@ function TokenStatusChip({ status }) {
 export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", templateId = "default", aiDraft, onDeploySuccess }) {
   // Step workflow: select -> loading -> success -> error
   const [step, setStep] = useState('select');
-  const { getToken } = useAuth();
   const [selectedProvider, setSelectedProvider] = useState('cloudflare'); // default to recommended Cloudflare
-  const [visibleLogs, setVisibleLogs] = useState([]);
   const [deployedUrl, setDeployedUrl] = useState('');
   const [copied, setCopied] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -79,79 +63,23 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   // we MUST cancel all timeouts to avoid state updates on unmounted components (memory leaks).
   const logTimerRef = useRef(null);
   const confettiIntervalRef = useRef(null);
-  const deployTimeoutRef = useRef(null);
-  const terminalEndRef = useRef(null);
+  const deployRequestIdRef = useRef(0);
 
   // Clear timers/confetti on unmount to keep everything clean and prevent leakages
   useEffect(() => {
   return () => {
-    if (logTimerRef.current) {
-      clearTimeout(logTimerRef.current);
-      logTimerRef.current = null;
-    }
-
     if (confettiIntervalRef.current) {
       clearInterval(confettiIntervalRef.current);
       confettiIntervalRef.current = null;
-    }
-
-    if (deployTimeoutRef.current) {
-      clearTimeout(deployTimeoutRef.current);
-      deployTimeoutRef.current = null;
     }
 
     confetti.reset();
   };
 }, []);
 
-  // Handle auto-scrolling to the bottom of our retro build terminal
-  useEffect(() => {
-    if (terminalEndRef.current) {
-      terminalEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [visibleLogs]);
-
-  // Telemetry stream generator for the build terminal
-  useEffect(() => {
-    if (step === 'loading') {
-      setVisibleLogs([]);
-      let logIndex = 0;
-
-      const streamLogs = () => {
-        if (logIndex < BUILD_LOGS.length) {
-          const timestamp = new Date().toTimeString().split(' ')[0];
-          const nextLog = {
-            ...BUILD_LOGS[logIndex],
-            timestamp
-          };
-          setVisibleLogs(prev => [...prev, nextLog]);
-          logIndex++;
-          // Stagger each log by roughly 220ms so it completes within the 3.5s simulation window
-          logTimerRef.current = setTimeout(streamLogs, 220);
-        }
-      };
-
-      streamLogs();
-    } else {
-      if (logTimerRef.current) {
-        clearTimeout(logTimerRef.current);
-        logTimerRef.current = null;
-      }
-    }
-  }, [step]);
-
-  /**
-   * Confetti Burst Celebration!
-   * We set the origin coordinate to (0.2, 0.8) so the confetti bursts frame the modal
-   * beautifully on the sides, instead of bursting directly over the main actions
-   * (which blocks the user's cursor from clicking "View Portfolio"). UX gotcha solved!
-   */
   const triggerConfetti = () => {
-    const duration = 3000;
+    const duration = 2000;
     const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
-
-    const randomInRange = (min, max) => Math.random() * (max - min) + min;
 
     confettiIntervalRef.current = setInterval(() => {
       const timeLeft = animationEnd - Date.now();
@@ -162,17 +90,12 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
         return;
       }
 
-      const particleCount = 50 * (timeLeft / duration);
-
       confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
-      });
-      confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+        particleCount: 35 * (timeLeft / duration),
+        spread: 65,
+        startVelocity: 28,
+        ticks: 70,
+        origin: { x: 0.5, y: 0.25 },
       });
     }, 250);
   };
@@ -184,24 +107,11 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   const handleCheckToken = async (providerId) => {
     setTokenStatuses((prev) => ({ ...prev, [providerId]: 'checking' }));
     try {
-      const token = await getToken();
-      if (!token && !import.meta.env.DEV) throw new Error('Not authenticated');
-
       const provider = PROVIDERS.find((p) => p.id === providerId);
-      const res = await fetch('/api/portfolio/validate-token', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          provider: providerId,
-          token: provider?.needsToken ? tokenInputs[providerId] : undefined,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Request failed');
+      const data = await portfolioApi.validateDeployToken(
+        providerId,
+        provider?.needsToken ? tokenInputs[providerId] : undefined,
+      );
       setTokenStatuses((prev) => ({ ...prev, [providerId]: data }));
 
       if (data.valid) {
@@ -215,54 +125,43 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
     }
   };
 
-  /**
-   * Simulates the build & publish loop.
-   * 3.5 seconds gives the user just enough time to watch the build terminal telemetry.
-   * A 92% success rate keeps simulation organic and realistic.
-   */
-  const handleDeploy = () => {
+  const handleDeploy = async () => {
+    const requestId = ++deployRequestIdRef.current;
     setStep('loading');
 
-    // Start the terminal animation, then fire the real deploy in parallel
-    const doRealDeploy = async () => {
-      const slug = portfolioTitle
+    const slug =
+      portfolioTitle
         .toLowerCase()
         .replace(/[^a-z0-9]/g, '-')
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '') || 'portfolio';
 
-      try {
-        const result = await portfolioApi.deploy({
-          slug,
-          sections: aiDraft || {},
-          templateId,
-          title: portfolioTitle,
-          provider: selectedProvider,
-          token: tokenInputs[selectedProvider] || undefined,
-        });
+    try {
+      const result = await portfolioApi.deploy({
+        slug,
+        sections: aiDraft || {},
+        templateId,
+        title: portfolioTitle,
+        provider: selectedProvider,
+        token: tokenInputs[selectedProvider] || undefined,
+      });
 
-        // Wait for the terminal animation to finish (at least 3.6s total)
-        deployTimeoutRef.current = setTimeout(() => {
-          const liveUrl = result.data?.url || `https://cp-${slug}.pages.dev`;
-          setDeployedUrl(liveUrl);
-          setStep('success');
-          triggerConfetti();
-          toast.success('Your portfolio is live! 🚀');
-          if (onDeploySuccess) onDeploySuccess();
-        }, 3600);
+      if (deployRequestIdRef.current !== requestId) return;
 
-      } catch (err) {
-        console.error('Deploy error:', err);
-        // Wait for animation before showing error
-        deployTimeoutRef.current = setTimeout(() => {
-          setErrorMessage(err.message || 'Deployment failed. Please try again.');
-          setStep('error');
-          toast.error('Deployment failed.');
-        }, 3600);
-      }
-    };
+      const liveUrl = result.data?.url;
+      if (!liveUrl) throw new Error('The provider did not return a published URL.');
 
-    doRealDeploy();
+      setDeployedUrl(liveUrl);
+      setStep('success');
+      triggerConfetti();
+      toast.success('Your portfolio is live.');
+      if (onDeploySuccess) onDeploySuccess();
+    } catch (err) {
+      if (deployRequestIdRef.current !== requestId) return;
+      setErrorMessage(err.message || 'Deployment failed. Please try again.');
+      setStep('error');
+      toast.error('Deployment failed.');
+    }
   };
 
   const handleCopyLink = async () => {
@@ -270,32 +169,30 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
     try {
       await navigator.clipboard.writeText(deployedUrl);
       setCopied(true);
-      toast.success('Link copied! Go share your craft. 📋');
+      toast.success('Link copied.');
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy: ', err);
+    } catch {
       toast.error('Failed to copy to clipboard.');
     }
   };
 
+  const handleCancelDeploy = () => {
+    deployRequestIdRef.current += 1;
+    setStep('select');
+    toast('Deployment was closed. The publish request may continue if it already reached the provider.', {
+      icon: 'ℹ️',
+    });
+  };
+
   const handleClose = () => {
+  deployRequestIdRef.current += 1;
   setStep('select');
   setDeployedUrl('');
   setErrorMessage('');
 
-  if (logTimerRef.current) {
-    clearTimeout(logTimerRef.current);
-    logTimerRef.current = null;
-  }
-
   if (confettiIntervalRef.current) {
     clearInterval(confettiIntervalRef.current);
     confettiIntervalRef.current = null;
-  }
-
-  if (deployTimeoutRef.current) {
-    clearTimeout(deployTimeoutRef.current);
-    deployTimeoutRef.current = null;
   }
 
   confetti.reset();
@@ -357,7 +254,7 @@ const seoScore = Math.round(
         >
           {/* Tilted Asymmetrical Hand-crafted Ribbon Stamp */}
           <div className="absolute -top-1 -right-1 bg-amber-500 text-zinc-950 text-[9px] font-bold font-mono px-3 py-1 rounded-bl-xl shadow-md uppercase tracking-wider select-none rotate-1 border-b border-l border-amber-600">
-            Engine v2.1
+            Production publish
           </div>
 
           {/* Header */}
@@ -401,7 +298,7 @@ const seoScore = Math.round(
   </span>
 </div>
                     
-                    Choose your cloud deployment target. We will compile your clean production assets, bundle stylesheets, and provision a live SSL subdomain.
+                    Choose your publishing provider. CareerPilot generates a standalone portfolio site, then publishes it to your selected provider.
                   </p>
 
                   {/* Provider Cards */}
@@ -558,7 +455,6 @@ const seoScore = Math.round(
                   </button>
 
                   <div className="text-[10px] text-zinc-600 text-center italic font-mono pt-1">
-                    // note: deployment takes ~3.5s to stream real-time pipeline status
                   </div>
                 </motion.div>
               )}
@@ -570,66 +466,39 @@ const seoScore = Math.round(
                   initial={{ opacity: 0, scale: 0.97 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 1.03 }}
-                  className="space-y-4 w-full text-center"
+                  className="space-y-5 text-left"
                 >
-                  <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
-                      <span className="text-xs font-semibold text-zinc-200">Deploying your portfolio...</span>
-                    </div>
-                    {/* Simulated builder progress percentage */}
-                    <span className="text-xs font-bold text-indigo-400 font-mono">
-                      {Math.min(100, Math.round((visibleLogs.length / BUILD_LOGS.length) * 100))}%
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <Loader2 className="h-5 w-5 animate-spin text-indigo-400" aria-hidden="true" />
+                    <p className="text-sm font-semibold text-zinc-100">Publishing your portfolio</p>
                   </div>
 
-                  {/* Retro Build Terminal */}
-                  <div className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col h-56 text-left">
-                    {/* Terminal Window Chrome */}
-                    <div className="bg-zinc-900/90 px-4 py-2.5 border-b border-zinc-800 flex items-center justify-between select-none">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-                      </div>
-                      <div className="flex items-center gap-1.5 font-mono text-[9px] text-zinc-500 tracking-wider uppercase font-bold">
-                        <Terminal className="w-3 h-3 text-zinc-500" />
-                        <span>bash - portfolio-pipeline v2.1.0</span>
-                      </div>
-                      <div className="w-10" />
-                    </div>
+                  <ol className="space-y-3">
+                    {DEPLOY_STAGES.map((stage, index) => (
+                      <li key={stage} className="flex items-center gap-3 text-xs text-zinc-300">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-indigo-500/30 bg-indigo-500/10 text-[10px] font-bold text-indigo-300">
+                          {index + 1}
+                        </span>
+                        {stage}
+                      </li>
+                    ))}
+                  </ol>
 
-                    {/* Terminal Logs Output */}
-                    <div className="p-4 overflow-y-auto flex-1 font-mono text-[10px] leading-relaxed text-zinc-300 space-y-1.5 select-text custom-scrollbar">
-                      {visibleLogs.map((log, index) => {
-                        let colorClass = "text-zinc-400";
-                        if (log.type === "command") colorClass = "text-sky-400 font-semibold";
-                        else if (log.type === "info") colorClass = "text-amber-400/90";
-                        else if (log.type === "success") colorClass = "text-emerald-400 font-semibold";
-                        else if (log.type === "warn") colorClass = "text-rose-400/90 italic";
-
-                        return (
-                          <div key={index} className="flex items-start gap-2 break-all">
-                            <span className="text-zinc-600 select-none">[{log.timestamp}]</span>
-                            <span className={colorClass}>{log.text}</span>
-                          </div>
-                        );
-                      })}
-                      {/* Active Cursor / Caret */}
-                      {visibleLogs.length < BUILD_LOGS.length && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-zinc-600 select-none">[{new Date().toTimeString().split(' ')[0]}]</span>
-                          <span className="inline-block w-1.5 h-3 bg-emerald-400 animate-pulse" />
-                        </div>
-                      )}
-                      <div ref={terminalEndRef} />
-                    </div>
+                  <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-4">
+                    <p className="text-xs font-medium text-zinc-300">What is happening?</p>
+                    <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+                      CareerPilot generates your production files and asks the selected provider to publish
+                      them. Provider response time varies, so we show honest progress instead of fake logs.
+                    </p>
                   </div>
 
-                  {/* Micro telemetry footer */}
-                  <p className="text-[10px] text-zinc-500 italic font-mono">
-                    Please keep this window open while we stream the production build telemetry...
-                  </p>
+                  <button
+                    type="button"
+                    onClick={handleCancelDeploy}
+                    className="w-full rounded-2xl border border-zinc-700 bg-zinc-800 py-3 text-sm font-semibold text-zinc-200 transition-colors hover:bg-zinc-700"
+                  >
+                    Close while publishing
+                  </button>
                 </motion.div>
               )}
 
@@ -655,9 +524,9 @@ const seoScore = Math.round(
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="text-xl font-black text-zinc-100 tracking-tight">Woohoo! Portfolio is Live! 🎉</h4>
+                    <h4 className="text-xl font-black text-zinc-100 tracking-tight">Your portfolio is live</h4>
                     <p className="text-xs text-zinc-400 px-4 leading-relaxed font-sans">
-                      Your stunning personal portfolio has been successfully compiled and deployed to the edge. Go show off your craft!
+                      We generated a standalone portfolio and published it to your selected provider.
                     </p>
                   </div>
 
@@ -705,10 +574,10 @@ const seoScore = Math.round(
 
                   {/* Artisan Signature Badge */}
                   <div className="w-full flex items-center justify-between text-[9px] text-zinc-500 font-mono pt-4 border-t border-zinc-800 select-none">
-                    <span>STATUS: LIVE & SECURE</span>
+                    <span>STATUS: PUBLISHED</span>
                     <span className="flex items-center gap-1">
-                      <span>Engineered with ☕ by</span>
-                      <span className="font-bold text-zinc-300 underline decoration-indigo-500 decoration-2 underline-offset-2">Anurag</span>
+                      <span>Built with</span>
+                      <span className="font-bold text-zinc-300 underline decoration-indigo-500 decoration-2 underline-offset-2">CareerPilot</span>
                     </span>
                   </div>
                 </motion.div>
@@ -728,9 +597,9 @@ const seoScore = Math.round(
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="text-lg font-bold text-zinc-100 tracking-tight">Pipeline Build Failed</h4>
+                    <h4 className="text-lg font-bold text-zinc-100 tracking-tight">Deployment failed</h4>
                     <p className="text-xs text-zinc-400 px-4 leading-relaxed font-sans">
-                      {errorMessage || "An unexpected compile error occurred while bundling portfolio sources."}
+                      {errorMessage || "The provider could not complete the publish request."}
                     </p>
                   </div>
 
@@ -740,7 +609,7 @@ const seoScore = Math.round(
                       onClick={handleDeploy}
                       className="flex-1 py-3.5 bg-indigo-600 text-zinc-100 rounded-2xl font-semibold shadow-lg shadow-indigo-950/20 hover:bg-indigo-500 transition-all cursor-pointer active:scale-95"
                     >
-                      Retry Build
+                      Retry
                     </button>
 
                     <button
@@ -749,12 +618,6 @@ const seoScore = Math.round(
                     >
                       Change Provider
                     </button>
-                  </div>
-
-                  {/* Dev debugging annotation */}
-                  <div className="text-[9px] text-rose-400/80 font-mono bg-rose-950/10 border border-rose-950/30 p-2 rounded-lg w-full text-left">
-                    ERR_CODE: pipeline_rate_limit_exceeded <br/>
-                    TIP: Edge CDN gateways are busy. Trying again usually resolves the issue.
                   </div>
                 </motion.div>
               )}

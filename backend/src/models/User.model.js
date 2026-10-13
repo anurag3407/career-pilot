@@ -75,6 +75,7 @@ userSchema.index({ jobRole: 1 }, { background: true });
 userSchema.index({ collegeStudent: 1 }, { background: true });
 userSchema.index({ jobRole: 1, yearsOfExperience: 1 }, { background: true });
 userSchema.index({ skills: 1 }, { background: true });
+userSchema.index({ role: 1 }, { background: true });
 
 // Hash the password whenever it has been modified before persisting.
 // The guard against already-hashed values prevents double-hashing if a document

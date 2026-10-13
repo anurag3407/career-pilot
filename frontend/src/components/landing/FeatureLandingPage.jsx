@@ -10,15 +10,16 @@ import FeatureVideoSection from './FeatureVideoSection';
 import FeatureHowItWorks from './FeatureHowItWorks';
 import FeatureTestimonials from './FeatureTestimonials';
 import FeatureCTA from './FeatureCTA';
+import FeatureComparison from './FeatureComparison';
 
 export default function FeatureLandingPage({ config }) {
   const { user } = useAuth();
 
   // Determine CTA based on auth state
-  const primaryCtaText = user ? config.primaryAction.label : config.hero.primaryCta.text;
+  const primaryCtaText = user ? config.primaryAction.label : `Try ${config.name.toLowerCase()} free`;
   const primaryCtaLink = user ? config.primaryAction.to : config.hero.primaryCta.to;
 
-  const ctaSectionText = user ? config.primaryAction.label : config.cta.ctaText;
+  const ctaSectionText = user ? config.primaryAction.label : `Try ${config.name.toLowerCase()} free`;
   const ctaSectionLink = user ? config.primaryAction.to : config.cta.ctaTo;
 
   return (
@@ -44,8 +45,9 @@ export default function FeatureLandingPage({ config }) {
           illustration={config.Illustration ? <config.Illustration /> : null}
         />
 
-        <FeatureShowcase 
+        <FeatureShowcase
           heading={config.showcase.heading}
+          subheading={config.showcase.subheading}
           features={config.showcase.features}
         />
 
@@ -58,15 +60,20 @@ export default function FeatureLandingPage({ config }) {
           />
         </div>
 
-        <FeatureHowItWorks 
+        <FeatureHowItWorks
           heading={config.howItWorks.title}
-          subheading="A simpler way to reach your goals."
+          subheading={config.howItWorks.subheading}
           steps={config.howItWorks.steps}
         />
 
         <FeatureTestimonials 
           heading={config.testimonials.heading}
           testimonials={config.testimonials.items}
+        />
+
+        <FeatureComparison
+          heading={config.comparison?.heading}
+          competitors={config.comparison?.competitors || []}
         />
 
         <FeatureCTA 

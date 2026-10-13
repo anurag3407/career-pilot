@@ -26,5 +26,6 @@ const bugSchema = new mongoose.Schema({
 
 bugSchema.index({ status: 1 });
 bugSchema.index({ createdAt: -1 });
+bugSchema.index({ userEmail: 1, createdAt: -1 }, { background: true });
 
 export default mongoose.model('Bug', bugSchema);

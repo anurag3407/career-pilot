@@ -1,131 +1,55 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Star } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { Star, BadgeCheck } from 'lucide-react';
 
 export default function FeatureTestimonials({
-  heading = "Loved by professionals",
-  subheading = "See how our tools have helped others land their dream roles.",
-  testimonials = [
-    {
-      name: "Sarah Jenkins",
-      role: "Product Manager at TechCorp",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-      quote: "The AI optimization completely transformed my resume. I went from getting ghosted to landing 5 interviews in one week.",
-      metric: "3x Interview Rate",
-      rating: 5
-    },
-    {
-      name: "David Chen",
-      role: "Frontend Developer",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-      quote: "Building my portfolio took minutes instead of days. The recruiter specifically mentioned how professional it looked.",
-      metric: "Hired in 2 Weeks",
-      rating: 5
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "UX Designer",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-      quote: "The mock interviews were incredibly realistic. The feedback on my body language helped me fix habits I didn't even know I had.",
-      metric: "95% Confidence Score",
-      rating: 5
-    }
-  ]
+  heading = 'Built for real career workflows',
+  testimonials = [],
 }) {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      y: 0, 
-      transition: { duration: 0.5, ease: "easeOut" } 
-    },
-  };
-
   return (
-    <section className="bg-background py-24 sm:py-32 relative overflow-hidden">
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <div className="text-center mb-16">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
-          >
-            {heading}
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
-          >
-            {subheading}
-          </motion.p>
-        </div>
+    <section className="bg-background py-24 sm:py-32">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6">
+        <h2 className="mx-auto max-w-2xl text-center text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          {heading}
+        </h2>
 
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
-        >
-          {testimonials.map((testimonial, idx) => (
-            <motion.div
-              key={idx}
-              variants={itemVariants}
-              className="flex flex-col bg-card/50 border border-border rounded-3xl p-8 backdrop-blur-sm relative group hover:border-primary/50 hover:bg-card transition-colors"
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {testimonials.map((testimonial) => (
+            <figure
+              key={testimonial.name}
+              className="flex h-full flex-col rounded-2xl border border-border bg-card/50 p-7 backdrop-blur-sm"
             >
-              {/* Optional glowing top border effect */}
-              <div className="absolute top-0 left-10 right-10 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-              {/* Rating */}
-              <div className="flex gap-1 mb-6">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
+              <div className="mb-4 flex items-center gap-1">
+                <div className="flex gap-1" aria-label={`${testimonial.rating} out of 5 stars`}>
+                {Array.from({ length: testimonial.rating }).map((_, index) => (
+                  <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />
                 ))}
-              </div>
-
-              {/* Quote */}
-              <blockquote className="flex-1 text-foreground text-lg leading-relaxed mb-8">
-                "{testimonial.quote}"
-              </blockquote>
-
-              {/* Metric Highlight (if any) */}
-              {testimonial.metric && (
-                <div className="mb-6 inline-flex items-center rounded-lg bg-emerald-500/10 px-3 py-1.5 text-sm font-semibold text-emerald-400 border border-emerald-500/20 w-fit">
-                  {testimonial.metric}
                 </div>
-              )}
-
-              {/* Author */}
-              <div className="flex items-center gap-4 mt-auto">
-                <img 
-                  src={testimonial.avatar} 
-                  alt={testimonial.name} 
-                  className="w-12 h-12 rounded-full bg-muted border-2 border-border"
+                <span className="ml-2 rounded-full border border-border bg-background/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  {testimonial.verified ? 'Verified' : testimonial.label || 'Preview'}
+                </span>
+              </div>
+              <blockquote className="flex-1 text-base leading-relaxed text-foreground">
+                “{testimonial.quote}”
+              </blockquote>
+              <figcaption className="mt-6 flex items-center gap-3">
+                <img
+                  src={testimonial.avatar}
+                  alt=""
+                  className="h-11 w-11 rounded-full border border-border bg-muted"
                 />
                 <div>
-                  <div className="font-semibold text-foreground">{testimonial.name}</div>
-                  <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                  <div className="text-sm font-semibold text-foreground">{testimonial.name}</div>
+                  <div className="text-xs text-muted-foreground">{testimonial.role}</div>
+                  {testimonial.verified && (
+                    <div className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                      <BadgeCheck className="h-3 w-3" aria-hidden="true" /> Verified
+                    </div>
+                  )}
                 </div>
-              </div>
-            </motion.div>
+              </figcaption>
+            </figure>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -12,5 +12,6 @@ const portfolioSchema = new mongoose.Schema(
 );
 
 portfolioSchema.index({ userId: 1, slug: 1 }, { unique: true });
+portfolioSchema.index({ slug: 1 }, { background: true });
 
 export default mongoose.model('Portfolio', portfolioSchema);

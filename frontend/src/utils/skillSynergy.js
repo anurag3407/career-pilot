@@ -107,7 +107,7 @@ const CAREER_FOCUS_KEYWORDS = [
 function normalizeText(text) {
   return String(text || '')
     .toLowerCase()
-    .replace(/[’‘'.,\/()\[\]_\-]/g, ' ')
+    .replace(/[’‘'.,/()[\]_-]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }

@@ -248,7 +248,7 @@ export default function HeroSection() {
               className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl p-[1.5px] shadow-xl shadow-primary/25 transition-transform duration-300 hover:scale-[1.03]"
             >
               {/* Rotating conic glow ring */}
-              <span className="absolute inset-[-200%] animate-spin-slow bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,var(--primary)_25%,var(--secondary)_50%,transparent_75%)] opacity-80" />
+              <span className="absolute inset-[-200%] max-w-none animate-spin-slow bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,var(--primary)_25%,var(--secondary)_50%,transparent_75%)] opacity-80" />
               <span className="relative inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 font-bold text-primary-foreground">
                 Get Started Free
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -309,8 +309,8 @@ export default function HeroSection() {
           <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">
             Trusted by talent hired at
           </p>
-          <div className="marquee-mask relative mt-6 overflow-hidden">
-            <div className="flex w-max animate-marquee gap-12 pr-12">
+          <div className="marquee-mask relative mt-6 w-full overflow-hidden">
+            <div className="flex w-max max-w-none animate-marquee gap-12 pr-12">
               {[...trustLogos, ...trustLogos].map((logo, i) => (
                 <span
                   key={i}
@@ -445,7 +445,7 @@ function ProductPreview({ prefersReduced }) {
       initial={{ opacity: 0, y: 60, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="relative mx-auto mt-20 max-w-5xl"
+      className="relative mx-auto mt-20 w-[calc(100%-2rem)] max-w-5xl sm:w-full"
       style={{ perspective: 1200 }}
     >
       {/* Glow behind the card */}

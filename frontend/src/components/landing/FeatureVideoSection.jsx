@@ -77,14 +77,14 @@ function PortfolioDemoPreview({ videoUrl, posterUrl, heading }) {
         <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-300">
-              Portfolio Live Preview
+              Portfolio Preview
             </p>
             <p className="mt-1 text-sm text-slate-400">
-              Real-time synchronization across templates, projects, and deployments
+              Template, project, and deployment workflow preview
             </p>
           </div>
           <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-300">
-            Live Demo
+            Sample Data
           </span>
         </div>
 
@@ -258,7 +258,7 @@ export default function FeatureVideoSection({
             className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-sm font-semibold text-emerald-300"
           >
             <Globe2 className="h-4 w-4" aria-hidden="true" />
-            Demo walkthrough
+            Interactive preview
           </MotionDiv>
 
           <MotionH2

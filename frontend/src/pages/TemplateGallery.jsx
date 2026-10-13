@@ -8,6 +8,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
+import InspiredClydeDSouza from "../components/portfolio/templates/Inspired_Clyde_DSouza";
+import InspiredDelba from "../components/portfolio/templates/Inspired_Delba";
+
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -449,12 +452,6 @@ export default function TemplateGallery() {
   if (sort === 'Highest Rated') return b.rating - a.rating;
   if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
   return 0;
-  });
-
-  logger.log("Vercel cards filtered", {
-    cards: sortedTemplates.filter(
-      (t) => t.title === "Vercel Deploy"
-    ).length
   });
 
   return (

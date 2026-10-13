@@ -111,7 +111,7 @@ function renderMarkdown(md) {
 // ---------------------------------------------------------------------------
 // Main Component
 // ---------------------------------------------------------------------------
-export default function GithubReadmeGenerator() {
+export default function GithubReadmeGenerator({ embedded = false }) {
   const [username, setUsername] = useState('');
   const [profile, setProfile] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState('developer');
@@ -206,7 +206,7 @@ export default function GithubReadmeGenerator() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
+      {!embedded && <Navbar />}
 
       {/* Top bar */}
       <div className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
@@ -230,7 +230,7 @@ export default function GithubReadmeGenerator() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:pt-16">
         {/* Error banner */}
         <AnimatePresence>
           {error && (

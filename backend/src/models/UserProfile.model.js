@@ -155,5 +155,6 @@ userProfileSchema.index({ uid: 1, updatedAt: -1 }, { background: true });
 userProfileSchema.index({ jobRole: 1 }, { background: true });
 userProfileSchema.index({ location: 1 }, { background: true });
 userProfileSchema.index({ skills: 1 }, { background: true });
+userProfileSchema.index({ openToWork: 1 }, { background: true });
 
 export default mongoose.model('UserProfile', userProfileSchema);

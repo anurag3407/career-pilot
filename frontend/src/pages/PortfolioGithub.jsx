@@ -339,18 +339,19 @@ export default function PortfolioGithub() {
               <PortfolioPreview data={result} />
               <div className="flex items-center justify-between rounded-2xl border border-border bg-card/80 backdrop-blur-sm p-4">
                 <span className="text-xs text-muted-foreground">
-                  Generated with {result.provider || 'AI'} · {result.selectedRepos.length} repos
+                  Saved automatically · Generated with {result.provider || 'AI'} ·{' '}
+                  {result.selectedRepos.length} repos
                 </span>
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={startOver} className="gap-2">
                     Build another
                   </Button>
                   <Button
-                    onClick={() => toast.success('Saved to your portfolio history')}
+                    variant="outline"
+                    onClick={() => navigate('/hub/portfolio/github')}
                     className="gap-2"
                   >
-                    <CheckCircle2 className="h-4 w-4" />
-                    Save
+                    View saved portfolios
                   </Button>
                 </div>
               </div>

@@ -36,7 +36,7 @@ export const pwaOptions = {
     ]
   },
   workbox: {
-    globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,json}'],
+    globPatterns: ['index.html', 'manifest.webmanifest', 'user.svg', 'pwa-*.jpg'],
     globIgnores: ['templates/**/*', 'template-previews/**/*'],
     maximumFileSizeToCacheInBytes: 5000000
   }

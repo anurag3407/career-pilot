@@ -217,19 +217,19 @@ export default function MultiOrbitIntegrations() {
 
         <OrbitSection 
            title="AI Models & APIs" 
-           description="Harness industry-leading language models for generating tailored resumes, customized cover letters, and intelligent mock interviews."
+           description="Bring your own AI provider keys for assisted writing, resume analysis, interview practice, and documentation workflows."
            orbits={aiTools}
         />
         
         <OrbitSection 
            title="Developer Workflow" 
-           description="Sync your GitHub repositories, pull requests, and projects to automatically keep your portfolio fresh and up-to-date."
+           description="Use GitHub data where it is supported today, including repository import for resumes, portfolios, README generation, and code visualization."
            orbits={devTools}
         />
 
         <OrbitSection 
            title="Career & Hiring Platforms" 
-           description="One-click apply using our optimized resume formats specifically designed to pass ATS screening systems."
+           description="Prepare applications with role-specific resumes, organized tracking, and ATS-aware exports. Applications are completed on the employer site."
            orbits={careerTools}
         />
       </div>

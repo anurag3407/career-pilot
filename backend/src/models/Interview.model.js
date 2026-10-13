@@ -71,7 +71,7 @@ const codingQuestionSchema = new mongoose.Schema({
 }, { _id: false });
 
 const interviewSchema = new mongoose.Schema({
-    odId: { type: String, required: true, index: true },
+    userId: { type: String, required: true, index: true, alias: 'odId' },
     jobRole: { type: String, required: true },
     industry: { type: String, required: true },
     experienceLevel: { type: String, required: true },
@@ -121,12 +121,12 @@ const interviewSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
-interviewSchema.index({ odId: 1, createdAt: -1 }, { background: true });
-interviewSchema.index({ odId: 1, status: 1 }, { background: true });
-interviewSchema.index({ odId: 1, jobRole: 1, industry: 1 }, { background: true });
-interviewSchema.index({ odId: 1, overallScore: -1 }, { background: true });
-interviewSchema.index({ odId: 1, status: 1, completedAt: -1 }, { background: true });
-interviewSchema.index({ odId: 1, experienceLevel: 1, createdAt: -1 }, { background: true });
+interviewSchema.index({ userId: 1, createdAt: -1 }, { background: true });
+interviewSchema.index({ userId: 1, status: 1 }, { background: true });
+interviewSchema.index({ userId: 1, jobRole: 1, industry: 1 }, { background: true });
+interviewSchema.index({ userId: 1, overallScore: -1 }, { background: true });
+interviewSchema.index({ userId: 1, status: 1, completedAt: -1 }, { background: true });
+interviewSchema.index({ userId: 1, experienceLevel: 1, createdAt: -1 }, { background: true });
 interviewSchema.index({ companyName: 1, companyRole: 1 }, { background: true, sparse: true });
 
 export default mongoose.model('Interview', interviewSchema);

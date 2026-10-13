@@ -1,5 +1,6 @@
 import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
+import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { paginate, paginatedResponse } from '../middleware/paginate.js';
 import Resume from '../models/Resume.model.js';
@@ -583,7 +584,9 @@ ${text}`;
   }
 }));
 
-router.post('/score', asyncHandler(async (req, res) => {
+// NOTE: this endpoint spends a hosted AI call, so it must stay behind
+// authentication and the AI rate limiter like every other AI route.
+router.post('/score', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText } = req.body;
 
   if (!resumeText || !resumeText.trim()) {

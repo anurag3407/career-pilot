@@ -174,9 +174,9 @@ export default function FeaturesSection() {
   const progressHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <div ref={containerRef} className="relative mx-auto max-w-7xl py-24 lg:py-36">
+    <div ref={containerRef} className="relative mx-auto w-full max-w-7xl overflow-x-clip px-4 py-24 sm:px-8 lg:py-36">
       {/* Header */}
-      <div className="mb-20 px-4 sm:px-8">
+      <div className="mb-20">
         <motion.span
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

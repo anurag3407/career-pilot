@@ -13,4 +13,8 @@ const resumeShareSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
+resumeShareSchema.index({ resumeId: 1 }, { background: true });
+resumeShareSchema.index({ ownerId: 1, createdAt: -1 }, { background: true });
+resumeShareSchema.index({ expiresAt: 1 }, { background: true, sparse: true });
+
 export default mongoose.model('ResumeShare', resumeShareSchema);

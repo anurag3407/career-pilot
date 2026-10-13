@@ -56,16 +56,8 @@ const challengeSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Proposal',
         default: null
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
-});
+}, { timestamps: true });
 
 challengeSchema.index({ status: 1, createdAt: -1 }, { background: true });
 challengeSchema.index({ category: 1, status: 1 }, { background: true });
@@ -74,10 +66,7 @@ challengeSchema.index({ status: 1, deadline: 1 }, { background: true });
 challengeSchema.index({ price: 1 }, { background: true });
 challengeSchema.index({ title: 'text', description: 'text' }, { background: true });
 challengeSchema.index({ status: 1, category: 1, deadline: 1 }, { background: true });
-
-challengeSchema.pre('save', function () {
-    this.updatedAt = new Date();
-});
+challengeSchema.index({ selectedProposalId: 1 }, { background: true, sparse: true });
 
 const Challenge = mongoose.model('Challenge', challengeSchema);
 

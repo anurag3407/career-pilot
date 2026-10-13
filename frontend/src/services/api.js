@@ -499,6 +499,16 @@ export const portfolioApi = {
     });
     return handleResponse(response);
   },
+  // Validate a deploy provider token (cloudflare | netlify | github)
+  async validateDeployToken(provider, token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/validate-token`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ provider, token })
+    })
+    return handleResponse(response)
+  },
   // Deploy portfolio to Cloudflare Pages
   async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();
@@ -508,6 +518,54 @@ export const portfolioApi = {
       body: JSON.stringify({ slug, sections, templateId, title, provider, token })
     });
     return handleResponse(response);
+  }
+}
+
+// ============ SALARY API ============
+export const salaryApi = {
+  // Estimate a salary band for a role / location / level
+  async estimate({ title, location, experienceLevel }) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/salary/estimate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ title, location, experienceLevel })
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ OUTREACH API ============
+export const outreachApi = {
+  // Start an outreach generation job (async; poll or listen on socket)
+  async generate(companyUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/outreach/generate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ companyUrl })
+    })
+    return handleResponse(response)
+  },
+
+  // Get the status and drafts of a generation job
+  async getById(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/outreach/${id}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // List the user's outreach records
+  async getAll() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/outreach`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
   }
 }
 
@@ -607,6 +665,17 @@ export const enhanceApi = {
       method: 'POST',
       headers,
       body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Predict possible career paths from a resume profile
+  async careerTrajectory(resumeData) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/career-trajectory`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeData })
     })
     return handleResponse(response)
   },

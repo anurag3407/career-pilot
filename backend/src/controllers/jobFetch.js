@@ -1,9 +1,63 @@
 import { fetchJobs } from "../utils/jobSearch.js";
 import Job from "../models/Job.model.js";
+import Resume from "../models/Resume.model.js";
 import mongoose from "mongoose";
 import { summarizeJobDescription } from "../services/jobSummarizer.js";
+import { deterministicResumeJobMatch } from "../services/resumeJobMatcher.js";
 import { catchAsync } from "../middleware/globalErrorHandler.js";
 import { trackTokenUsage } from '../utils/tokenTracker.js';
+
+/**
+ * Loads the most recently updated resume text for a user so job results can be
+ * scored against it. Returns null when the user has no usable resume, which
+ * simply means results come back unscored rather than failing the request.
+ */
+const getResumeTextForUser = async (userId) => {
+  try {
+    const resume = await Resume.findOne({ userId })
+      .sort({ lastModified: -1 })
+      .select('originalText enhancedText')
+      .lean();
+
+    if (!resume) return null;
+
+    const text = [resume.enhancedText, resume.originalText]
+      .filter((part) => typeof part === 'string' && part.trim())
+      .join('\n')
+      .trim();
+
+    return text || null;
+  } catch (error) {
+    console.warn('⚠️  Could not load resume for match scoring:', error.message);
+    return null;
+  }
+};
+
+/**
+ * Attaches a resume-based match score to each job using the deterministic
+ * keyword matcher. This intentionally avoids an AI call so scoring stays free
+ * and fast, and never throws into the search response.
+ */
+const attachMatchScores = (jobs, resumeText) => {
+  if (!resumeText) return jobs;
+
+  return jobs.map((job) => {
+    const description = [job.job_title, job.job_description]
+      .filter((part) => typeof part === 'string' && part.trim())
+      .join('\n');
+
+    if (!description.trim()) return job;
+
+    const match = deterministicResumeJobMatch(resumeText, description);
+
+    return {
+      ...job,
+      matchScore: match.matchScore,
+      matchedSkills: match.matchedSkills.slice(0, 8),
+      missingSkills: match.missingSkills.slice(0, 8),
+    };
+  });
+};
 
 export const getJobs = catchAsync(async (req, res, next) => {
   const user = req.user;
@@ -36,12 +90,16 @@ export const getJobs = catchAsync(async (req, res, next) => {
   }
   
   const jobs = Array.isArray(jobsData.data) ? jobsData.data : [];
-  
+
+  const resumeText = await getResumeTextForUser(user.uid);
+  const scoredJobs = attachMatchScores(jobs, resumeText);
+
   return res.status(200).json({
     success: true,
     message: "Jobs fetched successfully",
-    data: jobs,
-    count: jobs.length
+    data: scoredJobs,
+    count: scoredJobs.length,
+    matchScored: Boolean(resumeText)
   });
 });
 

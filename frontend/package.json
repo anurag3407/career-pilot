@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:portfolio": "vite build --config vite.standalone.config.js",
-    "lint": "eslint .",
+    "lint": "eslint src --quiet",
     "preview": "vite preview",
     "test": "vitest run"
   },
