@@ -1,11 +1,29 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-import { X, Bug } from 'lucide-react'
-import toast from 'react-hot-toast'
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Bug, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { bugsApi } from '../services/api';
 
-export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
-  const [reportBody, setReportBody] = useState('')
-  const dialogRef = useRef(null)
+export default function ReportBugModal({
+  isOpen,
+  onClose,
+  brokenUrl,
+}) {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+
+  useEffect(() => {
+  if (isOpen && brokenUrl) {
+    setTitle("Broken Link");
+
+    setDescription(
+      `Broken URL: ${brokenUrl}\n\nPlease describe what happened...`
+    );
+  }
+}, [isOpen, brokenUrl]);
+
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return
