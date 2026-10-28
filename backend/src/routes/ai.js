@@ -119,6 +119,38 @@ router.get('/models', verifyToken, async (req, res) => {
         }
     }
 
+    if (provider?.toLowerCase() === 'cheaperinference') {
+        try {
+            const response = await fetch('https://api.cheaperinference.com/public/models');
+            if (!response.ok) {
+                throw new Error(`Cheaper Inference models API returned ${response.status}`);
+            }
+            const data = await response.json();
+
+            // Transform Cheaper Inference public model list ({ models: [...] })
+            const models = (data.models || [])
+                .filter(model => model.model_type === 'text')
+                .map(model => ({
+                    id: model.id,
+                    name: model.name || model.id,
+                    description: model.description || '',
+                    pricing: null,
+                    context_length: model.context_length || 0
+                }));
+
+            return res.status(200).json({
+                success: true,
+                models
+            });
+        } catch (error) {
+            console.error('Fetch Cheaper Inference Models Error:', error);
+            return res.status(500).json({
+                success: false,
+                error: 'Failed to fetch Cheaper Inference models'
+            });
+        }
+    }
+
     res.status(200).json({
         success: true,
         models: []
@@ -270,6 +302,22 @@ router.post('/validate-key', verifyToken, async (req, res) => {
                 break;
             }
 
+            case 'cheaperinference': {
+                const response = await fetch('https://api.cheaperinference.com/v1/models', {
+                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    valid = true;
+                    meta.models = (data.data || []).length;
+                } else if (response.status === 401 || response.status === 403) {
+                    return res.json({ success: true, valid: false, error: 'Invalid API key — check your Cheaper Inference key at cheaperinference.com' });
+                } else {
+                    return res.json({ success: true, valid: false, error: `Cheaper Inference returned status ${response.status}` });
+                }
+                break;
+            }
+
             case 'custom': {
                 if (!baseUrl) {
                     return res.json({ success: true, valid: false, error: 'Base URL is required for custom endpoints' });
@@ -299,7 +347,7 @@ router.post('/validate-key', verifyToken, async (req, res) => {
                 return res.status(400).json({
                     success: false,
                     valid: false,
-                    error: `Unsupported provider "${provider}". Supported: gemini, openai, openrouter, requesty, groq, custom`
+                    error: `Unsupported provider "${provider}". Supported: gemini, openai, openrouter, requesty, cheaperinference, groq, custom`
                 });
         }
 

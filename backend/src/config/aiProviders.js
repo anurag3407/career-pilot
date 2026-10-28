@@ -4,6 +4,7 @@ import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 import { OpenRouterAdapter } from './providers/openrouter.js';
 import { RequestyAdapter } from './providers/requesty.js';
+import { CheaperInferenceAdapter } from './providers/cheaperinference.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import { aiCallsCounter } from '../middleware/metrics.js';
 
@@ -12,7 +13,7 @@ dotenv.config();
 // ---------------------------------------------------------------------------
 // Supported provider identifiers
 // ---------------------------------------------------------------------------
-export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'requesty', 'groq', 'custom'];
+export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'requesty', 'cheaperinference', 'groq', 'custom'];
 
 // Default model names per provider (used when caller doesn't specify one)
 const DEFAULT_MODELS = {
@@ -20,6 +21,7 @@ const DEFAULT_MODELS = {
   openai: 'gpt-4o-mini',
   openrouter: 'openai/gpt-4o-mini',   // OpenRouter uses "org/model" format
   requesty: 'openai/gpt-4o-mini',     // Requesty uses "org/model" format
+  cheaperinference: 'gpt-5.4-mini',
   groq: 'llama-3.3-70b-versatile',
   custom: 'gpt-3.5-turbo',
 };
@@ -259,6 +261,8 @@ export function createAIProvider(provider, apiKey, modelName, baseUrl) {
       return new OpenRouterAdapter(apiKey, modelName);
     case 'requesty':
       return new RequestyAdapter(apiKey, modelName);
+    case 'cheaperinference':
+      return new CheaperInferenceAdapter(apiKey, modelName);
     case 'groq':
       return new GroqAdapter(apiKey, modelName);
     case 'custom':
@@ -299,6 +303,7 @@ export function getDefaultProvider() {
     else if (envProvider === 'groq') envKey = process.env.GROQ_API_KEY;
     else if (envProvider === 'openrouter') envKey = process.env.OPENROUTER_API_KEY;
     else if (envProvider === 'requesty') envKey = process.env.REQUESTY_API_KEY;
+    else if (envProvider === 'cheaperinference') envKey = process.env.CHEAPER_INFERENCE_API_KEY;
 
     if (envKey) {
       _defaultProvider = createAIProvider(envProvider, envKey);
