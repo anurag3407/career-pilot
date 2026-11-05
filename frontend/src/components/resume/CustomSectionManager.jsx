@@ -13,6 +13,12 @@ export const PRESET_CUSTOM_SECTIONS = [
   { title: 'Testimonials', kind: 'quotes', defaultItem: 'Exceptional engineer who elevated team standards.' },
 ]
 
+const generateSectionId = (title) => {
+  const slug = (title || 'section').toLowerCase().replace(/[^a-z0-9]+/g, '-')
+  const randomSuffix = Math.random().toString(36).substring(2, 6)
+  return `custom-${slug}-${randomSuffix}`
+}
+
 export default function CustomSectionManager({
   customSections = [],
   onChange,
@@ -24,7 +30,7 @@ export default function CustomSectionManager({
   const [showAddMenu, setShowAddMenu] = useState(false)
 
   const handleAddPreset = (preset) => {
-    const id = `custom-${preset.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now().toString().slice(-4)}`
+    const id = generateSectionId(preset.title)
     const newSection = {
       id,
       title: preset.title,
@@ -44,7 +50,7 @@ export default function CustomSectionManager({
   const handleAddCustom = (e) => {
     e.preventDefault()
     if (!newTitle.trim()) return
-    const id = `custom-${newTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now().toString().slice(-4)}`
+    const id = generateSectionId(newTitle.trim())
     const newSection = {
       id,
       title: newTitle.trim(),

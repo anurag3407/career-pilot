@@ -8,7 +8,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-    "test": "node --test 'src/**/__tests__/*.test.js' 'src/**/*.test.js' 'tests/**/*.test.js'",
+    "test": "node scripts/run-tests.js",
     "migrate": "node src/migrations/migrationRunner.js up",
     "migrate:status": "node src/migrations/migrationRunner.js status",
     "migrate:down": "node src/migrations/migrationRunner.js down"
