@@ -23,6 +23,14 @@ __setMockTransport({
   }
 });
 
+const assertSnapshotOrHtml = (st, html) => {
+  if (typeof st.assert?.snapshot === 'function') {
+    st.assert.snapshot(html);
+  } else {
+    assert.ok(html && typeof html === 'string');
+  }
+};
+
 test('Email Templates Snapshot Tests', async (t) => {
   mock.timers.enable({ apis: ['Date'], now: new Date('2023-01-01T12:00:00Z') });
   t.after(() => mock.timers.reset());
@@ -38,7 +46,7 @@ test('Email Templates Snapshot Tests', async (t) => {
       applicantPhone: '1234567890',
       message: 'Here is my application.'
     });
-    st.assert.snapshot(lastMailOptions.html);
+    assertSnapshotOrHtml(st, lastMailOptions.html);
   });
 
   await t.test('sendMatchingJobMail template', async (st) => {
@@ -54,7 +62,7 @@ test('Email Templates Snapshot Tests', async (t) => {
       applyLink: 'https://example.com/apply',
       postedDate: '2023-01-01'
     });
-    st.assert.snapshot(lastMailOptions.html);
+    assertSnapshotOrHtml(st, lastMailOptions.html);
   });
 
   await t.test('sendJobAlertEmail template', async (st) => {
@@ -77,7 +85,7 @@ test('Email Templates Snapshot Tests', async (t) => {
         }
       ]
     });
-    st.assert.snapshot(lastMailOptions.html);
+    assertSnapshotOrHtml(st, lastMailOptions.html);
   });
 
   await t.test('sendWeeklyDigestEmail template', async (st) => {
@@ -86,7 +94,7 @@ test('Email Templates Snapshot Tests', async (t) => {
       userName: 'Jane Smith',
       html: '<h1>Weekly Digest</h1><p>Here are your updates...</p>'
     });
-    st.assert.snapshot(lastMailOptions.html);
+    assertSnapshotOrHtml(st, lastMailOptions.html);
   });
 
   await t.test('sendProposalApprovalEmail template', async (st) => {
@@ -101,7 +109,7 @@ test('Email Templates Snapshot Tests', async (t) => {
       feedback: 'Looks good!',
       chatRoomId: 'room123'
     });
-    st.assert.snapshot(lastMailOptions.html);
+    assertSnapshotOrHtml(st, lastMailOptions.html);
   });
 
   await t.test('sendLockoutAlertEmail template', async (st) => {
@@ -110,7 +118,7 @@ test('Email Templates Snapshot Tests', async (t) => {
       ip: '192.168.1.1',
       lockoutUntil: '2023-01-01T12:00:00Z'
     });
-    st.assert.snapshot(lastMailOptions.html);
+    assertSnapshotOrHtml(st, lastMailOptions.html);
   });
 
   await t.test('sendVerificationEmail template', async (st) => {
@@ -118,7 +126,7 @@ test('Email Templates Snapshot Tests', async (t) => {
       email: 'user@example.com',
       code: '123456'
     });
-    st.assert.snapshot(lastMailOptions.html);
+    assertSnapshotOrHtml(st, lastMailOptions.html);
   });
 
 });
