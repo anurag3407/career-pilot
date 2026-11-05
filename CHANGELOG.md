@@ -1,3 +1,10 @@
+# [1.278.0](https://github.com/anurag3407/career-pilot/compare/v1.277.0...v1.278.0) (2026-11-05)
+
+
+### Features
+
+* enhance security scan workflow and improve test script execution ([e403922](https://github.com/anurag3407/career-pilot/commit/e4039229bebcc7a7c9f5b4159ee704acab31cfc6))
+
 # [1.277.0](https://github.com/anurag3407/career-pilot/compare/v1.276.0...v1.277.0) (2026-11-05)
 
 
