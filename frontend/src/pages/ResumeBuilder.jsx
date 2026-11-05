@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, ArrowRight, CheckCircle, Plus, Trash2,
   Save, FileText, User, Briefcase, GraduationCap, Code, Star, GripVertical,
-  LayoutTemplate
+  LayoutTemplate, Award, Layers, Eye, Columns, Sparkles, Upload, Clock,
+  CheckCircle2, AlertCircle, RefreshCw, X, Loader2
 } from 'lucide-react'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { resumeApi } from '../services/api'
@@ -22,14 +23,22 @@ import {
   hasErrors,
 } from '../utils/resumeValidation'
 import { analyzeResumeTone } from "../utils/toneAnalyzer";
+import CustomSectionManager from '../components/resume/CustomSectionManager';
+import LiveResumePreview from '../components/resume/LiveResumePreview';
+import InlineAIEnhancer from '../components/resume/InlineAIEnhancer';
+import { calculateRealtimeAtsScore } from '../utils/realtimeAtsScorer';
+import { markdownToStructured, jsonResumeToStructured } from '../utils/resumeParser';
+import { normalizeResumeData } from '../context/ResumeContext';
 
 const STEPS = [
-  { id: 'personal',   title: 'Personal Info', icon: User },
-  { id: 'education',  title: 'Education',     icon: GraduationCap },
-  { id: 'experience', title: 'Experience',    icon: Briefcase },
-  { id: 'projects',   title: 'Projects',      icon: Code },
-  { id: 'skills',     title: 'Skills',        icon: Star },
-  { id: 'preview',    title: 'Preview',       icon: FileText },
+  { id: 'personal',       title: 'Personal Info',    icon: User },
+  { id: 'education',      title: 'Education',        icon: GraduationCap },
+  { id: 'experience',     title: 'Experience',       icon: Briefcase },
+  { id: 'projects',       title: 'Projects',         icon: Code },
+  { id: 'skills',         title: 'Skills',           icon: Star },
+  { id: 'certifications', title: 'Certifications',   icon: Award },
+  { id: 'custom',         title: 'Custom Sections',  icon: Layers },
+  { id: 'preview',        title: 'Preview',          icon: FileText },
 ]
 
 // ─────────────────── small helpers ───────────────────────────────────────────
@@ -81,7 +90,16 @@ export default function ResumeBuilder() {
     { name: '', tech: '', link: '', description: '' }
   ])
   const [skills, setSkills] = useState('')
+  const [certifications, setCertifications] = useState([
+    { name: '', issuer: '', year: '', url: '' }
+  ])
+  const [customSections, setCustomSections] = useState([])
   const [sectionOrder, setSectionOrder] = useState(['education', 'experience', 'projects', 'skills'])
+  const [viewMode, setViewMode] = useState('form')
+  const [draftSavedAt, setDraftSavedAt] = useState(null)
+  const [hasRestoredDraft, setHasRestoredDraft] = useState(false)
+  const [showImportModal, setShowImportModal] = useState(false)
+  const [importingFile, setImportingFile] = useState(false)
   const [resumeScore, setResumeScore] = useState(0)
   const [recommendedSections, setRecommendedSections] = useState([])
   const [atsScore, setAtsScore] = useState(0)
@@ -116,6 +134,211 @@ const [careerGoals, setCareerGoals] = useState([
 ])
 
 const [goalProgress, setGoalProgress] = useState(0)
+
+  const DRAFT_KEY = 'careerpilot_resume_builder_draft'
+
+  // Load draft on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (raw) {
+        const d = JSON.parse(raw)
+        if (d.personal) {
+          setPersonal(prev => ({
+            name: d.personal.name || '',
+            email: d.personal.email || '',
+            phone: d.personal.phone || '',
+            linkedin: d.personal.linkedin || '',
+            github: d.personal.github || '',
+            portfolio: d.personal.portfolio || '',
+            summary: d.personal.summary || '',
+          }))
+        }
+        if (d.targetRole) setTargetRole(d.targetRole)
+        if (d.phoneCode) setPhoneCode(d.phoneCode)
+        if (d.phoneDigits) setPhoneDigits(d.phoneDigits)
+        if (Array.isArray(d.education) && d.education.length) setEducation(d.education)
+        if (Array.isArray(d.experience) && d.experience.length) setExperience(d.experience)
+        if (Array.isArray(d.projects) && d.projects.length) setProjects(d.projects)
+        if (d.skills) setSkills(d.skills)
+        if (Array.isArray(d.certifications) && d.certifications.length) setCertifications(d.certifications)
+        if (Array.isArray(d.customSections) && d.customSections.length) setCustomSections(d.customSections)
+        if (Array.isArray(d.sectionOrder) && d.sectionOrder.length) setSectionOrder(d.sectionOrder)
+        setHasRestoredDraft(true)
+        setDraftSavedAt(d.savedAt || 'earlier')
+      }
+    } catch (_e) {}
+  }, [])
+
+  // Debounced autosave
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (personal.name || personal.email || education[0]?.school || experience[0]?.title) {
+        const payload = {
+          personal,
+          targetRole,
+          phoneCode,
+          phoneDigits,
+          education,
+          experience,
+          projects,
+          skills,
+          certifications,
+          customSections,
+          sectionOrder,
+          savedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        }
+        try {
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(payload))
+          setDraftSavedAt(payload.savedAt)
+        } catch (_e) {}
+      }
+    }, 1200)
+    return () => clearTimeout(timer)
+  }, [personal, targetRole, phoneCode, phoneDigits, education, experience, projects, skills, certifications, customSections, sectionOrder])
+
+  const canonicalResumeData = React.useMemo(() => {
+    const fullPhone = phoneDigits ? `${phoneCode} ${phoneDigits}` : (personal.phone || '')
+    const normSkills = typeof skills === 'string'
+      ? skills.split(/[\n,]/).map(s => s.replace(/^[-*•]\s*/, '').trim()).filter(Boolean).map(s => ({ name: s }))
+      : Array.isArray(skills) ? skills : []
+
+    return normalizeResumeData({
+      personal: {
+        ...personal,
+        phone: fullPhone,
+      },
+      experience: (experience || []).filter(e => e.title || e.company || e.description).map(e => ({
+        role: e.title || 'Role',
+        company: e.company || '',
+        location: e.location || '',
+        startDate: e.startDate || '',
+        endDate: e.endDate || '',
+        current: Boolean(e.current),
+        period: [e.startDate, e.current ? 'Present' : e.endDate].filter(Boolean).join(' - '),
+        bullets: e.description ? e.description.split(/\r?\n/).map(b => b.replace(/^[-*•]\s*/, '').trim()).filter(Boolean) : [],
+      })),
+      education: (education || []).filter(edu => edu.school || edu.degree).map(edu => ({
+        institution: edu.school || '',
+        degree: edu.degree || '',
+        field: edu.field || '',
+        startDate: edu.startDate || '',
+        endDate: edu.endDate || '',
+        period: [edu.startDate, edu.endDate].filter(Boolean).join(' - '),
+        gpa: edu.gpa || '',
+        description: edu.description || '',
+      })),
+      projects: (projects || []).filter(p => p.name || p.description).map(p => ({
+        title: p.name || 'Project',
+        link: p.link || '',
+        techStack: typeof p.tech === 'string' ? p.tech.split(',').map(s => s.trim()).filter(Boolean) : (p.tech || []),
+        description: p.description || '',
+        bullets: p.description ? p.description.split(/\r?\n/).map(b => b.replace(/^[-*•]\s*/, '').trim()).filter(Boolean) : [],
+      })),
+      skills: normSkills,
+      certifications: (certifications || []).filter(c => c.name),
+      customSections: customSections || [],
+      sectionOrder: sectionOrder || ['education', 'experience', 'projects', 'skills'],
+    })
+  }, [personal, phoneCode, phoneDigits, experience, education, projects, skills, certifications, customSections, sectionOrder])
+
+  const realtimeAts = React.useMemo(() => {
+    return calculateRealtimeAtsScore(canonicalResumeData, targetRole)
+  }, [canonicalResumeData, targetRole])
+
+  const handleImportFile = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImportingFile(true)
+    try {
+      if (file.name.endsWith('.json')) {
+        const text = await file.text()
+        const parsed = JSON.parse(text)
+        const structured = jsonResumeToStructured(parsed) || parsed
+        populateFromStructured(structured)
+        toast.success('JSON Resume imported!')
+      } else if (file.name.endsWith('.md') || file.name.endsWith('.txt')) {
+        const text = await file.text()
+        const structured = markdownToStructured(text, file.name.replace(/\.[^/.]+$/, ''))
+        populateFromStructured(structured)
+        toast.success('Resume text imported!')
+      } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+        const formData = new FormData()
+        formData.append('resume', file)
+        const res = await resumeApi.upload(formData)
+        const extracted = res.data?.extractedText || ''
+        const structured = markdownToStructured(extracted, file.name.replace(/\.[^/.]+$/, ''))
+        populateFromStructured(structured)
+        toast.success('PDF Resume parsed & imported!')
+      } else {
+        toast.error('Please upload a PDF, JSON, Markdown, or TXT file.')
+      }
+      setShowImportModal(false)
+    } catch (err) {
+      console.error('Import error:', err)
+      toast.error('Failed to import file: ' + (err.message || 'Check format'))
+    } finally {
+      setImportingFile(false)
+    }
+  }
+
+  const populateFromStructured = (s) => {
+    if (!s) return
+    if (s.personal) {
+      setPersonal(prev => ({
+        ...prev,
+        name: s.personal.name || prev.name,
+        email: s.personal.email || prev.email,
+        phone: s.personal.phone || prev.phone,
+        linkedin: s.personal.linkedin || prev.linkedin,
+        github: s.personal.github || prev.github,
+        portfolio: s.personal.website || prev.portfolio,
+        summary: s.personal.summary || prev.summary,
+      }))
+    }
+    if (Array.isArray(s.experience) && s.experience.length) {
+      setExperience(s.experience.map(e => ({
+        title: e.role || '',
+        company: e.company || '',
+        location: e.location || '',
+        startDate: e.startDate || '',
+        endDate: e.endDate || '',
+        current: Boolean(e.current),
+        description: Array.isArray(e.bullets) ? e.bullets.join('\n') : (e.description || '')
+      })))
+    }
+    if (Array.isArray(s.education) && s.education.length) {
+      setEducation(s.education.map(edu => ({
+        school: edu.institution || edu.school || '',
+        degree: edu.degree || '',
+        field: edu.field || '',
+        startDate: edu.startDate || '',
+        endDate: edu.endDate || '',
+        gpa: edu.gpa || '',
+        description: edu.description || (Array.isArray(edu.highlights) ? edu.highlights.join('\n') : '')
+      })))
+    }
+    if (Array.isArray(s.projects) && s.projects.length) {
+      setProjects(s.projects.map(p => ({
+        name: p.title || '',
+        tech: Array.isArray(p.techStack) ? p.techStack.join(', ') : (p.tech || ''),
+        link: p.link || '',
+        description: Array.isArray(p.bullets) && p.bullets.length ? p.bullets.join('\n') : (p.description || '')
+      })))
+    }
+    if (Array.isArray(s.skills) && s.skills.length) {
+      setSkills(s.skills.map(sk => sk.name || sk).join(', '))
+    }
+    if (Array.isArray(s.certifications) && s.certifications.length) {
+      setCertifications(s.certifications)
+    }
+    if (Array.isArray(s.customSections) && s.customSections.length) {
+      setCustomSections(s.customSections)
+    }
+    if (Array.isArray(s.sectionOrder) && s.sectionOrder.length) {
+      setSectionOrder(s.sectionOrder)
+    }
+  }
 
   useEffect(() => {
   const suggestions = []
@@ -728,12 +951,41 @@ useEffect(() => {
         })
       } else if (section === 'skills' && skills) {
         sectionMd += `## SKILLS\n\n${skills}\n\n`
+      } else if (section === 'certifications' && certifications.some(c => c.name)) {
+        sectionMd += `## CERTIFICATIONS\n\n`
+        certifications.forEach(c => {
+          if (!c.name) return
+          const issuer = c.issuer ? ` - ${c.issuer}` : ''
+          const year = c.year ? ` (${c.year})` : ''
+          sectionMd += `- ${c.name}${issuer}${year}\n`
+        })
+        sectionMd += '\n'
+      } else {
+        const cs = customSections.find(s => s.id === section)
+        if (cs && cs.title) {
+          sectionMd += `## ${cs.title.toUpperCase()}\n\n`
+          if (cs.kind === 'paragraph') {
+            sectionMd += `${cs.body || ''}\n\n`
+          } else {
+            (cs.items || []).forEach(item => {
+              if (item) sectionMd += `- ${item}\n`
+            })
+            sectionMd += '\n'
+          }
+        }
       }
       return sectionMd
     }
 
     sectionOrder.forEach(section => {
       md += renderSection(section)
+    })
+
+    // Append any custom sections not explicitly in sectionOrder
+    customSections.forEach(cs => {
+      if (!sectionOrder.includes(cs.id)) {
+        md += renderSection(cs.id)
+      }
     })
 
     return md
@@ -749,7 +1001,7 @@ useEffect(() => {
     if (typeof toast !== 'undefined') {
       toast.success("Resume version layout tracked successfully!");
     }
-  }, [experience, education, projects, personal, skills, generateMarkdown]);
+  }, [experience, education, projects, personal, skills, certifications, customSections, sectionOrder, generateMarkdown]);
 
   const handleGenerate = async () => {
     try {
@@ -760,8 +1012,13 @@ useEffect(() => {
         originalText: markdown,
         jobRole: targetRole || 'Software Engineer',
         title:   `${personal.name || 'My'} Resume - ${new Date().toLocaleDateString()}`,
-        sectionOrder: sectionOrder
+        sectionOrder: sectionOrder,
+        customSections: customSections,
+        structuredData: canonicalResumeData,
       })
+      try {
+        localStorage.removeItem(DRAFT_KEY)
+      } catch (_e) {}
       toast.success('Resume created successfully!')
       navigate(`/enhance/${response.data.id}`)
     } catch (error) {
@@ -930,11 +1187,19 @@ useEffect(() => {
                 onChange={e => updatePersonal('summary', e.target.value)}
                 placeholder="A brief summary of your professional background..."
               />
-              <AchievementEnhancer
-                value={personal.summary}
-                jobRole={targetRole}
-                onApply={(text) => updatePersonal('summary', text)}
-              />
+              <div className="flex items-center justify-between mt-2 flex-wrap gap-2">
+                <AchievementEnhancer
+                  value={personal.summary}
+                  jobRole={targetRole}
+                  onApply={(text) => updatePersonal('summary', text)}
+                />
+                <InlineAIEnhancer
+                  text={personal.summary}
+                  role={targetRole || 'Software Engineer'}
+                  sectionType="summary"
+                  onApply={(text) => updatePersonal('summary', text)}
+                />
+              </div>
             </div>
           </div>
         )
@@ -1180,13 +1445,23 @@ useEffect(() => {
                                     onChange={e => updateExp(index, 'description', e.target.value)}
                                     placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
                                   />
-                                  <AchievementEnhancer
-                                    value={exp.description}
-                                    jobRole={targetRole}
-                                    onApply={(text) =>
-                                      updateExp(index, "description", text)
-                                    }
-                                  />
+                                  <div className="flex items-center justify-between mt-2 flex-wrap gap-2">
+                                    <AchievementEnhancer
+                                      value={exp.description}
+                                      jobRole={targetRole}
+                                      onApply={(text) =>
+                                        updateExp(index, "description", text)
+                                      }
+                                    />
+                                    <InlineAIEnhancer
+                                      text={exp.description}
+                                      role={targetRole || 'Software Engineer'}
+                                      sectionType="experience"
+                                      onApply={(text) =>
+                                        updateExp(index, "description", text)
+                                      }
+                                    />
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1307,35 +1582,162 @@ useEffect(() => {
           </div>
         )
 
-      /* ── Step 5: Preview ── */
+      /* ── Step 5: Certifications ── */
       case 5:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between pb-2 border-b border-border">
+              <div>
+                <h2 className="text-2xl font-semibold">Certifications & Licenses</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">Showcase industry-recognized credentials</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setCertifications([...certifications, { name: '', issuer: '', year: '', url: '' }])
+                  if (!sectionOrder.includes('certifications')) {
+                    setSectionOrder([...sectionOrder, 'certifications'])
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add Certification
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {certifications.map((cert, index) => (
+                <div key={index} className="bg-background/40 p-4 rounded-xl border border-border relative space-y-3">
+                  <button
+                    type="button"
+                    onClick={() => setCertifications(certifications.filter((_, i) => i !== index))}
+                    className="absolute top-3 right-3 text-muted-foreground hover:text-red-500 transition-colors"
+                    title="Remove certification"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pr-6">
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Certification Name</label>
+                      <input
+                        type="text"
+                        value={cert.name}
+                        onChange={(e) => {
+                          const n = [...certifications]
+                          n[index].name = e.target.value
+                          setCertifications(n)
+                        }}
+                        placeholder="e.g. AWS Certified Solutions Architect"
+                        className="w-full bg-muted border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Issuing Organization</label>
+                      <input
+                        type="text"
+                        value={cert.issuer}
+                        onChange={(e) => {
+                          const n = [...certifications]
+                          n[index].issuer = e.target.value
+                          setCertifications(n)
+                        }}
+                        placeholder="e.g. Amazon Web Services"
+                        className="w-full bg-muted border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Year / Date</label>
+                      <input
+                        type="text"
+                        value={cert.year}
+                        onChange={(e) => {
+                          const n = [...certifications]
+                          n[index].year = e.target.value
+                          setCertifications(n)
+                        }}
+                        placeholder="e.g. 2024"
+                        className="w-full bg-muted border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Credential URL (Optional)</label>
+                      <input
+                        type="url"
+                        value={cert.url}
+                        onChange={(e) => {
+                          const n = [...certifications]
+                          n[index].url = e.target.value
+                          setCertifications(n)
+                        }}
+                        placeholder="https://credly.com/..."
+                        className="w-full bg-muted border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {certifications.length === 0 && (
+                <p className="text-xs text-muted-foreground italic">No certifications added yet. Click &quot;Add Certification&quot; above.</p>
+              )}
+            </div>
+          </div>
+        )
+
+      /* ── Step 6: Custom Sections ── */
+      case 6:
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-semibold mb-1">Custom Sections</h2>
+              <p className="text-sm text-muted-foreground">Add Languages, Honors &amp; Awards, Volunteering, Publications, or any custom heading.</p>
+            </div>
+            <CustomSectionManager
+              customSections={customSections}
+              onChange={setCustomSections}
+              sectionOrder={sectionOrder}
+              onSectionOrderChange={setSectionOrder}
+            />
+          </div>
+        )
+
+      /* ── Step 7: Preview ── */
+      case 7:
         return (
 
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Preview &amp; Generate</h2>
 
             <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
-              <h3 className="font-semibold mb-3">Reorder Sections</h3>
+              <h3 className="font-semibold mb-3">Reorder Sections (Drag &amp; Drop)</h3>
               <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="sections" type="sections">
                   {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
-                      {sectionOrder.map((section, index) => (
-                        <Draggable key={section} draggableId={section} index={index}>
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              className="flex items-center gap-2 p-3 bg-background border border-border rounded-lg"
-                            >
-                              <div {...provided.dragHandleProps} className="cursor-grab text-muted-foreground hover:text-foreground">
-                                <GripVertical className="w-5 h-5" />
+                      {sectionOrder.map((section, index) => {
+                        const customSec = customSections.find(c => c.id === section)
+                        const label = customSec?.title || section
+                        return (
+                          <Draggable key={section} draggableId={section} index={index}>
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                className="flex items-center justify-between p-3 bg-background border border-border rounded-lg shadow-2xs"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div {...provided.dragHandleProps} className="cursor-grab text-muted-foreground hover:text-foreground">
+                                    <GripVertical className="w-5 h-5" />
+                                  </div>
+                                  <span className="capitalize font-medium text-sm">{label}</span>
+                                </div>
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-mono">
+                                  #{index + 1}
+                                </span>
                               </div>
-                              <span className="capitalize font-medium">{section}</span>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
+                            )}
+                          </Draggable>
+                        )
+                      })}
                       {provided.placeholder}
                     </div>
                   )}
@@ -1854,148 +2256,353 @@ useEffect(() => {
   // ── render ────────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen pt-20 pb-12 bg-background flex flex-col">
-      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex-1 flex flex-col">
+      <div className={cn(
+        'mx-auto w-full px-4 sm:px-6 lg:px-8 flex-1 flex flex-col transition-all duration-300',
+        viewMode === 'split' ? 'max-w-[1600px]' : 'max-w-4xl'
+      )}>
 
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">
-            Resume Builder
-          </h1>
-          <p className="text-muted-foreground mt-2">Build a professional resume from scratch.</p>
-        </div>
-
-        {/* Progress Stepper */}
-        <div className="mb-8 flex items-center justify-between relative">
-          <div className="absolute left-0 top-1/2 w-full h-0.5 bg-border -z-10 transform -translate-y-1/2" />
-          {STEPS.map((step, index) => {
-            const isActive    = index === currentStep
-            const isCompleted = index < currentStep
-            const StepIcon    = step.icon
-            return (
-              <div key={step.id} className="flex flex-col items-center">
-                <div className={cn(
-                  'w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors',
-                  isActive    ? 'bg-primary border-primary text-primary-foreground' :
-                  isCompleted ? 'bg-primary/20 border-primary text-primary' :
-                                'bg-background border-border text-muted-foreground'
-                )}>
-                  {isCompleted ? <CheckCircle className="w-5 h-5" /> : <StepIcon className="w-5 h-5" />}
-                </div>
-                <span className={cn(
-                  'text-xs mt-2 hidden sm:block',
-                  isActive ? 'text-primary font-medium' : 'text-muted-foreground'
-                )}>
-                  {step.title}
+        {/* Top Header Bar with Mode Switcher & Live ATS Score */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-border">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+              Resume Studio
+            </h1>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+              <span>Build an ATS-optimized, high-conversion resume</span>
+              {draftSavedAt && (
+                <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400 font-medium">
+                  <CheckCircle className="w-3 h-3" /> Draft saved {draftSavedAt}
                 </span>
-              </div>
-            )
-          })}
-        </div>
+              )}
+            </div>
+          </div>
 
-        {/* Content Area */}
-        <div className="flex-1 bg-card backdrop-blur-xl border border-border rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-              className="relative z-10"
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Realtime ATS Score Badge */}
+            <div
+              className="px-3 py-1.5 rounded-xl border border-primary/20 bg-primary/10 flex items-center gap-2 text-xs"
+              title={realtimeAts.tips[0]?.text || 'Live ATS analysis'}
             >
-              {renderStep()}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              <span className="font-semibold text-foreground">ATS Score: {realtimeAts.overallScore}%</span>
+              <span className="text-[10px] uppercase font-bold text-primary">({realtimeAts.grade})</span>
+            </div>
 
-        {/* Drop this safely within your main workspace grid or right before action buttons */}
-<AnimatePresence mode="wait">
-  {currentStep !== 5 && ( // Hide panel on the final pure preview screen
-    <ConsistencyPanel errors={activeConsistencyWarnings} />
-  )}
-</AnimatePresence>
+            {/* Import Button */}
+            <button
+              type="button"
+              onClick={() => setShowImportModal(true)}
+              className="px-3 py-1.5 rounded-xl border border-border bg-card hover:bg-muted text-foreground text-xs font-medium inline-flex items-center gap-1.5 shadow-2xs"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Import</span>
+            </button>
 
-        {/* Navigation Actions */}
-        <div className="mt-8 flex flex-wrap justify-between items-center gap-3">
-          <button
-            onClick={handlePrev}
-            disabled={currentStep === 0}
-            className="px-6 py-2.5 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back
-          </button>
-
-          {currentStep === STEPS.length - 1 ? (
-            <div className="flex flex-wrap gap-2">
+            {/* View Mode Switcher */}
+            <div className="flex items-center p-1 rounded-xl bg-muted/60 border border-border">
               <button
-                onClick={() => navigate('/resume-templates', {
-                  state: {
-                    builderData: {
-                      personal,
-                      experience: (experience || []).filter(e => e.title || e.company)
-                        .map(e => ({
-                          role: e.title,
-                          company: e.company,
-                          period: [e.startDate, e.current ? 'Present' : e.endDate]
-                            .filter(Boolean).join(' – ') || undefined,
-                          location: e.location,
-                          description: e.description,
-                        })),
-                      education: (education || []).filter(e => e.school || e.degree)
-                        .map(e => ({
-                          degree: e.degree,
-                          institution: e.school,
-                          period: [e.startDate, e.endDate].filter(Boolean).join(' – ') || undefined,
-                          location: e.location,
-                          description: e.field,
-                        })),
-                      projects: (projects || []).filter(p => p.name).map(p => ({
-                        title: p.name,
-                        description: p.description,
-                        techStack: p.tech ? p.tech.split(',').map(s => s.trim()).filter(Boolean) : [],
-                        link: p.link,
-                      })),
-                      skills: normalizedSkills,
-                      // Carry the drag-and-drop section order so the template
-                      // renders sections in the order chosen in the builder.
-                      sectionOrder,
-                      customSections: [],
-                    }
-                  }
-                })}
-                className="px-6 py-2.5 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all flex items-center gap-2 font-medium border border-border"
+                type="button"
+                onClick={() => setViewMode('form')}
+                className={cn(
+                  'px-3 py-1 rounded-lg text-xs font-medium transition-all',
+                  viewMode === 'form' ? 'bg-background text-foreground shadow-2xs' : 'text-muted-foreground hover:text-foreground'
+                )}
               >
-                <LayoutTemplate className="w-4 h-4" /> Choose Resume Template
+                Form
               </button>
               <button
-                onClick={handleGenerate}
-                disabled={isSubmitting}
-                className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-primary/25 flex items-center gap-2 font-medium"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4" /> Generate &amp; Enhance
-                  </>
+                type="button"
+                onClick={() => setViewMode('split')}
+                className={cn(
+                  'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5',
+                  viewMode === 'split' ? 'bg-background text-foreground shadow-2xs' : 'text-muted-foreground hover:text-foreground'
                 )}
+              >
+                <Columns className="w-3.5 h-3.5" />
+                <span>Split View</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('preview')}
+                className={cn(
+                  'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5',
+                  viewMode === 'preview' ? 'bg-background text-foreground shadow-2xs' : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Preview</span>
               </button>
             </div>
-          ) : (
-            <button
-              onClick={handleNext}
-              className="px-6 py-2.5 rounded-full bg-foreground text-background hover:bg-foreground/90 hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 font-medium"
-            >
-              Next <ArrowRight className="w-4 h-4" />
-            </button>
-          )}
+          </div>
         </div>
+
+        {/* Restored Draft Banner */}
+        {hasRestoredDraft && (
+          <div className="mb-6 p-3 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between text-xs text-foreground">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+              <span>Restored your saved draft from {draftSavedAt}.</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  try { localStorage.removeItem(DRAFT_KEY) } catch (_e) {}
+                  window.location.reload()
+                }}
+                className="text-red-500 hover:underline font-medium"
+              >
+                Clear &amp; Start Fresh
+              </button>
+              <button
+                type="button"
+                onClick={() => setHasRestoredDraft(false)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Progress Stepper (hidden in pure preview mode) */}
+        {viewMode !== 'preview' && (
+          <div className="mb-6 overflow-x-auto pb-2">
+            <div className="flex items-center gap-2 min-w-max">
+              {STEPS.map((step, index) => {
+                const isActive    = index === currentStep
+                const isCompleted = index < currentStep
+                const StepIcon    = step.icon
+                return (
+                  <button
+                    key={step.id}
+                    type="button"
+                    onClick={() => setCurrentStep(index)}
+                    className={cn(
+                      'flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all',
+                      isActive    ? 'bg-primary text-primary-foreground shadow-xs' :
+                      isCompleted ? 'bg-primary/10 text-primary hover:bg-primary/20' :
+                                    'bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted'
+                    )}
+                  >
+                    <StepIcon className="w-3.5 h-3.5 shrink-0" />
+                    <span>{step.title}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Main Workspace: Form Only, Split View, or Full Preview */}
+        {viewMode === 'preview' ? (
+          <div className="flex-1 h-[calc(100vh-180px)] min-h-[700px]">
+            <LiveResumePreview resumeData={canonicalResumeData} />
+          </div>
+        ) : viewMode === 'split' ? (
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            {/* Left Column: Form Editor */}
+            <div className="flex flex-col bg-card backdrop-blur-xl border border-border rounded-3xl p-6 sm:p-7 shadow-lg">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentStep}
+                  initial={{ opacity: 0, x: 15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -15 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-1"
+                >
+                  {renderStep()}
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Navigation Actions */}
+              <div className="mt-8 pt-4 border-t border-border flex flex-wrap justify-between items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  disabled={currentStep === 0}
+                  className="px-5 py-2 rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-2 text-xs font-medium"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" /> Back
+                </button>
+
+                {currentStep === STEPS.length - 1 ? (
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/resume-templates', {
+                        state: {
+                          builderData: {
+                            ...canonicalResumeData,
+                            sectionOrder,
+                            customSections,
+                          }
+                        }
+                      })}
+                      className="px-4 py-2 rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all flex items-center gap-2 text-xs font-medium border border-border"
+                    >
+                      <LayoutTemplate className="w-3.5 h-3.5" /> All Templates
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleGenerate}
+                      disabled={isSubmitting}
+                      className="px-5 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-all shadow-xs flex items-center gap-2 text-xs font-medium"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          Saving…
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-3.5 h-3.5" /> Generate &amp; Enhance
+                        </>
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="px-5 py-2 rounded-xl bg-foreground text-background hover:bg-foreground/90 transition-all shadow-xs flex items-center gap-2 text-xs font-medium"
+                  >
+                    Next <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Right Column: Live Template Preview */}
+            <div className="sticky top-20 h-[calc(100vh-140px)] min-h-[650px]">
+              <LiveResumePreview resumeData={canonicalResumeData} />
+            </div>
+          </div>
+        ) : (
+          /* Form Only View */
+          <div className="flex-1 flex flex-col">
+            <div className="flex-1 bg-card backdrop-blur-xl border border-border rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+              <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
+              <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentStep}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative z-10"
+                >
+                  {renderStep()}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {currentStep !== STEPS.length - 1 && (
+                <ConsistencyPanel errors={activeConsistencyWarnings} />
+              )}
+            </AnimatePresence>
+
+            {/* Navigation Actions */}
+            <div className="mt-8 flex flex-wrap justify-between items-center gap-3">
+              <button
+                type="button"
+                onClick={handlePrev}
+                disabled={currentStep === 0}
+                className="px-6 py-2.5 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 text-sm font-medium"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back
+              </button>
+
+              {currentStep === STEPS.length - 1 ? (
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/resume-templates', {
+                      state: {
+                        builderData: {
+                          ...canonicalResumeData,
+                          sectionOrder,
+                          customSections,
+                        }
+                      }
+                    })}
+                    className="px-6 py-2.5 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all flex items-center gap-2 font-medium border border-border text-sm"
+                  >
+                    <LayoutTemplate className="w-4 h-4" /> Choose Resume Template
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleGenerate}
+                    disabled={isSubmitting}
+                    className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-primary/25 flex items-center gap-2 font-medium text-sm"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" /> Generate &amp; Enhance
+                      </>
+                    )}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="px-6 py-2.5 rounded-full bg-foreground text-background hover:bg-foreground/90 hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 font-medium text-sm"
+                >
+                  Next <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Import Modal */}
+        {showImportModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+            <div className="w-full max-w-md bg-card border border-border rounded-2xl p-6 space-y-4 shadow-2xl">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <h3 className="text-base font-semibold">Import Resume</h3>
+                <button
+                  type="button"
+                  onClick={() => setShowImportModal(false)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Upload a PDF, JSON Resume (.json), Markdown (.md), or Plaintext (.txt) file. Our intelligent parser extracts all fields into the builder automatically.
+              </p>
+              <label className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 transition-colors bg-muted/20 hover:bg-muted/40">
+                <Upload className="w-8 h-8 text-primary mb-2" />
+                <span className="text-xs font-medium text-foreground">Click to upload or drag &amp; drop</span>
+                <span className="text-[10px] text-muted-foreground mt-1">PDF, JSON, MD, TXT (up to 5MB)</span>
+                <input
+                  type="file"
+                  accept=".pdf,.json,.md,.txt,text/plain,application/json,application/pdf"
+                  onChange={handleImportFile}
+                  className="hidden"
+                  disabled={importingFile}
+                />
+              </label>
+              {importingFile && (
+                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                  <span>Parsing and structuring resume…</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

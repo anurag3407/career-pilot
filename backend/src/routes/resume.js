@@ -19,6 +19,7 @@ import { scrapeLinkedInProfile, profileToResumeText } from '../services/linkedin
 import { fetchGitHubProfile, convertGitHubToResumeText } from '../services/githubImporter.js';
 import { getDefaultProvider } from '../config/aiProviders.js';
 import { analyzeResume } from '../services/resumeService.js';
+import { reorderMarkdownBySectionOrder } from '../utils/markdownSectionReorder.js';
 
 const router = express.Router();
 
@@ -112,7 +113,9 @@ router.post('/', verifyToken, validate(createResumeSchema), asyncHandler(async (
     jobRole,
     preferences,
     title,
-    customSections
+    customSections,
+    sectionOrder,
+    structuredData
   } = req.body;
 
   if (!originalText) {
@@ -127,6 +130,10 @@ router.post('/', verifyToken, validate(createResumeSchema), asyncHandler(async (
     preferences: preferences || {},
     title: title || `Resume - ${new Date().toLocaleDateString()}`,
     customSections: Array.isArray(customSections) ? customSections : [],
+    sectionOrder: Array.isArray(sectionOrder) && sectionOrder.length > 0
+      ? sectionOrder
+      : ['education', 'experience', 'projects', 'skills'],
+    structuredData: structuredData || null,
   });
 
   try {
@@ -158,6 +165,9 @@ router.post('/', verifyToken, validate(createResumeSchema), asyncHandler(async (
       preferences: newResume.preferences,
       title: newResume.title,
       pdfUrl: newResume.pdfUrl,
+      sectionOrder: newResume.sectionOrder,
+      customSections: newResume.customSections,
+      structuredData: newResume.structuredData,
       createdAt: newResume.createdAt,
       lastModified: newResume.lastModified
     }
@@ -189,7 +199,18 @@ router.put('/:resumeId', verifyToken, validate(updateResumeSchema), asyncHandler
   const userId = req.user.uid;
   const updates = req.body;
 
-  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'atsScore', 'preferences', 'title', 'pdfUrl', 'sectionOrder', 'customSections'];
+  const allowedUpdates = [
+    'originalText',
+    'enhancedText',
+    'jobRole',
+    'atsScore',
+    'preferences',
+    'title',
+    'pdfUrl',
+    'sectionOrder',
+    'customSections',
+    'structuredData',
+  ];
   const updateData = {};
   for (const key of allowedUpdates) {
     if (updates[key] !== undefined) updateData[key] = updates[key];
@@ -402,13 +423,20 @@ router.get('/:resumeId/download', verifyToken, validate(downloadResumeQuerySchem
     throw new ApiError(403, 'Access denied');
   }
 
-  const textContent = version === 'enhanced' && resume.enhancedText 
+  const rawTextContent = version === 'enhanced' && resume.enhancedText 
     ? resume.enhancedText 
     : resume.originalText;
 
-  if (!textContent) {
+  if (!rawTextContent) {
     throw new ApiError(400, 'No content available for download');
   }
+
+  // Reorder sections according to resume.sectionOrder and append customSections (M1.5)
+  const textContent = reorderMarkdownBySectionOrder(
+    rawTextContent,
+    resume.sectionOrder || [],
+    resume.customSections || []
+  );
 
   const { generatePDF } = await import('../services/pdfGenerator.js');
 

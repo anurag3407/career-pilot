@@ -14,7 +14,8 @@ import ResumeVersions from '../components/ResumeVersions'
 import AtsProgressChart from '../components/AtsProgressChart'
 import ResumeTranslator from '../components/resume/ResumeTranslator'
 import ResumeTailor from '../components/resume/ResumeTailor'
-import { Loader2 } from 'lucide-react'
+import StructuredResumeEditor from '../components/resume/StructuredResumeEditor'
+import { Loader2, Edit3, Layers } from 'lucide-react'
 import html2canvas from 'html2canvas'
 
 export default function ResumeView() {
@@ -315,6 +316,15 @@ export default function ResumeView() {
                 }`}
             >
               Resume Preview
+            </button>
+            <button
+              onClick={() => setActiveTab('edit')}
+              className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'edit'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+            >
+              Structured Editor
             </button>
             <button
               onClick={() => setActiveTab('versions')}
@@ -736,6 +746,23 @@ export default function ResumeView() {
               />
             </Card>
           </div>
+        )}
+
+        {activeTab === 'edit' && (
+          <StructuredResumeEditor
+            resume={resume}
+            onSaveSuccess={(updatedData, updatedMd) => {
+              setResume((prev) => ({
+                ...prev,
+                structuredData: updatedData,
+                enhancedText: updatedMd,
+                originalText: prev?.originalText || updatedMd,
+                sectionOrder: updatedData.sectionOrder || prev?.sectionOrder,
+                customSections: updatedData.customSections || prev?.customSections,
+              }))
+              toast.success('Resume saved successfully!')
+            }}
+          />
         )}
 
         {activeTab === 'versions' && (

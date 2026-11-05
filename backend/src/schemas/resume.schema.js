@@ -31,7 +31,9 @@ export const createResumeSchema = z.object({
   jobRole: z.string().nullish(),
   preferences: z.record(z.unknown()).optional().default({}),
   title: z.string().max(200, 'title must be at most 200 characters').optional(),
+  sectionOrder: z.array(z.string()).optional(),
   customSections: customSectionsField,
+  structuredData: z.record(z.unknown()).nullish(),
 });
 
 /**
@@ -42,10 +44,13 @@ export const updateResumeSchema = z
     originalText: z.string().min(1, 'originalText cannot be empty').optional(),
     enhancedText: z.string().nullish(),
     jobRole: z.string().nullish(),
+    atsScore: z.number().nullish(),
     preferences: z.record(z.unknown()).optional(),
     title: z.string().max(200, 'title must be at most 200 characters').optional(),
     pdfUrl: z.string().url('pdfUrl must be a valid URL').nullish(),
+    sectionOrder: z.array(z.string()).optional(),
     customSections: customSectionsField.optional(),
+    structuredData: z.record(z.unknown()).nullish(),
   })
   .refine(
     (data) =>

@@ -23,6 +23,7 @@ import {
 } from '../context/ResumeContext'
 import { ORDER_AWARE_TEMPLATE_IDS } from '../components/resume/shared/OrderedSections'
 import LayoutControls, { DEFAULT_LAYOUT } from '../components/resume/LayoutControls'
+import { markdownToStructured } from '../utils/resumeParser'
 
 // ─── Lazy template loader (matches portfolio template gallery pattern) ────────
 // Only base templates have folder components; variants reuse their base's
@@ -78,16 +79,18 @@ export default function ResumeTemplates() {
           // getById returns { success, data: {...resume} }. (Older code read
           // res.resume, which is undefined — keep a fallback for safety.)
           const record = res.data || res.resume || {}
-          const text = record.enhancedText || record.originalText || ''
-          // sectionOrder + customSections live on the resume record, not in the
-          // markdown — merge them in so the drag-and-drop order set in Enhance
-          // is honored by order-aware templates.
-          const parsed = splitMarkdownIntoResume(text, record.title) || {}
+          let parsed = record.structuredData
+          if (!parsed) {
+            const text = record.enhancedText || record.originalText || ''
+            parsed = markdownToStructured(text, record.title) || {}
+          }
           if (!cancelled) {
             setResumeData({
               ...parsed,
               sectionOrder: record.sectionOrder || parsed.sectionOrder,
-              customSections: record.customSections || parsed.customSections,
+              customSections: (record.customSections && record.customSections.length > 0)
+                ? record.customSections
+                : parsed.customSections,
             })
             setLoadingData(false)
           }

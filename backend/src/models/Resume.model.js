@@ -76,6 +76,10 @@ const resumeSchema = new mongoose.Schema({
       }],
       default: [],
     },
+    structuredData: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null,
+    },
 }, {
     timestamps: {
         createdAt: 'createdAt',

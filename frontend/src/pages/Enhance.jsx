@@ -40,6 +40,8 @@ import {
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
 import CopyButton from '../components/CopyButton'
+import { markdownToStructured } from '../utils/resumeParser'
+import StructuredResumeEditor from '../components/resume/StructuredResumeEditor'
 
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
@@ -367,22 +369,75 @@ const SECTION_LABELS = {
 }
 const STANDARD_SECTIONS = ['education', 'experience', 'projects', 'skills', 'certifications']
 
-// Seed the reorder list from the saved sectionOrder, then append any standard
-// or custom sections not yet present so nothing is missing. Returns [{id,label}].
-function buildSectionItems(resume) {
+function hasSectionContent(id, structured) {
+  if (!structured) return true
+  switch (id) {
+    case 'education':
+      return Array.isArray(structured.education) && structured.education.length > 0
+    case 'experience':
+      return Array.isArray(structured.experience) && structured.experience.length > 0
+    case 'projects':
+      return Array.isArray(structured.projects) && structured.projects.length > 0
+    case 'skills': {
+      if (Array.isArray(structured.skills)) return structured.skills.length > 0
+      if (structured.skills && typeof structured.skills === 'object') {
+        return Object.values(structured.skills).some((arr) => Array.isArray(arr) && arr.length > 0)
+      }
+      return false
+    }
+    case 'certifications':
+      return Array.isArray(structured.certifications) && structured.certifications.length > 0
+    default: {
+      const customMatch = structured.customSections?.find((c) => c.id === id)
+      if (customMatch) {
+        return Boolean((customMatch.content && customMatch.content.trim()) || (customMatch.items && customMatch.items.length > 0))
+      }
+      return true
+    }
+  }
+}
+
+// Seed the reorder list from the saved sectionOrder, filtering out any
+// sections that have no content in the resume. Returns [{id,label}].
+export function buildSectionItems(resume) {
+  const structured = resume?.structuredData || (
+    (resume?.enhancedText || resume?.originalText)
+      ? markdownToStructured(resume.enhancedText || resume.originalText)
+      : null
+  )
   const saved = Array.isArray(resume?.sectionOrder) ? resume.sectionOrder.filter(Boolean) : []
-  const custom = Array.isArray(resume?.customSections) ? resume.customSections : []
+  const custom = Array.isArray(resume?.customSections) ? resume.customSections : (structured?.customSections || [])
   const labelFor = (id) => SECTION_LABELS[id] || custom.find((c) => c.id === id)?.title || id
   const isKnown = (id) => Boolean(SECTION_LABELS[id]) || custom.some((c) => c.id === id)
+
+  // Filter standard sections: show only sections with content
+  const availableStandard = STANDARD_SECTIONS.filter((id) => hasSectionContent(id, structured))
+  const standardToUse = availableStandard.length > 0 ? availableStandard : ['experience', 'education', 'skills']
+
   const seen = new Set()
   const ids = []
-  for (const id of saved) if (isKnown(id) && !seen.has(id)) { ids.push(id); seen.add(id) }
-  for (const id of STANDARD_SECTIONS) if (!seen.has(id)) { ids.push(id); seen.add(id) }
-  for (const c of custom) if (c?.id && !seen.has(c.id)) { ids.push(c.id); seen.add(c.id) }
+  for (const id of saved) {
+    if (isKnown(id) && !seen.has(id) && hasSectionContent(id, structured)) {
+      ids.push(id)
+      seen.add(id)
+    }
+  }
+  for (const id of standardToUse) {
+    if (!seen.has(id)) {
+      ids.push(id)
+      seen.add(id)
+    }
+  }
+  for (const c of custom) {
+    if (c?.id && !seen.has(c.id) && hasSectionContent(c.id, structured)) {
+      ids.push(c.id)
+      seen.add(c.id)
+    }
+  }
   return ids.map((id) => ({ id, label: labelFor(id) }))
 }
 
-function SectionOrderPanel({ resumeId, resume }) {
+function SectionOrderPanel({ resumeId, resume, onEditContent }) {
   const [items, setItems] = useState(() => buildSectionItems(resume))
   const [saving, setSaving] = useState(false)
 
@@ -471,14 +526,26 @@ function SectionOrderPanel({ resumeId, resume }) {
         Your order is honored by order-aware templates (e.g. Ivy League).
       </p>
 
-      <Link
-        to={`/resume-templates?resumeId=${resumeId}`}
-        className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
-      >
-        <Layers className="w-4 h-4" />
-        Preview &amp; export in a template
-        <ArrowRight className="w-4 h-4" />
-      </Link>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        {onEditContent && (
+          <button
+            type="button"
+            onClick={onEditContent}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors text-sm font-medium"
+          >
+            <Edit3 className="w-4 h-4" />
+            Edit Resume Content
+          </button>
+        )}
+        <Link
+          to={`/resume-templates?resumeId=${resumeId}`}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+        >
+          <Layers className="w-4 h-4" />
+          Preview & export in a template
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
     </motion.div>
   )
 }
@@ -499,6 +566,7 @@ export default function Enhance() {
   const [atsAnalysis, setAtsAnalysis] = useState(null)
   const [comprehensiveAnalysis, setComprehensiveAnalysis] = useState(null)
   const [activeTab, setActiveTab] = useState('overview')
+  const [pageMode, setPageMode] = useState('analysis') // 'analysis' | 'edit'
 
   const [jobRole, setJobRole] = useState('')
   const [hasAnalyzed, setHasAnalyzed] = useState(false)
@@ -846,46 +914,103 @@ export default function Enhance() {
           </p>
         </motion.div>
 
-        {/* Job Role Input */}
-        {!hasAnalyzed && !analyzing && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-background/50 border border-border rounded-2xl p-8 mb-8"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
-                <Briefcase className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h2 className="text-xl font-semibold text-foreground">Enter Target Job Role</h2>
-                <p className="text-sm text-muted-foreground">We'll analyze your resume against this position</p>
-              </div>
-            </div>
+        {/* Navigation Mode Tabs */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-1.5 bg-muted/60 p-1.5 rounded-2xl border border-border">
+            <button
+              type="button"
+              onClick={() => setPageMode('analysis')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                pageMode === 'analysis'
+                  ? 'bg-card text-foreground shadow-xs border border-border'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <BarChart3 className="w-4 h-4 text-primary" />
+              ATS Analysis & AI
+            </button>
+            <button
+              type="button"
+              onClick={() => setPageMode('edit')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                pageMode === 'edit'
+                  ? 'bg-card text-foreground shadow-xs border border-border'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Edit3 className="w-4 h-4 text-primary" />
+              Edit Resume Content
+            </button>
+          </div>
 
-            <div className="flex gap-4">
-              <input
-                type="text"
-                value={jobRole}
-                onChange={(e) => setJobRole(e.target.value)}
-                placeholder="e.g., Senior Software Engineer, Product Manager, Data Scientist"
-                className="flex-1 px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
-                onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
-              />
-              <button
-                onClick={handleAnalyze}
-                disabled={analyzing || !jobRole.trim()}
-                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-medium hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          <div className="flex items-center gap-3">
+            <Link
+              to={`/resume-templates?resumeId=${resumeId}`}
+              className="px-4 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 text-sm font-semibold inline-flex items-center gap-2 transition-colors"
+            >
+              <Layers className="w-4 h-4" />
+              Template Studio
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
+        {pageMode === 'edit' ? (
+          <StructuredResumeEditor
+            resume={resume}
+            onSaveSuccess={(updatedData, updatedMd) => {
+              setResume((prev) => ({
+                ...prev,
+                structuredData: updatedData,
+                enhancedText: updatedMd,
+                originalText: prev?.originalText || updatedMd,
+                sectionOrder: updatedData.sectionOrder || prev?.sectionOrder,
+                customSections: updatedData.customSections || prev?.customSections,
+              }))
+            }}
+          />
+        ) : (
+          <>
+            {/* Job Role Input */}
+            {!hasAnalyzed && !analyzing && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-background/50 border border-border rounded-2xl p-8 mb-8"
               >
-                <BarChart3 className="w-5 h-5" />
-                Analyze Resume
-              </button>
-            </div>
-          </motion.div>
-        )}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                    <Briefcase className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-foreground">Enter Target Job Role</h2>
+                    <p className="text-sm text-muted-foreground">We'll analyze your resume against this position</p>
+                  </div>
+                </div>
 
-        {/* Section Order (drag-and-drop) — always available once loaded */}
-        {resume && <SectionOrderPanel resumeId={resumeId} resume={resume} />}
+                <div className="flex gap-4">
+                  <input
+                    type="text"
+                    value={jobRole}
+                    onChange={(e) => setJobRole(e.target.value)}
+                    placeholder="e.g., Senior Software Engineer, Product Manager, Data Scientist"
+                    className="flex-1 px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+                    onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
+                  />
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={analyzing || !jobRole.trim()}
+                    className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-medium hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    <BarChart3 className="w-5 h-5" />
+                    Analyze Resume
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Section Order (drag-and-drop) — always available once loaded */}
+            {resume && <SectionOrderPanel resumeId={resumeId} resume={resume} onEditContent={() => setPageMode('edit')} />}
 
         {/* Analyzing State */}
         {analyzing && <ResumeAnalysisSkeleton />}
@@ -1348,6 +1473,8 @@ export default function Enhance() {
               )}
             </motion.div>
           </div>
+        )}
+        </>
         )}
       </div>
       
