@@ -1,3 +1,10 @@
+## [1.278.1](https://github.com/anurag3407/career-pilot/compare/v1.278.0...v1.278.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* **backend:** support Node 20/22 snapshot testing and bump backend CI node version ([63d5058](https://github.com/anurag3407/career-pilot/commit/63d50583e2e6dc99974d400469d27ca8ac6d71cc))
+
 # [1.278.0](https://github.com/anurag3407/career-pilot/compare/v1.277.0...v1.278.0) (2026-11-05)
 
 
