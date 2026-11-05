@@ -1,3 +1,10 @@
+# [1.279.0](https://github.com/anurag3407/career-pilot/compare/v1.278.1...v1.279.0) (2026-11-05)
+
+
+### Features
+
+* Enhance portfolio templates with user data isolation and improved email handling ([6224461](https://github.com/anurag3407/career-pilot/commit/622446137ad6f4b55449b1ddaf03f7d89d154591))
+
 ## [1.278.1](https://github.com/anurag3407/career-pilot/compare/v1.278.0...v1.278.1) (2026-11-05)
 
 
