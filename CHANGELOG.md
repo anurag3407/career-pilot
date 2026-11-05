@@ -1,3 +1,11 @@
+# [1.277.0](https://github.com/anurag3407/career-pilot/compare/v1.276.0...v1.277.0) (2026-11-05)
+
+
+### Features
+
+* add comprehensive resume parser with bidirectional markdown and structured data mapping ([2a87f6d](https://github.com/anurag3407/career-pilot/commit/2a87f6d19eb92c6188ffbb04dd6fe7572347e54f))
+* integrate Supabase authentication and subscription management ([de28206](https://github.com/anurag3407/career-pilot/commit/de2820663d4b39418daed945ed7a6596aee31106))
+
 # [1.276.0](https://github.com/anurag3407/career-pilot/compare/v1.275.1...v1.276.0) (2026-10-03)
 
 
