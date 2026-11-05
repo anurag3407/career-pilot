@@ -180,7 +180,9 @@ export async function deploy(portfolioId, htmlContent, assets = {}) {
     throw new Error(`Cloudflare token validation failed: ${tokenCheck.reason}`);
   }
 
-  const projectName = toProjectName(`cp-${portfolioId}`);
+  const salt = crypto.randomBytes(3).toString('hex');
+  const base = toProjectName(`cp-${portfolioId}`).slice(0, 21).replace(/-+$/, '');
+  const projectName = `${base}-${salt}`;
   
   // 1. Create a temporary directory for the build output
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), `deploy-${projectName}-`));

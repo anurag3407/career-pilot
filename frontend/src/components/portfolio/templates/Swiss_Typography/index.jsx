@@ -44,22 +44,22 @@ function Label({ children }) {
 function Hero() {
   const { portfolioData: data } = usePortfolio();
 
-  const { name, title, location } = data.personal;
-  const { github, linkedin, twitter, email } = data.socials;
-  const { yearsExperience, projectsCompleted, happyClients } = data.stats;
+  const { name = 'Portfolio', title = '', location = '' } = data?.personal || {};
+  const { github, linkedin, twitter, email } = data?.socials || {};
+  const { yearsExperience, projectsCompleted, happyClients } = data?.stats || {};
 
   const stats = [
-    { value: `${yearsExperience}+`, label: 'Years' },
-    { value: `${projectsCompleted}+`, label: 'Projects' },
-    { value: `${happyClients}+`, label: 'Clients' },
-  ];
+    yearsExperience && { value: `${yearsExperience}+`, label: 'Years' },
+    projectsCompleted && { value: `${projectsCompleted}+`, label: 'Projects' },
+    happyClients && { value: `${happyClients}+`, label: 'Clients' },
+  ].filter(Boolean);
 
   const socialLinks = [
-    { href: github, Icon: Github, label: 'GitHub' },
-    { href: linkedin, Icon: Linkedin, label: 'LinkedIn' },
-    { href: twitter, Icon: Twitter, label: 'Twitter' },
-    { href: `mailto:${email}`, Icon: Mail, label: 'Email' },
-  ];
+    github && { href: github, Icon: Github, label: 'GitHub' },
+    linkedin && { href: linkedin, Icon: Linkedin, label: 'LinkedIn' },
+    twitter && { href: twitter, Icon: Twitter, label: 'Twitter' },
+    email && { href: `mailto:${email}`, Icon: Mail, label: 'Email' },
+  ].filter(Boolean);
 
   return (
     <section className="border-b border-black">
@@ -196,8 +196,9 @@ function About() {
 /* ── Skills ──────────────────────────────────────────────── */
 function Skills() {
   const { portfolioData: data } = usePortfolio();
+  if (!data?.skills || data.skills.length === 0) return null;
 
-  const categories = [...new Set(data.skills.map((s) => s.category))];
+  const categories = [...new Set(data.skills.map((s) => s.category || 'Core'))];
 
   return (
     <section className="border-b border-black">
@@ -261,8 +262,9 @@ function Skills() {
 /* ── Projects ────────────────────────────────────────────── */
 function Projects() {
   const { portfolioData: data } = usePortfolio();
-
   const [hovered, setHovered] = useState(null);
+
+  if (!data?.projects || data.projects.length === 0) return null;
 
   return (
     <section className="border-b border-black">
@@ -362,6 +364,7 @@ function Projects() {
 /* ── Experience ──────────────────────────────────────────── */
 function Experience() {
   const { portfolioData: data } = usePortfolio();
+  if (!data?.experience || data.experience.length === 0) return null;
 
   return (
     <section className="border-b border-black">
@@ -406,6 +409,7 @@ function Experience() {
 /* ── Testimonials ────────────────────────────────────────── */
 function Testimonials() {
   const { portfolioData: data } = usePortfolio();
+  if (!data?.testimonials || data.testimonials.length === 0) return null;
 
   return (
     <section className="border-b border-black">
@@ -454,14 +458,14 @@ function Testimonials() {
 function Contact() {
   const { portfolioData: data } = usePortfolio();
 
-  const { email, phone } = data.personal;
-  const { github, linkedin, twitter } = data.socials;
+  const { email = '', phone = '' } = data?.personal || {};
+  const { github = '', linkedin = '', twitter = '' } = data?.socials || {};
 
   const secondaryLinks = [
-    { label: 'GitHub', href: github, Icon: Github },
-    { label: 'LinkedIn', href: linkedin, Icon: Linkedin },
-    { label: 'Twitter', href: twitter, Icon: Twitter },
-  ];
+    github && { label: 'GitHub', href: github, Icon: Github },
+    linkedin && { label: 'LinkedIn', href: linkedin, Icon: Linkedin },
+    twitter && { label: 'Twitter', href: twitter, Icon: Twitter },
+  ].filter(Boolean);
 
   return (
     <section>
@@ -530,7 +534,7 @@ function Contact() {
 function Footer() {
   const { portfolioData: data } = usePortfolio();
 
-  const { name } = data.personal;
+  const { name = 'Portfolio' } = data?.personal || {};
   return (
     <footer className="border-t border-black px-5 md:px-12 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
       <span className="text-[10px] font-black uppercase tracking-widest text-black">{name}</span>

@@ -1,11 +1,14 @@
 export const KEYWORD_DICTIONARY = {
-  'software engineer': ['javascript', 'python', 'java', 'react', 'node', 'express', 'sql', 'nosql', 'api', 'rest', 'git', 'docker', 'kubernetes', 'aws', 'agile', 'algorithm', 'data structure', 'testing', 'ci/cd', 'architecture'],
-  'frontend developer': ['html', 'css', 'javascript', 'react', 'vue', 'angular', 'typescript', 'webpack', 'ui/ux', 'responsive design', 'sass', 'less', 'redux', 'jest', 'cypress', 'accessibility', 'web performance', 'figma'],
-  'backend developer': ['node', 'python', 'java', 'go', 'ruby', 'c++', 'sql', 'postgresql', 'mongodb', 'redis', 'api', 'rest', 'graphql', 'docker', 'kubernetes', 'aws', 'microservices', 'caching', 'security', 'oauth'],
+  'software engineer': ['javascript', 'python', 'java', 'react', 'node', 'express', 'sql', 'nosql', 'api', 'rest', 'git', 'docker', 'kubernetes', 'aws', 'agile', 'algorithm', 'data structure', 'testing', 'ci/cd', 'architecture', 'typescript', 'microservices'],
+  'full stack developer': ['javascript', 'typescript', 'react', 'node', 'express', 'next.js', 'html', 'css', 'sql', 'mongodb', 'postgresql', 'rest', 'api', 'docker', 'git', 'ci/cd', 'graphql', 'tailwind'],
+  'frontend developer': ['html', 'css', 'javascript', 'react', 'vue', 'angular', 'typescript', 'webpack', 'ui/ux', 'responsive design', 'sass', 'less', 'redux', 'jest', 'cypress', 'accessibility', 'web performance', 'figma', 'next.js', 'tailwind'],
+  'backend developer': ['node', 'python', 'java', 'go', 'golang', 'ruby', 'c++', 'sql', 'postgresql', 'mongodb', 'redis', 'api', 'rest', 'graphql', 'docker', 'kubernetes', 'aws', 'microservices', 'caching', 'security', 'oauth', 'kafka'],
+  'devops engineer': ['docker', 'kubernetes', 'terraform', 'ansible', 'aws', 'azure', 'gcp', 'ci/cd', 'jenkins', 'github actions', 'linux', 'bash', 'helm', 'prometheus', 'grafana', 'git', 'networking', 'monitoring'],
   'data scientist': ['python', 'r', 'sql', 'machine learning', 'deep learning', 'pandas', 'numpy', 'scikit-learn', 'tensorflow', 'pytorch', 'statistics', 'data visualization', 'tableau', 'nlp', 'data mining', 'hadoop', 'spark'],
-  'product manager': ['agile', 'scrum', 'jira', 'roadmap', 'product strategy', 'user research', 'wireframing', 'a/b testing', 'analytics', 'kpi', 'stakeholder management', 'go-to-market', 'user stories', 'confluence'],
-  'designer': ['ui', 'ux', 'figma', 'sketch', 'adobe xd', 'photoshop', 'illustrator', 'wireframing', 'prototyping', 'user research', 'usability testing', 'interaction design', 'visual design', 'typography', 'color theory'],
-  'marketing': ['seo', 'sem', 'content marketing', 'social media', 'email marketing', 'google analytics', 'crm', 'hubspot', 'copywriting', 'campaign management', 'b2b', 'b2c', 'lead generation', 'roi', 'branding'],
+  'data engineer': ['python', 'sql', 'spark', 'kafka', 'hadoop', 'etl', 'data pipeline', 'airflow', 'snowflake', 'databricks', 'aws', 'bigquery', 'postgresql', 'data modeling', 'dbt'],
+  'product manager': ['agile', 'scrum', 'jira', 'roadmap', 'product strategy', 'user research', 'wireframing', 'a/b testing', 'analytics', 'kpi', 'stakeholder management', 'go-to-market', 'user stories', 'confluence', 'okrs', 'metrics'],
+  'designer': ['ui', 'ux', 'figma', 'sketch', 'adobe xd', 'photoshop', 'illustrator', 'wireframing', 'prototyping', 'user research', 'usability testing', 'interaction design', 'visual design', 'typography', 'color theory', 'design system'],
+  'marketing': ['seo', 'sem', 'content marketing', 'social media', 'email marketing', 'google analytics', 'crm', 'hubspot', 'copywriting', 'campaign management', 'b2b', 'b2c', 'lead generation', 'roi', 'branding', 'ppc'],
   'sales': ['b2b', 'b2c', 'crm', 'salesforce', 'lead generation', 'cold calling', 'negotiation', 'account management', 'business development', 'pipeline management', 'closing', 'forecasting', 'client relations'],
   'hr': ['recruitment', 'onboarding', 'employee relations', 'talent acquisition', 'ats', 'workday', 'performance management', 'compensation', 'benefits', 'training', 'labor laws', 'conflict resolution', 'hris'],
   'project manager': ['agile', 'scrum', 'pmp', 'jira', 'budgeting', 'risk management', 'resource allocation', 'timeline', 'stakeholder management', 'ms project', 'gantt', 'kanban', 'quality assurance', 'vendor management']
@@ -116,7 +119,10 @@ function scoreKeywordMatch(resumeText, jobRole) {
 
   let matchCount = 0;
   for (const kw of keywords) {
-    if (lowerText.includes(kw.toLowerCase())) {
+    // Escape regex special chars and match with word boundaries so 'go' does not match 'Google'
+    const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(?:^|[^a-zA-Z0-9])${escaped}(?:[^a-zA-Z0-9]|$)`, 'i');
+    if (regex.test(resumeText)) {
       matchCount++;
     }
   }

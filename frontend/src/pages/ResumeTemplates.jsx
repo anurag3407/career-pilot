@@ -177,7 +177,7 @@ export default function ResumeTemplates() {
   const handleDownloadPdf = async () => {
     if (!previewRef.current || !selectedTemplate) return
     setExporting(true)
-    const toastId = toast.loading('Generating ATS-safe PDF…')
+    const toastId = toast.loading('Generating template PDF…')
 
     try {
       const fileName = `${normalized.personal.name || 'resume'}_${selectedBaseId || 'template'}.pdf`
@@ -189,8 +189,8 @@ export default function ResumeTemplates() {
       })
       toast.success(
         result.method === 'text'
-          ? 'PDF downloaded (text-layer preserved for ATS)'
-          : 'PDF downloaded',
+          ? 'PDF downloaded (selectable text layer)'
+          : 'PDF downloaded (visual template layout)',
         { id: toastId }
       )
     } catch (err) {

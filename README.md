@@ -143,7 +143,7 @@ Career Pilot is organized into six tightly-integrated pillars. Each pillar ships
 | 📝 | **Resume Studio** | AI-built resumes, 60+ templates, ATS scorer, drag-and-drop sections, text-to-resume, tailoring, translation, versions & sharing |
 | 🎤 | **Interview Sim** | Audio + video mock interviews with an avatar interviewer, coding round (Monaco editor, executed against hidden tests), 14 languages, confidence meter, replay |
 | 💼 | **Jobs & Tracker** | JSearch-powered search, drag-and-drop kanban tracker, scheduled email alerts, company research, JD summarizer, recruiter outreach & tracking |
-| 🎨 | **Portfolio Studio** | 250+ themes, AI content enhancer + extractor, deploy to Netlify / Cloudflare / GitHub Pages, custom domains, accessibility audit, SEO, GitHub sync |
+| 🎨 | **Portfolio Studio** | 29 deployable themes (and 250+ community designs), AI extractor, section content editor, deploy to Netlify / Cloudflare / GitHub Pages, accessibility audit, versioning |
 | 🧠 | **AI Career Tools** | Cover-letter generator, email drafter (3 variants), LinkedIn optimizer, skill-gap analyzer, career-trajectory predictor, weekly digest |
 | 🌐 | **Community, Fellowships & GitHub Intel** | Channels, posts, DMs, scheduled posts, paid fellowship challenges, Razorpay payouts, repo analyzer, project visualizer, CI/CD & dependency detection |
 
@@ -342,25 +342,19 @@ Find, organize, follow up — without losing a single application.
 
 ## 🎨 Pillar 4 — Portfolio Studio
 
-A working portfolio site in under a minute — themed, accessible, and live on your domain.
+A working portfolio site in under a minute — themed, accessible, and live on your hosting provider.
 
 | Feature | Description |
 |---|---|
-| **250+ Themes** | From `Aurora_Sky` to `Cyberpunk`, `Cyber_Security_Red_Team`, `Magazine_Editorial`, `Liquid_Morph`, `Apple_Showcase`, `Spotify_Wrapped`, `Vercel_Deploy`, `IKEA_Assembly_Manual`, `Cyber_Security_Red_Team`, `Reddit_Whistleblower`, `Notion_Workspace`, `VS_Code_Theme`, and many more — including tribute templates inspired by Delba, Dev Jadiya, Clyde D'Souza, and ChiragChrg. |
-| **AI Portfolio Extractor** | Paste your resume → AI extracts structured data (hero, projects, skills, experience, education) → pre-fills the editor. |
+| **29 Deployable Themes + 250+ Community Gallery** | From `Cherry_Blossom`, `Swiss_Typography`, `Liquid_Glass`, `Midnight_Gradient`, `Playing_Cards`, `MySpace_2005`, `Macintosh_1984_Classic`, `Hot_Air_Balloon_Drifting`, `Stand_up_Comedy_Brick_Wall_Mic`, `Swipe_Right_Dating_App`, `Rubik_s_Cube_3D_Rotate`, `Jigsaw_Puzzle_Assembly`, to tech favorites `Developer_IDE`, `Terminal_Skills`, `Cyberpunk`, `Bento_Box`, `Minimalist_White`, `One_Pixel_Master`, and 250+ community designs in the gallery. |
+| **AI Portfolio Extractor** | Paste your resume → AI extracts structured data (hero, projects, skills, experience, contact) → pre-fills the editor. |
 | **AI Content Enhancer** | Section-by-section rewrites to sharpen your "About", tighten project descriptions, and humanize your tone. |
-| **Theme Selector + Color Customizer** | Live preview with custom palette, fonts, and accent colors per section. |
-| **Resume ↔ Portfolio Compare** | Detects drift so your portfolio never contradicts your resume. |
-| **Section Editor** | Reorder, hide, or duplicate hero / projects / about / skills / experience / education sections. |
-| **Social Links Editor** | GitHub, LinkedIn, X, Email, Website — rendered as themed buttons. |
-| **Accessibility Audit** | `accessibilityChecker.js` scores contrast, alt-text, ARIA, heading order, and keyboard traps; surfaces a per-page report. |
-| **Image Optimization** | Sharp-based pipeline that resizes, re-encodes, and lazy-loads every asset. |
-| **One-Click Deploy** | Push to **Netlify**, **Cloudflare Pages**, or **GitHub Pages** with the same UI. Custom slugs, deploy logs, and rollback are all in-app. |
-| **GitHub Sync** | `portfolioGitHubSync.js` watches a connected repo, auto-rebuilds the portfolio on new commits, and pins your best work. |
-| **SEO** | Auto-generated `robots.txt`, `sitemap.xml`, OpenGraph, and Twitter cards. |
-| **Screenshot Service** | `screenshotService.js` uses a shared Puppeteer browser instance to generate social-share previews. |
-| **HTML Sanitization** | Every user-pasted HTML block is sanitized through `htmlSanitizer.js` and threat-scanned before render. |
-| **Portfolio Versions** | Snapshot every publish, roll back in one click. |
+| **Theme Selector + Color Customizer** | Live preview with customizable themes and color palettes. |
+| **Section Editor** | In-app modal editor to edit hero, projects, about, skills, experience, and contact sections before publishing. |
+| **Social Links & Contact** | GitHub, LinkedIn, X, Email, and interactive mailto forms connecting directly with the creator. |
+| **Accessibility Audit** | `accessibilityChecker.js` scores contrast, alt-text, ARIA, heading order, and keyboard traps via axe-core. |
+| **Multi-Provider Deploy** | Push to **Netlify**, **Cloudflare Pages**, or **GitHub Pages** with live bundle generation and zero dummy-data leakage. |
+| **Portfolio Versions** | Backend versioning with snapshot, diff, and restore capabilities. |
 
 **Routes**: `/portfolio-hub`, `/portfolio/:id`, `/deployments`
 

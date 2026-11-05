@@ -55,27 +55,31 @@ export async function buildPortfolioBundle(sections, templateId = 'default') {
   }
 
   // Inject portfolio data and template ID into the HTML
-  const dataJson = JSON.stringify(sections || {});
+  // Escape '<' as '\u003c' to prevent any </script> tag breakout in user text
+  const dataJson = JSON.stringify(sections || {}).replace(/</g, '\\u003c');
+  const safeTemplateId = escapeForScript(String(templateId || 'default'));
   const injection = `<script>
       window.__PORTFOLIO_DATA__ = ${dataJson};
-      window.__TEMPLATE_ID__ = "${escapeForScript(templateId)}";
+      window.__TEMPLATE_ID__ = "${safeTemplateId}";
     </script>`;
 
-  // Replace the placeholder injection block
+  // Replace placeholder using a function replacement to avoid $& / $' interpretation
   html = html.replace(
     /<!-- PORTFOLIO_DATA_INJECTION -->[\s\S]*?<!-- END_PORTFOLIO_DATA_INJECTION -->/,
-    injection
+    () => injection
   );
 
   // If no placeholder found, inject before </head>
   if (!html.includes('__PORTFOLIO_DATA__')) {
-    html = html.replace('</head>', `${injection}\n</head>`);
+    html = html.replace('</head>', () => `${injection}\n</head>`);
   }
 
-  // Update page title
-  const name = sections?.hero?.subtitle || 'Portfolio';
-  const title = sections?.hero?.title || '';
-  html = html.replace(/<title>.*?<\/title>/, `<title>${name} — ${title}</title>`);
+  // Update page title safely
+  const name = sections?.personal?.name || sections?.hero?.subtitle || 'Portfolio';
+  const title = sections?.personal?.title || sections?.hero?.title || '';
+  const pageTitle = title ? `${name} — ${title}` : name;
+  const escapedTitle = pageTitle.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  html = html.replace(/<title>.*?<\/title>/, () => `<title>${escapedTitle}</title>`);
 
   // Read all asset files (JS, CSS, etc.)
   const assets = {};

@@ -15,24 +15,36 @@ const CherryBlossom = ({ portfolioData }) => {
   const { portfolioData: dummyData } = usePortfolio();
 
   // Merge AI extracted data with dummy data fallbacks for visual completeness
+  const hasUser = Boolean(
+    portfolioData &&
+    (
+      portfolioData.personal?.name ||
+      portfolioData.hero?.subtitle ||
+      portfolioData.hero?.title ||
+      (Array.isArray(portfolioData.skills) && portfolioData.skills.length > 0) ||
+      (Array.isArray(portfolioData.projects) && portfolioData.projects.length > 0)
+    )
+  );
+
   const personal = {
-    ...dummyData.personal,
-    ...(portfolioData?.hero?.subtitle && { name: portfolioData.hero.subtitle }),
-    ...(portfolioData?.hero?.title && { title: portfolioData.hero.title }),
-    ...(portfolioData?.hero?.tagline && { tagline: portfolioData.hero.tagline }),
-    ...(portfolioData?.about?.bio && { bio: portfolioData.about.bio }),
+    ...(hasUser ? {} : dummyData.personal),
+    ...portfolioData?.personal,
+    name: portfolioData?.personal?.name || portfolioData?.hero?.subtitle || (hasUser ? 'My Portfolio' : dummyData.personal.name),
+    title: portfolioData?.personal?.title || portfolioData?.hero?.title || (hasUser ? '' : dummyData.personal.title),
+    tagline: portfolioData?.personal?.tagline || portfolioData?.hero?.tagline || (hasUser ? '' : dummyData.personal.tagline),
+    bio: portfolioData?.personal?.bio || portfolioData?.about?.bio || (hasUser ? '' : dummyData.about.bio),
   };
 
-  const socials = { ...dummyData.socials, ...portfolioData?.socials };
+  const socials = { ...(hasUser ? {} : dummyData.socials), ...portfolioData?.socials, ...portfolioData?.contact };
   
   // Adapt skills array from simple strings to richer objects for the UI
-  let skills = dummyData.skills;
+  let skills = hasUser ? [] : dummyData.skills;
   if (portfolioData?.skills?.length > 0) {
     if (typeof portfolioData.skills[0] === 'string') {
       const categories = ["Core", "Technical", "Additional"];
       skills = portfolioData.skills.map((s, i) => ({
         name: s,
-        level: Math.floor(Math.random() * 20) + 75, // Random 75-95%
+        level: 80 + ((i * 5) % 16),
         category: categories[i % categories.length]
       }));
     } else {
@@ -41,21 +53,21 @@ const CherryBlossom = ({ portfolioData }) => {
   }
 
   // Adapt projects to ensure they have images and URLs
-  let projects = dummyData.projects;
+  let projects = hasUser ? [] : dummyData.projects;
   if (portfolioData?.projects?.length > 0) {
     projects = portfolioData.projects.map((p, i) => ({
-      title: p.title || p.name || 'Project',
+      title: p.title || p.name || `Project ${i + 1}`,
       description: p.description || '',
       techStack: p.technologies || p.techStack || [],
-      image: p.image || dummyData.projects[i % dummyData.projects.length].image,
-      liveUrl: p.liveUrl || "#",
-      githubUrl: p.githubUrl || "#"
+      image: p.image || '',
+      liveUrl: p.liveUrl || p.link || "#",
+      githubUrl: p.githubUrl || p.repoUrl || "#"
     }));
   }
 
-  const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
-  const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
-  const stats = portfolioData?.stats || dummyData.stats;
+  const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : (hasUser ? [] : dummyData.experience);
+  const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : (hasUser ? [] : dummyData.testimonials);
+  const stats = portfolioData?.stats || (hasUser ? {} : dummyData.stats);
 
   const data = { personal, socials, skills, projects, experience, testimonials, stats };
 

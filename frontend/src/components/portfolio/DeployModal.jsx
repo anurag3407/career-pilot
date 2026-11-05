@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Globe, Copy, Check, ExternalLink, Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import { X, Globe, Copy, Check, ExternalLink, Loader2, Sparkles, AlertCircle, Edit3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 
@@ -46,13 +46,30 @@ function TokenStatusChip({ status }) {
   );
 }
 
-export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", templateId = "default", aiDraft, onDeploySuccess }) {
+export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", templateId = "default", theme = "minimal", aiDraft, onDeploySuccess, onEditContent }) {
   // Step workflow: select -> loading -> success -> error
   const [step, setStep] = useState('select');
   const [selectedProvider, setSelectedProvider] = useState('cloudflare'); // default to recommended Cloudflare
   const [deployedUrl, setDeployedUrl] = useState('');
   const [copied, setCopied] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Identity state
+  const [userName, setUserName] = useState(aiDraft?.personal?.name || aiDraft?.hero?.subtitle || '');
+  const [userTitle, setUserTitle] = useState(aiDraft?.personal?.title || aiDraft?.hero?.title || '');
+  const [userEmail, setUserEmail] = useState(aiDraft?.personal?.email || aiDraft?.socials?.email || '');
+
+  useEffect(() => {
+    if (aiDraft?.personal?.name || aiDraft?.hero?.subtitle) {
+      setUserName(aiDraft.personal?.name || aiDraft.hero?.subtitle);
+    }
+    if (aiDraft?.personal?.title || aiDraft?.hero?.title) {
+      setUserTitle(aiDraft.personal?.title || aiDraft.hero?.title);
+    }
+    if (aiDraft?.personal?.email || aiDraft?.socials?.email) {
+      setUserEmail(aiDraft.personal?.email || aiDraft.socials?.email);
+    }
+  }, [aiDraft]);
 
   // Token validation state — one entry per provider that needs a user-supplied token
   const [tokenInputs, setTokenInputs] = useState({ github: '', netlify: '' });
@@ -136,11 +153,31 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '') || 'portfolio';
 
+    const sectionsPayload = {
+      ...(aiDraft || {}),
+      personal: {
+        ...(aiDraft?.personal || {}),
+        name: userName || aiDraft?.personal?.name || portfolioTitle || 'Portfolio',
+        title: userTitle || aiDraft?.personal?.title || '',
+        email: userEmail || aiDraft?.personal?.email || '',
+      },
+      hero: {
+        ...(aiDraft?.hero || {}),
+        subtitle: userName || aiDraft?.hero?.subtitle || portfolioTitle || 'Portfolio',
+        title: userTitle || aiDraft?.hero?.title || '',
+      },
+      socials: {
+        ...(aiDraft?.socials || {}),
+        ...(userEmail ? { email: userEmail } : {}),
+      },
+    };
+
     try {
       const result = await portfolioApi.deploy({
         slug,
-        sections: aiDraft || {},
+        sections: sectionsPayload,
         templateId,
+        theme,
         title: portfolioTitle,
         provider: selectedProvider,
         token: tokenInputs[selectedProvider] || undefined,
@@ -300,6 +337,41 @@ const seoScore = Math.round(
                     
                     Choose your publishing provider. CareerPilot generates a standalone portfolio site, then publishes it to your selected provider.
                   </p>
+
+                  {/* Deploy Identity Card */}
+                  <div className="p-3.5 bg-zinc-950/60 border border-zinc-800 rounded-2xl text-left space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                        Publishing As
+                      </span>
+                      {onEditContent && (
+                        <button
+                          type="button"
+                          onClick={onEditContent}
+                          className="text-[10px] text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 cursor-pointer"
+                        >
+                          <Edit3 className="w-3 h-3" />
+                          Edit full content
+                        </button>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input
+                        type="text"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        placeholder="Your Full Name"
+                        className="w-full px-2.5 py-1.5 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-indigo-500 font-medium"
+                      />
+                      <input
+                        type="text"
+                        value={userTitle}
+                        onChange={(e) => setUserTitle(e.target.value)}
+                        placeholder="Professional Title"
+                        className="w-full px-2.5 py-1.5 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-indigo-500 font-medium"
+                      />
+                    </div>
+                  </div>
 
                   {/* Provider Cards */}
                   <div className="space-y-2.5">

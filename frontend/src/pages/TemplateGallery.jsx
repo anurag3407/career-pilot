@@ -3,9 +3,10 @@ import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
+import SectionEditor from "../components/portfolio/SectionEditor";
 import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X, Edit3 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 import InspiredClydeDSouza from "../components/portfolio/templates/Inspired_Clyde_DSouza";
@@ -393,6 +394,8 @@ export default function TemplateGallery() {
   };
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+  const [isSectionEditorOpen, setIsSectionEditorOpen] = useState(false);
+  const [editingSectionType, setEditingSectionType] = useState("hero");
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState("default");
 
@@ -484,39 +487,60 @@ export default function TemplateGallery() {
                 automatically inject your experience and projects!
               </p>
             </div>
-            <button
-              onClick={clearDraft}
-              className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
-              title="Discard Draft"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => { setEditingSectionType('hero'); setIsSectionEditorOpen(true); }}
+                className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                Edit Details
+              </button>
+              <button
+                onClick={clearDraft}
+                className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors cursor-pointer"
+                title="Discard Draft"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         )}
 
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Template Gallery</h1>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
-            aria-label="Toggle theme"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={theme}
-                initial={{ y: 20, opacity: 0, rotate: 45 }}
-                animate={{ y: 0, opacity: 1, rotate: 0 }}
-                exit={{ y: -20, opacity: 0, rotate: -45 }}
-                transition={{ duration: 0.2 }}
-              >
-                {theme === 'light' ? (
-                  <Moon className="w-5 h-5" />
-                ) : (
-                  <Sun className="w-5 h-5" />
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </button>
+        <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-4xl font-bold">Template Gallery</h1>
+            <p className="text-sm text-muted-foreground mt-1">Browse art-directed themes and publish your portfolio with live preview</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => { setEditingSectionType('hero'); setIsSectionEditorOpen(true); }}
+              className="px-4 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer"
+            >
+              <Edit3 className="w-4 h-4" />
+              {aiDraft ? 'Edit Portfolio Content' : 'Add My Content'}
+            </button>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
+              aria-label="Toggle theme"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={theme}
+                  initial={{ y: 20, opacity: 0, rotate: 45 }}
+                  animate={{ y: 0, opacity: 1, rotate: 0 }}
+                  exit={{ y: -20, opacity: 0, rotate: -45 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {theme === 'light' ? (
+                    <Moon className="w-5 h-5" />
+                  ) : (
+                    <Sun className="w-5 h-5" />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </button>
+          </div>
         </div>
 
         <div className="mb-8 rounded-2xl border border-border bg-card p-5">
@@ -624,8 +648,32 @@ export default function TemplateGallery() {
           onClose={() => setIsDeployModalOpen(false)}
           portfolioTitle={selectedPortfolioTitle}
           templateId={selectedTemplateId}
+          theme={selectedTheme}
           aiDraft={aiDraft}
           onDeploySuccess={clearDraft}
+          onEditContent={() => {
+            setIsDeployModalOpen(false);
+            setEditingSectionType('hero');
+            setIsSectionEditorOpen(true);
+          }}
+        />
+
+        <SectionEditor
+          isOpen={isSectionEditorOpen}
+          onClose={() => setIsSectionEditorOpen(false)}
+          sectionType={editingSectionType}
+          initialData={aiDraft?.[editingSectionType] || {}}
+          onSaveSuccess={(updatedSectionData) => {
+            setAiDraft(prev => {
+              const next = { ...(prev || {}), [editingSectionType]: updatedSectionData };
+              try {
+                localStorage.setItem('ai_portfolio_draft', JSON.stringify(next));
+              } catch (_e) {}
+              return next;
+            });
+            setIsSectionEditorOpen(false);
+            toast.success('Section saved to your portfolio draft!');
+          }}
         />
 
 

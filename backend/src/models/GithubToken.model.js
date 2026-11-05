@@ -35,9 +35,13 @@ const githubTokenSchema = new mongoose.Schema(
 githubTokenSchema.index({ userId: 1, provider: 1 }, { unique: true });
 
 const ENC_KEY = () => {
-  const raw =
-    process.env.GITHUB_TOKEN_ENCRYPTION_KEY ||
-    (process.env.FIREBASE_PROJECT_ID || 'careerpilot-default-github-key').padEnd(32, '0').slice(0, 32);
+  const raw = process.env.GITHUB_TOKEN_ENCRYPTION_KEY;
+  if (!raw) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('FATAL: GITHUB_TOKEN_ENCRYPTION_KEY must be set in production');
+    }
+    return crypto.createHash('sha256').update('careerpilot-dev-encryption-key-local').digest();
+  }
   // Ensure 32-byte key
   return crypto.createHash('sha256').update(String(raw)).digest();
 };

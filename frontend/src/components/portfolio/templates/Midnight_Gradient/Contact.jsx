@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Phone, Send } from 'lucide-react';
+import { Phone, Send, CheckCircle } from 'lucide-react';
 
 const GlowingCard = ({ children, className = "", delay = 0 }) => (
   <motion.div
@@ -17,6 +17,24 @@ const GlowingCard = ({ children, className = "", delay = 0 }) => (
 );
 
 export default function Contact({ data }) {
+  const [submitted, setSubmitted] = useState(false);
+  const recipient = data?.socials?.email || data?.personal?.email || '';
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const name = form['user-name']?.value || '';
+    const email = form['user-email']?.value || '';
+    const subject = form['message-subject']?.value || `Message from ${name || 'Portfolio Visitor'}`;
+    const message = form['user-message']?.value || '';
+
+    if (recipient) {
+      window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`From: ${name} (${email})\n\n${message}`)}`;
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 5000);
+    }
+  };
+
   return (
     <section className="relative px-6 py-24 text-left">
       <div className="max-w-4xl mx-auto">
@@ -33,7 +51,7 @@ export default function Contact({ data }) {
 
         {/* Contact form in glass container */}
         <GlowingCard className="p-8">
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label htmlFor="user-name" className="sr-only">Full Name</label>
@@ -41,6 +59,7 @@ export default function Contact({ data }) {
                   id="user-name"
                   type="text"
                   placeholder="Full Name"
+                  required
                   className="w-full px-4 py-3 rounded-xl bg-gray-950/40 border border-indigo-500/15 focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/30 text-white placeholder-gray-500 outline-none transition-all duration-300 focus:shadow-[0_0_15px_rgba(6,182,212,0.1)]"
                 />
               </div>
@@ -50,6 +69,7 @@ export default function Contact({ data }) {
                   id="user-email"
                   type="email"
                   placeholder="Email Address"
+                  required
                   className="w-full px-4 py-3 rounded-xl bg-gray-950/40 border border-indigo-500/15 focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/30 text-white placeholder-gray-500 outline-none transition-all duration-300 focus:shadow-[0_0_15px_rgba(6,182,212,0.1)]"
                 />
               </div>
@@ -71,6 +91,7 @@ export default function Contact({ data }) {
                 id="user-message"
                 rows={5}
                 placeholder="Write your message here..."
+                required
                 className="w-full px-4 py-3 rounded-xl bg-gray-950/40 border border-indigo-500/15 focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/30 text-white placeholder-gray-500 outline-none transition-all duration-300 resize-none focus:shadow-[0_0_15px_rgba(6,182,212,0.1)]"
               />
             </div>
@@ -81,13 +102,19 @@ export default function Contact({ data }) {
             >
               <Send size={16} /> Send Message
             </button>
+
+            {submitted && (
+              <div className="p-3 text-center text-xs font-semibold text-cyan-300 bg-cyan-950/40 border border-cyan-500/30 rounded-xl flex items-center justify-center gap-2">
+                <CheckCircle size={14} /> Opening your email app to deliver message!
+              </div>
+            )}
           </form>
         </GlowingCard>
 
         {/* Footer info & Copyright */}
         <div className="mt-16 text-center text-gray-500 text-xs border-t border-indigo-950/40 pt-8">
           <p className="tracking-wide">
-            © {new Date().getFullYear()} {data.personal.name}.
+            © {new Date().getFullYear()} {data?.personal?.name || 'Portfolio'}.
           </p>
         </div>
       </div>

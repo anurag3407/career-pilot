@@ -48,7 +48,7 @@ export default function Skills({ skills }) {
               <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-full relative"
-                  style={{ width: `${skill.level || Math.floor(Math.random() * 40) + 60}%` }}
+                  style={{ width: `${skill.level || 85}%` }}
                 >
                   <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/30 blur-[2px]"></div>
                 </div>

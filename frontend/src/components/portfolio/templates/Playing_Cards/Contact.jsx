@@ -9,8 +9,17 @@ const Contact = ({ data }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const formData = new FormData(e.target);
+    const name = formData.get('name') || '';
+    const email = formData.get('email') || '';
+    const message = formData.get('message') || '';
+    const recipient = socials?.email || personal?.email || '';
+
+    if (recipient) {
+      window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(`Message from ${name || 'Portfolio Visitor'}`)}&body=${encodeURIComponent(`From: ${name} (${email})\n\n${message}`)}`;
+    }
     setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    setTimeout(() => setSubmitted(false), 4000);
     e.target.reset();
   };
 
