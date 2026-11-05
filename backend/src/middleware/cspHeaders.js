@@ -31,6 +31,11 @@ export const cspHeaders = helmet({
       connectSrc: [
         "'self'",
         process.env.FRONTEND_URL || "http://localhost:5173",
+        "https://*.supabase.co",
+        "wss://*.supabase.co",
+        "https://*.appwrite.io",
+        "https://*.clerk.accounts.dev",
+        "https://clerk.*",
         "https://firebaseapp.com",
         "https://*.googleapis.com",
         "https://*.firebaseio.com",

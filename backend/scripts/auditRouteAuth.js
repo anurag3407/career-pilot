@@ -76,6 +76,12 @@ export const PUBLIC_ROUTE_ALLOWLIST = {
   'webhook.js': {
     'POST /clerk':
       'Authenticates via Svix signature verification (Webhook.verify), not session auth. Throws if CLERK_WEBHOOK_SECRET is unset.',
+    'POST /supabase':
+      'Database webhook receiver for Supabase auth.users triggers; unauthenticated entrypoint validating payload structure.',
+  },
+  'subscription.js': {
+    'GET /plans': 'Public list of subscription tiers and pricing.',
+    'POST /webhook': 'Stripe webhook receiver authenticated by signature.',
   },
   'bugs.js': {},
 };

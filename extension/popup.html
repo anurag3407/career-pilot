@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CareerPilot Job Tracker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <span class="logo-badge">⚡</span>
+      <h1>CareerPilot</h1>
+    </div>
+    <span id="connectionBadge" class="status-badge">Ready</span>
+  </div>
+
+  <div id="alertBox" class="alert-box hidden"></div>
+
+  <form id="jobForm" class="form">
+    <div class="field">
+      <label for="jobTitle">Job Title</label>
+      <input type="text" id="jobTitle" required placeholder="e.g. Senior Software Engineer">
+    </div>
+
+    <div class="field">
+      <label for="company">Company</label>
+      <input type="text" id="company" required placeholder="e.g. Stripe">
+    </div>
+
+    <div class="row">
+      <div class="field half">
+        <label for="location">Location</label>
+        <input type="text" id="location" placeholder="e.g. Remote / New York">
+      </div>
+      <div class="field half">
+        <label for="salary">Salary / Range</label>
+        <input type="text" id="salary" placeholder="e.g. $140k - $180k">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="status">Tracker Column</label>
+      <select id="status">
+        <option value="saved">Saved / Wishlist</option>
+        <option value="applied">Applied</option>
+        <option value="interviewing">Interviewing</option>
+        <option value="offered">Offer Received</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="notes">Notes</label>
+      <textarea id="notes" rows="2" placeholder="Referrals, recruiter contact, or notes..."></textarea>
+    </div>
+
+    <button type="submit" id="saveBtn" class="btn primary">
+      <span>Save to CareerPilot</span>
+    </button>
+  </form>
+
+  <div class="settings-toggle">
+    <button type="button" id="toggleSettings">⚙️ Settings</button>
+  </div>
+
+  <div id="settingsPanel" class="settings-panel hidden">
+    <div class="field">
+      <label for="apiUrl">CareerPilot API URL</label>
+      <input type="text" id="apiUrl" value="http://localhost:5000">
+    </div>
+    <div class="field">
+      <label for="authToken">Supabase / JWT Auth Token</label>
+      <input type="password" id="authToken" placeholder="Bearer eyJhbGci...">
+      <small>Found in CareerPilot dashboard settings</small>
+    </div>
+    <button type="button" id="saveSettingsBtn" class="btn secondary">Save Settings</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

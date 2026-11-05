@@ -3,7 +3,7 @@ import { ID, Query } from 'node-appwrite';
 import { presenceService } from '../services/presenceService.js';
 import { getIO } from '../config/socket.js';
 import { ApiError } from '../middleware/errorHandler.js';
-import { schedulePostJob, cancelPostJob, isSchedulerAvailable } from '../services/postScheduler.js';
+import { schedulePostJob, cancelPostJob } from '../services/postScheduler.js';
 
 const DB_ID = process.env.VITE_APPWRITE_DATABASE_ID || 'default_db';
 const CHANNELS_COL = process.env.VITE_APPWRITE_CHANNELS_COLLECTION_ID || 'channels';
@@ -12,9 +12,6 @@ const POSTS_COL = process.env.VITE_APPWRITE_POSTS_COLLECTION_ID || 'posts';
 const COMMENTS_COL = process.env.VITE_APPWRITE_COMMENTS_COLLECTION_ID || 'comments';
 const CONVERSATIONS_COL = process.env.VITE_APPWRITE_CONVERSATIONS_COLLECTION_ID || 'conversations';
 const DIRECT_MESSAGES_COL = process.env.VITE_APPWRITE_DIRECT_MESSAGES_COLLECTION_ID || 'directMessages';
-
-// Helper for dates
-const getISODate = (val) => (val ? new Date(val).toISOString() : new Date().toISOString());
 
 // ============ CHANNEL CONTROLLERS ============
 
@@ -94,7 +91,7 @@ export const createChannel = async (req, res, next) => {
 
     const doc = await databases.createDocument(DB_ID, CHANNELS_COL, ID.unique(), channelData);
     const newChannel = { id: doc.$id, ...channelData };
-    try { getIO().emit('new_channel', { channel: newChannel }); } catch (e) {}
+    try { getIO().emit('new_channel', { channel: newChannel }); } catch (e) { void e; }
 
     res.status(201).json({ success: true, channel: newChannel });
   } catch (error) { next(error); }
@@ -273,7 +270,7 @@ export const createPost = async (req, res, next) => {
         newPost.status = 'published';
       }
     } else {
-      try { getIO().to('posts:feed').emit('new_post', { post: newPost }); } catch (e) {}
+      try { getIO().to('posts:feed').emit('new_post', { post: newPost }); } catch (e) { void e; }
     }
 
     res.status(201).json({ success: true, post: newPost });
@@ -361,7 +358,7 @@ export const toggleLikePost = async (req, res, next) => {
         likeCount: likes.length,
         likes
       });
-    } catch (e) {}
+    } catch (e) { void e; }
 
     res.json({ success: true, liked: !alreadyLiked, likeCount: likes.length });
   } catch (error) { next(error); }
@@ -505,6 +502,6 @@ export const searchCommunity = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
-export const fixPostLikeCounts = async (req, res, next) => {
+export const fixPostLikeCounts = async (req, res) => {
   res.json({ success: true, message: 'Not implemented for Appwrite yet' });
 };

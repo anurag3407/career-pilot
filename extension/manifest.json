@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "CareerPilot - 1-Click Job Tracker",
+  "version": "1.0.0",
+  "description": "Instantly save jobs from LinkedIn, Indeed, Greenhouse, and Lever directly into your CareerPilot Kanban tracker.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*.linkedin.com/*",
+    "*://*.indeed.com/*",
+    "*://*.greenhouse.io/*",
+    "*://*.lever.co/*",
+    "http://localhost/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Save to CareerPilot"
+  }
+}

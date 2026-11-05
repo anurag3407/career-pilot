@@ -6,24 +6,38 @@ const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 // Helper to get auth headers
 async function getAuthHeaders() {
-const session = window.Clerk?.session
+  let token = null;
 
-if (!session) {
-  if (import.meta.env.DEV) {
-    return {
-      Authorization: `Bearer mock-dev-token`,
-      'Content-Type': 'application/json'
+  try {
+    const { supabase } = await import('../config/supabase.js');
+    const { data } = await supabase.auth.getSession();
+    token = data?.session?.access_token || null;
+  } catch {
+    // fallback
+  }
+
+  if (!token && window.Clerk?.session) {
+    try {
+      token = await window.Clerk.session.getToken();
+    } catch {
+      // fallback
     }
   }
-  throw new Error('Not authenticated')
-}
 
-const token = await session.getToken()
+  if (!token) {
+    if (import.meta.env.DEV) {
+      return {
+        Authorization: `Bearer mock-dev-token`,
+        'Content-Type': 'application/json'
+      };
+    }
+    throw new Error('Not authenticated');
+  }
 
-const headers = {
-  Authorization: `Bearer ${token}`,
-  'Content-Type': 'application/json'
-}
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
 
 // Inject GitHub BYOK token if present (PAT stored in encrypted localStorage)
 try {
@@ -2055,4 +2069,36 @@ export const bugsApi = {
     const response = await fetch(`${API_BASE}/bugs?page=${page}&limit=${limit}`, { headers });
     return handleResponse(response);
   }
+};
+
+export const subscriptionApi = {
+  async getPlans() {
+    const response = await fetch(`${API_BASE}/subscription/plans`);
+    return handleResponse(response);
+  },
+
+  async getMySubscription() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/subscription/me`, { headers });
+    return handleResponse(response);
+  },
+
+  async createCheckoutSession(planId = 'pro') {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/subscription/create-checkout-session`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ planId }),
+    });
+    return handleResponse(response);
+  },
+
+  async createPortalSession() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/subscription/create-portal-session`, {
+      method: 'POST',
+      headers,
+    });
+    return handleResponse(response);
+  },
 };

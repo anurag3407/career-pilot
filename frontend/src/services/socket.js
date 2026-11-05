@@ -15,28 +15,42 @@ export const initializeSocket = async () => {
     return socket;
   }
 
-  const session = window.Clerk?.session;
+  const getFreshToken = async () => {
+    try {
+      const { supabase } = await import('../config/supabase.js');
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.access_token) {
+        return data.session.access_token;
+      }
+    } catch {
+      // fallback
+    }
 
-  if (!session) {
+    const session = window.Clerk?.session;
+    if (session) {
+      return await session.getToken();
+    }
+
+    throw new Error('No authenticated user');
+  };
+
+  let hasAuth = Boolean(window.Clerk?.session);
+  if (!hasAuth) {
+    try {
+      const { supabase } = await import('../config/supabase.js');
+      const { data } = await supabase.auth.getSession();
+      hasAuth = Boolean(data?.session);
+    } catch {
+      hasAuth = false;
+    }
+  }
+
+  if (!hasAuth) {
     console.warn(
       'Cannot initialize socket: No authenticated user'
     );
     return null;
   }
-
-  /**
-   * Read auth.currentUser again for each handshake because the signed-in user
-   * may change after the initial socket creation.
-   */
-  const getFreshToken = async () => {
-    const session = window.Clerk?.session;
-
-    if (!session) {
-      throw new Error('No authenticated user');
-    }
-
-    return await session.getToken();
-  };
 
   /**
    * Keep a stable instance reference for all listeners. The module-level

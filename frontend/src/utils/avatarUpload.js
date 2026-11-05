@@ -1,3 +1,4 @@
+import { supabase, isSupabaseConfigured } from '../config/supabase'
 import { storage } from '../config/appwrite'
 import { ID } from 'appwrite'
 
@@ -23,11 +24,9 @@ export function validateAvatarFile(file) {
 }
 
 /**
- * Uploads an avatar image to Appwrite Storage and returns its public URL.
+ * Uploads an avatar image to Supabase Storage (with Appwrite fallback) and returns its public URL.
  */
 export async function uploadAvatar(file, uid, onProgress) {
-  const BUCKET_ID = import.meta.env.VITE_APPWRITE_BUCKET_ID || 'avatars'
-  
   if (!uid) {
     throw new Error('You must be signed in to upload an avatar.')
   }
@@ -35,20 +34,38 @@ export async function uploadAvatar(file, uid, onProgress) {
   const check = validateAvatarFile(file)
   if (!check.ok) throw new Error(check.error)
 
+  // 1. Supabase Storage if configured
+  if (isSupabaseConfigured) {
+    try {
+      if (onProgress) onProgress(30)
+      const fileExt = file.name ? file.name.split('.').pop() : 'png'
+      const filePath = `${uid}/${Date.now()}.${fileExt}`
+
+      const { error } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true })
+
+      if (error) throw error
+
+      if (onProgress) onProgress(90)
+      const { data: publicUrlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath)
+
+      if (onProgress) onProgress(100)
+      return publicUrlData.publicUrl
+    } catch (supaErr) {
+      console.warn('Supabase storage upload failed, attempting fallback:', supaErr.message)
+    }
+  }
+
+  // 2. Appwrite Storage fallback
+  const BUCKET_ID = import.meta.env.VITE_APPWRITE_BUCKET_ID || 'avatars'
   try {
-    // Note: Appwrite Web SDK v13 doesn't have an easy onProgress for createFile natively via promises,
-    // though the real API supports it. We'll fire a 50% event just for UX if passed.
     if (onProgress) onProgress(50)
-
     const response = await storage.createFile(BUCKET_ID, ID.unique(), file)
-    
     if (onProgress) onProgress(100)
-
-    // Construct the file URL (getPreview or getFileView)
-    // Appwrite returns standard URLs for viewing
-    const resultUrl = storage.getFileView(BUCKET_ID, response.$id).href
-    
-    return resultUrl
+    return storage.getFileView(BUCKET_ID, response.$id).href
   } catch (err) {
     console.error('Avatar upload error:', err)
     throw new Error(err?.message || 'Avatar upload failed.')

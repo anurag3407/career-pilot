@@ -1,11 +1,17 @@
+import mongoose from "mongoose";
 import recruiterModel from "../models/recruiter.model.js";
 import userModel from "../models/User.model.js";
 import inputModel from "../models/input.model.js";
+import { saveRecruiterAnalysisToSupabase } from "../services/supabaseDataService.js";
+
 async function saveAnalysis(req, res) {
   try {
     const { matchPercentage, jobTitle } = req.body;
 
-    const user = await userModel.findById(req.user.id).select("username email");
+    const userId = req.user?.id || req.user?.uid;
+    const user = (userId && mongoose.isValidObjectId(userId))
+      ? await userModel.findById(userId).select("username email")
+      : (req.user?.email ? await userModel.findOne({ email: req.user.email }).select("username email") : null);
 
     if (!user) {
       return res.status(404).json({
@@ -15,14 +21,14 @@ async function saveAnalysis(req, res) {
     }
 
     const input = await inputModel
-      .findOne({ user: req.user.id })
+      .findOne({ user: user._id })
       .sort({ createdAt: -1 });
     const resumeUrl = input?.resume || "";
 
     const doc = await recruiterModel.findOneAndUpdate(
-      { userId: req.user.id },
+      { userId: user._id },
       {
-        userId: req.user.id,
+        userId: user._id,
         username: user.username,
         email: user.email,
         resumeUrl,
@@ -31,6 +37,19 @@ async function saveAnalysis(req, res) {
       },
       { upsert: true, new: true },
     );
+
+    try {
+      await saveRecruiterAnalysisToSupabase({
+        userId: user._id,
+        username: user.username,
+        email: user.email,
+        resumeUrl,
+        matchPercentage: Math.round(matchPercentage),
+        jobTitle: jobTitle || "Software Developer",
+      });
+    } catch (supaErr) {
+      console.warn("Could not sync analysis to Supabase:", supaErr.message);
+    }
 
     return res.status(200).json({
       success: true,

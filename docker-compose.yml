@@ -22,17 +22,37 @@ services:
             target: development
         container_name: backend_container
         ports:
-            - 5001:5001
+            - 5000:5000
         volumes:
             - ./backend:/usr/src/app
             - /usr/src/app/node_modules
         environment:
             - NODE_ENV=development
+            - PORT=5000
             - MONGODB_URI=mongodb://mongodb:27017/career_pilot
             - REDIS_URL=redis://redis:6379
             - GROQ_API_KEY=${GROQ_API_KEY}
         depends_on:
             - mongodb
+            - redis
+        networks:
+            - career_pilot_network
+    worker:
+        build:
+            context: ./backend
+            target: development
+        container_name: worker_container
+        command: node src/workers/pdfWorker.js
+        volumes:
+            - ./backend:/usr/src/app
+            - /usr/src/app/node_modules
+        environment:
+            - NODE_ENV=development
+            - RUN_AS_WORKER=true
+            - REDIS_URL=redis://redis:6379
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+        depends_on:
             - redis
         networks:
             - career_pilot_network

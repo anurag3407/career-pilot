@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import { ClerkProvider } from '@clerk/clerk-react'
+import { isSupabaseConfigured } from './config/supabase'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -58,16 +59,16 @@ class DebugBoundary extends React.Component {
   }
 }
 
-const clerkKeyMissing = Boolean(!PUBLISHABLE_KEY)
-
 function Root() {
-  // Clerk is optional in local/build previews so the marketing site never becomes a
-  // white screen. Authenticated routes still redirect to /login when no user exists.
   const app = (
     <DebugBoundary>
       <App />
     </DebugBoundary>
   )
+
+  if (isSupabaseConfigured) {
+    return app
+  }
 
   return PUBLISHABLE_KEY ? (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
@@ -78,8 +79,8 @@ function Root() {
   )
 }
 
-if (import.meta.env.DEV && clerkKeyMissing) {
-  console.warn('VITE_CLERK_PUBLISHABLE_KEY is missing; running in public-preview mode.')
+if (import.meta.env.DEV && !isSupabaseConfigured && !PUBLISHABLE_KEY) {
+  console.warn('Neither Supabase nor Clerk is configured; running in public-preview mode.')
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

@@ -1,11 +1,91 @@
 import puppeteer from 'puppeteer';
 import { marked } from 'marked';
 import { generateStructuredData } from '../utils/structuredDataGenerator.js';
+
+let sharedBrowserInstance = null;
+let sharedBrowserPromise = null;
+
+// Concurrency control for browser page generation
+const MAX_CONCURRENT_RENDERS = parseInt(process.env.MAX_CONCURRENT_PDF_RENDERS, 10) || 3;
+let activeRenders = 0;
+const renderWaitQueue = [];
+
+function acquireRenderSlot() {
+  if (activeRenders < MAX_CONCURRENT_RENDERS) {
+    activeRenders++;
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    renderWaitQueue.push(resolve);
+  });
+}
+
+function releaseRenderSlot() {
+  activeRenders--;
+  if (renderWaitQueue.length > 0) {
+    activeRenders++;
+    const nextInQueue = renderWaitQueue.shift();
+    nextInQueue();
+  }
+}
+
 /**
- * Generate a PDF from markdown text using Puppeteer.
+ * Gets or initializes a shared Puppeteer browser instance.
+ * Automatically handles browser restarts on crashes or disconnections.
+ */
+export async function getSharedBrowser() {
+  if (sharedBrowserInstance && sharedBrowserInstance.isConnected()) {
+    return sharedBrowserInstance;
+  }
+
+  if (!sharedBrowserPromise) {
+    sharedBrowserPromise = puppeteer.launch({
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+      ],
+    }).then((browser) => {
+      sharedBrowserInstance = browser;
+      browser.once('disconnected', () => {
+        sharedBrowserInstance = null;
+        sharedBrowserPromise = null;
+      });
+      return browser;
+    }).catch((err) => {
+      sharedBrowserPromise = null;
+      throw err;
+    });
+  }
+
+  return sharedBrowserPromise;
+}
+
+/**
+ * Closes the shared browser instance on graceful shutdown.
+ */
+export async function closeSharedBrowser() {
+  if (sharedBrowserInstance) {
+    try {
+      await sharedBrowserInstance.close();
+    } catch {
+      // Ignore cleanup error
+    } finally {
+      sharedBrowserInstance = null;
+      sharedBrowserPromise = null;
+    }
+  }
+}
+
+/**
+ * Generate a PDF from markdown text using Puppeteer with browser pooling and concurrency bounds.
  * @param {string} markdownText - The resume markdown content.
  * @param {Object} options - Options like format ('A4' or 'Letter') and title.
- * @returns {Buffer} - The generated PDF buffer.
+ * @returns {Promise<Buffer>} - The generated PDF buffer.
  */
 export const generatePDF = async (markdownText, options = {}) => {
   const { 
@@ -15,7 +95,7 @@ export const generatePDF = async (markdownText, options = {}) => {
   } = options;
 
   // Convert markdown to HTML
-  const htmlContent = marked.parse(markdownText);
+  const htmlContent = marked.parse(markdownText || '');
   const jsonLdScript =
     options.portfolio && Object.keys(options.portfolio).length > 0
       ? (() => {
@@ -27,7 +107,7 @@ export const generatePDF = async (markdownText, options = {}) => {
           return `<script type="application/ld+json">\n${jsonLd}\n</script>`;
         })()
       : '';
-  // Read full HTML structure with styles
+
   const fullHtml = `
     <!DOCTYPE html>
     <html lang="en">
@@ -46,7 +126,6 @@ export const generatePDF = async (markdownText, options = {}) => {
           margin: 0;
           padding: 0;
         }
-        /* Typography */
         h1 {
           font-size: 24px;
           margin-bottom: 8px;
@@ -60,97 +139,40 @@ export const generatePDF = async (markdownText, options = {}) => {
           border-bottom: 1px solid #ccc;
           padding-bottom: 4px;
           margin-top: 16px;
-          margin-bottom: 10px;
         }
-        h3 {
-          font-size: 12px;
-          margin-top: 10px;
-          margin-bottom: 4px;
-          color: #000;
-          display: flex;
-          justify-content: space-between;
-        }
-        p {
+        p, li {
           font-size: 11px;
-          margin: 4px 0;
         }
         ul {
-          margin: 4px 0 10px 0;
           padding-left: 20px;
+          margin: 4px 0;
         }
-        li {
-          font-size: 11px;
-          margin-bottom: 4px;
-        }
-        a {
-          color: var(--theme-color);
-          text-decoration: none;
-        }
-        strong {
-          font-weight: 600;
-          color: #000;
-        }
-        /* Contact info styling */
-        .contact-info {
-          text-align: center;
-          font-size: 10px;
-          margin-bottom: 16px;
-          color: #555;
-        }
-        .contact-info a {
-          color: #555;
-        }
-        
-        /* Layout */
-        .resume-content {
-          max-width: 100%;
+        .resume-container {
+          padding: 20px;
         }
       </style>
     </head>
     <body>
-      <div class="resume-content">
+      <div class="resume-container">
         ${htmlContent}
       </div>
-      <script>
-        // Post-process the DOM to format the header and dates
-        document.querySelectorAll('h3').forEach(el => {
-          if (el.textContent.includes('|')) {
-            const parts = el.textContent.split('|');
-            el.innerHTML = '<span>' + parts[0].trim() + '</span><span style="color: #666; font-weight: normal;">' + parts.slice(1).join('|').trim() + '</span>';
-          }
-        });
-        
-        // Post-process contact info (usually the first paragraph after h1)
-        const content = document.querySelector('.resume-content');
-        if (content.children.length > 1) {
-            const possibleContact = content.children[1];
-            if (possibleContact.tagName === 'P' && (possibleContact.textContent.includes('|') || possibleContact.textContent.includes('@'))) {
-                possibleContact.className = 'contact-info';
-            }
-        }
-      </script>
     </body>
     </html>
   `;
 
-  // Launch puppeteer
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
-
+  await acquireRenderSlot();
+  let page = null;
   try {
-    const page = await browser.newPage();
+    const browser = await getSharedBrowser();
+    page = await browser.newPage();
     
-    // Set content and wait for network idle to ensure styles load
     await page.setContent(fullHtml, { waitUntil: 'networkidle0' });
 
-    // Generate PDF
     const pdfBuffer = await page.pdf({
-      format: format, // 'A4' or 'Letter'
+      format: format,
       printBackground: true,
       displayHeaderFooter: true,
-      headerTemplate: '<div></div>', // Empty header
+      headerTemplate: '<div></div>',
       footerTemplate: `
         <div style="width: 100%; font-size: 8px; text-align: center; color: #888; padding-bottom: 10px;">
           <span class="pageNumber"></span> / <span class="totalPages"></span>
@@ -166,20 +188,19 @@ export const generatePDF = async (markdownText, options = {}) => {
 
     return Buffer.from(pdfBuffer);
   } finally {
-    await browser.close();
+    if (page) {
+      await page.close().catch(() => {});
+    }
+    releaseRenderSlot();
   }
 };
 
 /**
- * Render an arbitrary HTML string (e.g. one of the resume templates'
- * JSX output, server-rendered) to an ATS-safe multi-page A4 PDF using
- * Puppeteer. The text layer is preserved — selectable text in the PDF.
+ * Render an arbitrary HTML string to an ATS-safe multi-page A4 PDF using
+ * the pooled Puppeteer browser.
  *
- * @param {string} htmlBody - Already-rendered HTML body (no <html>/<head> wrapper needed)
+ * @param {string} htmlBody
  * @param {Object} options
- * @param {'A4'|'Letter'} [options.format='A4']
- * @param {string} [options.title='Resume']
- * @param {string} [options.css=''] - Optional additional CSS to inject into <head>
  * @returns {Promise<Buffer>}
  */
 export const generatePDFFromHTML = async (htmlBody, options = {}) => {
@@ -202,13 +223,11 @@ export const generatePDFFromHTML = async (htmlBody, options = {}) => {
 </body>
 </html>`;
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
-
+  await acquireRenderSlot();
+  let page = null;
   try {
-    const page = await browser.newPage();
+    const browser = await getSharedBrowser();
+    page = await browser.newPage();
     await page.setContent(fullHtml, { waitUntil: 'networkidle0' });
     const pdfBuffer = await page.pdf({
       format,
@@ -218,6 +237,16 @@ export const generatePDFFromHTML = async (htmlBody, options = {}) => {
     });
     return Buffer.from(pdfBuffer);
   } finally {
-    await browser.close();
+    if (page) {
+      await page.close().catch(() => {});
+    }
+    releaseRenderSlot();
   }
+};
+
+export default {
+  generatePDF,
+  generatePDFFromHTML,
+  getSharedBrowser,
+  closeSharedBrowser,
 };

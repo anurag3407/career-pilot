@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
 import inputModel from "../models/input.model.js";
 import userModel from "../models/User.model.js";
+import { saveUserInputsToSupabase } from "../services/supabaseDataService.js";
 import { extractSkills } from "../utils/resumeparser.js";
 import axios from "axios";
 import pdfParse from "pdf-parse";
@@ -62,7 +64,10 @@ async function inputupload(req, res) {
       });
     }
 
-    const user = await userModel.findById(req.user.id);
+    const userId = req.user?.id || req.user?.uid;
+    const user = (userId && mongoose.isValidObjectId(userId))
+      ? await userModel.findById(userId)
+      : (req.user?.email ? await userModel.findOne({ email: req.user.email }) : null);
 
     if (!user) {
       return res.status(404).json({
@@ -117,8 +122,8 @@ async function inputupload(req, res) {
 
     
     const newInput = await inputModel.create({
-      user: req.user.id,
-      name: parsedData.name,
+      user: user._id,
+      name: parsedData.name || user.username,
       jobRole: parsedData.jobRole,
       experienceLevel,
       techSkills,
@@ -126,6 +131,21 @@ async function inputupload(req, res) {
       resume: supportingDocumentURL,
       resumeText,
     });
+
+    try {
+      await saveUserInputsToSupabase({
+        userId: user._id,
+        name: parsedData.name || user.username,
+        jobRole: parsedData.jobRole,
+        experienceLevel,
+        techSkills,
+        softSkills: parsedData.softSkills || [],
+        resume: supportingDocumentURL,
+        resumeText,
+      });
+    } catch (supaErr) {
+      console.warn("Could not sync input to Supabase:", supaErr.message);
+    }
 
     return res.status(201).json({
       message: "Profile + Resume uploaded successfully",
@@ -149,8 +169,19 @@ async function inputupload(req, res) {
  */
 async function getinput(req, res) {
   try {
+    const userId = req.user?.id || req.user?.uid;
+    const user = (userId && mongoose.isValidObjectId(userId))
+      ? await userModel.findById(userId)
+      : (req.user?.email ? await userModel.findOne({ email: req.user.email }) : null);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
     const data = await inputModel    
-      .findOne({ user: req.user.id })
+      .findOne({ user: user._id })
       .sort({ createdAt: -1 });
 
     res.status(200).json({

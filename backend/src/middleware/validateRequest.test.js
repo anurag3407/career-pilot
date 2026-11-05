@@ -1,7 +1,7 @@
-const { describe, it, mock } = require('node:test');
-const assert = require('node:assert');
-const { z } = require('zod');
-const validateRequest = require('./validateRequest');
+import { describe, it, mock } from 'node:test';
+import assert from 'node:assert';
+import { z } from 'zod';
+import validateRequest from './validateRequest.js';
 
 describe('validateRequest Middleware', () => {
   // A dummy schema for testing

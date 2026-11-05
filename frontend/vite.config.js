@@ -31,7 +31,7 @@ export default defineConfig({
 
     proxy: {
       '/api': {
-        target: process.env.IS_DOCKER ? 'http://backend_container:5002' : 'http://localhost:5002',
+        target: process.env.VITE_API_URL || (process.env.IS_DOCKER ? 'http://backend_container:5000' : 'http://localhost:5000'),
         changeOrigin: true,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {

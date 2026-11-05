@@ -11,6 +11,10 @@ import {
     deleteJobAlertFromAppwrite,
     saveUserToAppwrite 
 } from '../services/appwriteDataService.js';
+import {
+    saveJobAlertToSupabase,
+    deleteJobAlertFromSupabase
+} from '../services/supabaseDataService.js';
 import { validate } from '../middleware/validate.js';
 import { createJobAlertSchema, updateJobAlertSchema } from '../schemas/jobAlerts.schema.js';
 
@@ -176,11 +180,16 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
         isActive: true
     });
 
-    // Save to Firebase
+    // Save to Firebase / Supabase
     try {
         await saveJobAlertToAppwrite(alert.toObject());
     } catch (fbError) {
-        console.warn('⚠️  Could not save alert to Firebase:', fbError.message);
+        console.warn('⚠️  Could not save alert to Appwrite:', fbError.message);
+    }
+    try {
+        await saveJobAlertToSupabase(alert.toObject());
+    } catch (supaErr) {
+        console.warn('⚠️  Could not save alert to Supabase:', supaErr.message);
     }
 
     res.status(201).json({
@@ -227,11 +236,16 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
 
     await alert.save();
 
-    // Update in Firebase
+    // Update in Appwrite / Supabase
     try {
         await saveJobAlertToAppwrite(alert.toObject());
     } catch (fbError) {
-        console.warn('⚠️  Could not update alert in Firebase:', fbError.message);
+        console.warn('⚠️  Could not update alert in Appwrite:', fbError.message);
+    }
+    try {
+        await saveJobAlertToSupabase(alert.toObject());
+    } catch (supaErr) {
+        console.warn('⚠️  Could not update alert in Supabase:', supaErr.message);
     }
 
     res.json({
@@ -255,11 +269,16 @@ router.delete('/:id', verifyToken, asyncHandler(async (req, res) => {
         throw new ApiError(404, 'Job alert not found');
     }
 
-    // Delete from Firebase
+    // Delete from Appwrite / Supabase
     try {
         await deleteJobAlertFromAppwrite(id);
     } catch (fbError) {
-        console.warn('⚠️  Could not delete alert from Firebase:', fbError.message);
+        console.warn('⚠️  Could not delete alert from Appwrite:', fbError.message);
+    }
+    try {
+        await deleteJobAlertFromSupabase(id);
+    } catch (supaErr) {
+        console.warn('⚠️  Could not delete alert from Supabase:', supaErr.message);
     }
 
     // Optionally clean up notification logs

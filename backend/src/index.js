@@ -39,11 +39,12 @@ import adminRoutes from './routes/admin.js';
 import bullBoardRoutes from './routes/bullBoard.js';
 import webhookRoutes from './routes/webhook.js';
 
-import inputRoutes from'./routes/input.route.js';
-import recruiterRoutes from '../src/routes/recruiter.routes.js';
+import inputRoutes from './routes/input.route.js';
+import recruiterRoutes from './routes/recruiter.routes.js';
 import outreachRoutes from './routes/outreach.route.js';
 import bugsRoutes from './routes/bugs.js';
 import readmeGeneratorRoutes from './routes/readmeGenerator.js';
+import subscriptionRoutes from './routes/subscription.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
@@ -163,7 +164,7 @@ app.use(async (req, res, next) => {
 app.use(metricsMiddleware);
 app.use(compressionMiddleware);
 const httpServer = createServer(app);
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 5000;
 
 // Log a presence-only configuration summary in development only.
 // Secrets cannot leak into startup logs or aggregated log output.
@@ -242,6 +243,11 @@ app.use(helmet({
       connectSrc: [
         "'self'",
         process.env.FRONTEND_URL || "http://localhost:5173",
+        "https://*.supabase.co",
+        "wss://*.supabase.co",
+        "https://*.appwrite.io",
+        "https://*.clerk.accounts.dev",
+        "https://clerk.*",
         "https://firebaseapp.com",
         "https://*.googleapis.com",
         "https://*.firebaseio.com",
@@ -348,6 +354,7 @@ app.use('/api/email-tracking', emailTrackingRoutes);
 app.use('/api/analyzer', repoAnalyzerRoutes);
 app.use('/api/readme-generator', readmeGeneratorRoutes);
 app.use('/api/project-visualizer', projectVisualizerRoutes);
+app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/queues', bullBoardRoutes);
 

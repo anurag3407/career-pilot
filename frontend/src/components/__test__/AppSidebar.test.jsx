@@ -55,8 +55,8 @@ vi.mock("../settings/AIProviderIndicator", () => ({
 
 vi.mock("framer-motion", () => ({
   motion: {
-    div: ({ children, ...props }) => <div {...props}>{children}</div>,
-    span: ({ children, ...props }) => <span {...props}>{children}</span>,
+    div: ({ children, initial: _initial, animate: _animate, transition: _transition, exit: _exit, whileHover: _whileHover, whileTap: _whileTap, ...props }) => <div {...props}>{children}</div>,
+    span: ({ children, initial: _initial, animate: _animate, transition: _transition, exit: _exit, whileHover: _whileHover, whileTap: _whileTap, ...props }) => <span {...props}>{children}</span>,
   },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));

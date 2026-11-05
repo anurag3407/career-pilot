@@ -3,6 +3,7 @@ import { Webhook } from 'svix';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import User from '../models/User.model.js';
 import { saveUserToAppwrite } from '../services/appwriteDataService.js';
+import { saveUserToSupabase } from '../services/supabaseDataService.js';
 import crypto from 'crypto';
 
 const router = express.Router();
@@ -87,6 +88,46 @@ router.post(
       success: true,
       message: 'Webhook received',
     });
+  })
+);
+
+router.post(
+  '/supabase',
+  express.json(),
+  asyncHandler(async (req, res) => {
+    const { type, table, record } = req.body || {};
+
+    if (record && (table === 'users' || table === 'profiles')) {
+      const email = record.email;
+      const meta = record.raw_user_meta_data || {};
+      const name = meta.full_name || meta.name || record.username || email?.split('@')[0];
+      const picture = meta.avatar_url || record.avatar_url || null;
+
+      if (email) {
+        try {
+          let user = await User.findOne({ email });
+          if (!user) {
+            user = await User.create({
+              email,
+              username: name,
+              password: crypto.randomBytes(32).toString('hex'),
+            });
+            console.log(`Created new user in MongoDB via Supabase webhook: ${email}`);
+          }
+
+          await saveUserToSupabase({
+            id: record.id,
+            email,
+            name,
+            picture,
+          });
+        } catch (err) {
+          console.error('Error syncing Supabase webhook user:', err.message);
+        }
+      }
+    }
+
+    res.status(200).json({ success: true, message: 'Supabase webhook processed' });
   })
 );
 

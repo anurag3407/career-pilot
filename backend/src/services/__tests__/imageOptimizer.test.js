@@ -13,9 +13,13 @@ async function testOptimizeVariants() {
     buffer = await fs.readFile(SAMPLE);
   } catch (e) {
     if (e && typeof e === 'object' && e.code === 'ENOENT') {
-      throw new Error(`Test fixture not found: ${SAMPLE}. Please add a sample.jpg to tests/fixtures/`);
+      const sharp = (await import('sharp')).default;
+      buffer = await sharp({
+        create: { width: 200, height: 200, channels: 3, background: { r: 255, g: 0, b: 0 } }
+      }).jpeg().toBuffer();
+    } else {
+      throw e;
     }
-    throw e;
   }
 
   const res = await optimizeBuffer(buffer, { widths: [null, 100], formats: ['webp', 'jpeg'], quality: 70 });

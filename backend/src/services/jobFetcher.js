@@ -18,6 +18,9 @@ import {
     saveJobListingToAppwrite
 } from './appwriteDataService.js';
 import {
+    saveJobListingToSupabase
+} from './supabaseDataService.js';
+import {
     initializeQueue,
     isQueueAvailable,
     getRedisConnection,
@@ -418,14 +421,17 @@ export const processAlert = async (alertData) => {
 
         // Bulk upsert: one $in lookup + one insertMany instead of N findOne calls
         const jobsToSend = await bulkUpsertJobs(deduplicatedJobs, JobListing, async (newDocs) => {
-            // Batch Firebase sync for newly cached jobs
+            // Batch Appwrite & Supabase sync for newly cached jobs
             await Promise.allSettled(
                 newDocs.map(doc => {
                     const obj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
-                    return saveJobListingToAppwrite(obj);
+                    return Promise.allSettled([
+                        saveJobListingToAppwrite(obj),
+                        saveJobListingToSupabase(obj)
+                    ]);
                 })
             );
-            console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Firebase`);
+            console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Appwrite & Supabase`);
         });
 
         console.log(

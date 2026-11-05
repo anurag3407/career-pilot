@@ -22,7 +22,7 @@ describe('validateUpload middleware', () => {
   });
 
   afterEach(async () => {
-    try { await fs.unlink(validPdfPath); } catch {}
+    try { await fs.unlink(validPdfPath); } catch { /* ignore */ }
   });
 
   function mockReqRes(fileOverrides = {}, userOverrides = {}) {

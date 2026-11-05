@@ -1753,7 +1753,7 @@ State transitions are controlled via Mongoose schemas using `enum` validations:
 
 ### 5. Community, Messaging, and Presence Payloads
 * `backend/src/routes/community.js` mounts all community endpoints behind `verifyToken`, so every community request carries authenticated context.
-* The Firestore-backed controller in `backend/src/controllers/communityFirebaseController.js` uses success envelopes like:
+* The Appwrite-backed controller in `backend/src/controllers/communityAppwriteController.js` uses success envelopes like:
   * `{ success: true, channels, pagination }`
   * `{ success: true, posts, pagination }`
   * `{ success: true, comments, pagination }`

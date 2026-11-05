@@ -1,6 +1,6 @@
 
 import express from "express";
-import recruiterController from "../controllers/recruiter.model.js";
+import recruiterController from "../controllers/recruiter.controller.js";
 import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();

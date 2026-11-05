@@ -17,6 +17,7 @@ import Footer from './components/ui/Footer';
 import CommandPalette from './components/CommandPalette';
 import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
+const Pricing = lazy(() => import("./pages/Pricing"));
 const CoverLetter = lazy(() => import("./pages/CoverLetter"));
 const Deployments = lazy(() => import("./pages/Deployments"));
 const TemplateGallery = lazy(() => import("./pages/TemplateGallery"));
@@ -313,6 +314,7 @@ function AppRoutes() {
         <Route path="/about" element={<Suspense fallback={<LoadingScreen label="Loading About..." />}><Suspense fallback={<LoadingScreen label="Loading..." />}><About /></Suspense></Suspense>} />
         <Route path="/terms" element={<Suspense fallback={null}><TermsOfService /></Suspense>} />
         <Route path="/cookies" element={<Suspense fallback={null}><CookiePolicy /></Suspense>} />
+        <Route path="/pricing" element={<Suspense fallback={<LoadingScreen label="Loading Pricing..." />}><Pricing /></Suspense>} />
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<Suspense fallback={<LoadingScreen label="Loading Templates..." />}><TemplateGallery /></Suspense>} />

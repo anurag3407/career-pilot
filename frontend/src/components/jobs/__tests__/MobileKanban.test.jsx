@@ -52,12 +52,6 @@ vi.mock("../../../services/api", () => ({
   jobTrackerApi: mockJobTrackerApi,
 }));
 
-vi.mock("../../../config/firebase", () => ({
-  auth: {
-    currentUser: { uid: "test-user-123" },
-  },
-}));
-
 vi.mock("../../../utils/jobTrackerOffline", () => mockOfflineUtils);
 
 vi.mock("@hello-pangea/dnd", () => ({

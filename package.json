@@ -3,8 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
     "build": "npm run build --prefix frontend",
+    "build:portfolio": "npm run build:portfolio --prefix frontend",
+    "lint": "npm run lint --prefix backend && npm run lint --prefix frontend",
+    "lint:backend": "npm run lint --prefix backend",
+    "lint:frontend": "npm run lint --prefix frontend",
+    "test": "npm run test --prefix backend && npm run test --prefix frontend",
+    "test:backend": "npm run test --prefix backend",
+    "test:frontend": "npm run test --prefix frontend",
     "install:frontend": "npm install --prefix frontend",
-    "build:portfolio": "npm run build:portfolio --prefix frontend"
+    "install:backend": "npm install --prefix backend",
+    "install:all": "npm install && npm run install:frontend && npm run install:backend"
   }
 }

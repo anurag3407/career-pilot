@@ -1,4 +1,4 @@
-const { ZodError } = require('zod');
+import { ZodError } from 'zod';
 
 /**
  * Reusable Express middleware to validate incoming request data using Zod.
@@ -45,4 +45,4 @@ const validateRequest = (schema) => async (req, res, next) => {
   }
 };
 
-module.exports = validateRequest;
+export default validateRequest;

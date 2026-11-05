@@ -384,7 +384,7 @@ Important modules:
 | Module | Responsibility |
 | --- | --- |
 | `backend/src/routes/community.js` | Community routes. |
-| `backend/src/controllers/communityFirebaseController.js` | Firebase-backed community initialization and logic. |
+| `backend/src/controllers/communityAppwriteController.js` | Appwrite-backed community initialization and logic. |
 | `backend/src/services/presenceService.js` | Presence state support. |
 | `backend/src/services/postScheduler.js` | Scheduled post initialization and processing. |
 | `backend/src/routes/fellowships.js` | Fellowship routes. |

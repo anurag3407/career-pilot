@@ -16,7 +16,8 @@
     <img src="https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white" alt="React"/>
     <img src="https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white" alt="Vite"/>
     <img src="https://img.shields.io/badge/TailwindCSS-4-38B2AC?logo=tailwindcss&logoColor=white" alt="TailwindCSS"/>
-    <img src="https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-FFCA28?logo=firebase&logoColor=black" alt="Firebase"/>
+    <img src="https://img.shields.io/badge/Clerk-Auth-6C47FF?logo=clerk&logoColor=white" alt="Clerk"/>
+    <img src="https://img.shields.io/badge/Appwrite-Database%20%26%20Storage-FD366E?logo=appwrite&logoColor=white" alt="Appwrite"/>
     <img src="https://img.shields.io/badge/Razorpay-payments-3395FF?logo=razorpay&logoColor=white" alt="Razorpay"/>
     <img src="https://img.shields.io/badge/Tesseract-OCR-5C2D91" alt="OCR"/>
     <img src="https://img.shields.io/badge/Multi--AI-OpenAI%20%7C%20Anthropic%20%7C%20Groq%20%7C%20Gemini-7c3aed" alt="Multi-AI"/>
@@ -154,8 +155,8 @@ Career Pilot is organized into six tightly-integrated pillars. Each pillar ships
 - **Node.js 18+** and **npm 10+** (or yarn / pnpm)
 - **MongoDB 6.0+** (local or Atlas)
 - **Redis 7.0+** (local, Upstash, or Memorystore)
-- **Firebase project** (Authentication + Firestore)
-- Optional: **Cloudinary** for media, **OpenAI / Anthropic / Groq** keys for AI features, **RapidAPI** for JSearch, **Razorpay** for fellowship payments, **GitHub token** for higher rate-limits
+- **Supabase project** (Database & Authentication) or Clerk / Appwrite
+- Optional: **Cloudinary** for media, **OpenAI / Anthropic / Groq / Gemini** keys for AI features, **RapidAPI** for JSearch, **Razorpay** for fellowship payments, **GitHub token** for higher rate-limits
 
 ### Clone & bootstrap
 ```bash
@@ -163,10 +164,7 @@ git clone https://github.com/anurag3407/career-pilot.git
 cd career-pilot
 
 # Install root, backend, and frontend deps
-npm install
-cd backend && npm install
-cd ../frontend && npm install
-cd ..
+npm run install:all
 ```
 
 ### Configure environment
@@ -174,12 +172,11 @@ cd ..
 ```bash
 # Backend
 cp backend/.env.example backend/.env
-# Edit backend/.env — set MONGODB_URI, REDIS_URL, OPENAI_API_KEY, RAPIDAPI_KEY,
-# FIREBASE_PROJECT_ID, FIREBASE_SERVICE_ACCOUNT_PATH, FRONTEND_URL
+# Edit backend/.env — set SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, MONGODB_URI, REDIS_URL, FRONTEND_URL
 
 # Frontend
 cp frontend/.env.example frontend/.env
-# Edit frontend/.env — set VITE_API_URL, VITE_FIREBASE_* keys
+# Edit frontend/.env — set VITE_API_URL, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY
 ```
 
 ## 🔑 Environment Variables
@@ -199,7 +196,8 @@ cp frontend/.env.example frontend/.env
 |----------|---------------------|
 | Server | `PORT`, `NODE_ENV`, `FRONTEND_URL` |
 | Database | `MONGODB_URI` |
-| Firebase Admin | `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FIREBASE_SERVICE_ACCOUNT_PATH` |
+| Authentication | `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` |
+| Appwrite | `APPWRITE_ENDPOINT`, `APPWRITE_PROJECT_ID`, `APPWRITE_API_KEY` |
 | AI Services | `GEMINI_API_KEY`, `OPENAI_API_KEY`, `GROQ_API_KEY`, `AI_PROVIDER` |
 | Job Search | `RAPIDAPI_KEY`, `RAPIDAPI_HOST` |
 | Email | `EMAIL_USER`, `EMAIL_PASS`, `EMAIL_HOST`, `EMAIL_PORT` |
@@ -216,7 +214,8 @@ cp frontend/.env.example frontend/.env
 | Category | Important Variables |
 |----------|---------------------|
 | Backend API | `VITE_API_URL`, `VITE_API_BASE` |
-| Firebase Client | `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`, `VITE_FIREBASE_MEASUREMENT_ID` |
+| Authentication | `VITE_CLERK_PUBLISHABLE_KEY` |
+| Appwrite Client | `VITE_APPWRITE_ENDPOINT`, `VITE_APPWRITE_PROJECT_ID`, `VITE_APPWRITE_BUCKET_ID` |
 | File Upload | `VITE_MAX_SIZE_MB` |
 | Feature Flags | `VITE_ENABLE_PREMIUM_THEMES` |
 
@@ -235,7 +234,7 @@ cd frontend
 npm run dev
 ```
 
-Visit **http://localhost:5173** and sign up. Two-factor authentication, social login, and Firebase auth are wired in — registration takes one click.
+Visit **http://localhost:5173** and sign up. Clerk authentication, Appwrite real-time community, and social logins are wired in — registration takes one click.
 
 ### Docker (one command)
 
@@ -408,7 +407,7 @@ The non-resume half of Career Pilot: where humans (and code) meet.
 - **Comments** with like-toggle and threaded replies
 - **Direct Messages** with online presence indicators
 - **Presence service** via Socket.IO (`presenceService.js`) — see who's online right now
-- **Real-time** updates through `socketServiceFirebase.js`
+- **Real-time** updates through Socket.IO and Appwrite
 - **Bull-Board UI** at `/admin/queues` for ops to watch queues live
 
 ### Fellowships — paid challenges
@@ -429,7 +428,7 @@ The non-resume half of Career Pilot: where humans (and code) meet.
 
 **Routes**: `/community`, `/fellowship/*`, `/repo-analyzer/*`, `/project-visualizer/*`, `/github-dashboard`
 
-**Backend**: `routes/community.js`, `routes/fellowships.js`, `routes/payments.js`, `routes/repoAnalyzer.js`, `routes/projectVisualizer.route.js`, `routes/githubImporter.js`, `services/postScheduler.js`, `services/presenceService.js`, `services/socketServiceFirebase.js`, `services/repoScanner.js`, `services/repoIngestionService.js`, `services/dependencyAnalyzer.js`, `services/cicdDetector.js`, `services/githubEnricherService.js`, `services/paymentService.js`, `services/twoFactorService.js`
+**Backend**: `routes/community.js`, `routes/fellowships.js`, `routes/payments.js`, `routes/repoAnalyzer.js`, `routes/projectVisualizer.route.js`, `routes/githubImporter.js`, `services/postScheduler.js`, `services/presenceService.js`, `services/repoScanner.js`, `services/repoIngestionService.js`, `services/dependencyAnalyzer.js`, `services/cicdDetector.js`, `services/githubEnricherService.js`, `services/paymentService.js`, `services/twoFactorService.js`
 
 ---
 
@@ -437,7 +436,7 @@ The non-resume half of Career Pilot: where humans (and code) meet.
 
 | Capability | Implementation |
 |---|---|
-| **Firebase Authentication** | Email/password, Google, GitHub social login. Token verified server-side via `verifyToken` middleware. |
+| **Clerk Authentication** | Email/password, Google, GitHub, LinkedIn social login. Verified server-side via `@clerk/express` and `verifyToken` middleware. |
 | **Two-Factor Auth** | TOTP via `speakeasy`, AES-256-GCM-encrypted secrets, QR code setup, 10 single-use backup codes, secure recovery flow (`routes/twoFactor.js`). |
 | **Rate Limiting** | Per-route, per-user limits on AI endpoints (`aiRateLimiter`), fellowship verify codes, and cover-letter generation. |
 | **Role-Based Access** | `adminOnly` middleware protects admin routes; `/api/admin/*` exposes stats, user management, login logs, bug reports. |
@@ -496,9 +495,9 @@ career-pilot/
 ```
 
 **Stack detail:**
-- **Backend** — Node.js 18+, Express 4.18, Mongoose 8, Socket.IO 4, BullMQ, Bull-Board, Redis 7, Firebase Admin, Razorpay, Puppeteer, Sharp, Tesseract.js, Speakeasy, Multer, Zod, Jest
-- **Frontend** — React 19, Vite 7, TailwindCSS 4, Framer Motion, React Router 7, Zustand, React Query, Monaco Editor, Recharts, @hello-pangea/dnd, react-hot-toast, Lucide Icons
-- **Infra** — Firebase (Auth + Firestore + Storage), Redis (queues + rate limit + pub/sub), MongoDB, Prometheus metrics
+- **Backend** — Node.js 18+, Express 4, Mongoose 9, Socket.IO 4, BullMQ, Bull-Board, Redis 7, Clerk Express, Appwrite, Razorpay, Puppeteer, Sharp, Speakeasy, Multer, Zod, Node test runner
+- **Frontend** — React 19, Vite 7, TailwindCSS 4, Framer Motion, React Router 7, Zustand, Monaco Editor, Recharts, @hello-pangea/dnd, react-hot-toast, Lucide Icons
+- **Infra** — Clerk (Auth), Appwrite (Database + Storage), Redis (queues + rate limit + pub/sub), MongoDB, Prometheus metrics
 
 ---
 

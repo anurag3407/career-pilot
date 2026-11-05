@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import { saveUserToAppwrite } from '../services/appwriteDataService.js';
+import { saveUserToSupabase } from '../services/supabaseDataService.js';
 import { validate } from '../middleware/validate.js';
 import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 import User from '../models/User.model.js';
@@ -114,6 +115,13 @@ router.post('/verify', verifyToken, asyncHandler(async (req, res) => {
     console.warn('Could not save user to Appwrite:', error.message);
   }
 
+  // Save/update user in Supabase on each verification
+  try {
+    await saveUserToSupabase(req.user);
+  } catch (error) {
+    console.warn('Could not save user to Supabase:', error.message);
+  }
+
   res.json({
     success: true,
     user: req.user
@@ -127,6 +135,13 @@ router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
     await saveUserToAppwrite(req.user);
   } catch (error) {
     console.warn('⚠️  Could not update user in Appwrite:', error.message);
+  }
+
+  // Update profile in Supabase
+  try {
+    await saveUserToSupabase(req.user);
+  } catch (error) {
+    console.warn('⚠️  Could not update user in Supabase:', error.message);
   }
 
   res.json({

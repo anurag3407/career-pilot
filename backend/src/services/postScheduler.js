@@ -3,13 +3,15 @@ import dotenv from 'dotenv';
 
 import { getIO } from '../config/socket.js';
 import redisManager from '../config/redis.js';
+import { databases } from '../config/appwrite.js';
 
 dotenv.config();
 
 const QUEUE_NAME = 'post-scheduler';
+const DB_ID = process.env.VITE_APPWRITE_DATABASE_ID || 'default_db';
+const POSTS_COL = process.env.VITE_APPWRITE_POSTS_COLLECTION_ID || 'posts';
 let postSchedulerQueue = null;
 let worker = null;
-const postsRef = null;
 
 /**
  * Initialize the post scheduler queue and worker.
@@ -49,15 +51,18 @@ export const initializePostScheduler = async () => {
                 QUEUE_NAME,
                 async (job) => {
                     const { postId } = job.data;
-                    const postRef = postsRef.doc(postId);
-                    const doc = await postRef.get();
-
-                    if (!doc.exists) {
+                    let post;
+                    try {
+                        post = await databases.getDocument(DB_ID, POSTS_COL, postId);
+                    } catch (err) {
                         console.warn(`⚠️  Scheduled post ${postId} not found, skipping`);
                         return;
                     }
 
-                    const post = doc.data();
+                    if (!post) {
+                        console.warn(`⚠️  Scheduled post ${postId} not found, skipping`);
+                        return;
+                    }
 
                     // Guard: only publish if still in scheduled state
                     if (post.status !== 'scheduled') {
@@ -65,10 +70,11 @@ export const initializePostScheduler = async () => {
                         return;
                     }
 
-                    await postRef.update({
+                    const nowIso = new Date().toISOString();
+                    await databases.updateDocument(DB_ID, POSTS_COL, postId, {
                         status: 'published',
-                        publishedAt: FieldValue.serverTimestamp(),
-                        updatedAt: FieldValue.serverTimestamp()
+                        publishedAt: nowIso,
+                        updatedAt: nowIso
                     });
 
                     try {
@@ -78,7 +84,7 @@ export const initializePostScheduler = async () => {
                                 id: postId,
                                 ...post,
                                 status: 'published',
-                                publishedAt: new Date()
+                                publishedAt: nowIso
                             }
                         });
                     } catch {
