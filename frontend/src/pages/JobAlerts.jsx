@@ -16,6 +16,7 @@ import {
 import toast from 'react-hot-toast';
 import { jobAlertsApi, jobsApi } from '../services/api';
 import { JobAlertModal, JobAlertsList } from '../components';
+import EmptyState from '../components/EmptyState';
 import { SkeletonStatCards, SkeletonJobList } from '../components/ui/Skeleton'
 
 export default function JobAlerts() {
@@ -246,16 +247,13 @@ export default function JobAlerts() {
 
               {/* Empty State */}
               {!searchLoading && searchResults.length === 0 && !searchQuery && (
-                <div className="text-center py-16">
-                  <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Search className="w-10 h-10 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-medium text-foreground">Search for Jobs</h3>
-                  <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-                    Enter a job title, skill, or company name to find matching opportunities.
-                    You can then create an alert to get notified about new matches.
-                  </p>
-                </div>
+                <EmptyState
+                  icon={Search}
+                  title="Search for Jobs"
+                  description="Enter a job title, skill, or company name to find matching opportunities. You can then create an alert to get notified about new matches."
+                  actionLabel="Create Alert"
+                  onAction={() => setIsModalOpen(true)}
+                />
               )}
             </div>
           )}
