@@ -11,12 +11,19 @@
     "github": "https://github.com",
     "linkedin": "https://linkedin.com",
     "twitter": "https://twitter.com",
-    "email": "alex.rivera@email.com"
+    "youtube": "https://youtube.com",
+    "facebook": "https://facebook.com",
+    "email": "alex.rivera@email.com",
+    "phone": "+1 (555) 123-4567"
   },
   "stats": {
     "yearsExperience": 5,
     "projectsCompleted": 48,
-    "happyClients": 32
+    "happyClients": 32,
+    "subscribers": "1.2M",
+    "videos": "500",
+    "totalViews": "500M",
+    "watchHours": "10K"
   },
   "skills": [
     { "name": "React", "level": 95, "category": "Frontend" },
