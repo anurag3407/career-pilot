@@ -1,0 +1,669 @@
+/* ----------------------------------------------
+   Theme variables
+   Define the palette, shadows, and spacing tokens.
+---------------------------------------------- */
+:root {
+  --bg: #0A0A0F;
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.12);
+  --primary: #5E6AD2;
+  --accent: #F5A623;
+  --text: #F5F7FA;
+  --muted: #A3AED0;
+  --shadow: 0 28px 90px rgba(10, 10, 15, 0.25);
+  --radius: 24px;
+  --max-width: 1200px;
+}
+
+/* ----------------------------------------------
+   Global reset and base styles
+   Normalize whitespace and basic document behavior.
+---------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--text);
+  background: var(--bg);
+  font-family: 'Inter', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+/* ----------------------------------------------
+   Fullscreen mesh gradient background
+   Adds ambient glow and rich dark atmosphere.
+---------------------------------------------- */
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(circle at 15% 20%, rgba(94, 106, 210, 0.26), transparent 22%),
+              radial-gradient(circle at 85% 18%, rgba(245, 166, 35, 0.14), transparent 16%),
+              radial-gradient(circle at 50% 80%, rgba(94, 106, 210, 0.18), transparent 25%),
+              linear-gradient(180deg, rgba(10, 10, 15, 0.92), rgba(10, 10, 15, 0.96));
+}
+
+.mesh-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.04), transparent 10%),
+                    radial-gradient(circle at 70% 70%, rgba(94, 106, 210, 0.06), transparent 12%);
+  opacity: 0.7;
+}
+
+/* ----------------------------------------------
+   Header navigation
+   Sticky top bar with brand and page anchors.
+---------------------------------------------- */
+nav#navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem clamp(1rem, 2vw, 2.5rem);
+  background: rgba(10, 10, 15, 0.68);
+  backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 14px;
+  background: rgba(94, 106, 210, 0.14);
+  color: var(--primary);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+#nav-toggle {
+  display: none;
+  width: 2.5rem;
+  height: 2.25rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.95rem;
+  color: var(--muted);
+  transition: color 0.25s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+  color: var(--text);
+}
+
+/* ----------------------------------------------
+   Section layout
+   Maintain consistent spacing across page sections.
+---------------------------------------------- */
+.section {
+  position: relative;
+  padding: clamp(4rem, 6vw, 8rem) clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.section-head {
+  max-width: 760px;
+  margin-bottom: 2.25rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.section-head span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section-head h2 {
+  font-size: clamp(2rem, 3.5vw, 3.4rem);
+  line-height: 1.05;
+  color: var(--text);
+  max-width: 13ch;
+}
+
+/* ----------------------------------------------
+   Hero section styling
+   Prominent introduction with glass surface and CTA.
+---------------------------------------------- */
+.hero-section {
+  min-height: calc(100vh - 100px);
+  display: grid;
+  place-items: center;
+}
+
+.hero-panel {
+  width: min(1100px, 100%);
+  padding: 3rem;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 1.75rem;
+}
+
+.hero-flag {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.hero-flag span {
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-panel h1 {
+  font-size: clamp(3.5rem, 7vw, 5.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.hero-role {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.hero-copy {
+  max-width: 780px;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* ----------------------------------------------
+   Button styles
+   Primary and secondary actions with motion states.
+---------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  color: #0A0A0F;
+  background: linear-gradient(135deg, var(--primary), #6C7DF4);
+}
+
+.btn-secondary {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.hero-shortcuts {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.95rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.shortcut-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-weight: 700;
+}
+
+.shortcut-hint {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ----------------------------------------------
+   Reusable grid layouts
+   Shared layout rules for content sections.
+---------------------------------------------- */
+.about-layout,
+.skills-grid,
+.projects-grid,
+.timeline {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.about-layout {
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+  align-items: start;
+}
+
+.about-copy p {
+  margin-bottom: 1.25rem;
+  color: var(--muted);
+}
+
+.about-stats {
+  display: grid;
+  gap: 1rem;
+}
+
+.stat-card {
+  padding: 1.35rem 1.5rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.stat-label {
+  display: block;
+  margin-top: 0.75rem;
+  color: var(--muted);
+}
+
+.skills-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.skill-card {
+  padding: 1.75rem;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(10, 10, 15, 0.12);
+}
+
+.skill-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+}
+
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 0.9rem;
+  margin: 0.25rem 0.25rem 0 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ----------------------------------------------
+   Projects section styles
+   Project cards with status indicators and badges.
+---------------------------------------------- */
+.projects-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.project-card {
+  position: relative;
+  padding: 2rem;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(94, 106, 210, 0.3);
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at top right, rgba(94, 106, 210, 0.12), transparent 28%);
+}
+
+.project-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.project-status,
+.shortcut-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.project-status {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.project-status::before {
+  content: '';
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: #10B981;
+}
+
+.project-status.building::before {
+  background: var(--accent);
+}
+
+.project-status.research::before {
+  background: #7C3AED;
+}
+
+.shortcut-badge {
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.project-title {
+  margin-bottom: 0.85rem;
+  font-size: 1.45rem;
+}
+
+.project-desc {
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.project-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ----------------------------------------------
+   Timeline styles
+   Structured experience entries with visual anchors.
+---------------------------------------------- */
+.timeline {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.timeline-item {
+  border-left: 2px solid rgba(94, 106, 210, 0.5);
+  padding: 1.5rem 1.5rem 1.5rem 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 24px;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -0.65rem;
+  top: 1.5rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 6px rgba(94, 106, 210, 0.12);
+}
+
+.timeline-date {
+  margin-bottom: 0.85rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.timeline-item h3 {
+  margin-bottom: 0.55rem;
+}
+
+.timeline-company {
+  color: var(--muted);
+  margin-bottom: 0.85rem;
+}
+
+/* ----------------------------------------------
+   Contact section styles
+   Call-to-action panel for email outreach.
+---------------------------------------------- */
+.contact-panel {
+  display: grid;
+  gap: 1.5rem;
+  padding: 2.5rem;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+}
+
+.contact-panel span {
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.contact-panel h2 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.contact-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.contact-links a {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ----------------------------------------------
+   Footer and utility elements
+   Persistent page footer and scroll control.
+---------------------------------------------- */
+.footer {
+  padding: 2rem clamp(1rem, 2vw, 2.5rem);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.scroll-top {
+  position: fixed;
+  right: 1rem;
+  bottom: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(94, 106, 210, 0.16);
+  color: var(--text);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.scroll-top.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 1024px) {
+  .about-layout,
+  .skills-grid,
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-panel {
+    padding: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  nav#navbar {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  #nav-toggle {
+    display: flex;
+  }
+
+  .nav-links {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    display: none;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 0.5rem;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 0.65rem 0;
+  }
+
+  .hero-section {
+    padding-top: 6rem;
+  }
+
+  .hero-panel,
+  .contact-panel,
+  .project-card,
+  .stat-card,
+  .timeline-item {
+    border-radius: 22px;
+  }
+
+  .section {
+    padding: clamp(3rem, 6vw, 5rem) 1rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-actions,
+  .contact-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

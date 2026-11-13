@@ -1,0 +1,15 @@
+{
+  "id": "linear-dark",
+  "name": "Linear Dark",
+  "description": "A modern dark portfolio template with glassmorphism, mesh gradients, and keyboard shortcut badges for product-focused storytellers.",
+  "version": "1.0.0",
+  "author": "CareerPilot",
+  "preview": "preview.png",
+  "tags": ["dark", "glassmorphism", "portfolio", "product", "keyboard shortcuts"],
+  "colors": {
+    "primary": "#5E6AD2",
+    "background": "#0A0A0F",
+    "text": "#F5F7FA"
+  },
+  "isPremium": false
+}
