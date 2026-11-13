@@ -16,8 +16,8 @@ import {
 import toast from 'react-hot-toast';
 import { jobAlertsApi, jobsApi } from '../services/api';
 import { JobAlertModal, JobAlertsList } from '../components';
-import { SkeletonStatCards, SkeletonJobList } from '../components/ui/Skeleton'
-
+import { SkeletonStatCards, SkeletonJobList } from '../components/ui/Skeleton';
+import { isValidEmail } from '../utils/email';
 export default function JobAlerts() {
   const [activeTab, setActiveTab] = useState('alerts'); // 'alerts' | 'search'
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -280,11 +280,31 @@ function JobCard({ job, index }) {
     }
   };
 
-  const handleEmail = () => {
-    if (job.recruiterEmail) {
-      window.location.href = `mailto:${job.recruiterEmail}?subject=Application for ${job.title}`;
-    }
-  };
+const [showMailtoConfirm, setShowMailtoConfirm] = useState(false);
+const recruiterEmailIsValid = isValidEmail(job.recruiterEmail);
+
+const handleEmail = () => {
+  handleMailtoFallback();
+};
+
+const handleMailtoFallback = () => {
+  if (!recruiterEmailIsValid) {
+    toast.error("That recruiter email doesn't look valid, so we can't open your mail client.");
+    return;
+  }
+  setShowMailtoConfirm(true);
+};
+
+const confirmMailtoFallback = () => {
+  setShowMailtoConfirm(false);
+  if (!isValidEmail(job.recruiterEmail)) {
+    toast.error("That recruiter email doesn't look valid, so we can't open your mail client.");
+    return;
+  }
+  const safeEmail = job.recruiterEmail.trim();
+  const safeSubject = encodeURIComponent(`Application for ${job.title || 'this role'}`);
+  window.location.href = `mailto:${safeEmail}?subject=${safeSubject}`;
+};
 
   return (
     <motion.div
@@ -354,8 +374,47 @@ function JobCard({ job, index }) {
                 : job.description}
             </p>
           )}
+
+          {recruiterEmailIsValid && (
+            <button
+              type="button"
+              onClick={handleMailtoFallback}
+              className="mt-2 text-xs text-muted-foreground underline hover:text-foreground cursor-pointer"
+            >
+              Prefer your own mail client? Email recruiter directly
+            </button>
+          )}
         </div>
       </div>
+
+      {showMailtoConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div className="bg-card border border-border rounded-xl p-6 max-w-sm w-full">
+            <h4 className="font-semibold text-foreground text-base mb-2">
+              Open your mail client to apply?
+            </h4>
+            <p className="text-sm text-muted-foreground mb-5">
+              This will leave Career Pilot and open your default email app with the recruiter's address pre-filled.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowMailtoConfirm(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted/40 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmMailtoFallback}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 cursor-pointer"
+              >
+                Open mail client
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }
