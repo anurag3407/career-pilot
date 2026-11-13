@@ -93,7 +93,8 @@ export const generateEmailSchema = z.object({
     .min(1, 'resume cannot be empty'),
   jobDesc: z
     .string({ required_error: 'jobDesc is required' })
-    .min(1, 'jobDesc cannot be empty'),
+    .min(1, 'jobDesc cannot be empty')
+    .max(10_000, 'jobDesc is too long (max 10,000 characters)'),
   tone: z
     .enum(['Professional', 'Friendly', 'Formal', 'Casual'])
     .optional()
@@ -129,5 +130,6 @@ export const skillGapSchema = z.object({
     .min(1, 'resumeText cannot be empty'),
   jobDescription: z
     .string({ required_error: 'jobDescription is required' })
-    .min(1, 'jobDescription cannot be empty'),
+    .min(20, 'jobDescription must be at least 20 characters')
+    .max(10_000, 'jobDescription is too long (max 10,000 characters)'),
 });
