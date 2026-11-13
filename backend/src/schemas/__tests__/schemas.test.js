@@ -527,6 +527,7 @@ import {
   companyResearchSchema,
   trackJobSchema,
   updateTrackedJobSchema,
+  deadlineSchema,
 } from '../jobTracker.schema.js';
 
 describe('jobTracker.schema — companyResearchSchema', () => {
@@ -582,6 +583,88 @@ describe('jobTracker.schema — updateTrackedJobSchema', () => {
   test('rejects empty body', () => {
     const result = updateTrackedJobSchema.safeParse({});
     assert.ok(!result.success);
+  });
+});
+
+describe('jobTracker.schema — trackJobSchema with deadline', () => {
+  test('accepts deadline as ISO string', () => {
+    const result = trackJobSchema.safeParse({
+      title: 'SWE',
+      company: 'Acme',
+      deadline: '2026-12-31T23:59:59.000Z',
+    });
+    assert.ok(result.success);
+  });
+
+  test('accepts null deadline', () => {
+    const result = trackJobSchema.safeParse({
+      title: 'SWE',
+      company: 'Acme',
+      deadline: null,
+    });
+    assert.ok(result.success);
+  });
+
+  test('accepts empty string deadline (treated as null)', () => {
+    const result = trackJobSchema.safeParse({
+      title: 'SWE',
+      company: 'Acme',
+      deadline: '',
+    });
+    assert.ok(result.success);
+    assert.equal(result.data.deadline, null);
+  });
+
+  test('accepts YYYY-MM-DD format', () => {
+    const result = trackJobSchema.safeParse({
+      title: 'SWE',
+      company: 'Acme',
+      deadline: '2026-12-31',
+    });
+    assert.ok(result.success);
+  });
+
+  test('rejects invalid date string', () => {
+    const result = trackJobSchema.safeParse({
+      title: 'SWE',
+      company: 'Acme',
+      deadline: 'not-a-date',
+    });
+    assert.ok(!result.success);
+  });
+});
+
+describe('jobTracker.schema — deadlineSchema', () => {
+  test('accepts valid ISO deadline', () => {
+    const result = deadlineSchema.safeParse({ deadline: '2026-12-31T00:00:00.000Z' });
+    assert.ok(result.success);
+  });
+
+  test('accepts null deadline (removes deadline)', () => {
+    const result = deadlineSchema.safeParse({ deadline: null });
+    assert.ok(result.success);
+    assert.equal(result.data.deadline, null);
+  });
+
+  test('accepts empty string as null', () => {
+    const result = deadlineSchema.safeParse({ deadline: '' });
+    assert.ok(result.success);
+    assert.equal(result.data.deadline, null);
+  });
+
+  test('rejects missing deadline field', () => {
+    const result = deadlineSchema.safeParse({});
+    assert.ok(!result.success);
+  });
+
+  test('rejects non-date string', () => {
+    const result = deadlineSchema.safeParse({ deadline: 'tomorrow' });
+    assert.ok(!result.success);
+  });
+
+  test('accepts YYYY-MM-DD as valid date', () => {
+    const result = deadlineSchema.safeParse({ deadline: '2027-01-15' });
+    assert.ok(result.success);
   });
 });
 

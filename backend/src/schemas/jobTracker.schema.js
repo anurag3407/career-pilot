@@ -2,6 +2,18 @@ import { z } from 'zod';
 
 const JOB_STATUSES = ['saved', 'applied', 'interviewing', 'offered', 'rejected'];
 
+const deadlineDateField = z.preprocess(
+  (val) => {
+    if (val === null || val === '') return null;
+    if (val === undefined) return undefined;
+    const d = new Date(val);
+    return isNaN(d.getTime()) ? val : d.toISOString();
+  },
+  z.string()
+    .refine((v) => !isNaN(new Date(v).getTime()), { message: 'deadline must be a valid date' })
+    .nullable()
+);
+
 /**
  * POST /api/job-tracker/research
  */
@@ -32,6 +44,7 @@ export const trackJobSchema = z.object({
     .nullish(),
   description: z.string().nullish(),
   status: z.enum(JOB_STATUSES).optional().default('saved'),
+  deadline: deadlineDateField.optional(),
 });
 
 /**
@@ -49,3 +62,10 @@ export const updateTrackedJobSchema = z
   .refine((data) => data.status || data.notes, {
     message: 'Provide at least one of: status, notes',
   });
+
+/**
+ * PATCH /api/job-tracker/:id/deadline
+ */
+export const deadlineSchema = z.object({
+  deadline: deadlineDateField,
+});
