@@ -417,9 +417,9 @@ export default {
 
     try {
       let result;
-      if (request.method === 'GET' && (path === '/v1/health' || path === '/health')) {
+      if ((request.method === 'GET' || request.method === 'HEAD') && (path === '/v1/health' || path === '/health')) {
         result = { data: { ok: true, service: 'careerpilot-gateway' }, status: 200 };
-      } else if (request.method === 'GET' && path === '/v1/ai/models') {
+      } else if ((request.method === 'GET' || request.method === 'HEAD') && path === '/v1/ai/models') {
         result = handleModels(url);
       } else if (request.method === 'POST' && path === '/v1/ai/generate') {
         result = await handleGenerate(request, env);
