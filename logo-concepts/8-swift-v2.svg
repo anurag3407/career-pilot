@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>CareerPilot Swift concept</title>
+  <!-- Swift v2: aviator bird — lenses are the eyes (white pupils looking forward), beak below the band -->
+  <circle cx="108" cy="136" r="84" fill="#000"/>
+  <path d="M 182 138 L 236 156 L 182 174 Z" fill="#000"/>
+  <rect x="34" y="104" width="148" height="44" fill="#fff"/>
+  <circle cx="76" cy="126" r="23" fill="#000"/>
+  <circle cx="140" cy="126" r="23" fill="#000"/>
+  <circle cx="82" cy="126" r="8" fill="#fff"/>
+  <circle cx="146" cy="126" r="8" fill="#fff"/>
+</svg>

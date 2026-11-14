@@ -5,7 +5,7 @@ export const pwaOptions = {
     name: 'Career Pilot',
     short_name: 'CareerPilot',
     description: 'AI-powered career platform',
-    theme_color: '#000000',
+    theme_color: '#cc420c',
     background_color: '#000000',
     display: 'standalone',
     icons: [

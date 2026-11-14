@@ -1,12 +1,13 @@
 import Seo from '../components/Seo'
 import FlightNav from '../components/landing/flight/FlightNav'
 import Hero from '../components/landing/flight/Hero'
-import { Features, Templates, Comparison, UseCases } from '../components/landing/flight/Sections'
+import FeatureStories from '../components/landing/flight/FeatureStories'
+import { Templates, Comparison, UseCases } from '../components/landing/flight/Sections'
 import { HowItWorks, Faq, FinalCall, FlightFooter } from '../components/landing/flight/Story'
 
 // ---------------------------------------------------------------------------
 // Landing page — "Flight Deck" editorial design system (see
-// src/styles/flightdeck.css). Hero → product → features → templates →
+// src/styles/flightdeck.css). Hero → one section per feature → templates →
 // compare → use cases → how it works → FAQ → final call → footer.
 // ---------------------------------------------------------------------------
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
       <FlightNav />
       <main>
         <Hero />
-        <Features />
+        <FeatureStories />
         <Templates />
         <Comparison />
         <UseCases />

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Roundel: aviation badge with rising dot over the horizon -->
+  <circle cx="128" cy="128" r="96" fill="none" stroke="#000" stroke-width="20"/>
+  <line x1="72" y1="154" x2="184" y2="154" stroke="#000" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="128" cy="98" r="21" fill="#000"/>
+</svg>

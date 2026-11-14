@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>CareerPilot Evolution concept</title>
+  <!-- Evolution v2: existing plane rebuilt on clean angles — belly 0°, top edge 150°, fold 135° -->
+  <rect x="0" y="0" width="256" height="256" rx="58" fill="#000"/>
+  <path d="M 50 141 L 206 51 L 152 203.4 L 116 141 Z" fill="#fff"/>
+  <line x1="116" y1="141" x2="206" y2="51" stroke="#000" stroke-width="10"/>
+</svg>

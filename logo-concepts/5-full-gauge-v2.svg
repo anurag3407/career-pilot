@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>CareerPilot Full Gauge concept</title>
+  <!-- Full Gauge v2: the dial opens a gap; the needle breaks through past max -->
+  <path d="M 60.5 171 A 78 78 0 0 1 146.9 56.3" fill="none" stroke="#000" stroke-width="20"/>
+  <path d="M 184.1 77.8 A 78 78 0 0 1 195.5 171" fill="none" stroke="#000" stroke-width="20"/>
+  <line x1="77.8" y1="103" x2="84.7" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="74" x2="128" y2="82" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="178.2" y1="103" x2="171.3" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="132" x2="178" y2="45" stroke="#000" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="128" cy="132" r="14" fill="#000"/>
+</svg>

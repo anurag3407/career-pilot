@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Loop C: one contrail stroke — the C with a loop-the-loop terminal -->
+  <path d="M 196 184 A 70 70 0 1 1 186 82 C 216 66, 244 74, 240 100 C 237 120, 210 124, 200 106 C 192 92, 206 76, 222 84" fill="none" stroke="#000" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="238" cy="66" r="15" fill="#000"/>
+</svg>

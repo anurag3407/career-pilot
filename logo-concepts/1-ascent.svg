@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Ascent: climb line breaking out of a broken orbit -->
+  <path d="M 190.7 125.8 A 76 76 0 1 1 140.2 75.3" fill="none" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <line x1="98" y1="168" x2="170" y2="96" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="190" cy="76" r="17" fill="#000"/>
+</svg>

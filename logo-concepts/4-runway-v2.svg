@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>CareerPilot Runway concept</title>
+  <!-- Runway v2: destination dot separated from the converging tips -->
+  <line x1="44" y1="224" x2="117" y2="76" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="212" y1="224" x2="139" y2="76" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="128" y1="200" x2="128" y2="96" stroke="#000" stroke-width="16" stroke-linecap="round" stroke-dasharray="24 20"/>
+  <circle cx="128" cy="50" r="14" fill="#000"/>
+</svg>

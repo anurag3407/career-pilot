@@ -1,0 +1,317 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1600" height="2814" viewBox="0 0 1600 2814"><defs><filter id="grey"><feColorMatrix type="saturate" values="0"/></filter></defs><rect width="1600" height="2814" fill="#f7f7f4"/><text x="60" y="78" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="40" font-weight="700" fill="#161616">CareerPilot — logo concepts</text><text x="60" y="116" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="20" fill="#6b6b6b">10 directions · greyscale first · every card tested at 64 / 32 / 16 px</text><rect x="60" y="150" width="474.667" height="630" rx="18" fill="#fff" stroke="#e4e4e0" stroke-width="1"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="90" y="190" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Ascent concept</title>
+  <!-- Ascent v3: trail starts clear of the orbit; dot leads the 45° climb -->
+  <path d="M 197.4 120.3 A 76 76 0 1 1 143.7 66.6" fill="none" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <line x1="98" y1="166" x2="172" y2="92" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="204" cy="60" r="17" fill="#000"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="90" y="516" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Ascent concept</title>
+  <!-- Ascent v3: trail starts clear of the orbit; dot leads the 45° climb -->
+  <path d="M 197.4 120.3 A 76 76 0 1 1 143.7 66.6" fill="none" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <line x1="98" y1="166" x2="172" y2="92" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="204" cy="60" r="17" fill="#000"/>
+</svg>
+</g><text x="122" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="180" y="548" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Ascent concept</title>
+  <!-- Ascent v3: trail starts clear of the orbit; dot leads the 45° climb -->
+  <path d="M 197.4 120.3 A 76 76 0 1 1 143.7 66.6" fill="none" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <line x1="98" y1="166" x2="172" y2="92" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="204" cy="60" r="17" fill="#000"/>
+</svg>
+</g><text x="196" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="238" y="564" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Ascent concept</title>
+  <!-- Ascent v3: trail starts clear of the orbit; dot leads the 45° climb -->
+  <path d="M 197.4 120.3 A 76 76 0 1 1 143.7 66.6" fill="none" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <line x1="98" y1="166" x2="172" y2="92" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="204" cy="60" r="17" fill="#000"/>
+</svg>
+</g><text x="246" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="90.0" y="636" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">A · Ascent</text><text x="90.0" y="670" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">Break out of the loop: the 45° climb exits</text><text x="90.0" y="696" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">a broken orbit, dot leading.</text><rect x="562.667" y="150" width="474.667" height="630" rx="18" fill="#fff" stroke="#161616" stroke-width="2"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="592.667" y="190" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <!-- Captain Wing: four epaulette rank stripes swept into a wing -->
+  <path d="M 53 52 L 174 52 L 204 82 L 53 82 A 15 15 0 0 1 53 52 Z" fill="#000"/>
+  <path d="M 53 92 L 144 92 L 174 122 L 53 122 A 15 15 0 0 1 53 92 Z" fill="#000"/>
+  <path d="M 53 132 L 114 132 L 144 162 L 53 162 A 15 15 0 0 1 53 132 Z" fill="#000"/>
+  <path d="M 53 172 L 84 172 L 114 202 L 53 202 A 15 15 0 0 1 53 172 Z" fill="#000"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="592.667" y="516" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <!-- Captain Wing: four epaulette rank stripes swept into a wing -->
+  <path d="M 53 52 L 174 52 L 204 82 L 53 82 A 15 15 0 0 1 53 52 Z" fill="#000"/>
+  <path d="M 53 92 L 144 92 L 174 122 L 53 122 A 15 15 0 0 1 53 92 Z" fill="#000"/>
+  <path d="M 53 132 L 114 132 L 144 162 L 53 162 A 15 15 0 0 1 53 132 Z" fill="#000"/>
+  <path d="M 53 172 L 84 172 L 114 202 L 53 202 A 15 15 0 0 1 53 172 Z" fill="#000"/>
+</svg>
+</g><text x="624.667" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="682.667" y="548" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <!-- Captain Wing: four epaulette rank stripes swept into a wing -->
+  <path d="M 53 52 L 174 52 L 204 82 L 53 82 A 15 15 0 0 1 53 52 Z" fill="#000"/>
+  <path d="M 53 92 L 144 92 L 174 122 L 53 122 A 15 15 0 0 1 53 92 Z" fill="#000"/>
+  <path d="M 53 132 L 114 132 L 144 162 L 53 162 A 15 15 0 0 1 53 132 Z" fill="#000"/>
+  <path d="M 53 172 L 84 172 L 114 202 L 53 202 A 15 15 0 0 1 53 172 Z" fill="#000"/>
+</svg>
+</g><text x="698.667" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="740.667" y="564" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <!-- Captain Wing: four epaulette rank stripes swept into a wing -->
+  <path d="M 53 52 L 174 52 L 204 82 L 53 82 A 15 15 0 0 1 53 52 Z" fill="#000"/>
+  <path d="M 53 92 L 144 92 L 174 122 L 53 122 A 15 15 0 0 1 53 92 Z" fill="#000"/>
+  <path d="M 53 132 L 114 132 L 144 162 L 53 162 A 15 15 0 0 1 53 132 Z" fill="#000"/>
+  <path d="M 53 172 L 84 172 L 114 202 L 53 202 A 15 15 0 0 1 53 172 Z" fill="#000"/>
+</svg>
+</g><text x="748.667" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="592.6666666666667" y="636" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">B · Captain Wing</text><text x="592.6666666666667" y="664" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="700" fill="#161616" letter-spacing="1.5">RECOMMENDED</text><text x="592.6666666666667" y="698" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">Four pilot rank stripes swept into a wing —</text><text x="592.6666666666667" y="724" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">captain, and climbing.</text><rect x="1065.33" y="150" width="474.667" height="630" rx="18" fill="#fff" stroke="#e4e4e0" stroke-width="1"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1095.33" y="190" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot CP Yoke concept</title>
+  <!-- CP v4: P bowl kisses the C inner edge at exactly one tangent point (45°) -->
+  <path d="M 168.6 71.4 A 80 80 0 1 0 168.6 184.6" fill="none" stroke="#000" stroke-width="24"/>
+  <line x1="131.8" y1="68.2" x2="131.8" y2="186" stroke="#000" stroke-width="20"/>
+  <path d="M 131.8 78.2 A 30 30 0 1 1 131.8 138.2" fill="none" stroke="#000" stroke-width="20"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1095.33" y="516" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot CP Yoke concept</title>
+  <!-- CP v4: P bowl kisses the C inner edge at exactly one tangent point (45°) -->
+  <path d="M 168.6 71.4 A 80 80 0 1 0 168.6 184.6" fill="none" stroke="#000" stroke-width="24"/>
+  <line x1="131.8" y1="68.2" x2="131.8" y2="186" stroke="#000" stroke-width="20"/>
+  <path d="M 131.8 78.2 A 30 30 0 1 1 131.8 138.2" fill="none" stroke="#000" stroke-width="20"/>
+</svg>
+</g><text x="1127.33" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1185.33" y="548" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot CP Yoke concept</title>
+  <!-- CP v4: P bowl kisses the C inner edge at exactly one tangent point (45°) -->
+  <path d="M 168.6 71.4 A 80 80 0 1 0 168.6 184.6" fill="none" stroke="#000" stroke-width="24"/>
+  <line x1="131.8" y1="68.2" x2="131.8" y2="186" stroke="#000" stroke-width="20"/>
+  <path d="M 131.8 78.2 A 30 30 0 1 1 131.8 138.2" fill="none" stroke="#000" stroke-width="20"/>
+</svg>
+</g><text x="1201.33" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1243.33" y="564" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot CP Yoke concept</title>
+  <!-- CP v4: P bowl kisses the C inner edge at exactly one tangent point (45°) -->
+  <path d="M 168.6 71.4 A 80 80 0 1 0 168.6 184.6" fill="none" stroke="#000" stroke-width="24"/>
+  <line x1="131.8" y1="68.2" x2="131.8" y2="186" stroke="#000" stroke-width="20"/>
+  <path d="M 131.8 78.2 A 30 30 0 1 1 131.8 138.2" fill="none" stroke="#000" stroke-width="20"/>
+</svg>
+</g><text x="1251.33" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="1095.3333333333335" y="636" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">C · CP Yoke</text><text x="1095.3333333333335" y="670" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">A C wraps a P; the P bowl kisses the C at</text><text x="1095.3333333333335" y="696" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">one tangent point.</text><rect x="60" y="808" width="474.667" height="630" rx="18" fill="#fff" stroke="#e4e4e0" stroke-width="1"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="90" y="848" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Runway concept</title>
+  <!-- Runway v3: widened throat between the converging tips -->
+  <line x1="44" y1="224" x2="115" y2="72" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="212" y1="224" x2="141" y2="72" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="128" y1="200" x2="128" y2="92" stroke="#000" stroke-width="16" stroke-linecap="round" stroke-dasharray="24 20"/>
+  <circle cx="128" cy="46" r="14" fill="#000"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="90" y="1174" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Runway concept</title>
+  <!-- Runway v3: widened throat between the converging tips -->
+  <line x1="44" y1="224" x2="115" y2="72" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="212" y1="224" x2="141" y2="72" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="128" y1="200" x2="128" y2="92" stroke="#000" stroke-width="16" stroke-linecap="round" stroke-dasharray="24 20"/>
+  <circle cx="128" cy="46" r="14" fill="#000"/>
+</svg>
+</g><text x="122" y="1258" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="180" y="1206" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Runway concept</title>
+  <!-- Runway v3: widened throat between the converging tips -->
+  <line x1="44" y1="224" x2="115" y2="72" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="212" y1="224" x2="141" y2="72" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="128" y1="200" x2="128" y2="92" stroke="#000" stroke-width="16" stroke-linecap="round" stroke-dasharray="24 20"/>
+  <circle cx="128" cy="46" r="14" fill="#000"/>
+</svg>
+</g><text x="196" y="1258" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="238" y="1222" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Runway concept</title>
+  <!-- Runway v3: widened throat between the converging tips -->
+  <line x1="44" y1="224" x2="115" y2="72" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="212" y1="224" x2="141" y2="72" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="128" y1="200" x2="128" y2="92" stroke="#000" stroke-width="16" stroke-linecap="round" stroke-dasharray="24 20"/>
+  <circle cx="128" cy="46" r="14" fill="#000"/>
+</svg>
+</g><text x="246" y="1258" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="90.0" y="1294" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">D · Runway</text><text x="90.0" y="1328" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">The runway from application to offer,</text><text x="90.0" y="1354" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">centreline dashes to the destination.</text><rect x="562.667" y="808" width="474.667" height="630" rx="18" fill="#fff" stroke="#e4e4e0" stroke-width="1"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="592.667" y="848" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Full Gauge concept</title>
+  <!-- Gauge v4: closed dial (two arcs) with a single breach where the needle breaks through -->
+  <path d="M 60.5 171 A 78 78 0 0 1 146.9 56.3" fill="none" stroke="#000" stroke-width="20"/>
+  <path d="M 184.1 77.8 A 78 78 0 1 1 57.3 165" fill="none" stroke="#000" stroke-width="20"/>
+  <line x1="77.8" y1="103" x2="84.7" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="74" x2="128" y2="82" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="178.2" y1="103" x2="171.3" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="132" x2="178" y2="45" stroke="#000" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="128" cy="132" r="14" fill="#000"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="592.667" y="1174" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Full Gauge concept</title>
+  <!-- Gauge v4: closed dial (two arcs) with a single breach where the needle breaks through -->
+  <path d="M 60.5 171 A 78 78 0 0 1 146.9 56.3" fill="none" stroke="#000" stroke-width="20"/>
+  <path d="M 184.1 77.8 A 78 78 0 1 1 57.3 165" fill="none" stroke="#000" stroke-width="20"/>
+  <line x1="77.8" y1="103" x2="84.7" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="74" x2="128" y2="82" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="178.2" y1="103" x2="171.3" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="132" x2="178" y2="45" stroke="#000" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="128" cy="132" r="14" fill="#000"/>
+</svg>
+</g><text x="624.667" y="1258" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="682.667" y="1206" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Full Gauge concept</title>
+  <!-- Gauge v4: closed dial (two arcs) with a single breach where the needle breaks through -->
+  <path d="M 60.5 171 A 78 78 0 0 1 146.9 56.3" fill="none" stroke="#000" stroke-width="20"/>
+  <path d="M 184.1 77.8 A 78 78 0 1 1 57.3 165" fill="none" stroke="#000" stroke-width="20"/>
+  <line x1="77.8" y1="103" x2="84.7" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="74" x2="128" y2="82" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="178.2" y1="103" x2="171.3" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="132" x2="178" y2="45" stroke="#000" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="128" cy="132" r="14" fill="#000"/>
+</svg>
+</g><text x="698.667" y="1258" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="740.667" y="1222" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Full Gauge concept</title>
+  <!-- Gauge v4: closed dial (two arcs) with a single breach where the needle breaks through -->
+  <path d="M 60.5 171 A 78 78 0 0 1 146.9 56.3" fill="none" stroke="#000" stroke-width="20"/>
+  <path d="M 184.1 77.8 A 78 78 0 1 1 57.3 165" fill="none" stroke="#000" stroke-width="20"/>
+  <line x1="77.8" y1="103" x2="84.7" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="74" x2="128" y2="82" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="178.2" y1="103" x2="171.3" y2="107" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <line x1="128" y1="132" x2="178" y2="45" stroke="#000" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="128" cy="132" r="14" fill="#000"/>
+</svg>
+</g><text x="748.667" y="1258" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="592.6666666666667" y="1294" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">E · Full Gauge</text><text x="592.6666666666667" y="1328" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">The readiness dial, needle pinned straight</text><text x="592.6666666666667" y="1354" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">through past max.</text><rect x="1065.33" y="808" width="474.667" height="630" rx="18" fill="#fff" stroke="#e4e4e0" stroke-width="1"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1095.33" y="848" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Waypoints concept</title>
+  <!-- Waypoints v3: dotted route split cleanly around the interview ring -->
+  <path d="M 42 208 Q 74 203 104 184" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <path d="M 142 140 Q 178 106 208 60" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <circle cx="42" cy="208" r="11" fill="#000"/>
+  <circle cx="121.5" cy="165" r="15" fill="none" stroke="#000" stroke-width="12"/>
+  <circle cx="208" cy="60" r="26" fill="#000"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1095.33" y="1174" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Waypoints concept</title>
+  <!-- Waypoints v3: dotted route split cleanly around the interview ring -->
+  <path d="M 42 208 Q 74 203 104 184" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <path d="M 142 140 Q 178 106 208 60" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <circle cx="42" cy="208" r="11" fill="#000"/>
+  <circle cx="121.5" cy="165" r="15" fill="none" stroke="#000" stroke-width="12"/>
+  <circle cx="208" cy="60" r="26" fill="#000"/>
+</svg>
+</g><text x="1127.33" y="1258" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1185.33" y="1206" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Waypoints concept</title>
+  <!-- Waypoints v3: dotted route split cleanly around the interview ring -->
+  <path d="M 42 208 Q 74 203 104 184" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <path d="M 142 140 Q 178 106 208 60" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <circle cx="42" cy="208" r="11" fill="#000"/>
+  <circle cx="121.5" cy="165" r="15" fill="none" stroke="#000" stroke-width="12"/>
+  <circle cx="208" cy="60" r="26" fill="#000"/>
+</svg>
+</g><text x="1201.33" y="1258" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1243.33" y="1222" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Waypoints concept</title>
+  <!-- Waypoints v3: dotted route split cleanly around the interview ring -->
+  <path d="M 42 208 Q 74 203 104 184" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <path d="M 142 140 Q 178 106 208 60" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <circle cx="42" cy="208" r="11" fill="#000"/>
+  <circle cx="121.5" cy="165" r="15" fill="none" stroke="#000" stroke-width="12"/>
+  <circle cx="208" cy="60" r="26" fill="#000"/>
+</svg>
+</g><text x="1251.33" y="1258" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="1095.3333333333335" y="1294" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">F · Waypoints</text><text x="1095.3333333333335" y="1328" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">Dotted route: applied → interviewed →</text><text x="1095.3333333333335" y="1354" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">offer. The pipeline you track.</text><rect x="60" y="1466" width="474.667" height="630" rx="18" fill="#fff" stroke="#e4e4e0" stroke-width="1"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="90" y="1506" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Check Climb concept</title>
+  <!-- Check Climb v2: both arms snapped to exact 45°, dot on the extension -->
+  <path d="M 42 142 L 94 194 L 206 82" fill="none" stroke="#000" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="230" cy="58" r="13" fill="#000"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="90" y="1832" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Check Climb concept</title>
+  <!-- Check Climb v2: both arms snapped to exact 45°, dot on the extension -->
+  <path d="M 42 142 L 94 194 L 206 82" fill="none" stroke="#000" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="230" cy="58" r="13" fill="#000"/>
+</svg>
+</g><text x="122" y="1916" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="180" y="1864" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Check Climb concept</title>
+  <!-- Check Climb v2: both arms snapped to exact 45°, dot on the extension -->
+  <path d="M 42 142 L 94 194 L 206 82" fill="none" stroke="#000" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="230" cy="58" r="13" fill="#000"/>
+</svg>
+</g><text x="196" y="1916" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="238" y="1880" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Check Climb concept</title>
+  <!-- Check Climb v2: both arms snapped to exact 45°, dot on the extension -->
+  <path d="M 42 142 L 94 194 L 206 82" fill="none" stroke="#000" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="230" cy="58" r="13" fill="#000"/>
+</svg>
+</g><text x="246" y="1916" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="90.0" y="1952" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">G · Check Climb</text><text x="90.0" y="1986" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">The offer checkmark whose long arm keeps</text><text x="90.0" y="2012" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">climbing into a dot.</text><rect x="562.667" y="1466" width="474.667" height="630" rx="18" fill="#fff" stroke="#e4e4e0" stroke-width="1"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="592.667" y="1506" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Swift concept</title>
+  <!-- Swift v2: aviator bird — lenses are the eyes (white pupils looking forward), beak below the band -->
+  <circle cx="108" cy="136" r="84" fill="#000"/>
+  <path d="M 182 138 L 236 156 L 182 174 Z" fill="#000"/>
+  <rect x="34" y="104" width="148" height="44" fill="#fff"/>
+  <circle cx="76" cy="126" r="23" fill="#000"/>
+  <circle cx="140" cy="126" r="23" fill="#000"/>
+  <circle cx="82" cy="126" r="8" fill="#fff"/>
+  <circle cx="146" cy="126" r="8" fill="#fff"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="592.667" y="1832" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Swift concept</title>
+  <!-- Swift v2: aviator bird — lenses are the eyes (white pupils looking forward), beak below the band -->
+  <circle cx="108" cy="136" r="84" fill="#000"/>
+  <path d="M 182 138 L 236 156 L 182 174 Z" fill="#000"/>
+  <rect x="34" y="104" width="148" height="44" fill="#fff"/>
+  <circle cx="76" cy="126" r="23" fill="#000"/>
+  <circle cx="140" cy="126" r="23" fill="#000"/>
+  <circle cx="82" cy="126" r="8" fill="#fff"/>
+  <circle cx="146" cy="126" r="8" fill="#fff"/>
+</svg>
+</g><text x="624.667" y="1916" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="682.667" y="1864" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Swift concept</title>
+  <!-- Swift v2: aviator bird — lenses are the eyes (white pupils looking forward), beak below the band -->
+  <circle cx="108" cy="136" r="84" fill="#000"/>
+  <path d="M 182 138 L 236 156 L 182 174 Z" fill="#000"/>
+  <rect x="34" y="104" width="148" height="44" fill="#fff"/>
+  <circle cx="76" cy="126" r="23" fill="#000"/>
+  <circle cx="140" cy="126" r="23" fill="#000"/>
+  <circle cx="82" cy="126" r="8" fill="#fff"/>
+  <circle cx="146" cy="126" r="8" fill="#fff"/>
+</svg>
+</g><text x="698.667" y="1916" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="740.667" y="1880" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Swift concept</title>
+  <!-- Swift v2: aviator bird — lenses are the eyes (white pupils looking forward), beak below the band -->
+  <circle cx="108" cy="136" r="84" fill="#000"/>
+  <path d="M 182 138 L 236 156 L 182 174 Z" fill="#000"/>
+  <rect x="34" y="104" width="148" height="44" fill="#fff"/>
+  <circle cx="76" cy="126" r="23" fill="#000"/>
+  <circle cx="140" cy="126" r="23" fill="#000"/>
+  <circle cx="82" cy="126" r="8" fill="#fff"/>
+  <circle cx="146" cy="126" r="8" fill="#fff"/>
+</svg>
+</g><text x="748.667" y="1916" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="592.6666666666667" y="1952" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">H · Swift</text><text x="592.6666666666667" y="1986" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">The aviator swift — goggle band, eyes</text><text x="592.6666666666667" y="2012" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">forward, beak set.</text><rect x="1065.33" y="1466" width="474.667" height="630" rx="18" fill="#fff" stroke="#e4e4e0" stroke-width="1"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1095.33" y="1506" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Evolution concept</title>
+  <!-- Evolution v2: existing plane rebuilt on clean angles — belly 0°, top edge 150°, fold 135° -->
+  <rect x="0" y="0" width="256" height="256" rx="58" fill="#000"/>
+  <path d="M 50 141 L 206 51 L 152 203.4 L 116 141 Z" fill="#fff"/>
+  <line x1="116" y1="141" x2="206" y2="51" stroke="#000" stroke-width="10"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1095.33" y="1832" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Evolution concept</title>
+  <!-- Evolution v2: existing plane rebuilt on clean angles — belly 0°, top edge 150°, fold 135° -->
+  <rect x="0" y="0" width="256" height="256" rx="58" fill="#000"/>
+  <path d="M 50 141 L 206 51 L 152 203.4 L 116 141 Z" fill="#fff"/>
+  <line x1="116" y1="141" x2="206" y2="51" stroke="#000" stroke-width="10"/>
+</svg>
+</g><text x="1127.33" y="1916" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1185.33" y="1864" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Evolution concept</title>
+  <!-- Evolution v2: existing plane rebuilt on clean angles — belly 0°, top edge 150°, fold 135° -->
+  <rect x="0" y="0" width="256" height="256" rx="58" fill="#000"/>
+  <path d="M 50 141 L 206 51 L 152 203.4 L 116 141 Z" fill="#fff"/>
+  <line x1="116" y1="141" x2="206" y2="51" stroke="#000" stroke-width="10"/>
+</svg>
+</g><text x="1201.33" y="1916" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="1243.33" y="1880" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Evolution concept</title>
+  <!-- Evolution v2: existing plane rebuilt on clean angles — belly 0°, top edge 150°, fold 135° -->
+  <rect x="0" y="0" width="256" height="256" rx="58" fill="#000"/>
+  <path d="M 50 141 L 206 51 L 152 203.4 L 116 141 Z" fill="#fff"/>
+  <line x1="116" y1="141" x2="206" y2="51" stroke="#000" stroke-width="10"/>
+</svg>
+</g><text x="1251.33" y="1916" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="1095.3333333333335" y="1952" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">I · Evolution</text><text x="1095.3333333333335" y="1986" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">Your current paper-plane glyph, rebuilt on</text><text x="1095.3333333333335" y="2012" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">exact angles inside the tile.</text><rect x="60" y="2124" width="474.667" height="630" rx="18" fill="#fff" stroke="#e4e4e0" stroke-width="1"/><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="90" y="2164" width="414.667" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Lift concept</title>
+  <!-- Lift v3: inner V edges snapped to exact 30°/150° -->
+  <path d="M 56 112 L 128 56 L 200 112 L 164 112 L 128 91.2 L 92 112 Z" fill="#000"/>
+  <path d="M 56 188 L 128 132 L 200 188 L 164 188 L 128 167.2 L 92 188 Z" fill="#000"/>
+</svg>
+</g><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="90" y="2490" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Lift concept</title>
+  <!-- Lift v3: inner V edges snapped to exact 30°/150° -->
+  <path d="M 56 112 L 128 56 L 200 112 L 164 112 L 128 91.2 L 92 112 Z" fill="#000"/>
+  <path d="M 56 188 L 128 132 L 200 188 L 164 188 L 128 167.2 L 92 188 Z" fill="#000"/>
+</svg>
+</g><text x="122" y="2574" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="180" y="2522" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Lift concept</title>
+  <!-- Lift v3: inner V edges snapped to exact 30°/150° -->
+  <path d="M 56 112 L 128 56 L 200 112 L 164 112 L 128 91.2 L 92 112 Z" fill="#000"/>
+  <path d="M 56 188 L 128 132 L 200 188 L 164 188 L 128 167.2 L 92 188 Z" fill="#000"/>
+</svg>
+</g><text x="196" y="2574" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g filter="url(#grey)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" x="238" y="2538" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>CareerPilot Lift concept</title>
+  <!-- Lift v3: inner V edges snapped to exact 30°/150° -->
+  <path d="M 56 112 L 128 56 L 200 112 L 164 112 L 128 91.2 L 92 112 Z" fill="#000"/>
+  <path d="M 56 188 L 128 132 L 200 188 L 164 188 L 128 167.2 L 92 188 Z" fill="#000"/>
+</svg>
+</g><text x="246" y="2574" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="90.0" y="2610" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">J · Lift</text><text x="90.0" y="2644" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">Two solid chevrons; the implied third</text><text x="90.0" y="2670" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">between them is the lift.</text></svg>

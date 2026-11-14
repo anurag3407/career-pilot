@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>CareerPilot Ascent concept</title>
+  <!-- Ascent v3: trail starts clear of the orbit; dot leads the 45° climb -->
+  <path d="M 197.4 120.3 A 76 76 0 1 1 143.7 66.6" fill="none" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <line x1="98" y1="166" x2="172" y2="92" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="204" cy="60" r="17" fill="#000"/>
+</svg>

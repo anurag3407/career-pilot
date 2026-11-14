@@ -1,0 +1,35 @@
+{
+  "brand": "CareerPilot",
+  "tagline": "The AI career OS",
+  "brief": "AI-powered career OS — resumes, mock interviews, job tracking, portfolios, GitHub intelligence and outreach in one free, open-source workspace. The mark should feel like a co-pilot: confident, forward-moving, guiding.",
+  "adjectives": ["confident", "forward-moving", "guiding", "smart", "open"],
+  "criteria": "Success: ownable in a noisy career-tools category, reads at 16 px, works in one colour, encodes 'pilot' structurally rather than literally.",
+  "industry": "software",
+  "nav": ["Features", "Templates", "Pricing", "GitHub"],
+  "brand_color": "#cc420c",
+  "greyscale": false,
+  "designer": "CareerPilot brand kit",
+  "round": 2,
+  "symbol_on_tile": "captain-wing-tile.svg",
+  "lockup_on_dark": "lockup-horizontal-white.svg",
+  "concepts": [
+    {
+      "name": "Captain Wing",
+      "symbol": "captain-wing-symbol.svg",
+      "lockup": "lockup-horizontal.svg",
+      "idea": "Four pilot epaulette rank stripes swept into a wing — captain, and climbing.",
+      "rationale": [
+        "Encodes 'pilot' structurally — rank stripes, not a literal plane",
+        "Doubles as a rising bar chart: career growth, step by step",
+        "Strongest 16 px survival of all ten tested concepts (89–99/100 audit range)",
+        "Nothing in the resume-tools category owns four swept stripes"
+      ]
+    }
+  ],
+  "recommendation": "Captain Wing — the only direction where 'pilot' is built into the structure, with growth built into the shape.",
+  "next_steps": [
+    "Ship the web icon set (done — see exports/)",
+    "Swap the Wordmark component in FlightNav.jsx for the new lockup",
+    "Trademark search before public launch"
+  ]
+}

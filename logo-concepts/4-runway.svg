@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Runway: converging edges, dashed centreline, destination dot -->
+  <line x1="44" y1="224" x2="110" y2="56" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="212" y1="224" x2="146" y2="56" stroke="#000" stroke-width="16" stroke-linecap="round"/>
+  <line x1="128" y1="204" x2="128" y2="92" stroke="#000" stroke-width="16" stroke-linecap="round" stroke-dasharray="24 20"/>
+  <circle cx="128" cy="52" r="15" fill="#000"/>
+</svg>

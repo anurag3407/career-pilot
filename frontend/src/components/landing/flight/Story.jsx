@@ -69,28 +69,69 @@ function StepPreview({ step }) {
         </div>
       </div>
     )
-  if (step === 2)
+  if (step === 2) {
+    const COLUMNS = [
+      {
+        col: 'Saved',
+        cards: [
+          { company: 'Arcwise', role: 'Staff Frontend', meta: '$210k · Remote' },
+          { company: 'Fern & Co', role: 'Design Eng', meta: 'Added 1d ago' },
+          { company: 'Polaris', role: 'Lead Architect', meta: '$195k · Referral' },
+        ],
+      },
+      {
+        col: 'Applied',
+        cards: [
+          { company: 'Lumen Labs', role: 'Senior Frontend', meta: 'Applied 2d ago' },
+          { company: 'Kestrel', role: 'UI Engineer', meta: 'Applied 4d ago' },
+        ],
+      },
+      {
+        col: 'Interview',
+        hot: true,
+        cards: [
+          { company: 'Northwind', role: 'Principal FE', meta: 'Round 3 · Tue 2pm', hot: true },
+        ],
+      },
+      {
+        col: 'Offer',
+        win: true,
+        cards: [
+          { company: 'Halcyon', role: 'Staff Engineer', meta: '$225k + Equity', win: true },
+        ],
+      },
+    ]
+
     return (
       <div className="grid grid-cols-4 gap-2">
-        {[
-          ['Saved', ['Arcwise', 'Fern & Co', 'Polaris']],
-          ['Applied', ['Lumen Labs', 'Kestrel']],
-          ['Interview', ['Northwind']],
-          ['Offer', ['Halcyon']],
-        ].map(([col, cards], ci) => (
-          <div key={col} className="min-w-0">
-            <p className="truncate font-mono text-[9px] uppercase tracking-[0.16em] text-foreground/40">{col}</p>
+        {COLUMNS.map((group) => (
+          <div key={group.col} className="min-w-0">
+            <div className="flex items-center justify-between">
+              <p className="truncate font-mono text-[9px] uppercase tracking-[0.16em] text-foreground/40">{group.col}</p>
+              <span className={cn('font-mono text-[9px]', group.hot ? 'text-primary' : group.win ? 'text-accent-foreground' : 'text-foreground/30')}>
+                {group.cards.length}
+              </span>
+            </div>
             <div className="mt-2 space-y-1.5">
-              {cards.map((c) => (
+              {group.cards.map((c) => (
                 <div
-                  key={c}
+                  key={c.company}
                   className={cn(
-                    'rounded-md border bg-background p-2 text-[11px]',
-                    ci === 2 ? 'border-primary/40' : ci === 3 ? 'border-accent-foreground/40' : 'border-border',
+                    'rounded-md border p-2 text-[11px] transition-colors',
+                    c.hot
+                      ? 'border-primary/40 bg-primary/[0.04]'
+                      : c.win
+                      ? 'border-accent-foreground/40 bg-accent-foreground/[0.04]'
+                      : 'border-border bg-background',
                   )}
                 >
-                  <p className="truncate font-medium">{c}</p>
-                  <p className="mt-1 h-1 w-2/3 rounded bg-foreground/[0.08]" />
+                  <div className="flex items-center justify-between gap-1">
+                    <p className="truncate font-medium text-foreground">{c.company}</p>
+                    {c.hot && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />}
+                    {c.win && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent-foreground" />}
+                  </div>
+                  <p className="mt-0.5 truncate text-[10px] text-foreground/60">{c.role}</p>
+                  <p className="mt-1 font-mono text-[8.5px] text-foreground/40">{c.meta}</p>
                 </div>
               ))}
             </div>
@@ -98,6 +139,7 @@ function StepPreview({ step }) {
         ))}
       </div>
     )
+  }
   return (
     <div className="space-y-3">
       <div className="rounded-lg border border-border bg-background p-4">

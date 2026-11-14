@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>CareerPilot Waypoints concept</title>
+  <!-- Waypoints v3: dotted route split cleanly around the interview ring -->
+  <path d="M 42 208 Q 74 203 104 184" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <path d="M 142 140 Q 178 106 208 60" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 30"/>
+  <circle cx="42" cy="208" r="11" fill="#000"/>
+  <circle cx="121.5" cy="165" r="15" fill="none" stroke="#000" stroke-width="12"/>
+  <circle cx="208" cy="60" r="26" fill="#000"/>
+</svg>

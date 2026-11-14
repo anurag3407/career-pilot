@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><title>CareerPilot wing mark</title><g transform="translate(-28.69 -36.47) scale(1.295)">
+  
+  <!-- Captain Wing — master symbol: 4 rank stripes swept into a wing -->
+  <path d="M 53 52 L 174 52 L 204 82 L 53 82 A 15 15 0 0 1 53 52 Z" fill="#000"/>
+  <path d="M 53 92 L 144 92 L 174 122 L 53 122 A 15 15 0 0 1 53 92 Z" fill="#000"/>
+  <path d="M 53 132 L 114 132 L 144 162 L 53 162 A 15 15 0 0 1 53 132 Z" fill="#000"/>
+  <path d="M 53 172 L 84 172 L 114 202 L 53 202 A 15 15 0 0 1 53 172 Z" fill="#000"/>
+</g></svg>

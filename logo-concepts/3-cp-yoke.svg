@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- CP Yoke: a C wrapping a P -->
+  <path d="M 167.3 65 A 80 80 0 1 0 167.3 191" fill="none" stroke="#000" stroke-width="26"/>
+  <line x1="132" y1="68" x2="132" y2="188" stroke="#000" stroke-width="26"/>
+  <path d="M 132 74 A 34 34 0 1 1 132 142" fill="none" stroke="#000" stroke-width="26"/>
+</svg>

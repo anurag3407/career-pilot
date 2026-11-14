@@ -1,10 +1,11 @@
 <div align="center">
-  <h1>🚀 Career Pilot</h1>
+  <p><img src="logo.png" width="120" alt="CareerPilot — Captain Wing logo" /></p>
+  <h1>Career Pilot</h1>
   <p><strong>AI-powered career OS — resumes, mock interviews, job tracking, portfolios, fellowships, GitHub intelligence and outreach, all in one full-stack platform.</strong></p>
   <p>
     <a href="https://github.com/anurag3407/career-pilot/stargazers"><img src="https://img.shields.io/github/stars/anurag3407/career-pilot?style=for-the-badge&logo=github" alt="Stars"/></a>
     <a href="https://github.com/anurag3407/career-pilot/blob/main/LICENSE"><img src="https://img.shields.io/github/license/anurag3407/career-pilot?style=for-the-badge" alt="License"/></a>
-    <a href="#-quick-install"><img src="https://img.shields.io/badge/install-one%20command-7c3aed?style=for-the-badge&logo=rocket" alt="Install"/></a>
+    <a href="#-quick-install"><img src="https://img.shields.io/badge/install-one%20command-cc420c?style=for-the-badge&logo=rocket" alt="Install"/></a>
   </p>
   <p>
     <img src="https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white" alt="Node.js"/>

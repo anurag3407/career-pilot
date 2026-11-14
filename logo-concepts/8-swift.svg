@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Swift: geometric aviator bird head, goggle band -->
+  <circle cx="118" cy="138" r="84" fill="#000"/>
+  <path d="M 192 118 L 244 142 L 192 162 Z" fill="#000"/>
+  <rect x="44" y="106" width="148" height="42" fill="#fff"/>
+  <circle cx="86" cy="127" r="22" fill="#000"/>
+  <circle cx="150" cy="127" r="22" fill="#000"/>
+  <circle cx="146" cy="76" r="15" fill="#fff"/>
+</svg>

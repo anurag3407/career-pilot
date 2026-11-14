@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>CareerPilot wing mark — small-size cut</title>
+  <!-- Small-size cut: 3 stripes, wider gaps for 16-32 px -->
+  <path d="M 53 62 L 170 62 L 204 96 L 53 96 A 17 17 0 0 1 53 62 Z" fill="#000"/>
+  <path d="M 53 112 L 120 112 L 154 146 L 53 146 A 17 17 0 0 1 53 112 Z" fill="#000"/>
+  <path d="M 53 162 L 70 162 L 104 196 L 53 196 A 17 17 0 0 1 53 162 Z" fill="#000"/>
+</svg>

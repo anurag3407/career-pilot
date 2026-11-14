@@ -1,214 +1,344 @@
-import {
-  FileText, Gauge, Wand2, Crosshair, Flame, Mic, Code2, Search, KanbanSquare,
-  Rocket, Network, TrendingUp, Mail, Linkedin, KeyRound, Check, Minus, ArrowRight,
-} from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Check, Minus, ArrowRight } from 'lucide-react'
 import { cn } from '../../../lib/utils'
 import { GhostButton, MonoLabel, Reveal, Section, SectionHeading } from './primitives'
 
-/* ─── Features ─────────────────────────────────────────────────────────── */
-
-const FEATURES = [
-  { icon: FileText, title: 'Resume builder', desc: 'Drag-and-drop sections, live preview and ATS-safe layouts. Import a PDF or docx and keep editing.', to: '/resume-builder/build' },
-  { icon: Gauge, title: 'ATS scoring', desc: 'A deterministic score with a per-section breakdown and history, so you can watch it climb.', to: '/hub/resume' },
-  { icon: Wand2, title: 'AI rewrites', desc: 'Vague bullets become quantified, specific lines. You approve every change.', to: '/resume-builder/build' },
-  { icon: Crosshair, title: 'One-click tailoring', desc: 'Paste a job description and get a version matched to its language and priorities.', to: '/hub/resume' },
-  { icon: Flame, title: 'Resume roast', desc: 'Graded like a tired recruiter at 5pm, with quick wins ranked by impact. Shareable.', to: '/resume-roast/analyze' },
-  { icon: Mic, title: 'Voice mock interviews', desc: 'The AI asks, listens, follows up on weak answers and grades the whole session.', to: '/mock-interview/practice' },
-  { icon: Code2, title: 'Coding rounds', desc: 'A built-in editor with LLM-judged dry runs and a replayable transcript.', to: '/mock-interview/practice' },
-  { icon: Search, title: 'Job search', desc: 'AI-matched roles with salary context and direct apply links.', to: '/job-finder/search' },
-  { icon: KanbanSquare, title: 'Pipeline tracker', desc: 'Saved, applied, interviewing, offer. A kanban plus a browser extension for one-click saves.', to: '/job-tracker' },
-  { icon: Rocket, title: 'Portfolio deploy', desc: '264 templates. Edit inline, then ship to Cloudflare Pages, Netlify or GitHub Pages.', to: '/hub/portfolio' },
-  { icon: Network, title: 'Repo visualizer', desc: 'Architecture graphs, risk cards and an AI chat that knows the codebase.', to: '/project-visualizer' },
-  { icon: TrendingUp, title: 'Skill gap & salary', desc: 'What to learn next for a target role, and what that role pays where you live.', to: '/hub/career' },
-  { icon: Mail, title: 'Cover letters & outreach', desc: 'Tailored drafts for every application and every recruiter follow-up.', to: '/cover-letter' },
-  { icon: Linkedin, title: 'LinkedIn optimizer', desc: 'Headline, about and experience rewrites that match the roles you want.', to: '/linkedin-optimizer' },
-  { icon: KeyRound, title: 'Bring your own key', desc: 'Run on Gemini, OpenAI, Anthropic, Groq or OpenRouter. Your key, your bill, your choice.', to: '/settings' },
-]
-
-export function Features() {
-  return (
-    <Section id="features">
-      <Reveal>
-        <SectionHeading
-          eyebrow="Features"
-          title="Every career tool, without the tab sprawl."
-          lede="Fifteen tools that share one profile. Fix a bullet in your resume and it is already in your portfolio, your cover letter and your next mock interview."
-        />
-      </Reveal>
-
-      <Reveal delay={0.05} className="mt-12 overflow-hidden rounded-xl border border-border">
-        <div className="grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f, i) => (
-            <Link
-              key={f.title}
-              to={f.to}
-              className="group relative bg-background p-6 transition-colors hover:bg-card sm:p-7"
-            >
-              <div className="flex items-start justify-between">
-                <span className="grid h-8 w-8 place-items-center rounded-md border border-border text-foreground/60 transition group-hover:border-primary/40 group-hover:text-primary">
-                  <f.icon className="h-4 w-4" />
-                </span>
-                <span className="font-mono text-[10px] tabular-nums text-foreground/25">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-              </div>
-              <h3 className="mt-5 text-[14px] font-semibold tracking-tight">{f.title}</h3>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-foreground/52">{f.desc}</p>
-              <ArrowRight className="absolute bottom-6 right-6 h-3.5 w-3.5 -translate-x-1 text-primary opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100" />
-            </Link>
-          ))}
-        </div>
-      </Reveal>
-    </Section>
-  )
-}
-
 /* ─── Templates marquee ─────────────────────────────────────────────────── */
 
-// Each preview is a tiny CSS composition hinting at the real template.
+// High-fidelity micro-compositions for resume templates with real human text & metrics.
 const PREVIEWS = {
   classic: (
-    <div className="flex h-full flex-col gap-1.5 bg-white p-3">
-      <div className="h-2 w-1/2 rounded-sm bg-neutral-800" />
-      <div className="h-1 w-1/3 rounded-sm bg-neutral-300" />
-      <div className="mt-2 h-px bg-neutral-200" />
-      {[90, 75, 82, 60, 88, 70].map((w, i) => (
-        <div key={i} className="h-1 rounded-sm bg-neutral-200" style={{ width: `${w}%` }} />
-      ))}
-    </div>
-  ),
-  split: (
-    <div className="grid h-full grid-cols-[35%_65%] bg-white">
-      <div className="flex flex-col gap-1.5 bg-slate-800 p-2.5">
-        <div className="h-5 w-5 rounded-full bg-slate-500" />
-        {[80, 60, 70, 50].map((w, i) => (
-          <div key={i} className="h-1 rounded-sm bg-slate-600" style={{ width: `${w}%` }} />
-        ))}
-      </div>
-      <div className="flex flex-col gap-1.5 p-2.5">
-        <div className="h-2 w-2/3 rounded-sm bg-slate-800" />
-        {[95, 80, 88, 70, 90].map((w, i) => (
-          <div key={i} className="h-1 rounded-sm bg-slate-200" style={{ width: `${w}%` }} />
-        ))}
-      </div>
-    </div>
-  ),
-  serif: (
-    <div className="flex h-full flex-col items-center gap-1.5 bg-[#fbf8f1] p-3">
-      <div className="font-serif text-[13px] italic text-stone-800">A. Laurent</div>
-      <div className="h-px w-1/2 bg-stone-300" />
-      {[85, 70, 90, 65, 80].map((w, i) => (
-        <div key={i} className="h-1 rounded-sm bg-stone-200" style={{ width: `${w}%` }} />
-      ))}
-    </div>
-  ),
-  swiss: (
-    <div className="relative h-full bg-[#f4f1ea] p-3">
-      <div className="text-[34px] font-black leading-none tracking-[-0.06em] text-neutral-900">Aa</div>
-      <div className="absolute bottom-3 right-3 h-8 w-8 bg-[#e3321f]" />
-      <div className="mt-2 h-1 w-1/2 bg-neutral-900" />
-    </div>
-  ),
-  neon: (
-    <div className="relative h-full overflow-hidden bg-[#0b0820] p-3">
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-fuchsia-600/40 to-transparent" />
-      <div className="relative text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300">Night/shift</div>
-      <div className="relative mt-2 h-1 w-1/2 rounded bg-fuchsia-400" />
-      <div className="absolute bottom-2 left-3 right-3 flex items-end gap-1">
-        {[40, 70, 55, 85, 45, 65].map((h, i) => (
-          <div key={i} className="flex-1 bg-indigo-400/50" style={{ height: `${h * 0.35}px` }} />
-        ))}
-      </div>
-    </div>
-  ),
-  terminal: (
-    <div className="h-full bg-[#0d1117] p-3 font-mono text-[8.5px] leading-[1.6] text-emerald-400">
-      <div>$ whoami</div>
-      <div className="text-emerald-200/80">dev · systems · rust</div>
-      <div>$ ls ./skills</div>
-      <div className="text-emerald-200/60">go k8s postgres</div>
+    <div className="flex h-full select-none flex-col justify-between bg-white p-2.5 text-neutral-900 leading-tight">
       <div>
-        $ <span className="fd-caret">▍</span>
+        <div className="border-b border-neutral-300 pb-1">
+          <p className="text-[10px] font-bold tracking-tight text-neutral-950 uppercase">Eleanor Vance</p>
+          <p className="font-mono text-[6px] text-neutral-500">
+            eleanor@vance.io · San Francisco, CA · github.com/evance
+          </p>
+        </div>
+        <div className="mt-1.5">
+          <p className="border-b border-neutral-200 text-[6.5px] font-bold uppercase tracking-wider text-neutral-700">Experience</p>
+          <div className="mt-1">
+            <div className="flex justify-between text-[7px] font-semibold text-neutral-800">
+              <span>Stripe — Staff Infrastructure Eng</span>
+              <span className="font-mono text-[6px] text-neutral-500">2021–Now</span>
+            </div>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-neutral-600">
+              • Scaled distributed ingestion engine to 2.4M ops/sec with 99.999% uptime.
+            </p>
+            <p className="text-[6px] leading-[1.25] text-neutral-600">
+              • Cut cross-region transfer costs by $480k/yr via gRPC compression.
+            </p>
+          </div>
+          <div className="mt-1">
+            <div className="flex justify-between text-[7px] font-semibold text-neutral-800">
+              <span>Figma — Senior Systems Engineer</span>
+              <span className="font-mono text-[6px] text-neutral-500">2018–21</span>
+            </div>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-neutral-600">
+              • Optimized WebAssembly canvas rendering, reducing p95 latency by 42%.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-neutral-200 pt-0.5 text-[6px] text-neutral-500 font-mono">
+        <span className="font-bold text-neutral-700">Stack:</span> Go, Rust, Kubernetes, eBPF, Kafka, PostgreSQL
       </div>
     </div>
   ),
-  fjords: (
-    <div className="relative h-full overflow-hidden bg-gradient-to-b from-sky-200 to-sky-50">
-      <div className="absolute bottom-0 h-3/5 w-full bg-slate-600 [clip-path:polygon(0_60%,25%_10%,45%_55%,65%_0,100%_50%,100%_100%,0_100%)]" />
-      <div className="absolute bottom-0 h-2/5 w-full bg-slate-800 [clip-path:polygon(0_40%,30%_70%,55%_20%,80%_60%,100%_30%,100%_100%,0_100%)]" />
-    </div>
-  ),
-  block: (
-    <div className="grid h-full grid-cols-3 grid-rows-2">
-      <div className="col-span-2 bg-[#ffcf33]" />
-      <div className="bg-[#1f4bff]" />
-      <div className="bg-[#ff5a36]" />
-      <div className="col-span-2 bg-neutral-900 p-2">
-        <div className="h-1.5 w-1/2 rounded-sm bg-white" />
+
+  split: (
+    <div className="grid h-full select-none grid-cols-[36%_64%] bg-white text-neutral-900 leading-tight">
+      <div className="flex flex-col justify-between bg-slate-900 p-2 text-white">
+        <div>
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-700 text-[7.5px] font-bold text-sky-400">
+            MC
+          </div>
+          <p className="mt-1.5 text-[8px] font-bold leading-tight">Marcus Chen</p>
+          <p className="text-[6px] text-slate-400">Lead UI Engineer</p>
+          <div className="mt-2 space-y-1 text-[5.5px] text-slate-300">
+            <p className="font-semibold uppercase tracking-wider text-slate-400">Skills</p>
+            <div className="flex flex-wrap gap-0.5">
+              {['React', 'Next.js', 'TypeScript', 'Tailwind', 'GraphQL'].map((s) => (
+                <span key={s} className="rounded bg-slate-800 px-1 py-px">{s}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+        <p className="font-mono text-[5.5px] text-slate-400">marcus@chen.dev</p>
+      </div>
+      <div className="flex flex-col justify-between p-2">
+        <div>
+          <p className="border-b border-slate-200 pb-0.5 text-[6.5px] font-bold uppercase tracking-wider text-slate-800">Experience</p>
+          <div className="mt-1">
+            <p className="text-[6.5px] font-semibold text-slate-900">Linear — Lead UI Engineer</p>
+            <p className="text-[5.5px] text-slate-500">2022 — Present · SF</p>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-slate-600">
+              • Shipped synced desktop/web UI for 65k teams; +34% triage speed.
+            </p>
+            <p className="text-[6px] leading-[1.25] text-slate-600">
+              • Created core design token architecture across web and mobile.
+            </p>
+          </div>
+          <div className="mt-1">
+            <p className="text-[6.5px] font-semibold text-slate-900">Vercel — Frontend Engineer</p>
+            <p className="text-[5.5px] text-slate-500">2019 — 2022</p>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-slate-600">
+              • Built Analytics 2.0 dashboard serving 180M visits/month.
+            </p>
+          </div>
+        </div>
+        <p className="text-[5.5px] font-medium text-slate-400">Stanford University · B.S. CS</p>
       </div>
     </div>
   ),
-  fluid: (
-    <div className="relative h-full overflow-hidden bg-neutral-950">
-      <div className="absolute -left-4 top-2 h-16 w-16 rounded-full bg-violet-600/60 blur-xl" />
-      <div className="absolute bottom-0 right-0 h-14 w-14 rounded-full bg-orange-500/50 blur-xl" />
-      <div className="relative p-3 text-[11px] font-medium tracking-tight text-white/90">hello, I build interfaces.</div>
-    </div>
-  ),
-  memphis: (
-    <div className="relative h-full overflow-hidden bg-[#fff4e0]">
-      <div className="absolute left-3 top-3 h-6 w-6 rounded-full bg-[#ff4d8d]" />
-      <div className="absolute right-4 top-4 h-0 w-0 border-x-[10px] border-b-[18px] border-x-transparent border-b-[#2ec4b6]" />
-      <div className="absolute bottom-3 left-6 h-3 w-14 rotate-[-8deg] bg-[#ffbf00]" />
-      <div className="absolute bottom-5 right-5 h-5 w-5 border-[3px] border-[#5b3cc4]" />
-    </div>
-  ),
-  ocean: (
-    <div className="relative h-full overflow-hidden bg-gradient-to-b from-cyan-800 to-[#031a2b]">
-      {[20, 45, 70].map((t, i) => (
-        <div key={i} className="absolute h-1 w-1 rounded-full bg-cyan-200/70" style={{ top: `${t}%`, left: `${15 + i * 28}%` }} />
-      ))}
-      <div className="absolute bottom-3 left-3 text-[10px] font-semibold text-cyan-100">deep work</div>
-    </div>
-  ),
-  fashion: (
-    <div className="flex h-full flex-col justify-between bg-neutral-100 p-3">
-      <div className="font-serif text-[22px] leading-none tracking-[-0.04em] text-black">Atelier</div>
-      <div className="flex gap-1">
-        <div className="h-8 flex-1 bg-neutral-300" />
-        <div className="h-8 flex-1 bg-neutral-800" />
+
+  serif: (
+    <div className="flex h-full select-none flex-col justify-between bg-[#fbf8f1] p-2.5 text-stone-900 leading-tight">
+      <div>
+        <div className="border-b border-stone-300 pb-1 text-center">
+          <p className="font-serif text-[10px] tracking-wide text-stone-950 uppercase">Claire De Roche</p>
+          <p className="font-serif text-[6.5px] italic text-stone-600">Editorial Lead &amp; Brand Strategist · New York</p>
+        </div>
+        <div className="mt-1.5">
+          <p className="font-serif text-[6.5px] font-bold uppercase tracking-wider text-stone-700">Experience</p>
+          <div className="mt-1 font-serif">
+            <div className="flex justify-between text-[6.5px] font-bold text-stone-900">
+              <span>The Atlantic — Senior Editor</span>
+              <span className="font-sans text-[6px] text-stone-500">2020–Now</span>
+            </div>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-stone-700">
+              • Directed investigative features nominated for National Magazine Awards.
+            </p>
+            <p className="text-[6px] leading-[1.25] text-stone-700">
+              • Increased subscriber retention by 28% through newsletter redesign.
+            </p>
+          </div>
+          <div className="mt-1 font-serif">
+            <div className="flex justify-between text-[6.5px] font-bold text-stone-900">
+              <span>Condé Nast — Staff Writer</span>
+              <span className="font-sans text-[6px] text-stone-500">2016–20</span>
+            </div>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-stone-700">
+              • Authored 36 cover stories reaching 6.8M monthly readers.
+            </p>
+          </div>
+        </div>
       </div>
+      <p className="border-t border-stone-200 pt-0.5 font-serif text-[5.5px] text-stone-500">
+        Columbia University — M.S. in Journalism, Honors
+      </p>
+    </div>
+  ),
+
+  executive: (
+    <div className="flex h-full select-none flex-col justify-between bg-white text-neutral-900 leading-tight">
+      <div>
+        <div className="bg-[#0f172a] p-2 text-white">
+          <p className="text-[9.5px] font-bold tracking-wide uppercase">David K. Sterling</p>
+          <p className="text-[6.5px] font-medium text-amber-300">VP of Engineering · Cloud Infrastructure</p>
+          <div className="mt-1 flex gap-2 font-mono text-[5.5px] text-slate-300">
+            <span>$140M ARR</span>
+            <span>·</span>
+            <span>180+ Eng Org</span>
+            <span>·</span>
+            <span>FedRAMP</span>
+          </div>
+        </div>
+        <div className="p-2">
+          <p className="text-[6.5px] font-bold uppercase tracking-wider text-slate-800">Executive Leadership</p>
+          <div className="mt-1">
+            <div className="flex justify-between text-[6.5px] font-bold text-slate-900">
+              <span>Datadog — VP of Engineering</span>
+              <span className="font-mono text-[6px] text-slate-500">2021–Now</span>
+            </div>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-slate-600">
+              • Scaled global engineering org from 60 to 185 across 4 hubs.
+            </p>
+            <p className="text-[6px] leading-[1.25] text-slate-600">
+              • Spearheaded FedRAMP High certification, securing $52M pipeline.
+            </p>
+          </div>
+          <div className="mt-1">
+            <div className="flex justify-between text-[6.5px] font-bold text-slate-900">
+              <span>Snowflake — Senior Director</span>
+              <span className="font-mono text-[6px] text-slate-500">2017–21</span>
+            </div>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-slate-600">
+              • Built multi-cloud telemetry backbone ingesting 120PB/day.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="p-2 pt-0 font-mono text-[5.5px] text-slate-400">
+        Advisory: 3 Series-A Infrastructure Startups
+      </div>
+    </div>
+  ),
+
+  ivy: (
+    <div className="flex h-full select-none flex-col justify-between bg-white p-2.5 text-neutral-900 leading-tight">
+      <div>
+        <div className="border-b border-neutral-300 pb-1 text-center">
+          <p className="font-serif text-[10px] font-bold tracking-wider uppercase">Julian H. Montgomery</p>
+          <p className="font-serif text-[6px] text-neutral-600">74 Dunster Street, Cambridge, MA · jmontgomery@post.harvard.edu</p>
+        </div>
+        <div className="mt-1.5">
+          <p className="font-serif text-[6.5px] font-bold uppercase tracking-wider text-neutral-800">Education</p>
+          <div className="mt-0.5 font-serif text-[6px] text-neutral-700">
+            <p className="font-bold">HARVARD UNIVERSITY — A.B. in Economics (2020)</p>
+            <p>GPA: 3.92 / 4.00 · magna cum laude · Phi Beta Kappa</p>
+          </div>
+        </div>
+        <div className="mt-1.5">
+          <p className="font-serif text-[6.5px] font-bold uppercase tracking-wider text-neutral-800">Experience</p>
+          <div className="mt-0.5 font-serif">
+            <div className="flex justify-between text-[6.5px] font-bold text-neutral-900">
+              <span>GOLDMAN SACHS — Investment Banking</span>
+              <span className="font-sans text-[6px] text-neutral-500">2020–22</span>
+            </div>
+            <p className="text-[6px] leading-[1.25] text-neutral-700">
+              • Executed $16.4B in aggregate M&amp;A transactions across software.
+            </p>
+          </div>
+          <div className="mt-1 font-serif">
+            <div className="flex justify-between text-[6.5px] font-bold text-neutral-900">
+              <span>BLACKSTONE — Private Equity Associate</span>
+              <span className="font-sans text-[6px] text-neutral-500">2022–Now</span>
+            </div>
+            <p className="text-[6px] leading-[1.25] text-neutral-700">
+              • Led due diligence on $2.4B SaaS platform buyout.
+            </p>
+          </div>
+        </div>
+      </div>
+      <p className="border-t border-neutral-200 pt-0.5 font-serif text-[5.5px] text-neutral-500">
+        Financial Modeling · LBO &amp; DCF · Strategic M&amp;A
+      </p>
+    </div>
+  ),
+
+  techMono: (
+    <div className="flex h-full select-none flex-col justify-between bg-[#0b0f19] p-2.5 font-mono text-[7px] leading-snug text-emerald-400">
+      <div>
+        <div className="border-b border-emerald-900/60 pb-1">
+          <p className="font-bold text-emerald-300">&gt; alex_rivera.json</p>
+          <p className="text-[6px] text-emerald-500/70">role: "Staff Systems Architect" · Remote</p>
+        </div>
+        <div className="mt-1.5 space-y-1">
+          <div>
+            <p className="text-[6.5px] font-semibold text-emerald-200">Cloudflare — Staff Systems Eng</p>
+            <p className="text-[5.5px] text-emerald-500/60">2021 — present</p>
+            <p className="text-[6px] leading-[1.2] text-emerald-400/80">
+              * Built low-latency storage engine for Workers KV.
+            </p>
+          </div>
+          <div>
+            <p className="text-[6.5px] font-semibold text-emerald-200">Red Hat — Kernel Dev</p>
+            <p className="text-[5.5px] text-emerald-500/60">2017 — 2021</p>
+            <p className="text-[6px] leading-[1.2] text-emerald-400/80">
+              * eBPF packet scheduler optimizations in Linux 5.x.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-0.5 text-[5.5px] text-emerald-300">
+        {['Go', 'Rust', 'C++', 'Linux', 'eBPF', 'K8s'].map((s) => (
+          <span key={s} className="rounded border border-emerald-800/40 bg-emerald-950/80 px-1 py-px">{s}</span>
+        ))}
+      </div>
+    </div>
+  ),
+
+  minimal: (
+    <div className="flex h-full select-none flex-col justify-between bg-white p-2.5 text-neutral-900 leading-tight">
+      <div>
+        <div className="border-b-2 border-neutral-900 pb-1">
+          <p className="text-[10px] font-black uppercase tracking-tight">Sophia Lindqvist</p>
+          <p className="font-mono text-[6.5px] text-neutral-500">Senior Frontend Architect · Stockholm</p>
+        </div>
+        <div className="mt-1.5">
+          <p className="text-[6.5px] font-bold uppercase tracking-wider text-neutral-900">Experience</p>
+          <div className="mt-1">
+            <div className="flex justify-between text-[6.5px] font-bold">
+              <span>Spotify — Frontend Architect</span>
+              <span className="font-mono text-[6px] text-neutral-500">2021–Now</span>
+            </div>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-neutral-600">
+              • Rebuilt Web Player client, cutting memory overhead by 32%.
+            </p>
+          </div>
+          <div className="mt-1">
+            <div className="flex justify-between text-[6.5px] font-bold">
+              <span>Klarna — Senior Frontend</span>
+              <span className="font-mono text-[6px] text-neutral-500">2018–21</span>
+            </div>
+            <p className="mt-0.5 text-[6px] leading-[1.25] text-neutral-600">
+              • Built checkout SDK deployed on 45k merchant stores.
+            </p>
+          </div>
+        </div>
+      </div>
+      <p className="border-t border-neutral-200 pt-0.5 font-mono text-[5.5px] text-neutral-500">
+        TypeScript, React, WebAudio, CSS Architecture
+      </p>
     </div>
   ),
 }
 
 const ROW_A = [
   { name: 'Classic ATS', kind: 'Resume', p: 'classic' },
-  { name: 'Swiss Typography', kind: 'Portfolio', p: 'swiss' },
+  { name: 'Swiss Typography', kind: 'Portfolio', image: '/template-previews/Swiss_Typography.png' },
   { name: 'Modern Clean', kind: 'Resume', p: 'split' },
-  { name: 'Neon Cityscape', kind: 'Portfolio', p: 'neon' },
+  { name: 'Neon Cityscape', kind: 'Portfolio', image: '/template-previews/Neon_Cityscape.png' },
   { name: 'Elegant Serif', kind: 'Resume', p: 'serif' },
-  { name: 'Terminal Skills', kind: 'Portfolio', p: 'terminal' },
+  { name: 'Terminal CLI', kind: 'Portfolio', image: '/template-previews/Terminal_CLI.png' },
+  { name: 'Bento Box', kind: 'Portfolio', image: '/template-previews/Bento_Box.png' },
+  { name: 'Tech Mono', kind: 'Resume', p: 'techMono' },
 ]
+
 const ROW_B = [
-  { name: 'Northern Fjords', kind: 'Portfolio', p: 'fjords' },
-  { name: 'Executive', kind: 'Resume', p: 'split' },
-  { name: 'Color Block', kind: 'Portfolio', p: 'block' },
-  { name: 'Minimal Dark Fluid', kind: 'Portfolio', p: 'fluid' },
-  { name: 'Memphis Pop', kind: 'Portfolio', p: 'memphis' },
-  { name: 'Ivy League', kind: 'Resume', p: 'classic' },
-  { name: 'Ocean Depths', kind: 'Portfolio', p: 'ocean' },
-  { name: 'High Fashion', kind: 'Portfolio', p: 'fashion' },
+  { name: 'Northern Fjords', kind: 'Portfolio', image: '/template-previews/Northern_Fjords.png' },
+  { name: 'Executive Suite', kind: 'Resume', p: 'executive' },
+  { name: 'Cyberpunk', kind: 'Portfolio', image: '/template-previews/Cyberpunk.png' },
+  { name: 'Minimalist White', kind: 'Portfolio', image: '/template-previews/Minimalist_White.png' },
+  { name: 'Memphis Pop', kind: 'Portfolio', image: '/template-previews/Memphis_Pop.png' },
+  { name: 'Ivy League', kind: 'Resume', p: 'ivy' },
+  { name: 'Ocean Depths', kind: 'Portfolio', image: '/template-previews/Ocean_Depths.png' },
+  { name: 'High Fashion', kind: 'Portfolio', image: '/template-previews/High_Fashion.png' },
+  { name: 'Vintage Newspaper', kind: 'Portfolio', image: '/template-previews/Vintage_Newspaper.png' },
+  { name: 'Minimal Resume', kind: 'Resume', p: 'minimal' },
 ]
 
 function TemplateCard({ t }) {
+  const [imgError, setImgError] = useState(false)
   return (
-    <div className="w-56 shrink-0 rounded-lg border border-border bg-card p-1.5 transition hover:-translate-y-0.5 hover:border-foreground/20 sm:w-60">
-      <div className="aspect-[4/3] overflow-hidden rounded-md border border-border/60">{PREVIEWS[t.p]}</div>
+    <div className="group w-56 shrink-0 rounded-lg border border-border bg-card p-1.5 transition hover:-translate-y-0.5 hover:border-foreground/20 sm:w-60">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-border/60 bg-secondary/30">
+        {t.image && !imgError ? (
+          <img
+            src={t.image}
+            alt={t.name}
+            onError={() => setImgError(true)}
+            loading="lazy"
+            className="h-full w-full object-cover object-top transition duration-300 group-hover:scale-[1.03]"
+          />
+        ) : (
+          PREVIEWS[t.p] || PREVIEWS.classic
+        )}
+      </div>
       <div className="flex items-center gap-2 px-1.5 pb-1 pt-2.5">
         <span className="truncate text-[12.5px] font-medium tracking-tight text-foreground/80">{t.name}</span>
-        <span className="ml-auto font-mono text-[9px] uppercase tracking-[0.18em] text-foreground/30">{t.kind}</span>
+        <span
+          className={cn(
+            'ml-auto rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.18em]',
+            t.kind === 'Resume'
+              ? 'bg-primary/10 text-primary font-medium'
+              : 'bg-accent text-accent-foreground font-medium',
+          )}
+        >
+          {t.kind}
+        </span>
       </div>
     </div>
   )

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>CareerPilot CP Yoke concept</title>
+  <!-- CP Yoke v2: breathing room between C terminals and P -->
+  <path d="M 168.2 70 A 78 78 0 1 0 168.2 186" fill="none" stroke="#000" stroke-width="24"/>
+  <line x1="136" y1="66" x2="136" y2="190" stroke="#000" stroke-width="24"/>
+  <path d="M 136 76 A 32 32 0 1 1 136 140" fill="none" stroke="#000" stroke-width="24"/>
+</svg>

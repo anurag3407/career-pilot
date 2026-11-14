@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>CareerPilot Loop C concept</title>
+  <!-- Loop C v2: contrail C whose terminal curls into a clean loop-the-loop, plane dot exiting -->
+  <path d="M 165.3 176.6 A 68 68 0 1 1 165.3 87.4" fill="none" stroke="#000" stroke-width="20"/>
+  <circle cx="186" cy="90" r="16" fill="none" stroke="#000" stroke-width="20"/>
+  <circle cx="220" cy="124" r="12" fill="#000"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Waypoints: dotted route from applied to offer -->
+  <path d="M 46 210 C 92 210, 100 164, 134 136 S 200 94, 206 62" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round" stroke-dasharray="0.1 27"/>
+  <circle cx="46" cy="210" r="12" fill="none" stroke="#000" stroke-width="12"/>
+  <circle cx="134" cy="136" r="12" fill="none" stroke="#000" stroke-width="12"/>
+  <circle cx="206" cy="62" r="22" fill="#000"/>
+</svg>

@@ -103,19 +103,21 @@ export function Reveal({ children, delay = 0, className, as = 'div' }) {
   )
 }
 
-/** CareerPilot mark: a heading chevron inside a rounded tile. */
+/** CareerPilot mark: four pilot rank stripes swept into a wing, on the Signal Orange tile. */
 export function LogoMark({ className }) {
   return (
     <span
       className={cn(
-        'inline-grid h-6 w-6 place-items-center rounded-[7px] bg-foreground text-background',
+        'inline-grid h-6 w-6 place-items-center rounded-[7px] bg-primary text-primary-foreground',
         className,
       )}
       aria-hidden="true"
     >
-      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none">
-        <path d="M2.5 9.5 13.5 3l-4 11-1.8-4.7L2.5 9.5Z" fill="currentColor" />
-        <path d="M7.7 9.3 13.5 3" stroke="var(--primary)" strokeWidth="1.6" strokeLinecap="round" />
+      <svg viewBox="0 0 256 256" className="h-[78%] w-[78%]" fill="currentColor">
+        <path d="M 53 52 L 174 52 L 204 82 L 53 82 A 15 15 0 0 1 53 52 Z" />
+        <path d="M 53 92 L 144 92 L 174 122 L 53 122 A 15 15 0 0 1 53 92 Z" />
+        <path d="M 53 132 L 114 132 L 144 162 L 53 162 A 15 15 0 0 1 53 132 Z" />
+        <path d="M 53 172 L 84 172 L 114 202 L 53 202 A 15 15 0 0 1 53 172 Z" />
       </svg>
     </span>
   )

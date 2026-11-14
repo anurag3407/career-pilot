@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Lift: two wings; the negative-space chevron between them is the lift arrow -->
+  <path d="M 36 112 C 84 56, 172 52, 228 88 L 140 156 L 36 112 Z" fill="#000"/>
+  <path d="M 36 150 L 140 194 L 228 126 C 176 218, 84 222, 36 150 Z" fill="#000"/>
+</svg>
