@@ -2,7 +2,7 @@ import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Heart, MapPin, Mail, Github, Linkedin, Twitter, ArrowRight, Seedling,
+  Heart, MapPin, Mail, Github, Linkedin, Twitter, ArrowRight,
   Users, Globe, HandHeart, Sprout, Quote, Target, CalendarDays, ExternalLink
 } from 'lucide-react';
 
@@ -151,7 +151,7 @@ const Impact = ({ data }) => {
   const stats = data.stats || {};
   const items = [
     { Icon: CalendarDays, label: 'Years of service', value: stats.yearsExperience, suffix: '+' },
-    { Icon: Seedling, label: 'Programs delivered', value: stats.projectsCompleted, suffix: '+' },
+    { Icon: Sprout, label: 'Programs delivered', value: stats.projectsCompleted, suffix: '+' },
     { Icon: Users, label: 'Lives touched', value: stats.happyClients, suffix: '+' },
   ].filter(s => s.value !== undefined && s.value !== null && s.value !== '');
 
@@ -199,7 +199,7 @@ const About = ({ data }) => {
                 )}
                 <span className="absolute -bottom-3 -right-3 w-16 h-16 rounded-full flex items-center justify-center rotate-6"
                   style={{ background: OLIVE, boxShadow: '0 6px 16px rgba(53,40,27,0.2)' }}>
-                  <Seedling size={26} strokeWidth={1.6} style={{ color: SUN }} />
+                  <Sprout size={26} strokeWidth={1.6} style={{ color: SUN }} />
                 </span>
               </div>
             </div>
@@ -319,7 +319,7 @@ const Projects = ({ data }) => {
     <section id="projects" className="relative overflow-hidden" style={{ background: `linear-gradient(180deg, ${CREAM_DEEP} 0%, ${CREAM} 100%)` }}>
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-24">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.08 }} variants={stagger}>
-          <SectionHead icon={Seedling} label="Our work" title="Programs & initiatives" />
+          <SectionHead icon={Sprout} label="Our work" title="Programs & initiatives" />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
             {projects.map((project, i) => {
               const pct = 55 + ((i * 17) % 45);

@@ -2,7 +2,7 @@ import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Plane, PlaneTakeoff, PlaneLanding, Ticket, Luggage, MapPin, Calendar,
+  Plane, PlaneTakeoff, PlaneLanding, Ticket as TicketIcon, Luggage, MapPin, Calendar,
   Mail, Github, Linkedin, Twitter, ExternalLink, ChevronDown, Radio
 } from 'lucide-react';
 
@@ -92,7 +92,7 @@ const Hero = ({ p }) => {
         <motion.div variants={fadeUp} className="rounded-2xl shadow-2xl overflow-hidden" style={{ backgroundColor: PAPER }}>
           <div className="flex items-center justify-between px-6 py-3" style={{ backgroundColor: RED }}>
             <span className="flex items-center gap-2 text-white text-xs font-bold tracking-[0.3em] uppercase">
-              <Ticket size={15} /> Boarding Pass
+              <TicketIcon size={15} /> Boarding Pass
             </span>
             <span className="text-white/90 text-[10px] font-semibold tracking-[0.25em] uppercase">Portfolio Airlines</span>
           </div>
