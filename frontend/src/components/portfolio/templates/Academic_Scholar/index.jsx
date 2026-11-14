@@ -2,8 +2,8 @@ import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  GraduationCap, BookOpen, Mail, MapPin, Phone, FileText, Quote,
-  Landmark, Library, ExternalLink, ArrowUpRight, Award, Microscope,
+  GraduationCap, Mail, MapPin, Phone, FileText, Quote,
+  Landmark, Library, ExternalLink, Award, Microscope,
   ScrollText, FlaskConical, Users, Globe, Linkedin, Github, Twitter
 } from 'lucide-react';
 
@@ -111,9 +111,11 @@ const Masthead = ({ data }) => (
           style={{ color: INK }}>
           {data.personal?.name || 'Portfolio'}
         </motion.h1>
-        <motion.p variants={fadeUp} className="font-serif text-xl md:text-2xl italic mb-6" style={{ color: '#4d483f' }}>
-          {data.personal?.title || ''}
-        </motion.p>
+        {data.personal?.title && (
+          <motion.p variants={fadeUp} className="font-serif text-xl md:text-2xl italic mb-6" style={{ color: '#4d483f' }}>
+            {data.personal.title}
+          </motion.p>
+        )}
         <Rule className="w-56 mx-auto mb-6" />
         {data.personal?.tagline && (
           <motion.p variants={fadeUp} className="font-serif text-sm md:text-base leading-relaxed max-w-xl mx-auto mb-6"
@@ -260,7 +262,7 @@ const Publications = ({ data }) => (
     <div className="max-w-4xl mx-auto">
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.12 }} variants={stagger}>
         <SectionHead numeral="III" title="Selected Publications"
-          sub="Peer-reviewed papers, conference proceedings &amp; working papers." />
+          sub="Peer-reviewed papers, conference proceedings & working papers." />
         <div className="space-y-10">
           {data.projects.map((pub, i) => (
             <motion.article key={i} variants={fadeUp}
@@ -324,7 +326,7 @@ const Timeline = ({ data }) => (
   <section id="experience" className="py-24 px-6" style={{ background: PAPER }}>
     <div className="max-w-4xl mx-auto">
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }} variants={stagger}>
-        <SectionHead numeral="IV" title="Education &amp; Appointments"
+        <SectionHead numeral="IV" title="Education & Appointments"
           sub="Institutions, positions and milestones in chronological order." />
         <div className="relative border-l-2 pl-8 md:pl-12 space-y-11" style={{ borderColor: HAIR }}>
           {data.experience.map((exp, i) => (

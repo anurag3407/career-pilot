@@ -82,8 +82,8 @@ const SectionHead = ({ label, title, note }) => (
 const Monogram = ({ name, size = 120 }) => {
   const initials = (name || '?').split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
   return (
-    <div className="flex items-center justify-center" {...WOBBLE}
-      style={{ width: size, height: size, border: `2px solid ${INK}`, fontFamily: HAND, fontSize: size * 0.3, color: INK, background: 'rgba(255,251,238,0.7)' }}>
+    <div className="flex items-center justify-center"
+      style={{ ...WOBBLE, width: size, height: size, border: `2px solid ${INK}`, fontFamily: HAND, fontSize: size * 0.3, color: INK, background: 'rgba(255,251,238,0.7)' }}>
       {initials}
     </div>
   );
@@ -186,8 +186,8 @@ const About = ({ data }) => {
           {statItems.length > 0 && (
             <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-4">
               {statItems.map((s, i) => (
-                <div key={i} className="px-5 py-3 text-center" {...WOBBLE}
-                  style={{ border: `1.5px solid ${MUTED}`, background: 'rgba(255,251,238,0.55)', transform: `rotate(${i % 2 === 0 ? -1 : 1}deg)` }}>
+                <div key={i} className="px-5 py-3 text-center"
+                  style={{ ...WOBBLE, border: `1.5px solid ${MUTED}`, background: 'rgba(255,251,238,0.55)', transform: `rotate(${i % 2 === 0 ? -1 : 1}deg)` }}>
                   <div className="text-2xl font-bold" style={{ fontFamily: SERIF, color: PENCIL }}>{s.value}</div>
                   <div className="text-[11px] mt-1" style={{ fontFamily: HAND, color: MUTED }}>{s.label}</div>
                 </div>

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   AppWindow, CircleUser, LayoutDashboard, Clock, Mail, MessageCircle,
   Minus, Square, X, MapPin, Github, Linkedin, Twitter, Send,
-  GripHorizontal, FolderOpen, Sparkles, Cloud, Image as ImageIcon
+  GripHorizontal, FolderOpen, Sparkles, Cloud
 } from 'lucide-react';
 
 /**

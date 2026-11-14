@@ -8,6 +8,7 @@
 #   cd worker && npx wrangler login && npx wrangler deploy
 #
 # Secrets (set once — never commit):
+#   npx wrangler secret put CLOUDFLARE_API_TOKEN
 #   npx wrangler secret put GEMINI_API_KEY
 #   npx wrangler secret put OPENAI_API_KEY
 #   npx wrangler secret put GROQ_API_KEY
@@ -23,6 +24,10 @@ main = "src/index.js"
 compatibility_date = "2026-11-01"
 workers_dev = true
 
+[ai]
+binding = "AI"
+
 [vars]
 ALLOWED_ORIGINS = "*"
-DEFAULT_AI_PROVIDER = "openrouter"
+DEFAULT_AI_PROVIDER = "cloudflare"
+CLOUDFLARE_ACCOUNT_ID = "74d877492e541ba6d459990fff4fad12"
