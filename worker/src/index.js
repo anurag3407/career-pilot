@@ -410,7 +410,7 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
 
     const url = new URL(request.url);
-    const path = url.pathname;
+    const path = url.pathname.replace(/^\/gateway/, '');
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
 
     if (!rateLimit(ip)) return json({ error: 'Rate limit exceeded, try again in a minute.' }, 429, cors);

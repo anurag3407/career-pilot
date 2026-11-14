@@ -29,7 +29,3 @@ workers_dev = true
 ALLOWED_ORIGINS = "*"
 # Provider used when the request carries no BYOK key and no explicit provider.
 DEFAULT_AI_PROVIDER = "gemini"
-
-# Observed limits for the free tier (kept conservative; per-isolate, best effort)
-[limits]
-cpu_ms = 50
