@@ -1,3 +1,10 @@
+# [1.283.0](https://github.com/anurag3407/career-pilot/compare/v1.282.0...v1.283.0) (2026-11-14)
+
+
+### Features
+
+* **portfolio:** add implementations for Academic Scholar, Creative Agency, and remaining templates ([88a9af7](https://github.com/anurag3407/career-pilot/commit/88a9af73ca32afd77e0af502d3b9a1ca948c009e))
+
 # [1.282.0](https://github.com/anurag3407/career-pilot/compare/v1.281.0...v1.282.0) (2026-11-14)
 
 
