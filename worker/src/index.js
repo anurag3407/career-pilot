@@ -20,7 +20,7 @@ const DEFAULT_MODELS = {
   gemini: 'gemini-2.5-flash',
   openai: 'gpt-4o-mini',
   groq: 'llama-3.3-70b-versatile',
-  openrouter: 'openai/gpt-4o-mini',
+  openrouter: 'liquid/lfm-3-1.7b:free',
   anthropic: 'claude-3-5-haiku-latest',
   custom: 'gpt-4o-mini',
 };

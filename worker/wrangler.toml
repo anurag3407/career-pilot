@@ -24,8 +24,5 @@ compatibility_date = "2026-11-01"
 workers_dev = true
 
 [vars]
-# Comma-separated allowlist, or "*" to allow any origin (fine for BYOK-only
-# deployments; tighten before enabling platform keys in production).
 ALLOWED_ORIGINS = "*"
-# Provider used when the request carries no BYOK key and no explicit provider.
-DEFAULT_AI_PROVIDER = "gemini"
+DEFAULT_AI_PROVIDER = "openrouter"
