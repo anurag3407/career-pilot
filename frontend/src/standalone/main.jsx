@@ -14,43 +14,29 @@ import { PortfolioProvider, normalizePortfolioData } from '../context/PortfolioC
  * templates receive the user's authentic data, with zero stranger dummy fallback.
  */
 
-// Curated deployable templates across artistic, minimalist, developer, and interactive themes
+/**
+ * Every template in `components/portfolio/templates` is deployable.
+ *
+ * The map is derived with `import.meta.glob` so a template added to the gallery
+ * can never silently fall back to the generic layout at deploy time. Each entry
+ * is its own lazy chunk: only the chosen template is ever downloaded.
+ */
 const templateMap = {
-  // Flagship Core
-  Cherry_Blossom: lazy(() => import('../components/portfolio/templates/Cherry_Blossom/index.jsx')),
-  Swiss_Typography: lazy(() => import('../components/portfolio/templates/Swiss_Typography/index.jsx')),
-  Liquid_Glass: lazy(() => import('../components/portfolio/templates/Liquid_Glass/index.jsx')),
-  Midnight_Gradient: lazy(() => import('../components/portfolio/templates/Midnight_Gradient/index.jsx')),
-  Playing_Cards: lazy(() => import('../components/portfolio/templates/Playing_Cards/index.jsx')),
-
-  // Featured Complete Creative Designs
-  MySpace_2005: lazy(() => import('../components/portfolio/templates/MySpace_2005/index.jsx')),
-  Macintosh_1984_Classic: lazy(() => import('../components/portfolio/templates/Macintosh_1984_Classic/index.jsx')),
-  Hot_Air_Balloon_Drifting: lazy(() => import('../components/portfolio/templates/Hot_Air_Balloon_Drifting/index.jsx')),
-  Stand_up_Comedy_Brick_Wall_Mic: lazy(() => import('../components/portfolio/templates/Stand_up_Comedy_Brick_Wall_Mic/index.jsx')),
-  Swipe_Right_Dating_App: lazy(() => import('../components/portfolio/templates/Swipe_Right_Dating_App/index.jsx')),
-  Rubik_s_Cube_3D_Rotate: lazy(() => import('../components/portfolio/templates/Rubik_s_Cube_3D_Rotate/index.jsx')),
-  Jigsaw_Puzzle_Assembly: lazy(() => import('../components/portfolio/templates/Jigsaw_Puzzle_Assembly/index.jsx')),
-
-  // High-Demand Developer & Tech Themes
-  Terminal_Skills: lazy(() => import('../components/portfolio/templates/Terminal_Skills/index.jsx')),
-  Developer_IDE: lazy(() => import('../components/portfolio/templates/Developer_IDE/index.jsx')),
-  Cyberpunk: lazy(() => import('../components/portfolio/templates/Cyberpunk/index.jsx')),
-  Minimalist_White: lazy(() => import('../components/portfolio/templates/Minimalist_White/index.jsx')),
-  Tech_Startup: lazy(() => import('../components/portfolio/templates/Tech_Startup/index.jsx')),
-  Bento_Box: lazy(() => import('../components/portfolio/templates/Bento_Box/index.jsx')),
-  One_Pixel_Master: lazy(() => import('../components/portfolio/templates/One_Pixel_Master/index.jsx')),
-  MacOS_Desktop: lazy(() => import('../components/portfolio/templates/MacOS_Desktop/index.jsx')),
-  DOS_Terminal: lazy(() => import('../components/portfolio/templates/DOS_Terminal/index.jsx')),
-  Anime_Manga: lazy(() => import('../components/portfolio/templates/Anime_Manga/index.jsx')),
-  Neumorphism: lazy(() => import('../components/portfolio/templates/Neumorphism/index.jsx')),
-  Glassmorphism: lazy(() => import('../components/portfolio/templates/Glassmorphism/index.jsx')),
-  Twitter_Profile: lazy(() => import('../components/portfolio/templates/Twitter_Profile/index.jsx')),
-  GitHub_Profile: lazy(() => import('../components/portfolio/templates/GitHub_Profile/index.jsx')),
-  VS_Code_Theme: lazy(() => import('../components/portfolio/templates/VS_Code_Theme/index.jsx')),
-  Terminal_CLI: lazy(() => import('../components/portfolio/templates/Terminal_CLI/index.jsx')),
-  Retro_Futurism: lazy(() => import('../components/portfolio/templates/Retro_Futurism/index.jsx')),
+  // Composable Studio layout — the Portfolio Builder's own template
+  Studio: lazy(() => import('../components/portfolio/studio/StudioSite')),
 };
+
+for (const [path, loader] of Object.entries(
+  import.meta.glob('../components/portfolio/templates/*/index.jsx'),
+)) {
+  const id = path.replace('../components/portfolio/templates/', '').replace('/index.jsx', '');
+  templateMap[id] = lazy(loader);
+}
+
+for (const [path, loader] of Object.entries(import.meta.glob('../components/portfolio/templates/*.jsx'))) {
+  const id = path.replace('../components/portfolio/templates/', '').replace('.jsx', '');
+  if (!templateMap[id]) templateMap[id] = lazy(loader);
+}
 
 function mapContactToSocials(portfolioData) {
   if (!portfolioData) return {};

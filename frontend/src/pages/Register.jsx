@@ -1,5 +1,4 @@
 import React from 'react';
-import { SignUp } from '@clerk/clerk-react';
 import { useLocation } from 'react-router-dom';
 import AuthNotConfigured from '../components/ui/AuthNotConfigured';
 import SupabaseAuthCard from '../components/auth/SupabaseAuthCard';
@@ -10,9 +9,7 @@ export default function Register() {
   const location = useLocation();
   const fallbackRedirectUrl = resolvePostAuthRedirect(location.state?.from);
 
-  const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-  if (!isSupabaseConfigured && !clerkKey) {
+  if (!isSupabaseConfigured) {
     return <AuthNotConfigured mode="register" />;
   }
 
@@ -25,11 +22,7 @@ export default function Register() {
       </div>
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-12">
-        {isSupabaseConfigured ? (
-          <SupabaseAuthCard mode="register" fallbackRedirectUrl={fallbackRedirectUrl} />
-        ) : (
-          <SignUp routing="path" path="/register" signInUrl="/login" fallbackRedirectUrl={fallbackRedirectUrl} />
-        )}
+        <SupabaseAuthCard mode="register" fallbackRedirectUrl={fallbackRedirectUrl} />
       </div>
     </div>
   );

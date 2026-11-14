@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
-import { resumeApi, enhanceApi, portfolioApi } from '../services/api'
+import { resumeApi, enhanceApi, portfolioApi, getAuthHeaders } from '../services/api'
 
 import { decryptKey } from '../utils/encryption'
 import ReactMarkdown from 'react-markdown'
@@ -668,26 +668,7 @@ export default function Enhance() {
     }
   }
 
-  async function getAuthHeaders() {
-    const user = window.Clerk?.user
-
-    if (!user) {
-      if (import.meta.env.DEV) {
-        return {
-          Authorization: `Bearer mock-dev-token`,
-          'Content-Type': 'application/json',
-        }
-      }
-      throw new Error('Not authenticated')
-    }
-
-    const token = await user.getIdToken()
-
-    return {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    }
-  }
+  // getAuthHeaders imported from services/api (Supabase session based)
 
   const handleEnhanceWithAI = async () => {
     setEnhancing(true)

@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo } from 'react'
 import dummy from '../data/dummy_resume.json'
+import { formatPeriod } from '../utils/resumeDateFormat'
 
 /**
  * Resume data context.
@@ -56,11 +57,10 @@ function pickPeriod(item = {}) {
   if (item.period) return asString(item.period)
   if (item.duration) return asString(item.duration)
   if (item.year) return asString(item.year)
-  if (item.startDate || item.endDate) {
-    const s = item.startDate ? asString(item.startDate) : ''
-    const e = item.endDate ? asString(item.endDate) : (item.current ? 'Present' : '')
-    if (s && e) return `${s} – ${e}`
-    return s || e
+  if (item.startDate || item.endDate || item.current) {
+    // The builder (and the AI extractor) store HTML month-input values, so the
+    // fallback has to format them: a template must never print "2020-01 – ".
+    return formatPeriod(item.startDate, item.endDate, Boolean(item.current))
   }
   return ''
 }

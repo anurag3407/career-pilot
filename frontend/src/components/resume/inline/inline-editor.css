@@ -1,0 +1,500 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   Inline resume canvas — print-faithful typography for the editable document.
+   Chrome (toolbars, gutters) is Tailwind; everything that lands in the PDF or
+   the printed page lives here.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.rce-root {
+  --rce-accent: #1f2937;
+  --rce-ink: #111827;
+  --rce-muted: #4b5563;
+  --rce-gap: 14px;
+}
+
+.rce-stage {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 28px 78px 72px;
+}
+
+.rce-scale {
+  transform-origin: top center;
+  flex: 0 0 auto;
+}
+
+.rce-paper {
+  position: relative;
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 15mm;
+  background: #ffffff;
+  color: var(--rce-ink);
+  font-size: 14px;
+  line-height: 1.45;
+  border-radius: 2px;
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── direct-manipulation affordances ───────────────────────────────────────── */
+.rce-editable {
+  min-width: 3px;
+  cursor: text;
+  outline: none;
+  border-radius: 2px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  transition: background-color 120ms ease, box-shadow 120ms ease;
+}
+
+.rce-editable:hover {
+  background-color: rgba(59, 130, 246, 0.07);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.07);
+}
+
+.rce-editable:focus {
+  background-color: rgba(59, 130, 246, 0.09);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+}
+
+.rce-editable:empty::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  font-style: italic;
+  pointer-events: none;
+}
+
+/* ── header block ─────────────────────────────────────────────────────────── */
+.rce-header {
+  text-align: center;
+}
+
+.rce-paper[data-head='left'] .rce-header {
+  text-align: left;
+}
+
+.rce-name {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.rce-title {
+  margin-top: 3px;
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--rce-accent);
+}
+
+.rce-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px 9px;
+  justify-content: center;
+  margin-top: 7px;
+  font-size: 12.2px;
+  color: var(--rce-muted);
+}
+
+.rce-paper[data-head='left'] .rce-contact {
+  justify-content: flex-start;
+}
+
+.rce-contact-item {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.rce-contact-sep {
+  opacity: 0.45;
+  margin-left: 1px;
+}
+
+.rce-header-rule {
+  margin-top: 9px;
+  border-top: 2px solid var(--rce-accent);
+}
+
+/* ── sections ─────────────────────────────────────────────────────────────── */
+.rce-section {
+  margin-top: var(--rce-gap);
+  position: relative;
+}
+
+.rce-section:first-of-type {
+  margin-top: calc(var(--rce-gap) + 2px);
+}
+
+.rce-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 7px;
+  min-height: 15px;
+}
+
+.rce-section-title {
+  font-size: 10.8px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--rce-accent);
+  white-space: nowrap;
+  font-family: var(--rce-heading-font, inherit);
+}
+
+.rce-section-line {
+  flex: 1 1 auto;
+  height: 1.5px;
+  background: var(--rce-accent);
+  opacity: 0.3;
+}
+
+.rce-paper[data-headings='underline'] .rce-section-head {
+  border-bottom: 1.5px solid var(--rce-accent);
+  padding-bottom: 3px;
+}
+
+.rce-paper[data-headings='underline'] .rce-section-line,
+.rce-paper[data-headings='bar'] .rce-section-line,
+.rce-paper[data-headings='plain'] .rce-section-line {
+  display: none;
+}
+
+.rce-paper[data-headings='bar'] .rce-section-title {
+  border-left: 3px solid var(--rce-accent);
+  padding-left: 8px;
+}
+
+.rce-paper[data-headings='plain'] .rce-section-title {
+  color: var(--rce-ink);
+  letter-spacing: 0.11em;
+}
+
+/* ── entries ──────────────────────────────────────────────────────────────── */
+.rce-entry {
+  position: relative;
+  margin-bottom: 9px;
+}
+
+.rce-entry:last-child {
+  margin-bottom: 0;
+}
+
+.rce-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.rce-role {
+  font-weight: 700;
+  flex: 1 1 auto;
+}
+
+.rce-company {
+  font-weight: 600;
+  color: var(--rce-accent);
+  font-style: italic;
+}
+
+.rce-paper[data-meta='normal'] .rce-company {
+  font-style: normal;
+}
+
+.rce-period {
+  flex: 0 0 auto;
+  color: var(--rce-muted);
+  font-size: 0.92em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.rce-meta {
+  color: var(--rce-muted);
+  font-size: 0.92em;
+  white-space: nowrap;
+}
+
+.rce-paragraph {
+  margin-top: 2px;
+}
+
+/* ── bullets ──────────────────────────────────────────────────────────────── */
+.rce-bullets {
+  list-style: none;
+  margin: 3px 0 0;
+  padding: 0;
+}
+
+.rce-bullet {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 1px 0;
+}
+
+.rce-bullet-dot {
+  flex: 0 0 auto;
+  line-height: inherit;
+  opacity: 0.85;
+}
+
+.rce-bullet-text {
+  flex: 1 1 auto;
+}
+
+/* ── skills ───────────────────────────────────────────────────────────────── */
+.rce-skill-row {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 5px;
+  padding: 1px 0;
+}
+
+.rce-skill-label {
+  font-weight: 600;
+  flex: 0 0 auto;
+}
+
+.rce-skill-colon {
+  flex: 0 0 auto;
+  color: var(--rce-muted);
+}
+
+.rce-skill-value {
+  flex: 1 1 60%;
+}
+
+/* ── hover gutters (chrome, never printed) ────────────────────────────────── */
+.rce-gutter {
+  position: absolute;
+  left: -27px;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  z-index: 2;
+}
+
+.rce-entry:hover > .rce-gutter,
+.rce-section:hover > .rce-section-head > .rce-gutter,
+.rce-skill-row:hover > .rce-gutter,
+.rce-bullet:hover > .rce-gutter {
+  opacity: 1;
+}
+
+.rce-gutter button,
+.rce-chrome-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid #d6dbe4;
+  background: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 120ms ease, border-color 120ms ease, background-color 120ms ease;
+}
+
+.rce-gutter button:hover,
+.rce-chrome-btn:hover {
+  color: var(--rce-accent);
+  border-color: var(--rce-accent);
+  background: #f8fafc;
+}
+
+.rce-gutter button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.rce-grip {
+  cursor: grab;
+}
+
+.rce-grip:active {
+  cursor: grabbing;
+}
+
+/* bullet tools sit in the right page margin so they never cover copy */
+.rce-bullet-tools {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  z-index: 2;
+}
+
+.rce-bullet:hover .rce-bullet-tools,
+.rce-skill-row:hover .rce-bullet-tools {
+  opacity: 1;
+}
+
+.rce-inline-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
+  padding: 1px 5px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 4px;
+  background: transparent;
+  color: #64748b;
+  font-size: 10.5px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.rce-entry:hover .rce-inline-add,
+.rce-section:hover .rce-inline-add,
+.rce-addbar:hover .rce-inline-add {
+  opacity: 1;
+}
+
+/* ── drop indicators ──────────────────────────────────────────────────────── */
+.is-drop-before::before,
+.is-drop-after::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #2563eb;
+  border-radius: 2px;
+  z-index: 3;
+}
+
+.is-drop-before::before {
+  top: -3px;
+}
+
+.is-drop-after::after {
+  bottom: -3px;
+}
+
+.rce-entry.is-drop-before,
+.rce-entry.is-drop-after,
+.rce-section.is-drop-before,
+.rce-section.is-drop-after,
+.rce-bullet.is-drop-before,
+.rce-bullet.is-drop-after {
+  position: relative;
+}
+
+/* ── page break guide ─────────────────────────────────────────────────────── */
+.rce-page-break {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed #f87171;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.rce-page-break span {
+  position: absolute;
+  right: 6px;
+  top: 3px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 9px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ── add-section bar ──────────────────────────────────────────────────────── */
+.rce-addbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.rce-add-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid #dbe2ec;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 10.5px;
+  cursor: pointer;
+}
+
+.rce-add-chip:hover {
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+/* ── export mode: strip every affordance ──────────────────────────────────── */
+.rce-exporting [data-export-hide] {
+  display: none !important;
+}
+
+.rce-exporting .rce-editable {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.rce-exporting .rce-editable:empty::before {
+  content: '';
+}
+
+/* Browser print / Save-as-PDF follows the same rules as the app's PDF export. */
+@media print {
+  .rce-stage {
+    padding: 0;
+    overflow: visible;
+    background: #ffffff;
+  }
+
+  .rce-scale {
+    transform: none !important;
+    margin-bottom: 0 !important;
+  }
+
+  .rce-paper {
+    box-shadow: none;
+    margin: 0;
+    width: 210mm;
+    min-height: 0;
+  }
+
+  .rce-editable:empty::before {
+    content: '';
+  }
+
+  [data-export-hide] {
+    display: none !important;
+  }
+}

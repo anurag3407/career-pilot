@@ -64,6 +64,20 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
+            {/* Section anchors (unified landing) */}
+            {[
+              { hash: '#features', label: 'Features' },
+              { hash: '#open-source', label: 'Open Source' },
+            ].map(({ hash, label }) => (
+              <a
+                key={hash}
+                href={location.pathname === '/' ? hash : `/${hash}`}
+                className="px-4 py-2 text-sm font-bold text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/60 transition-all"
+              >
+                {label}
+              </a>
+            ))}
+
             {/* Products Dropdown */}
             <div
               className="relative"
@@ -185,6 +199,24 @@ export default function Navbar() {
             className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="px-4 py-5 space-y-4">
+              {/* Landing sections */}
+              <div className="flex gap-2 px-1">
+                <a
+                  href={location.pathname === '/' ? '#features' : '/#features'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 text-center px-3 py-2 rounded-lg border border-border text-sm font-bold text-foreground"
+                >
+                  Features
+                </a>
+                <a
+                  href={location.pathname === '/' ? '#open-source' : '/#open-source'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 text-center px-3 py-2 rounded-lg border border-border text-sm font-bold text-foreground"
+                >
+                  Open Source
+                </a>
+              </div>
+
               {/* Products */}
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 mb-2">Products</p>

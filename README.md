@@ -585,6 +585,12 @@ Tests live in `backend/src/__tests__/`, `backend/src/services/__tests__/`, and `
 
 ## 🚢 Deployment
 
+> **⚡ Unified free deployment (recommended):** the platform now runs as a
+> React SPA on **Cloudflare Pages** + one AI-gateway **Cloudflare Worker** +
+> **Supabase** (auth, Postgres/RLS, storage) — all on free tiers, no Node
+> server required for the core loop. See
+> [docs/UNIFIED_PLATFORM.md](docs/UNIFIED_PLATFORM.md) for the runbook.
+
 Career Pilot is built to deploy on the platform of your choice:
 
 - **Frontend** — `frontend/dist/` is static; works on Netlify, Vercel, Cloudflare Pages, GitHub Pages, Firebase Hosting, or any Nginx + CDN.

@@ -83,7 +83,7 @@ export const FEATURES = [
     badge: 'New Templates',
     tagline: 'Your work deserves to be seen. Draft, preview, and publish a portfolio with the providers you choose.',
     Illustration: Ill.PortfolioBuilderMockup,
-    primaryAction: { label: 'Open Portfolio Builder', to: '/portfolio-builder/templates' },
+    primaryAction: { label: 'Open Portfolio Builder', to: '/portfolio-builder/studio' },
     seo: {
       title: 'AI Portfolio Builder — CareerPilot',
       description: 'Turn resume data into portfolio content, preview responsive themes, and publish through GitHub Pages, Cloudflare Pages, or Netlify.',
@@ -95,7 +95,7 @@ export const FEATURES = [
       title: 'Turn your resume into',
       accentText: 'a stunning portfolio.',
       description: 'Import resume or GitHub data, preview responsive themes, then publish through your selected hosting provider.',
-      primaryCta: { text: 'Build your portfolio', to: '/portfolio-builder/templates' },
+      primaryCta: { text: 'Build your portfolio', to: '/portfolio-builder/studio' },
       secondaryCta: { text: 'See examples', href: '#demo' },
       stats: [{ value: '20+', label: 'Portfolio themes' }, { value: '3', label: 'Publish providers' }, { value: '100%', label: 'Mobile responsive' }],
     },
@@ -141,7 +141,7 @@ export const FEATURES = [
         },
       ],
     },
-    cta: { headline: 'Claim your piece of the internet.', subtext: 'Launch your developer portfolio today.', ctaText: 'View templates', ctaTo: '/portfolio-builder/templates' },
+    cta: { headline: 'Claim your piece of the internet.', subtext: 'Launch your developer portfolio today.', ctaText: 'View templates', ctaTo: '/portfolio-builder/studio' },
   },
   {
     slug: 'resume-roast',

@@ -1,9 +1,26 @@
 import CryptoJS from 'crypto-js';
 
+const FALLBACK_SECRET = 'fallback_secret_key_careerpilot';
+
+function getSupabaseUserId() {
+  if (typeof window === 'undefined' || !window.localStorage) return null;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith('sb-') && key.endsWith('-auth-token'))) {
+        const item = JSON.parse(localStorage.getItem(key));
+        if (item?.user?.id) return item.user.id;
+      }
+    }
+  } catch {
+    // Ignore storage parse issues
+  }
+  return null;
+}
+
 const getSecretKey = () => {
-  const user = window.Clerk?.user;
-  // Fallback secret if user is not fully loaded
-  return user?.id || 'fallback_secret_key_careerpilot';
+  const userId = getSupabaseUserId();
+  return userId || FALLBACK_SECRET;
 };
 
 export const encryptKey = (plainTextKey) => {
@@ -25,7 +42,15 @@ export const decryptKey = (cipherText) => {
     const bytes = CryptoJS.AES.decrypt(cipherText, secret);
     const originalText = bytes.toString(CryptoJS.enc.Utf8);
 
-    return originalText || cipherText;
+    if (originalText) return originalText;
+
+    if (secret !== FALLBACK_SECRET) {
+      const fallbackBytes = CryptoJS.AES.decrypt(cipherText, FALLBACK_SECRET);
+      const fallbackText = fallbackBytes.toString(CryptoJS.enc.Utf8);
+      if (fallbackText) return fallbackText;
+    }
+
+    return cipherText;
   } catch (error) {
     // If decryption throws, it might be plaintext
     return cipherText;

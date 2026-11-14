@@ -1,11 +1,22 @@
 import { decryptKey } from '../utils/encryption'
+import {
+  authData as sbAuth,
+  resumeData as sbResumes,
+  resumeVersionData as sbVersions,
+  resumeAtsData as sbAts,
+  trackerData as sbTracker,
+  alertData as sbAlerts,
+  portfolioData as sbPortfolios,
+} from './supabaseData'
+import { searchJobs as gatewaySearchJobs, getModels as gatewayModels, validateKey as gatewayValidateKey } from './aiGateway'
+import { estimateSalaryClient } from '../lib/salaryEstimator'
 
 export const apiEvents = new EventTarget();
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
-// Helper to get auth headers
-async function getAuthHeaders() {
+// Helper to get auth headers (exported for pages that build their own calls)
+export async function getAuthHeaders() {
   let token = null;
 
   try {
@@ -14,14 +25,6 @@ async function getAuthHeaders() {
     token = data?.session?.access_token || null;
   } catch {
     // fallback
-  }
-
-  if (!token && window.Clerk?.session) {
-    try {
-      token = await window.Clerk.session.getToken();
-    } catch {
-      // fallback
-    }
   }
 
   if (!token) {
@@ -159,25 +162,16 @@ async function handleResponse(response) {
   return data || {};
 }
 // ============ AUTH API ============
+// Auth data lives in Supabase directly (profiles table + auth.users).
 export const authApi = {
-  // Verify token
+  // Verify the current session
   async verifyToken() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/auth/verify`, {
-      method: 'POST',
-      headers
-    })
-    return handleResponse(response)
+    return sbAuth.verifyToken();
   },
 
   // Get user profile
   async getProfile() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/auth/profile`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return sbAuth.getProfile();
   }
 }
 
@@ -185,10 +179,7 @@ export const authApi = {
 export const uploadApi = {
   // Upload PDF and extract text
   async uploadPdf(file, options = {}) {
-    const session = window.Clerk?.session
-    if (!session && !import.meta.env.DEV) throw new Error('Not authenticated')
-
-    const token = session ? await session.getToken() : 'mock-dev-token'
+    const token = await getSupabaseToken();
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -206,10 +197,7 @@ export const uploadApi = {
 
   // Extract text from PDF (re-process)
   async extractText(file, options = {}) {
-    const session = window.Clerk?.session
-    if (!session && !import.meta.env.DEV) throw new Error('Not authenticated')
-
-    const token = session ? await session.getToken() : 'mock-dev-token'
+    const token = await getSupabaseToken();
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -226,70 +214,50 @@ export const uploadApi = {
   }
 }
 
+// Supabase access token for legacy multipart endpoints (null in dev → mock token)
+async function getSupabaseToken() {
+  if (import.meta.env.DEV) return 'mock-dev-token'
+  try {
+    const { supabase } = await import('../config/supabase.js')
+    const { data } = await supabase.auth.getSession()
+    const token = data?.session?.access_token
+    if (!token) throw new Error('Not authenticated')
+    return token
+  } catch (err) {
+    throw new Error(err.message || 'Not authenticated')
+  }
+}
+
 // ============ RESUME API ============
 export const resumeApi = {
-  // Get all resumes
+  // Get all resumes (Supabase)
   async getAll() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return sbResumes.getAll()
   },
 
-  // Get single resume
+  // Get single resume (Supabase)
   async getById(resumeId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return sbResumes.getById(resumeId)
   },
 
-  // Create resume
+  // Create resume (Supabase)
   async create(data, options = {}) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(data),
-      signal: options.signal
-    })
-    return handleResponse(response)
+    return sbResumes.create(data, options)
   },
 
-  // Update resume
+  // Update resume (Supabase)
   async update(resumeId, data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
+    return sbResumes.update(resumeId, data)
   },
 
-  // Reorder sections
+  // Reorder sections (Supabase — merged into the stored document)
   async reorderSections(resumeId, sectionOrder) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/reorder`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify({ sectionOrder })
-    })
-    return handleResponse(response)
+    return sbResumes.update(resumeId, { sectionOrder })
   },
 
-  // Delete resume
+  // Delete resume (Supabase)
   async delete(resumeId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}`, {
-      method: 'DELETE',
-      headers
-    })
-    return handleResponse(response)
+    return sbResumes.delete(resumeId)
   },
 
   // Preview LinkedIn profile data before importing
@@ -336,12 +304,10 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
-  // Download resume as PDF
+  // Download resume as PDF (server-rendered; client-side export exists in
+  // services/atsPdfExport.js for Cloudflare-only deployments)
   async downloadPdf(resumeId, version = 'enhanced') {
-    const session = window.Clerk?.session
-    if (!session && !import.meta.env.DEV) throw new Error('Not authenticated')
-
-    const token = session ? await session.getToken() : 'mock-dev-token'
+    const token = await getSupabaseToken()
     const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}`, {
       method: 'GET',
       headers: {
@@ -380,25 +346,14 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
-  // Get all versions of a resume
+  // Get all versions of a resume (Supabase)
   async getVersions(resumeId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return sbVersions.getAll(resumeId)
   },
 
-  // Create a new snapshot/version of a resume
+  // Create a new snapshot/version of a resume (Supabase)
   async createVersion(resumeId, data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
+    return sbVersions.create(resumeId, data)
   },
 
   // Update specific version metadata
@@ -412,74 +367,60 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
-  // Delete specific version
+  // Delete specific version (Supabase)
   async deleteVersion(resumeId, versionId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}`, {
-      method: 'DELETE',
-      headers
-    })
-    return handleResponse(response)
+    return sbVersions.remove(resumeId, versionId)
   },
 
-  // Restore resume to a specific version
+  // Restore resume to a specific version (Supabase)
   async restoreVersion(resumeId, versionId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}/restore`, {
-      method: 'POST',
-      headers
-    })
-    return handleResponse(response)
+    return sbVersions.restore(resumeId, versionId)
   },
 
-  // Get ATS score progression history
+  // Get ATS score progression history (Supabase)
   async getAtsHistory(resumeId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/ats-history`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return sbAts.get(resumeId)
   },
 
-  // Log a new ATS score run to history
+  // Log a new ATS score run to history (Supabase)
   async logAtsHistory(resumeId, data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/ats-history`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
+    return sbAts.log(resumeId, data)
   }
 }
 
 // ============ PORTFOLIO API ============
 export const portfolioApi = {
-  // Get all portfolios
+  // Get all portfolios (Supabase)
   async getAll() {
-    const headers = await getAuthHeaders()
-
-    const response = await fetch(`${API_BASE}/portfolio`, {
-      method: 'GET',
-      headers
-    })
-
-    return handleResponse(response)
+    return sbPortfolios.getAll()
   },
 
-  // Create portfolio
+  // Create portfolio (Supabase)
   async create(data) {
-    const headers = await getAuthHeaders();
-    const response = await fetch(`${API_BASE}/portfolio`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(data)
-    });
-    return handleResponse(response);
+    return sbPortfolios.create(data)
   },
 
-  // Extract portfolio JSON from raw resume text
+  // Update portfolio section data (Supabase)
+  async update(portfolioId, data) {
+    return sbPortfolios.update(portfolioId, data)
+  },
+
+  // Get single portfolio (Supabase)
+  async getById(portfolioId) {
+    return sbPortfolios.getById(portfolioId)
+  },
+
+  // Delete portfolio (Supabase)
+  async delete(portfolioId) {
+    return sbPortfolios.delete(portfolioId)
+  },
+
+  // List portfolio deployments (Supabase)
+  async listDeployments() {
+    return sbPortfolios.listDeployments()
+  },
+
+  // Extract portfolio JSON from raw resume text (AI — backend service)
   async extractFromResume(resumeText) {
     const headers = await getAuthHeaders();
 
@@ -492,7 +433,7 @@ export const portfolioApi = {
     return handleResponse(response);
   },
 
-  // Generate portfolio JSON from an existing enhanced resume
+  // Generate portfolio JSON from an existing enhanced resume (AI — backend service)
   async generateFromResume(resumeId) {
     const headers = await getAuthHeaders();
 
@@ -503,16 +444,7 @@ export const portfolioApi = {
 
     return handleResponse(response);
   },
-  // Update portfolio section data
-  async update(portfolioId, data) {
-    const headers = await getAuthHeaders();
-    const response = await fetch(`${API_BASE}/portfolio/${portfolioId}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(data)
-    });
-    return handleResponse(response);
-  },
+
   // Validate a deploy provider token (cloudflare | netlify | github)
   async validateDeployToken(provider, token) {
     const headers = await getAuthHeaders()
@@ -523,7 +455,7 @@ export const portfolioApi = {
     })
     return handleResponse(response)
   },
-  // Deploy portfolio to Cloudflare Pages
+  // Deploy portfolio to Cloudflare Pages / Netlify / GitHub Pages
   async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/portfolio/deploy`, {
@@ -536,16 +468,35 @@ export const portfolioApi = {
 }
 
 // ============ SALARY API ============
+// Baseline estimator runs client-side (lib/salaryEstimator.js) so the feature
+// works with zero backend; live postings enrich it via the gateway when set.
 export const salaryApi = {
   // Estimate a salary band for a role / location / level
   async estimate({ title, location, experienceLevel }) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/salary/estimate`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ title, location, experienceLevel })
-    })
-    return handleResponse(response)
+    if (typeof title !== 'string' || !title.trim()) {
+      const err = new Error('title (job role) is required')
+      err.status = 400
+      throw err
+    }
+    let postings = []
+    try {
+      const result = await gatewaySearchJobs({
+        query: location ? `${title.trim()} in ${location}` : title.trim(),
+        num_pages: 1,
+      })
+      if (Array.isArray(result?.data)) postings = result.data.slice(0, 50)
+    } catch {
+      // live postings unavailable — baseline still produces a usable estimate
+    }
+    return {
+      success: true,
+      data: {
+        ...estimateSalaryClient({ title: title.trim(), location, experienceLevel, postings }),
+        role: title.trim(),
+        location: location || null,
+        experienceLevel: experienceLevel || null,
+      },
+    }
   }
 }
 
@@ -906,26 +857,16 @@ export const githubAuthApi = {
 }
 
 // ============ AI API ============
+// AI meta routes through the gateway Worker (single AI configuration point).
 export const aiApi = {
   // Get AI models for a specific provider
   async getModels(provider) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return gatewayModels(provider)
   },
 
   // Validate an API key against its provider (lightweight, no token usage)
   async validateKey(provider, apiKey, config = {}) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/ai/validate-key`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ provider, apiKey, ...config })
-    })
-    return handleResponse(response)
+    return gatewayValidateKey(provider, apiKey, config)
   },
 
   // Exchange OpenRouter PKCE auth code for API key
@@ -938,22 +879,6 @@ export const aiApi = {
     })
     return handleResponse(response)
   }
-}
-
-// Helper to build query params, properly serializing nested objects/arrays
-function buildParams(params) {
-  const usp = new URLSearchParams()
-  for (const [key, value] of Object.entries(params)) {
-    if (value === null || value === undefined) continue
-    if (Array.isArray(value)) {
-      value.forEach(v => usp.append(key, String(v)))
-    } else if (typeof value === 'object') {
-      usp.append(key, JSON.stringify(value))
-    } else {
-      usp.append(key, String(value))
-    }
-  }
-  return usp
 }
 
 // ============ INTERVIEW API ============
@@ -1106,66 +1031,40 @@ export const interviewApi = {
 
 // ============ JOBS API ============
 export const jobsApi = {
-  // Search jobs with query
+  // Search jobs via the AI gateway (RapidAPI key stays server-side)
   async search(query, filters = {}) {
-    const headers = await getAuthHeaders()
-    const params = buildParams({ query, ...filters })
-    const response = await fetch(`${API_BASE}/fetchjobs?${params}`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return gatewaySearchJobs({ query, ...filters })
   }
 }
 
 // ============ JOB TRACKER API ============
 export const jobTrackerApi = {
-  // Get all tracked jobs
+  // Get all tracked jobs (Supabase)
   async getAll() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-tracker`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return sbTracker.getAll()
   },
 
-  // Track a new job application
+  // Track a new job application (Supabase)
   async track(jobData) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-tracker`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(jobData)
-    })
-    return handleResponse(response)
+    return sbTracker.track(jobData)
   },
 
-  // Update job application status
+  // Update job application status (Supabase)
   async updateStatus(jobId, status, notes = '') {
-    const headers = await getAuthHeaders()
-    const body = { status };
-    if (notes) body.notes = notes;
-    
-    const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(body)
-    })
-    return handleResponse(response)
+    return sbTracker.updateStatus(jobId, status, notes)
   },
 
-  // Delete tracked job
+  // Update any tracked job fields (Supabase)
+  async update(jobId, payload) {
+    return sbTracker.update(jobId, payload)
+  },
+
+  // Delete tracked job (Supabase)
   async delete(jobId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
-      method: 'DELETE',
-      headers
-    })
-    return handleResponse(response)
+    return sbTracker.delete(jobId)
   },
 
-  // Research a company
+  // Research a company (AI — backend service)
   async researchCompany(companyName, industry = '') {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/job-tracker/research`, {
@@ -1176,82 +1075,52 @@ export const jobTrackerApi = {
     return handleResponse(response)
   },
 
-  // Get job tracker stats
+  // Get job tracker stats (Supabase, computed client-side)
   async getStats() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-tracker/stats`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return sbTracker.getStats()
   }
 }
 
 // ============ JOB ALERTS API ============
 export const jobAlertsApi = {
-  // Get all job alerts (1-indexed)
+  // Get all job alerts (Supabase)
   async getAll() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-alerts`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return sbAlerts.getAll()
   },
 
-  // Get single alert with notification history
+  // Get single alert with notification history (Supabase)
   async getById(alertId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-alerts/${alertId}`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    const { alerts } = await sbAlerts.getAll()
+    const alert = alerts.find((a) => a.id === alertId)
+    if (!alert) {
+      const err = new Error('Alert not found')
+      err.status = 404
+      throw err
+    }
+    return { success: true, data: alert, alert }
   },
 
-  // Create new job alert
+  // Create new job alert (Supabase)
   async create(alertData) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-alerts`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(alertData)
-    })
-    return handleResponse(response)
+    return sbAlerts.create(alertData)
   },
 
-  // Update job alert
+  // Update job alert (Supabase)
   async update(alertId, alertData) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-alerts/${alertId}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(alertData)
-    })
-    return handleResponse(response)
+    return sbAlerts.update(alertId, alertData)
   },
 
-  // Delete job alert
+  // Delete job alert (Supabase)
   async delete(alertId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-alerts/${alertId}`, {
-      method: 'DELETE',
-      headers
-    })
-    return handleResponse(response)
+    return sbAlerts.delete(alertId)
   },
 
-  // Toggle alert active status
+  // Toggle alert active status (Supabase)
   async toggle(alertId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-alerts/${alertId}/toggle`, {
-      method: 'POST',
-      headers
-    })
-    return handleResponse(response)
+    return sbAlerts.toggle(alertId)
   },
 
-  // Trigger test fetch for an alert
+  // Trigger test fetch for an alert (needs the backend queue worker)
   async test(alertId) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/job-alerts/${alertId}/test`, {
@@ -1261,14 +1130,9 @@ export const jobAlertsApi = {
     return handleResponse(response)
   },
 
-  // Get alerts summary stats
+  // Get alerts summary stats (Supabase, computed client-side)
   async getStats() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-alerts/stats/summary`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return sbAlerts.getStats()
   }
 }
 

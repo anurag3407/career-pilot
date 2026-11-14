@@ -3,6 +3,8 @@ import {
   AlignmentType, BorderStyle, Table, TableRow, TableCell, WidthType,
 } from 'docx'
 
+import { downloadBlob } from './downloadBlob'
+
 /**
  * Build a .docx file from the canonical resume shape used across the
  * ResumeContext. Produces a clean, ATS-friendly Word document with
@@ -245,12 +247,6 @@ function buildCustomSection(section) {
  * Trigger a browser download for a generated .docx blob.
  */
 export function downloadDocxBlob(blob, filename) {
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename.endsWith('.docx') ? filename : `${filename}.docx`
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  URL.revokeObjectURL(url)
+  const name = filename.endsWith('.docx') ? filename : `${filename}.docx`
+  return downloadBlob(blob, name)
 }

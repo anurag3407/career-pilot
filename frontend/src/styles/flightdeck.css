@@ -1,0 +1,136 @@
+/* =============================================================================
+   Flight Deck — CareerPilot's editorial UI system (landing + dashboard).
+
+   Palette rationale
+   - Neutrals: warm "paper" off-white / warm graphite. Quiet, editorial, lets
+     content and data carry the page.
+   - Primary: International Orange — the aviation safety colour (flight
+     recorders, runway markers). On-brand for "CareerPilot", high energy, and
+     used sparingly: CTAs, active states, the one highlighted word.
+   - Accent: Runway green — "cleared / on track". Reserved for positive
+     signals (offers, score gains, connected states).
+
+   Scoped under .cp-flight so every other page keeps the global theme.
+   Skipped entirely in the highContrast theme.
+   ========================================================================== */
+
+:root:not(.highContrast) .cp-flight {
+  --background: #fafaf7;
+  --foreground: #0c0c0b;
+  --card: #ffffff;
+  --card-foreground: #0c0c0b;
+  --popover: #ffffff;
+  --popover-foreground: #0c0c0b;
+  --primary: #cc420c;
+  --primary-foreground: #fffaf5;
+  --secondary: #f1f0ec;
+  --secondary-foreground: #181816;
+  --muted: #f1f0ec;
+  --muted-foreground: #6b6a66;
+  --accent: rgba(29, 107, 60, 0.09);
+  --accent-foreground: #1d6b3c;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: #e4e3de;
+  --input: #e4e3de;
+  --ring: #cc420c;
+
+  --font-sans: "Geist", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --fd-grid: rgba(12, 12, 11, 0.045);
+  --fd-glow: rgba(204, 66, 12, 0.16);
+
+  font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "ss01", "cv11";
+}
+
+:root.dark .cp-flight {
+  --background: #0c0c0b;
+  --foreground: #f4f3ef;
+  --card: #131312;
+  --card-foreground: #f4f3ef;
+  --popover: #181816;
+  --popover-foreground: #f4f3ef;
+  --primary: #ff6b2c;
+  --primary-foreground: #1a0a03;
+  --secondary: #1a1a18;
+  --secondary-foreground: #f4f3ef;
+  --muted: #1a1a18;
+  --muted-foreground: #8c8b86;
+  --accent: rgba(124, 217, 146, 0.1);
+  --accent-foreground: #7cd992;
+  --destructive: #ff6568;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.13);
+  --ring: #ff6b2c;
+  --fd-grid: rgba(255, 255, 255, 0.04);
+  --fd-glow: rgba(255, 107, 44, 0.18);
+}
+
+/* Tailwind's @theme resolves --color-* = var(--*) on :root, so the scoped
+   tokens above must be re-bound here for bg-primary / text-primary etc. */
+:root:not(.highContrast) .cp-flight {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+.cp-flight ::selection {
+  background-color: color-mix(in oklab, var(--primary) 28%, transparent);
+  color: var(--foreground);
+}
+
+/* Faint blueprint grid used behind hero + mockup */
+.fd-grid-bg {
+  background-image:
+    linear-gradient(to right, var(--fd-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--fd-grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Horizontal marquee (template strip) */
+@keyframes fd-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes fd-marquee-rev {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.fd-marquee { animation: fd-marquee 60s linear infinite; }
+.fd-marquee-rev { animation: fd-marquee-rev 68s linear infinite; }
+.fd-marquee-wrap:hover .fd-marquee,
+.fd-marquee-wrap:hover .fd-marquee-rev { animation-play-state: paused; }
+
+/* Blinking caret for mono status lines */
+@keyframes fd-caret { 50% { opacity: 0; } }
+.fd-caret { animation: fd-caret 1.1s steps(1) infinite; }
+
+/* Pulse dot for "live" indicators */
+@keyframes fd-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  80%, 100% { transform: scale(2.4); opacity: 0; }
+}
+.fd-ping { animation: fd-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fd-marquee, .fd-marquee-rev, .fd-caret, .fd-ping { animation: none; }
+}

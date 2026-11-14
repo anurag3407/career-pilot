@@ -23,6 +23,7 @@ import { jobTrackerApi } from "../services/api";
 
 import Button from "../components/Button";
 import Card from "../components/Card";
+import { useAuth } from "../hooks/useAuth";
 import CompanyResearch from "../components/CompanyResearch";
 import EmailGeneratorPanel from "../components/EmailGeneratorPanel";
 import OutreachPanel from "../components/OutreachPanel";
@@ -54,7 +55,8 @@ const JobTracker = () => {
   const [emailGeneratorJob, setEmailGeneratorJob] = useState(null);
   const [outreachJob, setOutreachJob] = useState(null);
 
-  const currentUserId = window.Clerk?.user?.id || "anonymous";
+  const { user: authUser } = useAuth();
+  const currentUserId = authUser?.uid || "anonymous";
 
   const statusOptions = [
     {

@@ -26,23 +26,16 @@ export const initializeSocket = async () => {
       // fallback
     }
 
-    const session = window.Clerk?.session;
-    if (session) {
-      return await session.getToken();
-    }
-
     throw new Error('No authenticated user');
   };
 
-  let hasAuth = Boolean(window.Clerk?.session);
-  if (!hasAuth) {
-    try {
-      const { supabase } = await import('../config/supabase.js');
-      const { data } = await supabase.auth.getSession();
-      hasAuth = Boolean(data?.session);
-    } catch {
-      hasAuth = false;
-    }
+  let hasAuth = false;
+  try {
+    const { supabase } = await import('../config/supabase.js');
+    const { data } = await supabase.auth.getSession();
+    hasAuth = Boolean(data?.session);
+  } catch {
+    hasAuth = false;
   }
 
   if (!hasAuth) {

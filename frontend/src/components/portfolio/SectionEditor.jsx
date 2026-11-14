@@ -354,7 +354,15 @@ function ContactForm({ data, onChange }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export default function SectionEditor({ portfolioId, sectionType, initialData = {}, onClose, onSaved }) {
+export default function SectionEditor({
+  isOpen = true,
+  portfolioId,
+  sectionType = 'hero',
+  initialData = {},
+  onClose,
+  onSaved,
+  onSaveSuccess,
+}) {
   const originalData = useRef(initialData);
   const [formData, setFormData] = useState(initialData);
   const [saving, setSaving] = useState(false);
@@ -367,9 +375,12 @@ export default function SectionEditor({ portfolioId, sectionType, initialData = 
   const handleSave = async () => {
     setSaving(true);
     try {
-      await portfolioApi.update(portfolioId, { [sectionType]: formData });
+      // Without a persisted portfolio the editor still reports the edit back to
+      // its host (Studio / draft flow) so nothing is silently dropped.
+      if (portfolioId) await portfolioApi.update(portfolioId, { [sectionType]: formData });
       toast.success(`${SECTION_LABELS[sectionType]} section saved!`);
       onSaved?.({ [sectionType]: formData });
+      onSaveSuccess?.(formData, sectionType);
       onClose?.();
     } catch (err) {
       toast.error('Failed to save. Please try again.');
@@ -385,6 +396,8 @@ export default function SectionEditor({ portfolioId, sectionType, initialData = 
   };
 
   const Icon = SECTION_ICONS[sectionType] || User;
+
+  if (!isOpen) return null;
 
   const renderForm = () => {
     switch (sectionType) {

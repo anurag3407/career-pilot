@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Check, X, RefreshCw, ArrowRight, Zap, Target, TrendingUp } from 'lucide-react'
 import { toast } from 'react-hot-toast'
@@ -88,8 +89,11 @@ export default function InlineAIEnhancer({
         {!compact && <span>AI Polish</span>}
       </button>
 
+      {/* Portalled to <body>: a transformed ancestor (the resume canvas, or a
+          framer-motion step transition) would otherwise become the containing
+          block for this fixed overlay and shrink it into the page. */}
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && createPortal((
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -212,7 +216,7 @@ export default function InlineAIEnhancer({
               </div>
             </motion.div>
           </div>
-        )}
+        ), document.body)}
       </AnimatePresence>
     </div>
   )

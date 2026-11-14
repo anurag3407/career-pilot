@@ -1,0 +1,15 @@
+{
+  "name": "careerpilot-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Single AI gateway for CareerPilot — provider router, BYOK passthrough, job search proxy",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

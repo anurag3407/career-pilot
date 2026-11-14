@@ -1,13 +1,10 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
 import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
-import DeployModal from "../components/portfolio/DeployModal";
-import ThemeSelector from "../components/portfolio/ThemeSelector";
-import SectionEditor from "../components/portfolio/SectionEditor";
 import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X, Edit3 } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X, Edit3, Wand2 } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import InspiredClydeDSouza from "../components/portfolio/templates/Inspired_Clyde_DSouza";
 import InspiredDelba from "../components/portfolio/templates/Inspired_Delba";
@@ -298,16 +295,16 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onUse(template.title, false, template.id);
+                  onUse(template.id, false);
                 }}
                 className="flex-1 bg-primary text-primary-foreground py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-transform"
               >
-                Use Theme
+                Use template
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onUse(template.id, true, template.id);
+                  onUse(template.id, true);
                 }}
                 className="flex-1 bg-muted text-foreground border border-border py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-accent hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
@@ -367,6 +364,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const previewTemplateId = searchParams.get("preview");
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -392,21 +390,20 @@ export default function TemplateGallery() {
     localStorage.removeItem('ai_portfolio_draft');
     setAiDraft(null);
   };
-  const [selectedTheme, setSelectedTheme] = useState("minimal");
-  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
-  const [isSectionEditorOpen, setIsSectionEditorOpen] = useState(false);
-  const [editingSectionType, setEditingSectionType] = useState("hero");
-  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
-  const [selectedTemplateId, setSelectedTemplateId] = useState("default");
-
-  const handleUseTemplate = (val, isPreview, id = "default") => {
+  const handleUseTemplate = (templateId, isPreview = false) => {
     if (isPreview) {
-      setSearchParams({ preview: val });
-    } else {
-      setSelectedPortfolioTitle(val);
-      setSelectedTemplateId(id);
-      setIsDeployModalOpen(true);
+      setSearchParams({ preview: templateId });
+      return;
     }
+    navigate(`/portfolio-builder/studio?template=${encodeURIComponent(templateId)}`);
+  };
+
+  const openStudio = () => {
+    navigate('/portfolio-builder/studio');
+  };
+
+  const openContentEditor = () => {
+    navigate('/portfolio-builder/studio');
   };
 
   const CATEGORY_OPTIONS = [
@@ -451,10 +448,14 @@ export default function TemplateGallery() {
   });
   
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-  if (sort === 'Popular') return b.views - a.views;
-  if (sort === 'Highest Rated') return b.rating - a.rating;
-  if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
-  return 0;
+    if (sort === 'Popular') return (b.views || 0) - (a.views || 0);
+    if (sort === 'Highest Rated') return (b.rating || 0) - (a.rating || 0);
+    if (sort === 'Newest') {
+      const timeA = new Date(a.createdAt || 0).getTime() || 0;
+      const timeB = new Date(b.createdAt || 0).getTime() || 0;
+      return timeB - timeA;
+    }
+    return 0;
   });
 
   return (
@@ -489,11 +490,11 @@ export default function TemplateGallery() {
             </div>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => { setEditingSectionType('hero'); setIsSectionEditorOpen(true); }}
+                onClick={openContentEditor}
                 className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Edit3 className="w-3.5 h-3.5" />
-                Edit Details
+                Edit details
               </button>
               <button
                 onClick={clearDraft}
@@ -513,11 +514,18 @@ export default function TemplateGallery() {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => { setEditingSectionType('hero'); setIsSectionEditorOpen(true); }}
+              onClick={openStudio}
+              className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold flex items-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"
+            >
+              <Wand2 className="w-4 h-4" />
+              Open Studio
+            </button>
+            <button
+              onClick={openContentEditor}
               className="px-4 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer"
             >
               <Edit3 className="w-4 h-4" />
-              {aiDraft ? 'Edit Portfolio Content' : 'Add My Content'}
+              {aiDraft ? 'Edit content' : 'Add my content'}
             </button>
             <button
               onClick={toggleTheme}
@@ -543,25 +551,20 @@ export default function TemplateGallery() {
           </div>
         </div>
 
-        <div className="mb-8 rounded-2xl border border-border bg-card p-5">
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-semibold text-foreground">
-                Portfolio theme
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Pick a theme before deploying. Premium themes are shown and
-                locked in the live gallery flow.
-              </p>
-            </div>
-            <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground">
-              Selected: {selectedTheme}
-            </span>
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-5">
+          <div>
+            <h2 className="text-xl font-semibold text-foreground">Not sure where to start?</h2>
+            <p className="text-sm text-muted-foreground">
+              The Studio opens any template with your content, live inline editing, drag-to-reorder
+              sections and one-click publishing.
+            </p>
           </div>
-          <ThemeSelector
-            selectedTheme={selectedTheme}
-            onSelectTheme={setSelectedTheme}
-          />
+          <button
+            onClick={openStudio}
+            className="inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/20"
+          >
+            <Wand2 className="w-4 h-4" /> Open Portfolio Studio
+          </button>
         </div>
 
         <div className="mb-4">
@@ -629,9 +632,9 @@ export default function TemplateGallery() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {sortedTemplates.map((template) => (
+            {sortedTemplates.map((template, index) => (
               <TemplateCard
-                key={template.id}
+                key={`${template.id}-${index}`}
                 template={template}
                 hovered={hoveredCard === template.id}
                 onHover={setHoveredCard}
@@ -642,39 +645,6 @@ export default function TemplateGallery() {
             ))}
           </div>
         )}
-
-        <DeployModal
-          isOpen={isDeployModalOpen}
-          onClose={() => setIsDeployModalOpen(false)}
-          portfolioTitle={selectedPortfolioTitle}
-          templateId={selectedTemplateId}
-          theme={selectedTheme}
-          aiDraft={aiDraft}
-          onDeploySuccess={clearDraft}
-          onEditContent={() => {
-            setIsDeployModalOpen(false);
-            setEditingSectionType('hero');
-            setIsSectionEditorOpen(true);
-          }}
-        />
-
-        <SectionEditor
-          isOpen={isSectionEditorOpen}
-          onClose={() => setIsSectionEditorOpen(false)}
-          sectionType={editingSectionType}
-          initialData={aiDraft?.[editingSectionType] || {}}
-          onSaveSuccess={(updatedSectionData) => {
-            setAiDraft(prev => {
-              const next = { ...(prev || {}), [editingSectionType]: updatedSectionData };
-              try {
-                localStorage.setItem('ai_portfolio_draft', JSON.stringify(next));
-              } catch (_e) {}
-              return next;
-            });
-            setIsSectionEditorOpen(false);
-            toast.success('Section saved to your portfolio draft!');
-          }}
-        />
 
 
 

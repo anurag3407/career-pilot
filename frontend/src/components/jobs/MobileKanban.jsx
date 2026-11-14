@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { jobTrackerApi } from "../../services/api";
+import { useAuth } from "../../hooks/useAuth";
 
 import { SkeletonTracker } from "../ui/Skeleton";
 import {
@@ -371,7 +372,8 @@ export default function MobileKanban({
   const [filterStatus, setFilterStatus] = useState("all");
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const currentUserId = window.Clerk?.user?.id || "anonymous";
+  const { user: authUser } = useAuth();
+  const currentUserId = authUser?.uid || "anonymous";
 
   const loadCachedTrackerData = useCallback(() => {
     const snapshot = loadJobTrackerSnapshot(currentUserId);

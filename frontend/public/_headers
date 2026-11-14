@@ -1,0 +1,17 @@
+# Cloudflare Pages headers — security + caching
+# Docs: https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(self), geolocation=()
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/template-previews/*
+  Cache-Control: public, max-age=86400
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

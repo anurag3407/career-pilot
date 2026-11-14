@@ -140,6 +140,9 @@ const ProjectVisualizerWorkspace = lazy(() => import('./pages/ProjectVisualizer/
 
 const ResumeBuilderLanding = lazy(() => import('./pages/features/ResumeBuilderLanding'));
 const PortfolioBuilderLanding = lazy(() => import('./pages/features/PortfolioBuilderLanding'));
+const PortfolioStudio = lazy(() => import('./pages/PortfolioStudio'));
+const StudioStage = lazy(() => import('./components/portfolio/studio/StudioStage'));
+const StudioPortfolioPreview = lazy(() => import('./pages/StudioPortfolioPreview'));
 const ResumeRoastLanding = lazy(() => import('./pages/features/ResumeRoastLanding'));
 const GithubPortfolioLanding = lazy(() => import('./pages/features/GithubPortfolioLanding'));
 const ProjectVisualizerLanding = lazy(() => import('./pages/features/ProjectVisualizerLanding'));
@@ -163,7 +166,8 @@ function LoadingScreen({ label }) {
 }
 
 
-function ProtectedRoute({ children }) {
+// Exported so the route guard can be exercised directly in tests.
+export function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -292,6 +296,9 @@ function AppRoutes() {
         {/* Feature SaaS Landing Pages (Clean Slugs) */}
         <Route path="/resume-builder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ResumeBuilderLanding /></Suspense>} />
         <Route path="/portfolio-builder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><PortfolioBuilderLanding /></Suspense>} />
+        <Route path="/portfolio-builder/studio" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Opening studio..." />}><PortfolioStudio /></Suspense></ProtectedRoute>} />
+        <Route path="/portfolio-builder/stage" element={<Suspense fallback={null}><StudioStage /></Suspense>} />
+        <Route path="/portfolio-builder/preview" element={<Suspense fallback={null}><StudioPortfolioPreview /></Suspense>} />
         <Route path="/resume-roast" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ResumeRoastLanding /></Suspense>} />
         <Route path="/github-portfolio" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><GithubPortfolioLanding /></Suspense>} />
         <Route path="/project-visualizer" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ProjectVisualizerLanding /></Suspense>} />

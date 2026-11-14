@@ -8,7 +8,8 @@ import {
   Trash2, ChevronDown, Star, GitFork, MapPin, Building2,
   Users, ExternalLink, Zap, Info, X, History
 } from 'lucide-react';
-import { useAIConfigStore } from '../stores/useAIConfigStore';
+import { useAIConfigStore } from '../stores/useAIConfigStore'
+import { getAuthHeaders } from '../services/api';
 import Navbar from '../components/Navbar';
 import toast from 'react-hot-toast';
 
@@ -44,32 +45,7 @@ const saveHistory = (entries) => {
 // ---------------------------------------------------------------------------
 // Auth headers
 // ---------------------------------------------------------------------------
-async function getAuthHeaders() {
-  const session = window.Clerk?.session;
-  if (!session) {
-    if (import.meta.env.DEV) return { Authorization: 'Bearer mock-dev-token', 'Content-Type': 'application/json' };
-    throw new Error('Not authenticated');
-  }
-  const token = await session.getToken();
-  const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-  try {
-    const aiConfig = useAIConfigStore.getState().getActiveConfig();
-    if (aiConfig) {
-      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
-      if (aiConfig.apiKey) headers['X-AI-Key'] = aiConfig.apiKey;
-      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
-      if (aiConfig.baseUrl) headers['X-AI-Base-Url'] = aiConfig.baseUrl;
-    }
-  } catch { /* noop */ }
-  try {
-    const { useGithubConfigStore } = await import('../stores/useGithubConfigStore');
-    const ghState = useGithubConfigStore.getState();
-    const pat = ghState.getDecryptedToken();
-    if (pat) headers['X-GitHub-Token'] = pat;
-  } catch { /* noop */ }
-  return headers;
-}
-
+// getAuthHeaders imported from services/api (Supabase session based)
 // ---------------------------------------------------------------------------
 // Simple Markdown → HTML (lightweight, no deps)
 // ---------------------------------------------------------------------------

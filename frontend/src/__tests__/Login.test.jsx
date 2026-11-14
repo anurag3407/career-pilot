@@ -15,7 +15,7 @@ vi.mock('../components/Navbar', () => ({
 }))
 
 describe('Login page', () => {
-  test('renders a safe preview state when Clerk is not configured', () => {
+  test('renders a safe preview state when auth is not configured', () => {
     render(
       <MemoryRouter>
         <Login />

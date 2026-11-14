@@ -7,7 +7,7 @@ import {
   ArrowLeft, ArrowRight, CheckCircle, Plus, Trash2,
   Save, FileText, User, Briefcase, GraduationCap, Code, Star, GripVertical,
   LayoutTemplate, Award, Layers, Eye, Columns, Sparkles, Upload, Clock,
-  CheckCircle2, AlertCircle, RefreshCw, X, Loader2
+  CheckCircle2, AlertCircle, RefreshCw, X, Loader2, PenLine
 } from 'lucide-react'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { resumeApi } from '../services/api'
@@ -26,7 +26,9 @@ import { analyzeResumeTone } from "../utils/toneAnalyzer";
 import CustomSectionManager from '../components/resume/CustomSectionManager';
 import LiveResumePreview from '../components/resume/LiveResumePreview';
 import InlineAIEnhancer from '../components/resume/InlineAIEnhancer';
+import ResumeCanvasEditor, { parseSkillLines, composeSkillLines } from '../components/resume/inline/ResumeCanvasEditor';
 import { calculateRealtimeAtsScore } from '../utils/realtimeAtsScorer';
+import { formatPeriod } from '../utils/resumeDateFormat';
 import { markdownToStructured, jsonResumeToStructured } from '../utils/resumeParser';
 import { normalizeResumeData } from '../context/ResumeContext';
 
@@ -55,6 +57,33 @@ function FieldError({ msg }) {
   )
 }
 
+// ─────────────────── inline canvas helpers ──────────────────────────────────
+/** Bullet lines for the canvas — blank lines survive so "Add bullet" sticks. */
+function splitBulletLines(text) {
+  const raw = String(text || '').replace(/\r/g, '')
+  if (!raw.trim()) return []
+  return raw.split('\n').map(line => line.replace(/^[-*•]\s*/, '').trim())
+}
+
+function joinBulletLines(lines) {
+  return (lines || []).map(line => String(line || '').trim()).join('\n')
+}
+
+function reorderList(list, from, to) {
+  const next = Array.from(list || [])
+  if (from < 0 || from >= next.length) return next
+  const [moved] = next.splice(from, 1)
+  next.splice(Math.max(0, Math.min(to, next.length)), 0, moved)
+  return next
+}
+
+const BLANK_ENTRY = {
+  experience: () => ({ title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' }),
+  education: () => ({ school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '', description: '' }),
+  projects: () => ({ name: '', tech: '', link: '', description: '' }),
+  certifications: () => ({ name: '', issuer: '', year: '', url: '' }),
+}
+
 // ─────────────────── component ───────────────────────────────────────────────
 export default function ResumeBuilder() {
   const navigate   = useNavigate()
@@ -74,7 +103,7 @@ export default function ResumeBuilder() {
 
   // ── form state ──────────────────────────────────────────────────────────────
   const [personal, setPersonal] = useState({
-    name: '', email: '', phone: '', linkedin: '', github: '', portfolio: '', summary: '',
+    name: '', title: '', location: '', email: '', phone: '', linkedin: '', github: '', portfolio: '', summary: '',
   })
   // phone is stored split: country code + digit string
   const [phoneCode,   setPhoneCode]   = useState('+91')
@@ -146,6 +175,8 @@ const [goalProgress, setGoalProgress] = useState(0)
         if (d.personal) {
           setPersonal(prev => ({
             name: d.personal.name || '',
+            title: d.personal.title || '',
+            location: d.personal.location || '',
             email: d.personal.email || '',
             phone: d.personal.phone || '',
             linkedin: d.personal.linkedin || '',
@@ -215,7 +246,7 @@ const [goalProgress, setGoalProgress] = useState(0)
         startDate: e.startDate || '',
         endDate: e.endDate || '',
         current: Boolean(e.current),
-        period: [e.startDate, e.current ? 'Present' : e.endDate].filter(Boolean).join(' - '),
+        period: formatPeriod(e.startDate, e.endDate, Boolean(e.current)),
         bullets: e.description ? e.description.split(/\r?\n/).map(b => b.replace(/^[-*•]\s*/, '').trim()).filter(Boolean) : [],
       })),
       education: (education || []).filter(edu => edu.school || edu.degree).map(edu => ({
@@ -224,7 +255,7 @@ const [goalProgress, setGoalProgress] = useState(0)
         field: edu.field || '',
         startDate: edu.startDate || '',
         endDate: edu.endDate || '',
-        period: [edu.startDate, edu.endDate].filter(Boolean).join(' - '),
+        period: formatPeriod(edu.startDate, edu.endDate, false),
         gpa: edu.gpa || '',
         description: edu.description || '',
       })),
@@ -241,6 +272,255 @@ const [goalProgress, setGoalProgress] = useState(0)
       sectionOrder: sectionOrder || ['education', 'experience', 'projects', 'skills'],
     })
   }, [personal, phoneCode, phoneDigits, experience, education, projects, skills, certifications, customSections, sectionOrder])
+
+  // ── Inline canvas document model ────────────────────────────────────────────
+  // The canvas owns no state of its own: it renders these arrays and emits
+  // intent operations, which applyCanvasOp replays onto the same state the form
+  // steps edit. Typing on the page and typing in the form are the same edit.
+  const inlineDoc = React.useMemo(() => {
+    const fullPhone = phoneDigits ? `${phoneCode} ${phoneDigits}` : (personal.phone || '')
+    return {
+      personal: {
+        name: personal.name || '',
+        title: personal.title || '',
+        email: personal.email || '',
+        phone: fullPhone,
+        location: personal.location || '',
+        website: personal.portfolio || '',
+        linkedin: personal.linkedin || '',
+        github: personal.github || '',
+        summary: personal.summary || '',
+      },
+      experience: (experience || []).map(e => ({
+        role: e.title || '',
+        company: e.company || '',
+        location: e.location || '',
+        startDate: e.startDate || '',
+        endDate: e.endDate || '',
+        current: Boolean(e.current),
+        bullets: splitBulletLines(e.description),
+      })),
+      education: (education || []).map(e => ({
+        institution: e.school || '',
+        degree: e.degree || '',
+        field: e.field || '',
+        startDate: e.startDate || '',
+        endDate: e.endDate || '',
+        location: '',
+        gpa: e.gpa || '',
+        description: e.description || '',
+      })),
+      projects: (projects || []).map(p => ({
+        name: p.name || '',
+        tech: p.tech || '',
+        link: p.link || '',
+        bullets: splitBulletLines(p.description),
+      })),
+      skills: parseSkillLines(skills),
+      certifications: (certifications || []).map(c => ({
+        name: c.name || '', issuer: c.issuer || '', year: c.year || '',
+      })),
+      customSections: customSections || [],
+      sectionOrder: sectionOrder || [],
+    }
+  }, [personal, phoneCode, phoneDigits, experience, education, projects, skills, certifications, customSections, sectionOrder])
+
+  /**
+   * Replay a canvas operation onto the builder state.
+   *
+   * Ops are positional (`index` always matches the arrays the form renders), so
+   * a keystroke on the page and a keystroke in the form cannot diverge.
+   */
+  function applyCanvasOp(payload) {
+    if (!payload) return
+    const { type, section } = payload
+
+    const listFor = () => {
+      if (section === 'experience') return experience
+      if (section === 'education') return education
+      if (section === 'projects') return projects
+      if (section === 'certifications') return certifications
+      return []
+    }
+    const commitList = (next) => {
+      if (section === 'experience') setExperience(next)
+      else if (section === 'education') setEducation(next)
+      else if (section === 'projects') setProjects(next)
+      else if (section === 'certifications') setCertifications(next)
+    }
+    const commitBullets = (index, bullets) => {
+      const description = joinBulletLines(bullets)
+      if (section === 'projects') {
+        setProjects(prev => prev.map((item, i) => (i === index ? { ...item, description } : item)))
+      } else {
+        updateExp(index, 'description', description)
+      }
+    }
+
+    switch (type) {
+      case 'personal': {
+        const { field, value } = payload
+        if (field === 'phone') {
+          const raw = String(value || '')
+          const intl = raw.match(/^\+\s*(\d{1,3})[\s-]*(.*)$/)
+          if (intl) {
+            setPhoneCode(`+${intl[1]}`)
+            setPhoneDigits(intl[2].replace(/\D/g, ''))
+          } else {
+            setPhoneDigits(raw.replace(/\D/g, ''))
+          }
+          setPersonal(prev => ({ ...prev, phone: raw }))
+          break
+        }
+        if (field === 'website') {
+          setPersonal(prev => ({ ...prev, portfolio: value }))
+          break
+        }
+        updatePersonal(field, value)
+        break
+      }
+
+      case 'entry': {
+        const { index, field, value } = payload
+        if (section === 'experience') {
+          updateExp(index, field === 'role' ? 'title' : field, value)
+        } else if (section === 'education') {
+          updateEdu(index, field === 'institution' ? 'school' : field, value)
+        } else {
+          commitList(listFor().map((item, i) => (i === index ? { ...item, [field]: value } : item)))
+        }
+        break
+      }
+
+      case 'bullet': {
+        const bullets = splitBulletLines((section === 'projects' ? projects : experience)[payload.index]?.description)
+        bullets[payload.bulletIndex] = payload.value
+        commitBullets(payload.index, bullets)
+        break
+      }
+
+      case 'addBullet': {
+        const bullets = [...splitBulletLines((section === 'projects' ? projects : experience)[payload.index]?.description), '']
+        commitBullets(payload.index, bullets)
+        break
+      }
+
+      case 'removeBullet': {
+        const bullets = splitBulletLines((section === 'projects' ? projects : experience)[payload.index]?.description)
+          .filter((_, i) => i !== payload.bulletIndex)
+        commitBullets(payload.index, bullets)
+        break
+      }
+
+      case 'moveBullet': {
+        const bullets = reorderList(
+          splitBulletLines((section === 'projects' ? projects : experience)[payload.index]?.description),
+          payload.from,
+          payload.to,
+        )
+        commitBullets(payload.index, bullets)
+        break
+      }
+
+      case 'addEntry': {
+        const factory = BLANK_ENTRY[section]
+        if (!factory) break
+        commitList([...listFor(), factory()])
+        if (!sectionOrder.includes(section)) setSectionOrder(prev => [...prev, section])
+        break
+      }
+
+      case 'removeEntry':
+        commitList(listFor().filter((_, i) => i !== payload.index))
+        break
+
+      case 'moveEntry':
+        commitList(reorderList(listFor(), payload.from, payload.to))
+        break
+
+      case 'setSectionOrder':
+        setSectionOrder(payload.order)
+        break
+
+      case 'addSection': {
+        if (!sectionOrder.includes(section)) setSectionOrder(prev => [...prev, section])
+        const factory = BLANK_ENTRY[section]
+        if (factory && listFor().length === 0) commitList([factory()])
+        break
+      }
+
+      case 'skillLine': {
+        const rows = parseSkillLines(skills)
+        const row = rows[payload.index] || { label: '', value: '' }
+        rows[payload.index] = { ...row, [payload.field]: payload.value }
+        setSkills(composeSkillLines(rows))
+        break
+      }
+
+      case 'addSkillLine':
+        // Always append a newline: "" + "\n" parses to one empty row, and
+        // "React" + "\n" to two rows — so the first row works too.
+        setSkills(prev => `${prev || ''}\n`)
+        break
+
+      case 'removeSkillLine':
+        setSkills(composeSkillLines(parseSkillLines(skills).filter((_, i) => i !== payload.index)))
+        break
+
+      case 'custom': {
+        const { action, id, index, value } = payload
+        if (action === 'addSection') {
+          // Deterministic, collision-free id (no Date.now/Math.random: this
+          // handler runs during the component's own render scope).
+          const taken = new Set((customSections || []).map(sec => sec.id))
+          let suffix = 1
+          while (taken.has(`custom-section-${suffix}`)) suffix += 1
+          const newId = `custom-section-${suffix}`
+          setCustomSections(prev => [...prev, {
+            id: newId,
+            title: 'Additional Information',
+            kind: 'list',
+            items: [''],
+            body: '',
+            order: prev.length,
+          }])
+          setSectionOrder(prev => [...prev, newId])
+          break
+        }
+        if (action === 'title' || action === 'body') {
+          setCustomSections(prev => prev.map(sec => (sec.id === id ? { ...sec, [action]: value } : sec)))
+          break
+        }
+        if (action === 'addItem') {
+          setCustomSections(prev => prev.map(sec => (sec.id === id ? { ...sec, items: [...(sec.items || []), ''] } : sec)))
+          break
+        }
+        if (action === 'item') {
+          setCustomSections(prev => prev.map(sec => {
+            if (sec.id !== id) return sec
+            const items = [...(sec.items || [])]
+            items[index] = value
+            return { ...sec, items }
+          }))
+          break
+        }
+        if (action === 'removeItem') {
+          setCustomSections(prev => prev.map(sec => (
+            sec.id === id ? { ...sec, items: (sec.items || []).filter((_, i) => i !== index) } : sec
+          )))
+          break
+        }
+        if (action === 'removeSection') {
+          setCustomSections(prev => prev.filter(sec => sec.id !== id))
+          setSectionOrder(prev => prev.filter(key => key !== id))
+        }
+        break
+      }
+
+      default:
+        break
+    }
+  }
 
   const realtimeAts = React.useMemo(() => {
     return calculateRealtimeAtsScore(canonicalResumeData, targetRole)
@@ -293,6 +573,8 @@ const [goalProgress, setGoalProgress] = useState(0)
         linkedin: s.personal.linkedin || prev.linkedin,
         github: s.personal.github || prev.github,
         portfolio: s.personal.website || prev.portfolio,
+        title: s.personal.title || prev.title,
+        location: s.personal.location || prev.location,
         summary: s.personal.summary || prev.summary,
       }))
     }
@@ -925,7 +1207,10 @@ useEffect(() => {
         sectionMd += `## EDUCATION\n\n`
         education.forEach(e => {
           if (!e.school) return
-          sectionMd += `**${e.degree}${e.field ? ' in ' + e.field : ''}** | ${e.school} | ${e.startDate} - ${e.endDate}\n`
+          // Dates reach the backend and the Preview step's text, so they are
+          // formatted here too — never the raw ISO month input values.
+          const eduPeriod = formatPeriod(e.startDate, e.endDate, false)
+          sectionMd += `**${e.degree}${e.field ? ' in ' + e.field : ''}** | ${e.school}${eduPeriod ? ` | ${eduPeriod}` : ''}\n`
           if (e.gpa) sectionMd += `- GPA: ${e.gpa}\n`
           if (e.description) sectionMd += `- ${e.description}\n`
           sectionMd += '\n'
@@ -934,7 +1219,8 @@ useEffect(() => {
         sectionMd += `## EXPERIENCE\n\n`
         experience.forEach(e => {
           if (!e.title) return
-          sectionMd += `**${e.title}** | ${e.company} | ${e.location} | ${e.startDate} - ${e.current ? 'Present' : e.endDate}\n`
+          const expPeriod = formatPeriod(e.startDate, e.endDate, Boolean(e.current))
+          sectionMd += `**${e.title}** | ${e.company} | ${e.location}${expPeriod ? ` | ${expPeriod}` : ''}\n`
           const bullets = e.description.split('\n').filter(b => b.trim())
           bullets.forEach(b => { sectionMd += `- ${b.replace(/^- /, '').trim()}\n` })
           sectionMd += '\n'
@@ -1090,6 +1376,38 @@ useEffect(() => {
                   aria-invalid={!!personalErrors.targetRole}
                 />
                 <FieldError msg={personalErrors.targetRole} />
+              </div>
+
+              {/* Professional Title */}
+              <div>
+                <label className="block text-sm font-medium mb-1" htmlFor="professional-title">
+                  Professional Title
+                </label>
+                <input
+                  id="professional-title"
+                  type="text"
+                  className={inputCls('title')}
+                  value={personal.title}
+                  onChange={e => updatePersonal('title', e.target.value)}
+                  placeholder="Senior Software Engineer"
+                />
+                <p className="text-[10px] text-muted-foreground mt-1">Printed directly under your name.</p>
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="block text-sm font-medium mb-1" htmlFor="location">
+                  Location
+                </label>
+                <input
+                  id="location"
+                  type="text"
+                  className={inputCls('location')}
+                  value={personal.location}
+                  onChange={e => updatePersonal('location', e.target.value)}
+                  placeholder="Bengaluru, India"
+                />
+                <p className="text-[10px] text-muted-foreground mt-1">City and country, no full street address.</p>
               </div>
 
               {/* Email */}
@@ -2258,7 +2576,7 @@ useEffect(() => {
     <div className="min-h-screen pt-20 pb-12 bg-background flex flex-col">
       <div className={cn(
         'mx-auto w-full px-4 sm:px-6 lg:px-8 flex-1 flex flex-col transition-all duration-300',
-        viewMode === 'split' ? 'max-w-[1600px]' : 'max-w-4xl'
+        viewMode === 'split' || viewMode === 'inline' ? 'max-w-[1700px]' : 'max-w-4xl'
       )}>
 
         {/* Top Header Bar with Mode Switcher & Live ATS Score */}
@@ -2302,6 +2620,19 @@ useEffect(() => {
             <div className="flex items-center p-1 rounded-xl bg-muted/60 border border-border">
               <button
                 type="button"
+                data-view-tab="inline"
+                onClick={() => setViewMode('inline')}
+                className={cn(
+                  'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5',
+                  viewMode === 'inline' ? 'bg-background text-foreground shadow-2xs' : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                <PenLine className="w-3.5 h-3.5" />
+                <span>Inline Editor</span>
+              </button>
+              <button
+                type="button"
+                data-view-tab="form"
                 onClick={() => setViewMode('form')}
                 className={cn(
                   'px-3 py-1 rounded-lg text-xs font-medium transition-all',
@@ -2312,6 +2643,7 @@ useEffect(() => {
               </button>
               <button
                 type="button"
+                data-view-tab="split"
                 onClick={() => setViewMode('split')}
                 className={cn(
                   'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5',
@@ -2323,6 +2655,7 @@ useEffect(() => {
               </button>
               <button
                 type="button"
+                data-view-tab="preview"
                 onClick={() => setViewMode('preview')}
                 className={cn(
                   'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5',
@@ -2395,7 +2728,15 @@ useEffect(() => {
         )}
 
         {/* Main Workspace: Form Only, Split View, or Full Preview */}
-        {viewMode === 'preview' ? (
+        {viewMode === 'inline' ? (
+          <div className="flex-1 h-[calc(100vh-190px)] min-h-[720px]">
+            <ResumeCanvasEditor
+              doc={inlineDoc}
+              onChange={applyCanvasOp}
+              targetRole={targetRole}
+            />
+          </div>
+        ) : viewMode === 'preview' ? (
           <div className="flex-1 h-[calc(100vh-180px)] min-h-[700px]">
             <LiveResumePreview resumeData={canonicalResumeData} />
           </div>

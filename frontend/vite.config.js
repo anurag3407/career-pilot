@@ -39,6 +39,17 @@ export default defineConfig({
           });
         },
       },
+      // AI gateway Worker (worker/) — `npx wrangler dev` listens on 8787
+      '/gateway': {
+        target: process.env.VITE_AI_GATEWAY_DEV_URL || 'http://localhost:8787',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/gateway/, ''),
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('gateway proxy error', err);
+          });
+        },
+      },
     },
   },
 })

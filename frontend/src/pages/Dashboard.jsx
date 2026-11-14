@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import {
   FileText,
   Briefcase,
@@ -9,14 +9,8 @@ import {
   Plus,
   ArrowRight,
   ArrowUpRight,
-  CheckCircle2,
-  Send,
-  Star,
-  MessageSquare,
-  Zap,
   Target,
   TrendingUp,
-  Clock,
   Users,
   Sparkles,
   GraduationCap,
@@ -32,15 +26,10 @@ import {
   Linkedin,
   BarChart3,
   PenLine,
-  Rocket,
-  Shield,
-  CalendarDays,
-  ChevronRight,
-  LayoutGrid,
   Video,
   GitBranch,
   Award,
-  Heart,
+  Settings as SettingsIcon,
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi, portfolioApi, userProfileApi } from '../services/api'
 import {
@@ -50,18 +39,22 @@ import {
   SkeletonBlock
 } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
+import { cn } from '../lib/utils'
 
-/* ─── Feature Categories ─────────────────────────────────────────────── */
+/* Dashboard — "Flight Deck" design system (src/styles/flightdeck.css).
+   Monochrome tools, one orange signal for "in motion", green for wins. */
+
+/* ─── Feature Categories (all shown at once — the single curated surface) ─ */
 const FEATURE_CATEGORIES = [
   {
     id: 'resume',
     label: 'Resume & Documents',
     icon: FileText,
     features: [
-      { name: 'Resume Builder', desc: 'AI-powered ATS-optimized resumes', to: '/hub/resume', icon: FileText, accent: 'text-blue-500 bg-blue-500/10' },
-      { name: 'Resume Roast', desc: 'Brutally honest AI feedback', to: '/resume-roast/analyze', icon: Flame, accent: 'text-orange-500 bg-orange-500/10' },
-      { name: 'Cover Letter', desc: 'Tailored cover letters in seconds', to: '/cover-letter', icon: PenLine, accent: 'text-violet-500 bg-violet-500/10' },
-      { name: 'Text to Resume', desc: 'Paste text, get a formatted resume', to: '/text-to-resume', icon: Sparkles, accent: 'text-cyan-500 bg-cyan-500/10' },
+      { name: 'Resume Builder', desc: 'AI-powered ATS-optimized resumes', to: '/hub/resume', icon: FileText },
+      { name: 'Resume Roast', desc: 'Brutally honest AI feedback', to: '/resume-roast/analyze', icon: Flame },
+      { name: 'Cover Letter', desc: 'Tailored cover letters in seconds', to: '/cover-letter', icon: PenLine },
+      { name: 'Text to Resume', desc: 'Paste text, get a formatted resume', to: '/text-to-resume', icon: Sparkles },
     ],
   },
   {
@@ -69,10 +62,10 @@ const FEATURE_CATEGORIES = [
     label: 'Job Search & Tracking',
     icon: Briefcase,
     features: [
-      { name: 'Job Finder', desc: 'AI-matched job search', to: '/job-finder/search', icon: Search, accent: 'text-emerald-500 bg-emerald-500/10' },
-      { name: 'Job Tracker', desc: 'Kanban board for applications', to: '/job-tracker', icon: Target, accent: 'text-teal-500 bg-teal-500/10' },
-      { name: 'Job Alerts', desc: 'Smart notifications for new roles', to: '/job-alerts', icon: Bell, accent: 'text-amber-500 bg-amber-500/10' },
-      { name: 'Analytics', desc: 'Application success insights', to: '/dashboard/analytics', icon: BarChart3, accent: 'text-indigo-500 bg-indigo-500/10' },
+      { name: 'Job Finder', desc: 'AI-matched job search', to: '/job-finder/search', icon: Search },
+      { name: 'Job Tracker', desc: 'Kanban board for applications', to: '/job-tracker', icon: Target },
+      { name: 'Job Alerts', desc: 'Smart notifications for new roles', to: '/job-alerts', icon: Bell },
+      { name: 'Analytics', desc: 'Application success insights', to: '/dashboard/analytics', icon: BarChart3 },
     ],
   },
   {
@@ -80,10 +73,10 @@ const FEATURE_CATEGORIES = [
     label: 'Portfolio & Online Presence',
     icon: Globe,
     features: [
-      { name: 'Portfolio Builder', desc: 'Deploy a stunning portfolio', to: '/hub/portfolio', icon: Palette, accent: 'text-purple-500 bg-purple-500/10' },
-      { name: 'GitHub Portfolio', desc: 'Turn repos into a portfolio', to: '/github-portfolio/build', icon: Github, accent: 'text-gray-500 bg-gray-500/10' },
-      { name: 'README Generator', desc: 'AI GitHub profile README', to: '/readme-generator', icon: BookMarked, accent: 'text-pink-500 bg-pink-500/10' },
-      { name: 'LinkedIn Optimizer', desc: 'Boost your LinkedIn profile', to: '/linkedin-optimizer', icon: Linkedin, accent: 'text-sky-500 bg-sky-500/10' },
+      { name: 'Portfolio Builder', desc: 'Deploy a stunning portfolio', to: '/hub/portfolio', icon: Palette },
+      { name: 'GitHub Portfolio', desc: 'Turn repos into a portfolio', to: '/github-portfolio/build', icon: Github },
+      { name: 'README Generator', desc: 'AI GitHub profile README', to: '/readme-generator', icon: BookMarked },
+      { name: 'LinkedIn Optimizer', desc: 'Boost your LinkedIn profile', to: '/linkedin-optimizer', icon: Linkedin },
     ],
   },
   {
@@ -91,9 +84,9 @@ const FEATURE_CATEGORIES = [
     label: 'Interview Preparation',
     icon: Mic,
     features: [
-      { name: 'Mock Interview', desc: 'AI voice interview practice', to: '/mock-interview/practice', icon: Mic, accent: 'text-red-500 bg-red-500/10' },
-      { name: 'Interview History', desc: 'Review past sessions', to: '/interview-history', icon: Video, accent: 'text-rose-500 bg-rose-500/10' },
-      { name: 'Skill Gap Analyzer', desc: 'Find missing skills for roles', to: '/skill-gap', icon: TrendingUp, accent: 'text-lime-500 bg-lime-500/10' },
+      { name: 'Mock Interview', desc: 'AI voice interview practice', to: '/mock-interview/practice', icon: Mic },
+      { name: 'Interview History', desc: 'Review past sessions', to: '/interview-history', icon: Video },
+      { name: 'Skill Gap Analyzer', desc: 'Find missing skills for roles', to: '/skill-gap', icon: TrendingUp },
     ],
   },
   {
@@ -101,9 +94,9 @@ const FEATURE_CATEGORIES = [
     label: 'Developer Tools',
     icon: Code2,
     features: [
-      { name: 'Project Visualizer', desc: 'AI architecture maps for repos', to: '/project-visualizer', icon: Network, accent: 'text-fuchsia-500 bg-fuchsia-500/10' },
-      { name: 'GitHub Dashboard', desc: 'Repo analytics & insights', to: '/github', icon: GitBranch, accent: 'text-slate-500 bg-slate-500/10' },
-      { name: 'LinkedIn Dashboard', desc: 'Profile performance metrics', to: '/linkedin', icon: Linkedin, accent: 'text-blue-600 bg-blue-600/10' },
+      { name: 'Project Visualizer', desc: 'AI architecture maps for repos', to: '/project-visualizer', icon: Network },
+      { name: 'GitHub Dashboard', desc: 'Repo analytics & insights', to: '/github', icon: GitBranch },
+      { name: 'LinkedIn Dashboard', desc: 'Profile performance metrics', to: '/linkedin', icon: Linkedin },
     ],
   },
   {
@@ -111,46 +104,114 @@ const FEATURE_CATEGORIES = [
     label: 'Career Growth & Community',
     icon: GraduationCap,
     features: [
-      { name: 'Career Growth', desc: 'Readiness score & learning paths', to: '/hub/career', icon: GraduationCap, accent: 'text-emerald-600 bg-emerald-600/10' },
-      { name: 'Community', desc: 'Network with job seekers', to: '/hub/community', icon: Users, accent: 'text-cyan-600 bg-cyan-600/10' },
-      { name: 'Fellowship', desc: 'Collaborative challenges', to: '/fellowship', icon: Award, accent: 'text-yellow-600 bg-yellow-600/10' },
+      { name: 'Career Growth', desc: 'Readiness score & learning paths', to: '/hub/career', icon: GraduationCap },
+      { name: 'Community', desc: 'Network with job seekers', to: '/hub/community', icon: Users },
+      { name: 'Fellowship', desc: 'Collaborative challenges', to: '/fellowship', icon: Award },
     ],
   },
 ]
 
 /* ─── Quick Actions ──────────────────────────────────────────────────── */
 const QUICK_ACTIONS = [
-  { label: 'Build Resume', to: '/resume-builder/build', icon: FileText },
-  { label: 'Search Jobs', to: '/job-finder/search', icon: Search },
-  { label: 'Mock Interview', to: '/mock-interview/practice', icon: Mic },
-  { label: 'Build Portfolio', to: '/hub/portfolio', icon: Palette },
-  { label: 'Roast Resume', to: '/resume-roast/analyze', icon: Flame },
-  { label: 'Generate README', to: '/readme-generator', icon: BookMarked },
+  { label: 'Build resume', to: '/resume-builder/build', icon: FileText },
+  { label: 'Search jobs', to: '/job-finder/search', icon: Search },
+  { label: 'Mock interview', to: '/mock-interview/practice', icon: Mic },
+  { label: 'Build portfolio', to: '/hub/portfolio', icon: Palette },
+  { label: 'Roast resume', to: '/resume-roast/analyze', icon: Flame },
+  { label: 'README generator', to: '/readme-generator', icon: BookMarked },
 ]
 
 /* ─── Status Config ──────────────────────────────────────────────────── */
 const STATUS_CONFIG = {
-  saved: { label: 'Saved', color: 'bg-muted text-muted-foreground', icon: Star },
-  applied: { label: 'Applied', color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', icon: Send },
-  interviewing: { label: 'Interviewing', color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400', icon: MessageSquare },
-  offered: { label: 'Offered', color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400', icon: CheckCircle2 },
+  saved: { label: 'Saved', dot: 'bg-foreground/30', text: 'text-foreground/60', ring: 'border-border' },
+  applied: { label: 'Applied', dot: 'bg-foreground/70', text: 'text-foreground/80', ring: 'border-border' },
+  interviewing: { label: 'Interviewing', dot: 'bg-primary', text: 'text-primary', ring: 'border-primary/30 bg-primary/[0.06]' },
+  offered: { label: 'Offered', dot: 'bg-accent-foreground', text: 'text-accent-foreground', ring: 'border-accent-foreground/30 bg-accent' },
+}
+
+/* ─── Primitives ─────────────────────────────────────────────────────── */
+function Eyebrow({ children, className }) {
+  return (
+    <span className={cn('font-mono text-[10px] uppercase tracking-[0.22em] text-primary/85', className)}>
+      // {children}
+    </span>
+  )
+}
+
+function Mono({ children, className }) {
+  return (
+    <span className={cn('font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/40', className)}>
+      {children}
+    </span>
+  )
+}
+
+function Panel({ label, action, children, className }) {
+  return (
+    <div className={cn('overflow-hidden rounded-xl border border-border bg-card', className)}>
+      <div className="flex h-11 items-center justify-between border-b border-border px-5">
+        <Mono>{label}</Mono>
+        {action}
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function PanelLink({ to, children }) {
+  return (
+    <Link
+      to={to}
+      className="inline-flex items-center gap-1 text-[12px] font-medium text-foreground/55 transition-colors hover:text-primary"
+    >
+      {children}
+    </Link>
+  )
+}
+
+function EmptyRow({ icon: Icon, title, hint, cta }) {
+  return (
+    <div className="flex flex-col items-center px-6 py-12 text-center">
+      <span className="grid h-10 w-10 place-items-center rounded-lg border border-dashed border-border text-foreground/35">
+        <Icon className="h-4 w-4" />
+      </span>
+      <p className="mt-4 text-sm font-medium">{title}</p>
+      <p className="mt-1 text-[13px] text-foreground/50">{hint}</p>
+      {cta && (
+        <Link
+          to={cta.to}
+          className="mt-5 inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-1.5 text-[12.5px] font-medium text-primary-foreground transition hover:brightness-110"
+        >
+          {cta.label} <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      )}
+    </div>
+  )
+}
+
+function greetingFor(date = new Date()) {
+  const h = date.getHours()
+  if (h < 5) return 'Working late'
+  if (h < 12) return 'Good morning'
+  if (h < 18) return 'Good afternoon'
+  return 'Good evening'
 }
 
 /* ─── Skeleton ───────────────────────────────────────────────────────── */
 function DashboardSkeleton() {
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {Array.from({ length: 6 }).map((_, i) => <SkeletonStat key={i} />)}
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {Array.from({ length: 6 }).map((_, i) => <SkeletonAction key={i} />)}
       </div>
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid gap-6 lg:grid-cols-2">
         {[0, 1].map((col) => (
           <div key={col} className="space-y-3">
             <SkeletonBlock className="h-6 w-40" />
-            <div className="rounded-2xl bg-card border border-border p-4 space-y-3">
+            <div className="space-y-3 rounded-xl border border-border bg-card p-4">
               {Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} />)}
             </div>
           </div>
@@ -170,7 +231,6 @@ export default function Dashboard() {
   const [portfolioCount, setPortfolioCount] = useState(0)
   const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({ connected: false, loading: false, stats: null })
-  const [activeCategory, setActiveCategory] = useState('resume')
   const fetchRequestId = useRef(0)
   const isMounted = useRef(false)
 
@@ -255,289 +315,437 @@ export default function Dashboard() {
 
   const formatDate = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+  const reduce = useReducedMotion()
+  const firstName = candidateName.split(/\s+/)[0] || ''
 
-  const container = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.04 } } }
-  const item = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35 } } }
+  const container = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: reduce ? 0 : 0.05 } } }
+  const item = reduce
+    ? { hidden: { opacity: 1 }, visible: { opacity: 1 } }
+    : { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } } }
 
-  const activeFeatures = FEATURE_CATEGORIES.find(c => c.id === activeCategory)?.features || []
+  const inFlight = jobStats.applied + jobStats.interviewing + jobStats.offered
+  const responseRate = inFlight > 0 ? Math.round(((jobStats.interviewing + jobStats.offered) / inFlight) * 100) : null
+  const pipeline = [
+    { key: 'saved', label: 'Saved', value: jobStats.saved, bar: 'bg-foreground/15' },
+    { key: 'applied', label: 'Applied', value: jobStats.applied, bar: 'bg-foreground/60' },
+    { key: 'interviewing', label: 'Interviewing', value: jobStats.interviewing, bar: 'bg-primary' },
+    { key: 'offered', label: 'Offered', value: jobStats.offered, bar: 'bg-accent-foreground' },
+  ]
+  const pipelineTotal = pipeline.reduce((s, p) => s + p.value, 0)
+
+  const stats = [
+    { value: jobStats.total, label: 'Tracked', to: '/job-tracker' },
+    { value: jobStats.applied, label: 'Applied', to: '/job-tracker' },
+    { value: jobStats.interviewing, label: 'Interviews', to: '/job-tracker', tone: 'primary' },
+    { value: jobStats.offered, label: 'Offers', to: '/job-tracker', tone: 'accent' },
+    { value: resumes.length, label: 'Resumes', to: '/hub/resume' },
+    { value: portfolioCount, label: 'Portfolios', to: '/hub/portfolio' },
+  ]
+
+  const summary = [
+    jobStats.interviewing > 0 && `${jobStats.interviewing} interview${jobStats.interviewing === 1 ? '' : 's'} in flight`,
+    jobStats.applied > 0 && `${jobStats.applied} application${jobStats.applied === 1 ? '' : 's'} out`,
+    resumes.length > 0 && `${resumes.length} resume${resumes.length === 1 ? '' : 's'} ready`,
+  ].filter(Boolean)
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="cp-flight min-h-full bg-background text-foreground antialiased">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
 
         {/* ─── Header ─────────────────────────────────────────────── */}
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground mb-1 flex items-center gap-2">
-                <CalendarDays className="w-3.5 h-3.5" /> {today}
-              </p>
-              <h1 className="text-3xl font-bold text-foreground tracking-tight">
-                {candidateName ? `Welcome back, ${candidateName}` : 'Welcome back'}
-              </h1>
-            </div>
+        <motion.header
+          initial={reduce ? false : { opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col gap-6 border-b border-border pb-8 lg:flex-row lg:items-end lg:justify-between"
+        >
+          <div>
+            <Eyebrow>{today}</Eyebrow>
+            <h1 className="mt-3 text-[2rem] font-medium leading-[1.05] tracking-[-0.045em] sm:text-[2.6rem]">
+              {greetingFor()}
+              {firstName ? (
+                <>
+                  , <span className="text-primary">{firstName}</span>.
+                </>
+              ) : (
+                '.'
+              )}
+            </h1>
+            <p className="mt-2.5 text-[14px] text-foreground/55">
+              {summary.length > 0 ? summary.join(' · ') : 'Your cockpit is ready. Start with a resume or a job search.'}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               to="/settings"
-              className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Settings"
+              className="grid h-9 w-9 place-items-center rounded-md border border-border text-foreground/55 transition hover:border-foreground/30 hover:text-foreground"
             >
-              <Shield className="w-4 h-4" /> Settings
+              <SettingsIcon className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/job-finder/search"
+              className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-background px-3.5 text-[13px] font-medium text-foreground/80 transition hover:border-foreground/30 hover:text-foreground"
+            >
+              <Search className="h-3.5 w-3.5" /> Search jobs
+            </Link>
+            <Link
+              to="/resume-builder/build"
+              className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3.5 text-[13px] font-medium text-primary-foreground shadow-[0_12px_32px_-16px_var(--primary)] transition hover:brightness-110"
+            >
+              <Plus className="h-3.5 w-3.5" /> New resume
             </Link>
           </div>
-        </motion.div>
+        </motion.header>
 
         {loading ? (
-          <DashboardSkeleton />
+          <div className="mt-8">
+            <DashboardSkeleton />
+          </div>
         ) : (
-          <motion.div variants={container} initial="hidden" animate="visible" className="space-y-8">
+          <motion.div variants={container} initial="hidden" animate="visible" className="mt-8 space-y-6">
 
             {/* ─── Error Banner ─────────────────────────────────────── */}
             {fetchError && (
-              <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-5 py-3 text-sm text-destructive flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4 rounded-xl border border-destructive/25 bg-destructive/[0.06] px-5 py-3 text-sm text-destructive">
                 <span className="font-medium">{fetchError}</span>
-                <button onClick={fetchData} className="px-3 py-1 bg-destructive text-destructive-foreground rounded-lg text-xs font-semibold hover:opacity-90 transition-opacity">
+                <button
+                  onClick={fetchData}
+                  className="rounded-md bg-destructive px-3 py-1 text-xs font-semibold text-destructive-foreground transition-opacity hover:opacity-90"
+                >
                   Retry
                 </button>
               </div>
             )}
 
-            {/* ─── Stats Strip ──────────────────────────────────────── */}
-            <motion.div variants={item} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {[
-                { icon: Briefcase, value: jobStats.total, label: 'Jobs Tracked', to: '/job-tracker' },
-                { icon: Send, value: jobStats.applied, label: 'Applied', to: '/job-tracker' },
-                { icon: MessageSquare, value: jobStats.interviewing, label: 'Interviews', to: '/job-tracker' },
-                { icon: CheckCircle2, value: jobStats.offered, label: 'Offers', to: '/job-tracker' },
-                { icon: FileText, value: resumes.length, label: 'Resumes', to: '/hub/resume' },
-                { icon: Globe, value: portfolioCount, label: 'Portfolios', to: '/hub/portfolio' },
-              ].map((stat, idx) => (
-                <Link key={idx} to={stat.to} className="group p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-sm transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                      <stat.icon className="w-4.5 h-4.5 text-primary" />
+            {/* ─── Instrument panel (stats) ─────────────────────────── */}
+            <motion.div variants={item} className="overflow-hidden rounded-xl border border-border">
+              <div className="grid grid-cols-2 gap-px bg-border sm:grid-cols-3 lg:grid-cols-6">
+                {stats.map((stat, idx) => (
+                  <Link key={stat.label} to={stat.to} className="group bg-card p-5 transition-colors hover:bg-background">
+                    <div className="flex items-center justify-between">
+                      <Mono>{stat.label}</Mono>
+                      <span className="font-mono text-[10px] tabular-nums text-foreground/20">{String(idx + 1).padStart(2, '0')}</span>
                     </div>
-                    <div>
-                      <p className="text-xl font-bold text-foreground leading-none">{stat.value}</p>
-                      <p className="text-[11px] font-medium text-muted-foreground mt-0.5">{stat.label}</p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </motion.div>
-
-            {/* ─── Quick Actions ────────────────────────────────────── */}
-            <motion.div variants={item}>
-              <div className="flex flex-wrap gap-2">
-                {QUICK_ACTIONS.map((action) => (
-                  <Link
-                    key={action.label}
-                    to={action.to}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-card border border-border text-sm font-medium text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all"
-                  >
-                    <action.icon className="w-4 h-4 text-primary" />
-                    {action.label}
+                    <p
+                      className={cn(
+                        'mt-4 text-[2rem] font-medium leading-none tabular-nums tracking-[-0.04em]',
+                        stat.tone === 'primary' && stat.value > 0 && 'text-primary',
+                        stat.tone === 'accent' && stat.value > 0 && 'text-accent-foreground',
+                      )}
+                    >
+                      {stat.value}
+                    </p>
+                    <ArrowUpRight className="mt-3 h-3.5 w-3.5 text-foreground/20 transition group-hover:text-primary" />
                   </Link>
                 ))}
               </div>
             </motion.div>
 
-            {/* ─── Feature Explorer ─────────────────────────────────── */}
-            <motion.div variants={item} className="rounded-2xl bg-card border border-border overflow-hidden">
-              {/* Category Tabs */}
-              <div className="flex overflow-x-auto border-b border-border px-4 pt-3 gap-1 scrollbar-hide">
-                {FEATURE_CATEGORIES.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setActiveCategory(cat.id)}
-                    className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-t-lg whitespace-nowrap transition-colors border-b-2 -mb-px ${
-                      activeCategory === cat.id
-                        ? 'border-primary text-primary bg-primary/5'
-                        : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                    }`}
-                  >
-                    <cat.icon className="w-4 h-4" />
-                    <span className="hidden sm:inline">{cat.label}</span>
-                    <span className="sm:hidden">{cat.label.split(' ')[0]}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Feature Cards */}
-              <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {activeFeatures.map((feature) => (
-                  <Link
-                    key={feature.name}
-                    to={feature.to}
-                    className="group flex items-start gap-3 p-4 rounded-xl border border-border hover:border-primary/30 hover:shadow-sm transition-all bg-background/50"
-                  >
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${feature.accent}`}>
-                      <feature.icon className="w-5 h-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
-                        {feature.name}
-                        <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </h3>
-                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{feature.desc}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* ─── Two Column: Recent Activity ──────────────────────── */}
-            <div className="grid lg:grid-cols-2 gap-6">
-              {/* Recent Applications */}
+            {/* ─── Flight path (pipeline) + launchpad ───────────────── */}
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
               <motion.div variants={item}>
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-muted-foreground" />
-                    Recent Applications
-                  </h2>
-                  <Link to="/job-tracker" className="text-xs font-medium text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
-                    View all <ChevronRight className="w-3 h-3" />
-                  </Link>
-                </div>
+                <Panel
+                  label="Flight path"
+                  action={<PanelLink to="/job-tracker">Open tracker <ArrowRight className="h-3 w-3" /></PanelLink>}
+                  className="h-full"
+                >
+                  <div className="p-5 sm:p-6">
+                    <div className="flex items-end justify-between gap-4">
+                      <div>
+                        <p className="text-[2.4rem] font-medium leading-none tabular-nums tracking-[-0.05em]">
+                          {responseRate != null ? `${responseRate}%` : '—'}
+                        </p>
+                        <p className="mt-2 text-[13px] text-foreground/50">
+                          Response rate across {inFlight} sent application{inFlight === 1 ? '' : 's'}
+                        </p>
+                      </div>
+                      {jobStats.offered > 0 && (
+                        <span className="rounded bg-accent px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-foreground">
+                          {jobStats.offered} offer{jobStats.offered === 1 ? '' : 's'}
+                        </span>
+                      )}
+                    </div>
 
-                {trackedJobs.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-border p-8 text-center">
-                    <Briefcase className="w-8 h-8 text-muted-foreground/40 mx-auto mb-3" />
-                    <p className="text-sm font-medium text-muted-foreground mb-1">No applications yet</p>
-                    <p className="text-xs text-muted-foreground/70 mb-4">Start searching to track your progress</p>
-                    <Link to="/job-finder/search" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors">
-                      <Search className="w-3.5 h-3.5" /> Search Jobs
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="rounded-xl bg-card border border-border divide-y divide-border overflow-hidden">
-                    {trackedJobs.slice(0, 5).map((job, index) => {
-                      const cfg = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved
-                      const StatusIcon = cfg.icon
-                      return (
-                        <div key={job.id || index} className="px-4 py-3 flex items-center justify-between hover:bg-muted/30 transition-colors">
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium text-foreground truncate">{job.title}</p>
-                            <p className="text-xs text-muted-foreground">{job.company}</p>
-                          </div>
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold shrink-0 ${cfg.color}`}>
-                            <StatusIcon className="w-3 h-3" /> {cfg.label}
-                          </span>
+                    <div className="mt-6 flex h-2 overflow-hidden rounded-full bg-foreground/[0.06]" role="img" aria-label="Pipeline breakdown">
+                      {pipelineTotal > 0 &&
+                        pipeline.map((p) =>
+                          p.value > 0 ? (
+                            <motion.span
+                              key={p.key}
+                              className={cn('h-full border-r-2 border-card last:border-r-0', p.bar)}
+                              initial={reduce ? false : { width: 0 }}
+                              animate={{ width: `${(p.value / pipelineTotal) * 100}%` }}
+                              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                            />
+                          ) : null,
+                        )}
+                    </div>
+
+                    <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                      {pipeline.map((p) => (
+                        <div key={p.key}>
+                          <dt className="flex items-center gap-2">
+                            <span className={cn('h-2 w-2 rounded-full', p.bar)} />
+                            <Mono>{p.label}</Mono>
+                          </dt>
+                          <dd className="mt-1.5 text-lg font-medium tabular-nums tracking-tight">{p.value}</dd>
                         </div>
-                      )
-                    })}
+                      ))}
+                    </dl>
+
+                    {pipelineTotal === 0 && (
+                      <p className="mt-5 border-t border-dashed border-border pt-4 text-[13px] text-foreground/50">
+                        No applications yet.{' '}
+                        <Link to="/job-finder/search" className="font-medium text-primary hover:underline">
+                          Find your first role →
+                        </Link>
+                      </p>
+                    )}
                   </div>
-                )}
+                </Panel>
               </motion.div>
 
-              {/* My Resumes */}
               <motion.div variants={item}>
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-muted-foreground" />
-                    My Resumes
-                  </h2>
-                  <Link to="/upload" className="text-xs font-medium text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
-                    Upload new <Plus className="w-3 h-3" />
-                  </Link>
-                </div>
-
-                {resumes.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-border p-8 text-center">
-                    <FileText className="w-8 h-8 text-muted-foreground/40 mx-auto mb-3" />
-                    <p className="text-sm font-medium text-muted-foreground mb-1">No resumes yet</p>
-                    <p className="text-xs text-muted-foreground/70 mb-4">Upload or build one to get started</p>
-                    <Link to="/resume-builder/build" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors">
-                      <FileText className="w-3.5 h-3.5" /> Build Resume
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="rounded-xl bg-card border border-border divide-y divide-border overflow-hidden">
-                    {resumes.slice(0, 5).map((resume) => (
-                      <div key={resume.id} className="px-4 py-3 flex items-center justify-between hover:bg-muted/30 transition-colors group">
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">{resume.title}</p>
-                          <p className="text-xs text-muted-foreground">{resume.jobRole || 'General'} · {formatDate(resume.createdAt)}</p>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {resume.enhancedText && (
-                            <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-bold">AI</span>
-                          )}
-                          <Link to={`/resume/${resume.id}`} className="px-2.5 py-1 rounded-md text-[11px] font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-                            View
-                          </Link>
-                          <Link to={`/enhance/${resume.id}`} className="px-2.5 py-1 rounded-md text-[11px] font-semibold text-primary bg-primary/10 hover:bg-primary/15 transition-colors">
-                            Enhance
-                          </Link>
-                        </div>
-                      </div>
+                <Panel label="Launchpad" className="h-full">
+                  <div className="grid auto-rows-fr grid-cols-2 gap-px bg-border lg:h-[calc(100%-2.75rem)]">
+                    {QUICK_ACTIONS.map((action) => (
+                      <Link
+                        key={action.label}
+                        to={action.to}
+                        className="group flex items-center gap-3 bg-card px-4 py-4 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-background hover:text-foreground"
+                      >
+                        <action.icon className="h-4 w-4 shrink-0 text-foreground/40 transition-colors group-hover:text-primary" />
+                        <span className="truncate">{action.label}</span>
+                      </Link>
                     ))}
                   </div>
-                )}
+                </Panel>
               </motion.div>
             </div>
 
-            {/* ─── GitHub Overview ──────────────────────────────────── */}
+            {/* ─── Recent activity ──────────────────────────────────── */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              <motion.div variants={item}>
+                <Panel
+                  label="Recent applications"
+                  action={<PanelLink to="/job-tracker">View all <ArrowRight className="h-3 w-3" /></PanelLink>}
+                  className="h-full"
+                >
+                  {trackedJobs.length === 0 ? (
+                    <EmptyRow
+                      icon={Briefcase}
+                      title="No applications yet"
+                      hint="Save roles from search or the browser extension."
+                      cta={{ to: '/job-finder/search', label: 'Search jobs' }}
+                    />
+                  ) : (
+                    <ul className="divide-y divide-border">
+                      {trackedJobs.slice(0, 5).map((job, index) => {
+                        const cfg = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved
+                        return (
+                          <li key={job.id || index} className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2 px-5 py-3.5 transition-colors hover:bg-background">
+                            <span className="font-mono text-[10px] tabular-nums text-foreground/30">{String(index + 1).padStart(2, '0')}</span>
+                            <div className="min-w-0">
+                              <p className="truncate text-[13.5px] font-medium">{job.title}</p>
+                              <p className="truncate text-[12px] text-foreground/50">{job.company}</p>
+                            </div>
+                            <span className={cn('inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[9.5px] uppercase tracking-[0.14em]', cfg.ring, cfg.text)}>
+                              <span className={cn('h-1.5 w-1.5 rounded-full', cfg.dot)} /> {cfg.label}
+                            </span>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </Panel>
+              </motion.div>
+
+              <motion.div variants={item}>
+                <Panel
+                  label="My resumes"
+                  action={<PanelLink to="/upload">Upload <Plus className="h-3 w-3" /></PanelLink>}
+                  className="h-full"
+                >
+                  {resumes.length === 0 ? (
+                    <EmptyRow
+                      icon={FileText}
+                      title="No resumes yet"
+                      hint="Upload an existing one or build from scratch."
+                      cta={{ to: '/resume-builder/build', label: 'Build resume' }}
+                    />
+                  ) : (
+                    <ul className="divide-y divide-border">
+                      {resumes.slice(0, 5).map((resume, index) => (
+                        <li key={resume.id} className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2 px-5 py-3.5 transition-colors hover:bg-background">
+                          <span className="font-mono text-[10px] tabular-nums text-foreground/30">{String(index + 1).padStart(2, '0')}</span>
+                          <div className="min-w-0">
+                            <p className="flex items-center gap-2 truncate text-[13.5px] font-medium">
+                              <span className="truncate">{resume.title}</span>
+                              {resume.enhancedText && (
+                                <span className="inline-flex shrink-0 items-center gap-0.5 rounded bg-primary/10 px-1.5 py-px font-mono text-[9px] uppercase tracking-[0.14em] text-primary">
+                                  <Sparkles className="h-2.5 w-2.5" /> AI
+                                </span>
+                              )}
+                            </p>
+                            <p className="truncate text-[12px] text-foreground/50">
+                              {resume.jobRole || 'General'} · {formatDate(resume.createdAt)}
+                            </p>
+                          </div>
+                          <div className="flex shrink-0 items-center gap-1">
+                            <Link to={`/resume/${resume.id}`} className="rounded-md px-2.5 py-1 text-[12px] font-medium text-foreground/55 transition-colors hover:bg-muted hover:text-foreground">
+                              View
+                            </Link>
+                            <Link to={`/enhance/${resume.id}`} className="rounded-md border border-primary/25 px-2.5 py-1 text-[12px] font-medium text-primary transition-colors hover:bg-primary/10">
+                              Enhance
+                            </Link>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </Panel>
+              </motion.div>
+            </div>
+
+            {/* ─── GitHub ───────────────────────────────────────────── */}
             <motion.div variants={item}>
               {githubOverview.connected ? (
-                <div className="rounded-xl bg-card border border-border p-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center">
-                        <Github className="w-5 h-5 text-foreground" />
-                      </div>
-                      <div>
-                        <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                          GitHub
-                          {githubOverview.loading && <span className="text-[10px] text-muted-foreground font-normal animate-pulse">syncing…</span>}
-                        </h2>
-                        <p className="text-xs text-muted-foreground">Repository overview</p>
-                      </div>
+                <div className="grid overflow-hidden rounded-xl border border-border bg-card sm:grid-cols-[minmax(0,1fr)_auto]">
+                  <div className="flex items-center gap-3 px-5 py-4">
+                    <span className="grid h-9 w-9 place-items-center rounded-md border border-border">
+                      <Github className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="flex items-center gap-2 text-[14px] font-medium">
+                        GitHub
+                        {githubOverview.loading ? (
+                          <Mono className="animate-pulse normal-case tracking-normal">syncing…</Mono>
+                        ) : (
+                          <span className="h-1.5 w-1.5 rounded-full bg-accent-foreground" aria-label="Connected" />
+                        )}
+                      </p>
+                      <p className="text-[12px] text-foreground/50">Repository signal for your resume and portfolio</p>
                     </div>
-
-                    <div className="flex items-center gap-4">
-                      {[
-                        { label: 'Repos', value: githubOverview.stats?.totalRepos ?? '—' },
-                        { label: 'Stars', value: githubOverview.stats?.totalStars ?? '—' },
-                        { label: 'Languages', value: githubOverview.stats?.topLanguages?.join(', ') || '—' },
-                        { label: 'Streak', value: githubOverview.stats?.currentStreak != null ? `${githubOverview.stats.currentStreak}d` : '—' },
-                      ].map((s) => (
-                        <div key={s.label} className="text-center">
-                          <p className="text-sm font-bold text-foreground">{s.value}</p>
-                          <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{s.label}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    <Link to="/github" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-xs font-semibold text-foreground hover:bg-muted/80 transition-colors shrink-0">
-                      Details <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
                   </div>
+                  <div className="grid grid-cols-4 gap-px border-t border-border bg-border sm:border-l sm:border-t-0">
+                    {[
+                      { label: 'Repos', value: githubOverview.stats?.totalRepos ?? '—' },
+                      { label: 'Stars', value: githubOverview.stats?.totalStars ?? '—' },
+                      { label: 'Top lang', value: githubOverview.stats?.topLanguages?.[0] || '—' },
+                      { label: 'Streak', value: githubOverview.stats?.currentStreak != null ? `${githubOverview.stats.currentStreak}d` : '—' },
+                    ].map((s) => (
+                      <div key={s.label} className="bg-card px-4 py-3 sm:px-5">
+                        <Mono>{s.label}</Mono>
+                        <p className="mt-1 truncate text-[15px] font-medium tabular-nums">{s.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Link
+                    to="/github"
+                    className="flex items-center justify-center gap-1.5 border-t border-border px-5 py-3 text-[12.5px] font-medium text-foreground/60 transition-colors hover:bg-background hover:text-primary sm:col-span-2"
+                  >
+                    Open GitHub dashboard <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
               ) : (
-                <div className="rounded-xl border border-dashed border-border p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex flex-col justify-between gap-3 rounded-xl border border-dashed border-border px-5 py-4 sm:flex-row sm:items-center">
                   <div className="flex items-center gap-3">
-                    <Github className="w-5 h-5 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Connect GitHub to see repository stats</p>
+                    <Github className="h-4 w-4 text-foreground/40" />
+                    <p className="text-[13.5px] text-foreground/60">Connect GitHub to pull repos, stars and languages into your profile.</p>
                   </div>
-                  <Link to="/profile" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors">
-                    Connect <ArrowRight className="w-3.5 h-3.5" />
+                  <Link
+                    to="/profile"
+                    className="inline-flex items-center gap-1.5 self-start rounded-md border border-border px-3 py-1.5 text-[12.5px] font-medium transition hover:border-primary/40 hover:text-primary sm:self-auto"
+                  >
+                    Connect <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
               )}
             </motion.div>
 
-            {/* ─── Career Progress ──────────────────────────────────── */}
-            <motion.div variants={item} className="grid sm:grid-cols-3 gap-4">
-              {[
-                { icon: Zap, title: 'Optimize', desc: 'Use AI to tailor your resume for each application', to: '/hub/resume', color: 'text-amber-500' },
-                { icon: Target, title: 'Track', desc: 'Keep notes and update statuses to stay organized', to: '/job-tracker', color: 'text-emerald-500' },
-                { icon: TrendingUp, title: 'Follow Up', desc: 'Follow up on applications after one week', to: '/job-alerts', color: 'text-blue-500' },
-              ].map((tip, idx) => (
-                <Link key={idx} to={tip.to} className="group p-5 rounded-xl bg-card border border-border hover:border-primary/20 hover:shadow-sm transition-all">
-                  <tip.icon className={`w-5 h-5 ${tip.color} mb-3`} />
-                  <h3 className="text-sm font-semibold text-foreground mb-1">{tip.title}</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{tip.desc}</p>
-                </Link>
-              ))}
+            {/* ─── Tool suite ───────────────────────────────────────── */}
+            <motion.section variants={item} className="pt-6">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <Eyebrow>Tool suite</Eyebrow>
+                  <h2 className="mt-2 text-[1.5rem] font-medium tracking-[-0.035em]">Everything in the cockpit.</h2>
+                </div>
+                <Mono className="text-foreground/35">
+                  {FEATURE_CATEGORIES.reduce((n, c) => n + c.features.length, 0)} tools · {FEATURE_CATEGORIES.length} groups
+                </Mono>
+              </div>
+
+              <div className="mt-6 overflow-hidden rounded-xl border border-border">
+                {FEATURE_CATEGORIES.map((cat, ci) => (
+                  <div key={cat.id} className={cn('grid lg:grid-cols-[15rem_minmax(0,1fr)]', ci > 0 && 'border-t border-border')}>
+                    <div className="flex items-center gap-3 border-b border-border bg-background px-5 py-4 lg:border-b-0 lg:border-r">
+                      <cat.icon className="h-4 w-4 text-foreground/40" />
+                      <div className="min-w-0">
+                        <p className="truncate text-[13px] font-semibold tracking-tight">{cat.label}</p>
+                        <Mono className="text-foreground/30">{String(cat.features.length).padStart(2, '0')} tools</Mono>
+                      </div>
+                    </div>
+                    <div className="grid gap-px bg-border sm:grid-cols-2 xl:grid-cols-4">
+                      {cat.features.map((feature) => (
+                        <Link
+                          key={feature.name}
+                          to={feature.to}
+                          className="group flex items-start gap-3 bg-card px-4 py-4 transition-colors hover:bg-background"
+                        >
+                          <feature.icon className="mt-0.5 h-4 w-4 shrink-0 text-foreground/40 transition-colors group-hover:text-primary" />
+                          <div className="min-w-0">
+                            <p className="flex items-center gap-1 text-[13px] font-medium transition-colors group-hover:text-primary">
+                              {feature.name}
+                              <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
+                            </p>
+                            <p className="mt-0.5 line-clamp-1 text-[12px] text-foreground/50">{feature.desc}</p>
+                          </div>
+                        </Link>
+                      ))}
+                      {/* pad the hairline grid so short rows don't expose the border colour */}
+                      {(() => {
+                        const n = cat.features.length
+                        const padSm = (2 - (n % 2)) % 2
+                        const padXl = (4 - (n % 4)) % 4
+                        return Array.from({ length: Math.max(padSm, padXl) }).map((_, i) => (
+                          <div
+                            key={`pad-${i}`}
+                            aria-hidden="true"
+                            className={cn(
+                              'hidden bg-card',
+                              i < padSm ? 'sm:block' : 'sm:hidden',
+                              i < padXl ? 'xl:block' : 'xl:hidden',
+                            )}
+                          />
+                        ))
+                      })()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.section>
+
+            {/* ─── Next moves ───────────────────────────────────────── */}
+            <motion.div variants={item} className="overflow-hidden rounded-xl border border-border">
+              <div className="grid gap-px bg-border sm:grid-cols-3">
+                {[
+                  { title: 'Optimize', desc: 'Tailor your resume to each job description before you apply.', to: '/hub/resume' },
+                  { title: 'Track', desc: 'Keep notes and move statuses so nothing goes quiet.', to: '/job-tracker' },
+                  { title: 'Follow up', desc: 'Check in a week after applying so your application stays visible.', to: '/job-alerts' },
+                ].map((tip, idx) => (
+                  <Link key={tip.title} to={tip.to} className="group bg-card p-5 transition-colors hover:bg-background">
+                    <div className="flex items-baseline gap-3">
+                      <span className={cn('font-mono text-xs tabular-nums', idx === 0 ? 'text-primary' : 'text-foreground/30')}>
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <div>
+                        <p className="text-[14px] font-semibold tracking-tight">{tip.title}</p>
+                        <p className="mt-1 text-[12.5px] leading-relaxed text-foreground/52">{tip.desc}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </motion.div>
 
           </motion.div>

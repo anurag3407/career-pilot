@@ -43,9 +43,7 @@ export default function LiveResumePreview({
     setExportingPdf(true)
     try {
       const name = resumeData?.personal?.name || 'Resume'
-      await exportAtsSafePdf(previewRef.current, {
-        filename: `${name.replace(/\s+/g, '_')}_Resume.pdf`,
-      })
+      await exportAtsSafePdf(previewRef.current, `${name.replace(/\s+/g, '_')}_Resume.pdf`)
       toast.success('PDF downloaded!')
     } catch (err) {
       console.error('PDF export error:', err)

@@ -1,0 +1,35 @@
+# =============================================================================
+# CareerPilot AI Gateway — Cloudflare Worker
+# =============================================================================
+# The single AI configuration point for the whole platform. All AI calls from
+# the frontend route through here; platform keys never touch the browser.
+#
+# Deploy (free tier: 100k requests/day):
+#   cd worker && npx wrangler login && npx wrangler deploy
+#
+# Secrets (set once — never commit):
+#   npx wrangler secret put GEMINI_API_KEY
+#   npx wrangler secret put OPENAI_API_KEY
+#   npx wrangler secret put GROQ_API_KEY
+#   npx wrangler secret put OPENROUTER_API_KEY
+#   npx wrangler secret put ANTHROPIC_API_KEY
+#   npx wrangler secret put RAPIDAPI_KEY
+#   npx wrangler secret put SUPABASE_URL
+#   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+# =============================================================================
+
+name = "careerpilot-gateway"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+# Comma-separated allowlist, or "*" to allow any origin (fine for BYOK-only
+# deployments; tighten before enabling platform keys in production).
+ALLOWED_ORIGINS = "*"
+# Provider used when the request carries no BYOK key and no explicit provider.
+DEFAULT_AI_PROVIDER = "gemini"
+
+# Observed limits for the free tier (kept conservative; per-isolate, best effort)
+[limits]
+cpu_ms = 50

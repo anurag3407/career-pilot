@@ -263,11 +263,18 @@ export default function PortfolioHub() {
 )}
 
       <ToolCard
+        to="/portfolio-builder/studio"
+        icon={Globe}
+        title="Portfolio Studio"
+        description="Compose and edit your portfolio live with real-time canvas preview and custom sections."
+        color="primary"
+      />
+      <ToolCard
         to="/templates"
         icon={LayoutTemplate}
         title="Portfolio Templates"
         description="Choose from curated developer templates. Fully responsive and customizable."
-        color="primary"
+        color="secondary"
       />
       <ToolCard
         to="/github-dashboard"

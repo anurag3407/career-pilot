@@ -1,74 +1,73 @@
+
 export const templates = [
   {
-    id: "MySpace_2005",
-    title: "MySpace 2005",
-    category: "Portfolio",
-    colorScheme: "Light",
-    layout: "Grid",
-    author: "Ayush Srivastava",
-    views: 0,
-    rating: 5.0,
-    image: "/templates/MySpace_2005.png",
-    createdAt: "2026-07-17",
-    isComplete: true,
-    description: "A faithful recreation of a classic 2005 MySpace profile page as a developer portfolio. Features the iconic two-column layout, blue navigation, connected white panels, dark blue section headers, compact Verdana typography, interactive project accordion, and stacked profile modules — pure nostalgia."
+    "id": "MySpace_2005",
+    "title": "MySpace 2005",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Grid",
+    "author": "Ayush Srivastava",
+    "views": 0,
+    "rating": 5,
+    "image": "/templates/MySpace_2005.png",
+    "createdAt": "2026-07-17",
+    "isComplete": true,
+    "description": "A faithful recreation of a classic 2005 MySpace profile page as a developer portfolio. Features the iconic two-column layout, blue navigation, connected white panels, dark blue section headers, compact Verdana typography, interactive project accordion, and stacked profile modules — pure nostalgia."
   },
   {
-    id: "Macintosh_1984_Classic",
-    title: "Macintosh 1984 Classic",
-    category: "Portfolio",
-    colorScheme: "Light",
-    layout: "Interactive",
-    author: "Ayush Srivastava",
-    views: 0,
-    rating: 5.0,
-    image: "/templates/Macintosh_1984_Classic.png",
-    createdAt: "2026-07-16",
-    isComplete: true,
-    description: "A pixel-perfect recreation of the original 1984 Macintosh desktop as a fully interactive portfolio. Features authentic Finder windows, Chicago-inspired bitmap typography, double-click desktop icons, and classic monochrome aesthetics."
+    "id": "Macintosh_1984_Classic",
+    "title": "Macintosh 1984 Classic",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Interactive",
+    "author": "Ayush Srivastava",
+    "views": 0,
+    "rating": 5,
+    "image": "/templates/Macintosh_1984_Classic.png",
+    "createdAt": "2026-07-16",
+    "isComplete": true,
+    "description": "A pixel-perfect recreation of the original 1984 Macintosh desktop as a fully interactive portfolio. Features authentic Finder windows, Chicago-inspired bitmap typography, double-click desktop icons, and classic monochrome aesthetics."
   },
   {
-
-    id: "Hot_Air_Balloon_Drifting",
-    title: "Hot Air Balloon Drifting",
-    category: "Portfolio",
-    colorScheme: "Bright Sky (Peaches & Blues)",
-    layout: "Parallax Background",
-    author: "System",
-    views: 0,
-    rating: 5.0,
-    image: "/template-previews/Hot_Air_Balloon_Drifting.png",
-    createdAt: "2026-06-22",
-    description: "A bright, whimsical portfolio featuring a massive, continuously drifting hot air balloon, animated CSS clouds, and transparent glassmorphism cards over a dynamic parallax sky.",
-    isComplete: true
+    "id": "Hot_Air_Balloon_Drifting",
+    "title": "Hot Air Balloon Drifting",
+    "category": "Portfolio",
+    "colorScheme": "Bright Sky (Peaches & Blues)",
+    "layout": "Parallax Background",
+    "author": "System",
+    "views": 0,
+    "rating": 5,
+    "image": "/template-previews/Hot_Air_Balloon_Drifting.png",
+    "createdAt": "2026-06-22",
+    "isComplete": true,
+    "description": "A bright, whimsical portfolio featuring a massive, continuously drifting hot air balloon, animated CSS clouds, and transparent glassmorphism cards over a dynamic parallax sky."
   },
   {
-    id: "Stand_up_Comedy_Brick_Wall_Mic",
-    title: "Stand-up Comedy Brick Wall Mic",
-    category: "Portfolio",
-    colorScheme: "Dark",
-    layout: "Interactive",
-    author: "Antigravity",
-    views: 1500,
-    rating: 5.0,
-    image: "/templates/Stand_up_Comedy_Brick_Wall_Mic.png",
-    createdAt: "2026-07-05",
-    isComplete: true,
-    description: "A premium, pixel-perfect developer portfolio styled like a classic stand-up comedy club stage, featuring a dark brick wall backdrop, glowing spotlight, theatrical curtains, marquee light borders, and tour-history timeline experience."
+    "id": "Stand_up_Comedy_Brick_Wall_Mic",
+    "title": "Stand-up Comedy Brick Wall Mic",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Antigravity",
+    "views": 1500,
+    "rating": 5,
+    "image": "/templates/Stand_up_Comedy_Brick_Wall_Mic.png",
+    "createdAt": "2026-07-05",
+    "isComplete": true,
+    "description": "A premium, pixel-perfect developer portfolio styled like a classic stand-up comedy club stage, featuring a dark brick wall backdrop, glowing spotlight, theatrical curtains, marquee light borders, and tour-history timeline experience."
   },
   {
-    id: "Swipe_Right_Dating_App",
-    title: "Swipe Right Dating App",
-    category: "Portfolio",
-    colorScheme: "Light",
-    layout: "Interactive",
-    author: "Antigravity",
-    views: 1250,
-    rating: 5.0,
-    image: "/templates/Swipe_Right_Dating_App.png",
-    createdAt: "2026-07-04",
-    isComplete: true,
-    description: "A premium, interactive developer portfolio styled like a modern dating application. Swipe through projects, chat history experience, and match with the developer."
+    "id": "Swipe_Right_Dating_App",
+    "title": "Swipe Right Dating App",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Interactive",
+    "author": "Antigravity",
+    "views": 1250,
+    "rating": 5,
+    "createdAt": "2026-07-04",
+    "isComplete": true,
+    "description": "A premium, interactive developer portfolio styled like a modern dating application. Swipe through projects, chat history experience, and match with the developer."
   },
   {
     "id": "Rubik_s_Cube_3D_Rotate",
@@ -81,23 +80,22 @@ export const templates = [
     "rating": 0,
     "image": "/template-previews/Rubik_s_Cube_3D_Rotate.png",
     "createdAt": "2026-06-24",
-    isComplete: true
+    "isComplete": true
   },
   {
-    id: "Jigsaw_Puzzle_Assembly",
-    title: "Jigsaw Puzzle Assembly",
-    category: "Portfolio",
-    colorScheme: "Colorful",
-    layout: "Interactive",
-    author: "System",
-    views: 0,
-    rating: 0,
-    image: "template-previews/Jigsaw_Puzzle_Assembly.png",
-    createdAt: "2026-06-24",
-    description: "A vibrant portfolio where big jigsaw pieces are assembled in the hero and scatter as you scroll down — rejoining as you scroll back up. Funky neon colours, unique interlocking shapes, and scroll-driven physics.",
-    isComplete: true
+    "id": "Jigsaw_Puzzle_Assembly",
+    "title": "Jigsaw Puzzle Assembly",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Jigsaw_Puzzle_Assembly.png",
+    "createdAt": "2026-06-24",
+    "isComplete": true,
+    "description": "A vibrant portfolio where big jigsaw pieces are assembled in the hero and scatter as you scroll down — rejoining as you scroll back up. Funky neon colours, unique interlocking shapes, and scroll-driven physics."
   },
-
   {
     "id": "Live_Satellite_Imagery_Feed",
     "title": "Live Satellite Imagery Feed",
@@ -107,7 +105,6 @@ export const templates = [
     "author": "System",
     "views": 1300,
     "rating": 4.9,
-    "image": "/templates/Live_Satellite_Imagery_Feed.png",
     "createdAt": "2026-06-07",
     "isComplete": true
   },
@@ -185,7 +182,6 @@ export const templates = [
     "author": "System",
     "views": 0,
     "rating": 5,
-    "image": "/templates/Michelin_Star_Chef_Plating.png",
     "createdAt": "2026-06-14",
     "isComplete": true
   },
@@ -198,7 +194,6 @@ export const templates = [
     "author": "System",
     "views": 0,
     "rating": 5,
-    "image": "/template-previews/Minimal_Dark_Fluid.png",
     "createdAt": "2026-06-14",
     "isComplete": true
   },
@@ -224,10 +219,9 @@ export const templates = [
     "author": "System",
     "views": 9999998,
     "rating": 5,
-    "image": "/template-previews/Bruno_Simon_Playground.png",
     "createdAt": "2026-06-18",
-    "description": "A playful interactive portfolio inspired by Bruno Simon's game-like web worlds, featuring bold colors, kinetic cards, pointer-reactive lighting, and a cartoon vehicle hero.",
-    "isComplete": true
+    "isComplete": true,
+    "description": "A playful interactive portfolio inspired by Bruno Simon's game-like web worlds, featuring bold colors, kinetic cards, pointer-reactive lighting, and a cartoon vehicle hero."
   },
   {
     "id": "Typewriter_Keystroke_Sequence",
@@ -240,8 +234,8 @@ export const templates = [
     "rating": 5,
     "image": "/template-previews/Typewriter_Keystroke_Sequence.png",
     "createdAt": "2026-06-15",
-    "description": "A vintage typewriter portfolio where your career story is typed live on old manuscript paper — complete with keystroke animations, ink smudges, diary entries, and folded letters.",
-    "isComplete": true
+    "isComplete": true,
+    "description": "A vintage typewriter portfolio where your career story is typed live on old manuscript paper — complete with keystroke animations, ink smudges, diary entries, and folded letters."
   },
   {
     "id": "Sommelier_Wine_Cellar_Racks",
@@ -252,7 +246,6 @@ export const templates = [
     "author": "System",
     "views": 999999,
     "rating": 5,
-    "image": "/templates/Sommelier_Wine_Cellar_Racks.png",
     "createdAt": "2026-06-14",
     "isComplete": true
   },
@@ -278,7 +271,6 @@ export const templates = [
     "author": "Your Name",
     "views": 9999,
     "rating": 5,
-    "image": "/template-previews/Cartographer_Antiquity_Map_Room.png",
     "createdAt": "2026-06-13",
     "isComplete": true
   },
@@ -310,15 +302,6 @@ export const templates = [
   },
   {
     "id": "Vercel_Deploy",
-    "isComplete": true
-  },
-  {
-    "id": "Vercel_Deploy",
-    "createdAt": "2026-06-12",
-    "isComplete": true
-  },
-  {
-    "id": "Vercel_Deploy",
     "title": "Vercel Deploy",
     "category": "Portfolio",
     "colorScheme": "Dark",
@@ -331,19 +314,6 @@ export const templates = [
     "isComplete": true
   },
   {
-    "id": "Virtual_Reality_Room_360",
-    "title": "Virtual Reality Room 360",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Virtual_Reality_Room_360.png",
-    "createdAt": "2026-06-12",
-    "isComplete": true
-  },
-  {
     "id": "Forensic_Investigator_Desk",
     "title": "Forensic Investigator Desk",
     "category": "Portfolio",
@@ -365,72 +335,6 @@ export const templates = [
     "author": "System",
     "views": 0,
     "rating": 0,
-    "image": "/templates/IKEA_Assembly_Manual.png",
-    "createdAt": "2026-06-13",
-    "isComplete": true
-  },
-  {
-    "id": "Endless_Runner_Minigame",
-    "title": "Endless Runner Minigame",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Endless_Runner_Minigame.png",
-    "createdAt": "2026-06-12",
-    "isComplete": true
-  },
-  {
-    "id": "Vercel_Deploy",
-    "title": "Vercel Deploy",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "System",
-    "views": 0,
-    "rating": 5,
-    "image": "/template-previews/Vercel_Deploy.png",
-    "createdAt": "2026-06-14",
-    "isComplete": true
-  },
-  {
-    "id": "Virtual_Reality_Room_360",
-    "title": "Virtual Reality Room 360",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Virtual_Reality_Room_360.png",
-    "createdAt": "2026-06-12",
-    "isComplete": true
-  },
-  {
-    "id": "Forensic_Investigator_Desk",
-    "title": "Forensic Investigator Desk",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Forensic_investigator_desk.png",
-    "createdAt": "2026-06-11",
-    "isComplete": true
-  },
-  {
-    "id": "IKEA_Assembly_Manual",
-    "title": "IKEA Assembly Manual",
-    "category": "Portfolio",
-    "colorScheme": "Light",
-    "layout": "Interactive",
-    "author": "System",
-    "views": 0,
-    "rating": 0,
-    "image": "/templates/IKEA_Assembly_Manual.png",
     "createdAt": "2026-06-13",
     "isComplete": true
   },
@@ -469,21 +373,7 @@ export const templates = [
     "author": "Raman Kumar",
     "views": 2800,
     "rating": 4.9,
-    "image": "/template-previews/ASCII_Art_Terminal_Code.png",
     "createdAt": "2026-06-12",
-    "isComplete": true
-  },
-  {
-    "id": "Forensic_Investigator_Desk",
-    "title": "Forensic Investigator Desk",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Forensic_investigator_desk.png",
-    "createdAt": "2026-06-11",
     "isComplete": true
   },
   {
@@ -547,7 +437,6 @@ export const templates = [
     "author": "System",
     "views": 1000,
     "rating": 5,
-    "image": "/templates/Interactive_Table_of_Elements.png",
     "createdAt": "2026-06-06",
     "isComplete": true
   },
@@ -573,21 +462,7 @@ export const templates = [
     "author": "mallya-m",
     "views": 0,
     "rating": 0,
-    "image": "/template-previews/AquaticBioluminescent.png",
     "createdAt": "2026-06-16",
-    "isComplete": true
-  },
-  {
-    "id": "Vercel_Deploy",
-    "title": "Vercel Deploy",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "mallya-m",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Audio_Visualizer_Frequency.png",
-    "createdAt": "2026-06-12",
     "isComplete": true
   },
   {
@@ -600,7 +475,8 @@ export const templates = [
     "views": 1000,
     "rating": 4.5,
     "image": "/template-previews/2D_Retro_8bit.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "3D_Isometric",
@@ -612,7 +488,8 @@ export const templates = [
     "views": 1001,
     "rating": 4.5,
     "image": "/template-previews/3D_Isometric.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Abstract_Art",
@@ -624,7 +501,8 @@ export const templates = [
     "views": 1002,
     "rating": 4.5,
     "image": "/template-previews/Abstract_Art.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Academic_Scholar",
@@ -636,7 +514,8 @@ export const templates = [
     "views": 1003,
     "rating": 4.5,
     "image": "/template-previews/Academic_Scholar.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Acrylic_Windows",
@@ -648,7 +527,8 @@ export const templates = [
     "views": 1004,
     "rating": 4.5,
     "image": "/template-previews/Acrylic_Windows.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Transparent_Desktop_Overlay_OS",
@@ -673,7 +553,8 @@ export const templates = [
     "views": 1005,
     "rating": 4.5,
     "image": "/template-previews/Advent_Calendar.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Anime_Manga",
@@ -685,7 +566,8 @@ export const templates = [
     "views": 1006,
     "rating": 4.5,
     "image": "/template-previews/Anime_Manga.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Apple_Showcase",
@@ -697,7 +579,8 @@ export const templates = [
     "views": 1007,
     "rating": 4.5,
     "image": "/template-previews/Apple_Showcase.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Architect_Studio",
@@ -709,7 +592,8 @@ export const templates = [
     "views": 1008,
     "rating": 4.5,
     "image": "/template-previews/Architect_Studio.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Architecture_Blueprint",
@@ -721,7 +605,8 @@ export const templates = [
     "views": 1009,
     "rating": 4.5,
     "image": "/template-previews/Architecture_Blueprint.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Art_Deco_Gold",
@@ -746,7 +631,8 @@ export const templates = [
     "views": 1011,
     "rating": 4.5,
     "image": "/template-previews/Aurora_Sky.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Bauhaus_Poster",
@@ -758,7 +644,8 @@ export const templates = [
     "views": 1012,
     "rating": 4.5,
     "image": "/template-previews/Bauhaus_Poster.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Bento_Box",
@@ -770,7 +657,8 @@ export const templates = [
     "views": 1013,
     "rating": 4.5,
     "image": "/template-previews/Bento_Box.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Board_Game",
@@ -782,7 +670,8 @@ export const templates = [
     "views": 1014,
     "rating": 4.5,
     "image": "/template-previews/Board_Game.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Boarding_Pass",
@@ -794,7 +683,8 @@ export const templates = [
     "views": 1015,
     "rating": 4.5,
     "image": "/template-previews/Boarding_Pass.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Bonsai_Garden",
@@ -806,7 +696,8 @@ export const templates = [
     "views": 1016,
     "rating": 4.5,
     "image": "/template-previews/Bonsai_Garden.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Brutalism",
@@ -818,7 +709,8 @@ export const templates = [
     "views": 1017,
     "rating": 4.5,
     "image": "/template-previews/Brutalism.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Candy_Pop",
@@ -830,7 +722,8 @@ export const templates = [
     "views": 1018,
     "rating": 4.5,
     "image": "/template-previews/Candy_Pop.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Carbon_Fiber",
@@ -842,7 +735,8 @@ export const templates = [
     "views": 1019,
     "rating": 4.5,
     "image": "/template-previews/Carbon_Fiber.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Casino_Vegas",
@@ -854,7 +748,8 @@ export const templates = [
     "views": 1020,
     "rating": 4.5,
     "image": "/template-previews/Casino_Vegas.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Cassette_Mixtape",
@@ -879,7 +774,8 @@ export const templates = [
     "views": 1022,
     "rating": 4.5,
     "image": "/template-previews/Ceramic_Minimal.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Chalkboard_Education",
@@ -891,7 +787,8 @@ export const templates = [
     "views": 1023,
     "rating": 4.5,
     "image": "/template-previews/Chalkboard_Education.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Charcoal_Sketch",
@@ -903,7 +800,8 @@ export const templates = [
     "views": 1024,
     "rating": 4.5,
     "image": "/template-previews/Charcoal_Sketch.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Chatbot_Portfolio",
@@ -915,7 +813,8 @@ export const templates = [
     "views": 1025,
     "rating": 4.5,
     "image": "/template-previews/Chatbot_Portfolio.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Cherry_Blossom",
@@ -940,7 +839,8 @@ export const templates = [
     "views": 1027,
     "rating": 4.5,
     "image": "/template-previews/Choose_Adventure.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Chromatic_Glitch",
@@ -964,10 +864,9 @@ export const templates = [
     "author": "System",
     "views": 1200,
     "rating": 4.8,
-    "image": "/template-previews/Zine_Collage.png",
     "createdAt": "2026-06-08",
-    "description": "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
-    "isComplete": true
+    "isComplete": true,
+    "description": "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents."
   },
   {
     "id": "Cinematic",
@@ -979,7 +878,8 @@ export const templates = [
     "views": 1029,
     "rating": 4.5,
     "image": "/template-previews/Cinematic.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Coffee_Shop",
@@ -991,7 +891,8 @@ export const templates = [
     "views": 1030,
     "rating": 4.5,
     "image": "/template-previews/Coffee_Shop.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Color_Block",
@@ -1016,7 +917,8 @@ export const templates = [
     "views": 1032,
     "rating": 4.5,
     "image": "/template-previews/Comic_Book.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Command_Palette",
@@ -1028,7 +930,8 @@ export const templates = [
     "views": 1033,
     "rating": 4.5,
     "image": "/template-previews/Command_Palette.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Confetti_Burst",
@@ -1040,7 +943,8 @@ export const templates = [
     "views": 1034,
     "rating": 4.5,
     "image": "/template-previews/Confetti_Burst.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Coral_Reef",
@@ -1052,7 +956,8 @@ export const templates = [
     "views": 1035,
     "rating": 4.5,
     "image": "/template-previews/Coral_Reef.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Creative_Agency",
@@ -1064,7 +969,8 @@ export const templates = [
     "views": 1036,
     "rating": 4.5,
     "image": "/template-previews/Creative_Agency.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Crystal_Cavern",
@@ -1076,7 +982,8 @@ export const templates = [
     "views": 1037,
     "rating": 4.5,
     "image": "/template-previews/Crystal_Cavern.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Culinary_Restaurant",
@@ -1088,7 +995,8 @@ export const templates = [
     "views": 1038,
     "rating": 4.5,
     "image": "/template-previews/Culinary_Restaurant.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Cursor_Spotlight",
@@ -1100,7 +1008,8 @@ export const templates = [
     "views": 1039,
     "rating": 4.5,
     "image": "/template-previews/Cursor_Spotlight.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "CyberSecurity_Hacker",
@@ -1112,7 +1021,8 @@ export const templates = [
     "views": 1040,
     "rating": 4.5,
     "image": "/template-previews/CyberSecurity_Hacker.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Cyberpunk",
@@ -1124,7 +1034,8 @@ export const templates = [
     "views": 1041,
     "rating": 4.5,
     "image": "/template-previews/Cyberpunk.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "DOS_Terminal",
@@ -1136,7 +1047,8 @@ export const templates = [
     "views": 1042,
     "rating": 4.5,
     "image": "/template-previews/DOS_Terminal.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Dark_Mesh_Gradient",
@@ -1148,7 +1060,8 @@ export const templates = [
     "views": 1043,
     "rating": 4.5,
     "image": "/template-previews/Dark_Mesh_Gradient.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Dark_Mystery",
@@ -1160,7 +1073,8 @@ export const templates = [
     "views": 1044,
     "rating": 4.5,
     "image": "/template-previews/Dark_Mystery.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Day_Night_Cycle",
@@ -1172,7 +1086,8 @@ export const templates = [
     "views": 1045,
     "rating": 4.5,
     "image": "/template-previews/Day_Night_Cycle.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Deep_Ocean",
@@ -1184,7 +1099,8 @@ export const templates = [
     "views": 1046,
     "rating": 4.5,
     "image": "/template-previews/Deep_Ocean.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Depth_Reveal",
@@ -1196,7 +1112,8 @@ export const templates = [
     "views": 1047,
     "rating": 4.5,
     "image": "/template-previews/Depth_Reveal.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Desert_Dunes",
@@ -1221,7 +1138,8 @@ export const templates = [
     "views": 1049,
     "rating": 4.5,
     "image": "/template-previews/Developer_IDE.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Digital_DNA",
@@ -1233,7 +1151,8 @@ export const templates = [
     "views": 1050,
     "rating": 4.5,
     "image": "/template-previews/Digital_DNA.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Discord_Server",
@@ -1245,7 +1164,8 @@ export const templates = [
     "views": 1051,
     "rating": 4.5,
     "image": "/template-previews/Discord_Server.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Doctor_Medical",
@@ -1257,7 +1177,8 @@ export const templates = [
     "views": 1052,
     "rating": 4.5,
     "image": "/template-previews/Doctor_Medical.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Drag_Portfolio",
@@ -1269,7 +1190,8 @@ export const templates = [
     "views": 1053,
     "rating": 4.5,
     "image": "/template-previews/Drag_Portfolio.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Dribbble_Shots",
@@ -1281,7 +1203,8 @@ export const templates = [
     "views": 1054,
     "rating": 4.5,
     "image": "/template-previews/Dribbble_Shots.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Duotone_Bold",
@@ -1306,7 +1229,8 @@ export const templates = [
     "views": 1056,
     "rating": 4.5,
     "image": "/template-previews/Ecommerce_Style.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Elastic_Cards",
@@ -1318,7 +1242,8 @@ export const templates = [
     "views": 1057,
     "rating": 4.5,
     "image": "/template-previews/Elastic_Cards.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Elevator_Pitch",
@@ -1330,7 +1255,8 @@ export const templates = [
     "views": 1058,
     "rating": 4.5,
     "image": "/template-previews/Elevator_Pitch.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Ember_Glow",
@@ -1342,7 +1268,8 @@ export const templates = [
     "views": 1059,
     "rating": 4.5,
     "image": "/template-previews/Ember_Glow.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "F1_Racing",
@@ -1354,7 +1281,8 @@ export const templates = [
     "views": 99999,
     "rating": 5,
     "image": "/template-previews/F1_Racing.png",
-    "createdAt": "2026-12-31"
+    "createdAt": "2026-12-31",
+    "isComplete": true
   },
   {
     "id": "Fantasy_RPG",
@@ -1366,7 +1294,8 @@ export const templates = [
     "views": 1061,
     "rating": 4.5,
     "image": "/template-previews/Fantasy_RPG.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Figma_Canvas",
@@ -1378,7 +1307,8 @@ export const templates = [
     "views": 1062,
     "rating": 4.5,
     "image": "/template-previews/Figma_Canvas.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "File_Cabinet",
@@ -1390,7 +1320,8 @@ export const templates = [
     "views": 1063,
     "rating": 4.5,
     "image": "/template-previews/File_Cabinet.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Finance_Corporate",
@@ -1402,7 +1333,8 @@ export const templates = [
     "views": 1064,
     "rating": 4.5,
     "image": "/template-previews/Finance_Corporate.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Flip_Card_Deck",
@@ -1414,7 +1346,8 @@ export const templates = [
     "views": 1065,
     "rating": 4.5,
     "image": "/template-previews/Flip_Card_Deck.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Floating_Cubes",
@@ -1426,7 +1359,8 @@ export const templates = [
     "views": 1066,
     "rating": 4.5,
     "image": "/template-previews/Floating_Cubes.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Floating_Dock",
@@ -1438,7 +1372,8 @@ export const templates = [
     "views": 1067,
     "rating": 4.5,
     "image": "/template-previews/Floating_Dock.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Floating_Islands",
@@ -1450,7 +1385,8 @@ export const templates = [
     "views": 1068,
     "rating": 4.5,
     "image": "/template-previews/Floating_Islands.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Freelancer_Invoice",
@@ -1462,7 +1398,8 @@ export const templates = [
     "views": 1069,
     "rating": 4.5,
     "image": "/template-previews/Freelancer_Invoice.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Frosted_Panels",
@@ -1474,7 +1411,8 @@ export const templates = [
     "views": 1070,
     "rating": 4.5,
     "image": "/template-previews/Frosted_Panels.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Gamified_XP",
@@ -1486,7 +1424,8 @@ export const templates = [
     "views": 1071,
     "rating": 4.5,
     "image": "/template-previews/Gamified_XP.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Geometric_Shapes",
@@ -1498,7 +1437,8 @@ export const templates = [
     "views": 1072,
     "rating": 4.5,
     "image": "/template-previews/Geometric_Shapes.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Geometric_Tunnel",
@@ -1510,7 +1450,8 @@ export const templates = [
     "views": 1073,
     "rating": 4.5,
     "image": "/template-previews/Geometric_Tunnel.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "GitHub_Profile",
@@ -1522,7 +1463,8 @@ export const templates = [
     "views": 1074,
     "rating": 4.5,
     "image": "/template-previews/GitHub_Profile.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Terminal_Skills",
@@ -1533,8 +1475,8 @@ export const templates = [
     "author": "System",
     "views": 99999999,
     "rating": 5,
-    "image": "/template-previews/Terminal_Skills.png",
-    "createdAt": "2026-06-15"
+    "createdAt": "2026-06-15",
+    "isComplete": true
   },
   {
     "id": "ChiragChrg_Theme",
@@ -1545,8 +1487,8 @@ export const templates = [
     "author": "System",
     "views": 999999990,
     "rating": 5,
-    "image": "/template-previews/ChiragChrg_Theme.png",
-    "createdAt": "2026-06-15"
+    "createdAt": "2026-06-15",
+    "isComplete": true
   },
   {
     "id": "Glassmorphism",
@@ -1558,7 +1500,8 @@ export const templates = [
     "views": 1075,
     "rating": 4.5,
     "image": "/template-previews/Glassmorphism.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Glitch_Reveal",
@@ -1570,7 +1513,8 @@ export const templates = [
     "views": 1076,
     "rating": 4.5,
     "image": "/template-previews/Glitch_Reveal.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Gradient_Glass",
@@ -1582,7 +1526,8 @@ export const templates = [
     "views": 1077,
     "rating": 4.5,
     "image": "/template-previews/Gradient_Glass.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Gradient_Mesh_Art",
@@ -1594,7 +1539,8 @@ export const templates = [
     "views": 1078,
     "rating": 4.5,
     "image": "/template-previews/Gradient_Mesh_Art.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Graffiti_StreetArt",
@@ -1606,7 +1552,8 @@ export const templates = [
     "views": 1079,
     "rating": 4.5,
     "image": "/template-previews/Graffiti_StreetArt.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Grid_Strict",
@@ -1618,7 +1565,8 @@ export const templates = [
     "views": 1080,
     "rating": 4.5,
     "image": "/template-previews/Grid_Strict.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "High_Fashion",
@@ -1643,7 +1591,8 @@ export const templates = [
     "views": 1082,
     "rating": 4.5,
     "image": "/template-previews/Holographic.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Horizontal_Journey",
@@ -1655,7 +1604,8 @@ export const templates = [
     "views": 1083,
     "rating": 4.5,
     "image": "/template-previews/Horizontal_Journey.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Infinite_Canvas",
@@ -1667,19 +1617,21 @@ export const templates = [
     "views": 1084,
     "rating": 4.5,
     "image": "/template-previews/Infinite_Canvas.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Error_404_Infinite_Gallery",
     "title": "Error 404 Infinite Gallery",
-    "category": "Portfolio",
+    "category": "Special / Error Pages",
     "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "System",
-    "views": 1086,
-    "rating": 4.5,
-    "image": "/templates/Error_404_Infinite_Gallery.png",
-    "createdAt": "2026-06-06"
+    "layout": "Grid",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true,
+    "description": "An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase."
   },
   {
     "id": "Japanese_Zen",
@@ -1691,7 +1643,8 @@ export const templates = [
     "views": 1085,
     "rating": 4.5,
     "image": "/template-previews/Japanese_Zen.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Kinetic_Type",
@@ -1703,7 +1656,8 @@ export const templates = [
     "views": 1086,
     "rating": 4.5,
     "image": "/template-previews/Kinetic_Type.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Lava_Lamp",
@@ -1715,7 +1669,8 @@ export const templates = [
     "views": 1087,
     "rating": 4.5,
     "image": "/template-previews/Lava_Lamp.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Law_Firm_Classic",
@@ -1727,7 +1682,8 @@ export const templates = [
     "views": 1088,
     "rating": 4.5,
     "image": "/template-previews/Law_Firm_Classic.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Line_Art_Portfolio",
@@ -1739,7 +1695,8 @@ export const templates = [
     "views": 1089,
     "rating": 4.5,
     "image": "/template-previews/Line_Art_Portfolio.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Linear_Dashboard",
@@ -1751,7 +1708,8 @@ export const templates = [
     "views": 1090,
     "rating": 4.5,
     "image": "/template-previews/Linear_Dashboard.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Liquid_Glass",
@@ -1776,7 +1734,8 @@ export const templates = [
     "views": 1092,
     "rating": 4.5,
     "image": "/template-previews/Liquid_Morph.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "MacOS_Desktop",
@@ -1788,7 +1747,8 @@ export const templates = [
     "views": 1094,
     "rating": 4.5,
     "image": "/template-previews/MacOS_Desktop.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Magazine_Editorial",
@@ -1800,7 +1760,8 @@ export const templates = [
     "views": 1095,
     "rating": 4.5,
     "image": "/template-previews/Magazine_Editorial.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Medical_Clean",
@@ -1812,7 +1773,8 @@ export const templates = [
     "views": 1098,
     "rating": 4.5,
     "image": "/template-previews/Medical_Clean.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Midnight_Gradient",
@@ -1837,7 +1799,8 @@ export const templates = [
     "views": 1102,
     "rating": 4.5,
     "image": "/template-previews/Minimalist_White.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Mono_Elegant",
@@ -1849,7 +1812,8 @@ export const templates = [
     "views": 1103,
     "rating": 4.5,
     "image": "/template-previews/Mono_Elegant.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Monospace_Minimal",
@@ -1861,7 +1825,8 @@ export const templates = [
     "views": 1104,
     "rating": 4.5,
     "image": "/template-previews/Monospace_Minimal.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Mosaic_Assemble",
@@ -1873,7 +1838,8 @@ export const templates = [
     "views": 1106,
     "rating": 4.5,
     "image": "/template-previews/Mosaic_Assemble.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Mountain_Summit",
@@ -1885,7 +1851,8 @@ export const templates = [
     "views": 1107,
     "rating": 4.5,
     "image": "/template-previews/Mountain_Summit.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Museum_Gallery",
@@ -1897,7 +1864,8 @@ export const templates = [
     "views": 1108,
     "rating": 4.5,
     "image": "/template-previews/Museum_Gallery.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Music_Vinyl",
@@ -1909,7 +1877,8 @@ export const templates = [
     "views": 1109,
     "rating": 4.5,
     "image": "/template-previews/Music_Vinyl.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "NGO_Nonprofit",
@@ -1921,7 +1890,8 @@ export const templates = [
     "views": 1110,
     "rating": 4.5,
     "image": "/template-previews/NGO_Nonprofit.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Nature_Forest",
@@ -1933,7 +1903,8 @@ export const templates = [
     "views": 1111,
     "rating": 4.5,
     "image": "/template-previews/Nature_Forest.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Neon_Cityscape",
@@ -1958,7 +1929,8 @@ export const templates = [
     "views": 1113,
     "rating": 4.5,
     "image": "/template-previews/Neon_Noir.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Neon_Sign",
@@ -1970,7 +1942,8 @@ export const templates = [
     "views": 1114,
     "rating": 4.5,
     "image": "/template-previews/Neon_Sign.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Netflix_Browse",
@@ -1982,7 +1955,8 @@ export const templates = [
     "views": 1115,
     "rating": 4.5,
     "image": "/template-previews/Netflix_Browse.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Neumorphism",
@@ -1994,7 +1968,8 @@ export const templates = [
     "views": 1116,
     "rating": 4.5,
     "image": "/template-previews/Neumorphism.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Newspaper_Front",
@@ -2006,7 +1981,8 @@ export const templates = [
     "views": 1117,
     "rating": 4.5,
     "image": "/template-previews/Newspaper_Front.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Northern_Fjords",
@@ -2018,7 +1994,8 @@ export const templates = [
     "views": 1118,
     "rating": 4.5,
     "image": "/template-previews/Northern_Fjords.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Notion_Workspace",
@@ -2030,7 +2007,8 @@ export const templates = [
     "views": 1119,
     "rating": 4.5,
     "image": "/template-previews/Notion_Workspace.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "OLED_Black",
@@ -2042,7 +2020,8 @@ export const templates = [
     "views": 1120,
     "rating": 4.5,
     "image": "/template-previews/OLED_Black.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Obsidian_Vault",
@@ -2054,7 +2033,8 @@ export const templates = [
     "views": 1121,
     "rating": 4.5,
     "image": "/template-previews/Obsidian_Vault.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Ocean_Depths",
@@ -2092,7 +2072,8 @@ export const templates = [
     "views": 1124,
     "rating": 4.5,
     "image": "/template-previews/Origami_Paper.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Page_Turner",
@@ -2104,7 +2085,8 @@ export const templates = [
     "views": 1125,
     "rating": 4.5,
     "image": "/template-previews/Page_Turner.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Paper_Texture",
@@ -2116,7 +2098,8 @@ export const templates = [
     "views": 1126,
     "rating": 4.5,
     "image": "/template-previews/Paper_Texture.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Parallax_Mountains",
@@ -2128,7 +2111,8 @@ export const templates = [
     "views": 1127,
     "rating": 4.5,
     "image": "/template-previews/Parallax_Mountains.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Particle_Universe",
@@ -2140,7 +2124,8 @@ export const templates = [
     "views": 1128,
     "rating": 4.5,
     "image": "/template-previews/Particle_Universe.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Pastel_Soft",
@@ -2152,7 +2137,8 @@ export const templates = [
     "views": 1129,
     "rating": 4.5,
     "image": "/template-previews/Pastel_Soft.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Photography_Focus",
@@ -2164,7 +2150,8 @@ export const templates = [
     "views": 1130,
     "rating": 4.5,
     "image": "/template-previews/Photography_Focus.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Pinterest_Masonry",
@@ -2176,7 +2163,8 @@ export const templates = [
     "views": 1131,
     "rating": 4.5,
     "image": "/template-previews/Pinterest_Masonry.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Pixel_Quest",
@@ -2187,9 +2175,9 @@ export const templates = [
     "author": "System",
     "views": 1132,
     "rating": 4.5,
-    "isComplete": true,
     "image": "/template-previews/Pixel_Quest.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Planetary_Orbit",
@@ -2240,7 +2228,8 @@ export const templates = [
     "views": 1136,
     "rating": 4.5,
     "image": "/template-previews/Polaroid_Memories.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Prismatic_Light",
@@ -2252,7 +2241,8 @@ export const templates = [
     "views": 1137,
     "rating": 4.5,
     "image": "/template-previews/Prismatic_Light.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Psychedelic_Swirl",
@@ -2277,7 +2267,8 @@ export const templates = [
     "views": 1138,
     "rating": 4.5,
     "image": "/template-previews/Quiz_Reveal.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Rainbow_Gradient",
@@ -2302,7 +2293,8 @@ export const templates = [
     "views": 1140,
     "rating": 4.5,
     "image": "/template-previews/Rainforest_Canopy.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Real_Estate_Luxury",
@@ -2314,7 +2306,8 @@ export const templates = [
     "views": 1141,
     "rating": 4.5,
     "image": "/template-previews/Real_Estate_Luxury.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Recipe_Cookbook",
@@ -2326,7 +2319,8 @@ export const templates = [
     "views": 1142,
     "rating": 4.5,
     "image": "/template-previews/Recipe_Cookbook.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Retro_Futurism",
@@ -2338,7 +2332,8 @@ export const templates = [
     "views": 1143,
     "rating": 4.5,
     "image": "/template-previews/Retro_Futurism.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Ripple_Touch",
@@ -2350,7 +2345,8 @@ export const templates = [
     "views": 1144,
     "rating": 4.5,
     "image": "/template-previews/Ripple_Touch.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Rocket_Launch",
@@ -2362,7 +2358,8 @@ export const templates = [
     "views": 1145,
     "rating": 4.5,
     "image": "/template-previews/Rocket_Launch.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "SaaS_Product",
@@ -2374,7 +2371,8 @@ export const templates = [
     "views": 1146,
     "rating": 4.5,
     "image": "/template-previews/SaaS_Product.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Scandinavian_Light",
@@ -2386,7 +2384,8 @@ export const templates = [
     "views": 1147,
     "rating": 4.5,
     "image": "/template-previews/Scandinavian_Light.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "SciFi_HUD",
@@ -2398,7 +2397,8 @@ export const templates = [
     "views": 1148,
     "rating": 4.5,
     "image": "/template-previews/SciFi_HUD.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Scrapbook",
@@ -2410,7 +2410,8 @@ export const templates = [
     "views": 1149,
     "rating": 4.5,
     "image": "/template-previews/Scrapbook.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Scroll_Cinema",
@@ -2422,7 +2423,8 @@ export const templates = [
     "views": 1150,
     "rating": 4.5,
     "image": "/template-previews/Scroll_Cinema.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Scroll_Tape",
@@ -2434,7 +2436,8 @@ export const templates = [
     "views": 1151,
     "rating": 4.5,
     "image": "/template-previews/Scroll_Tape.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Shadow_Layers",
@@ -2459,7 +2462,8 @@ export const templates = [
     "views": 1153,
     "rating": 4.5,
     "image": "/template-previews/Silk_Flow.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Smoke_Mist",
@@ -2484,7 +2488,8 @@ export const templates = [
     "views": 1155,
     "rating": 4.5,
     "image": "/template-previews/Snowfall_Winter.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Soft_Neumorphic",
@@ -2509,7 +2514,8 @@ export const templates = [
     "views": 1157,
     "rating": 4.5,
     "image": "/template-previews/Solar_Eclipse.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Sound_Reactive",
@@ -2521,7 +2527,8 @@ export const templates = [
     "views": 1158,
     "rating": 4.5,
     "image": "/template-previews/Sound_Reactive.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Space_Galaxy",
@@ -2533,7 +2540,8 @@ export const templates = [
     "views": 1159,
     "rating": 4.5,
     "image": "/template-previews/Space_Galaxy.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Split_Personality",
@@ -2545,7 +2553,8 @@ export const templates = [
     "views": 1160,
     "rating": 4.5,
     "image": "/template-previews/Split_Personality.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Sports_Athletic",
@@ -2557,7 +2566,8 @@ export const templates = [
     "views": 1161,
     "rating": 4.5,
     "image": "/template-previews/Sports_Athletic.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Spotify_Wrapped",
@@ -2569,7 +2579,8 @@ export const templates = [
     "views": 1162,
     "rating": 4.5,
     "image": "/template-previews/Spotify_Wrapped.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Spring_Bounce",
@@ -2581,7 +2592,8 @@ export const templates = [
     "views": 1163,
     "rating": 4.5,
     "image": "/template-previews/Spring_Bounce.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Stagger_Grid",
@@ -2593,7 +2605,8 @@ export const templates = [
     "views": 1164,
     "rating": 4.5,
     "image": "/template-previews/Stagger_Grid.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Starfield_Warp",
@@ -2605,7 +2618,8 @@ export const templates = [
     "views": 1165,
     "rating": 4.5,
     "image": "/template-previews/Starfield_Warp.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Startup_Pitch",
@@ -2617,7 +2631,8 @@ export const templates = [
     "views": 1166,
     "rating": 4.5,
     "image": "/template-previews/Startup_Pitch.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Steampunk",
@@ -2629,7 +2644,8 @@ export const templates = [
     "views": 1167,
     "rating": 4.5,
     "image": "/template-previews/Steampunk.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Story_Unfold",
@@ -2641,7 +2657,8 @@ export const templates = [
     "views": 1168,
     "rating": 4.5,
     "image": "/template-previews/Story_Unfold.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Stripe_Gradient",
@@ -2653,7 +2670,8 @@ export const templates = [
     "views": 1169,
     "rating": 4.5,
     "image": "/template-previews/Stripe_Gradient.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Sunset_Warm",
@@ -2691,7 +2709,8 @@ export const templates = [
     "views": 1172,
     "rating": 4.5,
     "image": "/template-previews/Tech_Startup.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Telescope_Zoom",
@@ -2703,7 +2722,8 @@ export const templates = [
     "views": 1173,
     "rating": 4.5,
     "image": "/template-previews/Telescope_Zoom.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Terminal_CLI",
@@ -2715,7 +2735,8 @@ export const templates = [
     "views": 1174,
     "rating": 4.5,
     "image": "/template-previews/Terminal_CLI.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Timeline_River",
@@ -2727,7 +2748,8 @@ export const templates = [
     "views": 1175,
     "rating": 4.5,
     "image": "/template-previews/Timeline_River.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Train_Journey",
@@ -2739,7 +2761,8 @@ export const templates = [
     "views": 1176,
     "rating": 4.5,
     "image": "/template-previews/Train_Journey.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Treasure_Map",
@@ -2751,7 +2774,8 @@ export const templates = [
     "views": 1177,
     "rating": 4.5,
     "image": "/template-previews/Treasure_Map.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Tron_Grid",
@@ -2763,7 +2787,8 @@ export const templates = [
     "views": 1178,
     "rating": 4.5,
     "image": "/template-previews/Tron_Grid.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Tropical_Paradise",
@@ -2775,7 +2800,8 @@ export const templates = [
     "views": 1179,
     "rating": 4.5,
     "image": "/template-previews/Tropical_Paradise.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Twilight_Horizon",
@@ -2800,7 +2826,8 @@ export const templates = [
     "views": 1181,
     "rating": 4.5,
     "image": "/template-previews/Twitter_Profile.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Type_Specimen",
@@ -2838,7 +2865,8 @@ export const templates = [
     "views": 1184,
     "rating": 4.5,
     "image": "/template-previews/Typographic_Heavy.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Typographic_Wheatpaste_Poster_Wall",
@@ -2863,7 +2891,8 @@ export const templates = [
     "views": 1185,
     "rating": 4.5,
     "image": "/template-previews/VHS_Rewind.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "VS_Code_Theme",
@@ -2875,7 +2904,8 @@ export const templates = [
     "views": 1186,
     "rating": 4.5,
     "image": "/template-previews/VS_Code_Theme.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Vaporwave",
@@ -2887,19 +2917,8 @@ export const templates = [
     "views": 1187,
     "rating": 4.5,
     "image": "/template-previews/Vaporwave.png",
-    "createdAt": "2026-05-01"
-  },
-  {
-    "id": "Vercel_Deploy_v2",
-    "title": "Vercel Deploy",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1188,
-    "rating": 4.5,
-    "image": "/template-previews/Vercel_Deploy.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Vintage_Newspaper",
@@ -2911,7 +2930,8 @@ export const templates = [
     "views": 1189,
     "rating": 4.5,
     "image": "/template-previews/Vintage_Newspaper.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Vinyl_Record",
@@ -2923,7 +2943,8 @@ export const templates = [
     "views": 1190,
     "rating": 4.5,
     "image": "/template-previews/Vinyl_Record.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Volcanic_Forge",
@@ -2935,7 +2956,8 @@ export const templates = [
     "views": 1191,
     "rating": 4.5,
     "image": "/template-previews/Volcanic_Forge.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Watercolor_Artistic",
@@ -2947,7 +2969,8 @@ export const templates = [
     "views": 1192,
     "rating": 4.5,
     "image": "/template-previews/Watercolor_Artistic.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Wave_Distortion",
@@ -2959,7 +2982,8 @@ export const templates = [
     "views": 1193,
     "rating": 4.5,
     "image": "/template-previews/Wave_Distortion.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Weather_Mood",
@@ -2971,7 +2995,8 @@ export const templates = [
     "views": 1194,
     "rating": 4.5,
     "image": "/template-previews/Weather_Mood.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Whitespace_Luxury",
@@ -2983,7 +3008,8 @@ export const templates = [
     "views": 1195,
     "rating": 4.5,
     "image": "/template-previews/Whitespace_Luxury.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Wildflower_Field",
@@ -3008,7 +3034,8 @@ export const templates = [
     "views": 1197,
     "rating": 4.5,
     "image": "/template-previews/Windows_98.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Wireframe_World",
@@ -3020,7 +3047,8 @@ export const templates = [
     "views": 1198,
     "rating": 4.5,
     "image": "/template-previews/Wireframe_World.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Zoom_Into_Work",
@@ -3032,15 +3060,8 @@ export const templates = [
     "views": 1199,
     "rating": 4.5,
     "image": "/template-previews/Zoom_Into_Work.png",
-    "createdAt": "2026-05-01"
-  },
-  {
-    "id": "error_404_infinite_gallery",
-    "name": "Error 404 Infinite Gallery",
-    "path": "Error_404_Infinite_Gallery",
-    "thumbnail": "/templates/error_404_infinite_gallery.png",
-    "category": "Special / Error Pages",
-    "description": "An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase."
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Underground_Bunker_Console",
@@ -3052,7 +3073,8 @@ export const templates = [
     "views": 0,
     "rating": 4.5,
     "image": "/template-previews/Underground_Bunker_Console.svg",
-    "createdAt": "2026-06-06"
+    "createdAt": "2026-06-06",
+    "isComplete": true
   },
   {
     "id": "One_Pixel_Master",
@@ -3063,7 +3085,6 @@ export const templates = [
     "author": "mallya-m",
     "views": 0,
     "rating": 0,
-    "image": "/template-previews/One_Pixel_Master.png",
     "createdAt": "2026-06-13",
     "isComplete": true
   },
@@ -3154,7 +3175,8 @@ export const templates = [
     "author": "System",
     "views": 1050,
     "rating": 4.8,
-    "image": "/template-previews/crossword_puzzle_word_fill.png"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Autumn_Forest_Leaf_Fall",
@@ -3165,7 +3187,6 @@ export const templates = [
     "author": "Antigravity",
     "views": 0,
     "rating": 0,
-    "image": "/templates/Autumn_Forest_Leaf_Fall.png",
     "createdAt": "2026-06-13",
     "isComplete": true
   },
@@ -3177,7 +3198,7 @@ export const templates = [
     "layout": "Dashboard",
     "author": "Ayush Srivastava",
     "views": 0,
-    "rating": 5.0,
+    "rating": 5,
     "image": "/templates/Cyber_Security_Red_Team.png",
     "createdAt": "2026-06-14",
     "isComplete": true
@@ -3190,7 +3211,7 @@ export const templates = [
     "layout": "Interactive",
     "author": "Antigravity",
     "views": 2500,
-    "rating": 5.0,
+    "rating": 5,
     "image": "/templates/Mariana_Ocean_Trench.png",
     "createdAt": "2026-07-07",
     "isComplete": true,
@@ -3204,9 +3225,165 @@ export const templates = [
     "layout": "Storyboard Grid",
     "author": "Ayush Srivastava",
     "views": 0,
-    "rating": 5.0,
+    "rating": 5,
     "image": "/template-previews/Film_Director_Clapperboard.png",
     "createdAt": "2026-07-06",
-    "isComplete": true,
+    "isComplete": true
+  },
+  {
+    "id": "Anonymous_Whistleblower_Drop_Box",
+    "title": "Anonymous Whistleblower Drop Box",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Astronaut_Spacesuit_Helmet_HUD",
+    "title": "Astronaut Spacesuit Helmet HUD",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Audio_Visualizer_Frequency",
+    "title": "Audio Visualizer Frequency",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Blank_Canvas_Scratch_to_Reveal",
+    "title": "Blank Canvas Scratch to Reveal",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Bouncing_DVD_Logo",
+    "title": "Bouncing DVD Logo",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Captcha_Solver_Portfolio_Gate",
+    "title": "Captcha Solver Portfolio Gate",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Git_Commit_History_Tree",
+    "title": "Git Commit History Tree",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Infinite_Zoom_Mandelbrot_Set",
+    "title": "Infinite Zoom Mandelbrot Set",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Inspired_Clyde_DSouza",
+    "title": "Inspired Clyde DSouza",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Inspired_Delba",
+    "title": "Inspired Delba",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Inspired_Dev_Jadiya",
+    "title": "Inspired Dev Jadiya",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Magnifying_Glass_Hidden_Reveal",
+    "title": "Magnifying Glass Hidden Reveal",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Morse_Code_Flashing_Decoder",
+    "title": "Morse Code Flashing Decoder",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "CareerPilot",
+    "views": 0,
+    "rating": 0,
+    "createdAt": "2026-05-01",
+    "isComplete": true
   }
 ];
