@@ -1,3 +1,11 @@
+# [1.284.0](https://github.com/anurag3407/career-pilot/compare/v1.283.0...v1.284.0) (2026-11-14)
+
+
+### Features
+
+* **portfolio:** complete Acrylic Windows portfolio template implementation ([8a1adae](https://github.com/anurag3407/career-pilot/commit/8a1adaeee6422b73ea48c0047b20f7e193097654))
+* **portfolio:** complete Advent Calendar portfolio template implementation ([b52e8b5](https://github.com/anurag3407/career-pilot/commit/b52e8b5cc5affedb1ef27436e728fd236954b41c))
+
 # [1.283.0](https://github.com/anurag3407/career-pilot/compare/v1.282.0...v1.283.0) (2026-11-14)
 
 
