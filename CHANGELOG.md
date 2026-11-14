@@ -1,3 +1,11 @@
+# [1.285.0](https://github.com/anurag3407/career-pilot/compare/v1.284.0...v1.285.0) (2026-11-14)
+
+
+### Features
+
+* **ai:** configure Cloudflare Workers AI as default AI provider across platform ([552e3a4](https://github.com/anurag3407/career-pilot/commit/552e3a4e0eb7e4dd6e7cd5426152476a35ca5e46))
+* enhance Wireframe World template with new animations and layout; update worker configuration for Cloudflare integration ([295a770](https://github.com/anurag3407/career-pilot/commit/295a770645c10a7527a2028b45a8d7711da54cab))
+
 # [1.284.0](https://github.com/anurag3407/career-pilot/compare/v1.283.0...v1.284.0) (2026-11-14)
 
 
