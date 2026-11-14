@@ -44,56 +44,58 @@
 }
 
 :root {
-  /* Light Theme Design Tokens */
-  --background: #f8fafc;
-  --background-rgb: 248, 250, 252;
+  /* Light Theme Design Tokens — "Flight Deck" (see styles/flightdeck.css).
+     Warm paper background, warm graphite text, International Orange primary.
+     Secondary is a muted mulberry so primary→secondary gradients stay legible. */
+  --background: #fafaf7;
+  --background-rgb: 250, 250, 247;
   --secondary-bg: #ffffff;
-  --foreground: #0f172a;
+  --foreground: #0c0c0b;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #0c0c0b;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #0ea5e9;
-  --primary-rgb: 14, 165, 233;
-  --primary-foreground: #ffffff;
-  --secondary: #6366f1;
+  --popover-foreground: #0c0c0b;
+  --primary: #cc420c;
+  --primary-rgb: 204, 66, 12;
+  --primary-foreground: #fffaf5;
+  --secondary: #a94a6c;
   --secondary-foreground: #ffffff;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
-  --destructive: #ef4444;
+  --muted: #f1f0ec;
+  --muted-foreground: #6b6a66;
+  --accent: #f1f0ec;
+  --accent-foreground: #0c0c0b;
+  --destructive: #d4183d;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0ea5e9;
+  --border: #e4e3de;
+  --input: #e4e3de;
+  --ring: #cc420c;
   --radius: 0.75rem;
 }
 
 .dark {
-  /* Pitch Dark Theme Design Tokens */
-  --background: #000000;
-  --background-rgb: 0, 0, 0;
-  --secondary-bg: #09090b;
-  --foreground: #ffffff;
-  --card: #050505;
-  --card-foreground: #ffffff;
-  --popover: #0a0a0a;
-  --popover-foreground: #ffffff;
-  --primary: #00bfff;
-  --primary-rgb: 0, 191, 255;
-  --primary-foreground: #ffffff;
-  --secondary: #7c3aed;
-  --secondary-foreground: #ffffff;
-  --muted: #111111;
-  --muted-foreground: #a1a1aa;
-  --accent: #111111;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #222222;
-  --input: #222222;
-  --ring: #00bfff;
+  /* Pitch Dark Theme Design Tokens — "Flight Deck" dark */
+  --background: #0c0c0b;
+  --background-rgb: 12, 12, 11;
+  --secondary-bg: #131312;
+  --foreground: #f4f3ef;
+  --card: #131312;
+  --card-foreground: #f4f3ef;
+  --popover: #181816;
+  --popover-foreground: #f4f3ef;
+  --primary: #ff6b2c;
+  --primary-rgb: 255, 107, 44;
+  --primary-foreground: #1a0a03;
+  --secondary: #c25c76;
+  --secondary-foreground: #1a0a03;
+  --muted: #1a1a18;
+  --muted-foreground: #8c8b86;
+  --accent: #1a1a18;
+  --accent-foreground: #f4f3ef;
+  --destructive: #ff6568;
+  --destructive-foreground: #1a0a03;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.13);
+  --ring: #ff6b2c;
 }
 
 .highContrast {
@@ -139,6 +141,7 @@ html {
 
 body {
   font-family:
+    "Geist",
     "Inter",
     "Outfit",
     -apple-system,
@@ -179,7 +182,7 @@ body {
 }
 
 .dark .glass {
-  background: rgba(11, 17, 32, 0.8);
+  background: rgba(19, 19, 18, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -327,12 +330,12 @@ body {
   background:
     radial-gradient(
       circle at 50% 50%,
-      rgba(124, 58, 237, 0.05) 0%,
+      rgba(255, 107, 44, 0.04) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 10% 10%,
-      rgba(0, 191, 255, 0.05) 0%,
+      rgba(124, 217, 146, 0.03) 0%,
       transparent 40%
     );
 }
@@ -347,12 +350,12 @@ body {
   background:
     radial-gradient(
       circle at 50% 50%,
-      rgba(99, 102, 241, 0.03) 0%,
+      rgba(204, 66, 12, 0.03) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 10% 10%,
-      rgba(14, 165, 233, 0.03) 0%,
+      rgba(29, 107, 60, 0.02) 0%,
       transparent 40%
     );
 }
@@ -513,7 +516,7 @@ body {
 .aurora-2 {
   background: radial-gradient(
     38% 38% at 50% 50%,
-    rgba(124, 58, 237, 0.45) 0%,
+    rgba(var(--primary-rgb), 0.4) 0%,
     transparent 70%
   );
   animation-duration: 24s;
@@ -523,7 +526,7 @@ body {
 .aurora-3 {
   background: radial-gradient(
     35% 35% at 50% 50%,
-    rgba(236, 72, 153, 0.3) 0%,
+    rgba(169, 74, 108, 0.28) 0%,
     transparent 70%
   );
   animation-duration: 30s;
@@ -565,7 +568,7 @@ body {
     100deg,
     var(--primary) 0%,
     var(--secondary) 35%,
-    #ec4899 55%,
+    #1d6b3c 55%,
     var(--primary) 100%
   );
   background-size: 250% 250%;

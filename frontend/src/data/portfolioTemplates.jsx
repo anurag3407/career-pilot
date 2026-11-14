@@ -71,6 +71,8 @@ const componentCache = new Map();
 /**
  * Returns a cached `React.lazy` component for a template id.
  * Unknown ids resolve to a readable error card instead of crashing the route.
+ * The component is framed in `.cp-raw-palette` so the workspace's remapped
+ * hues (styles/flightdeck.css) never bleed into a template's own design.
  */
 export function getTemplateComponent(id) {
   const templateId = String(id || '');
@@ -87,8 +89,14 @@ export function getTemplateComponent(id) {
       : () => Promise.resolve({ default: () => <MissingTemplate templateId={templateId} /> }),
   );
 
-  componentCache.set(templateId, Component);
-  return Component;
+  const Framed = (props) => (
+    <div className="cp-raw-palette">
+      <Component {...props} />
+    </div>
+  );
+
+  componentCache.set(templateId, Framed);
+  return Framed;
 }
 
 /** Template metadata (title, category, tags…) with Studio first. */

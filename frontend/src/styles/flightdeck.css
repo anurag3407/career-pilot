@@ -1,5 +1,5 @@
 /* =============================================================================
-   Flight Deck — CareerPilot's editorial UI system (landing + dashboard).
+   Flight Deck — CareerPilot's editorial UI system (whole product).
 
    Palette rationale
    - Neutrals: warm "paper" off-white / warm graphite. Quiet, editorial, lets
@@ -10,7 +10,9 @@
    - Accent: Runway green — "cleared / on track". Reserved for positive
      signals (offers, score gains, connected states).
 
-   Scoped under .cp-flight so every other page keeps the global theme.
+   The core tokens live in src/index.css (:root / .dark) so every page shares
+   them; this file keeps the .cp-flight scoped copy (landing pages) plus the
+   fd-* helpers and the legacy palette remap below.
    Skipped entirely in the highContrast theme.
    ========================================================================== */
 
@@ -133,4 +135,317 @@
 
 @media (prefers-reduced-motion: reduce) {
   .fd-marquee, .fd-marquee-rev, .fd-caret, .fd-ping { animation: none; }
+}
+
+/* =============================================================================
+   Legacy palette remap
+   -----------------------------------------------------------------------------
+   Hundreds of workspace components hard-code the pre-Flight-Deck accent
+   palette (sky / cyan / blue / indigo / violet / purple / teal / fuchsia).
+   Re-toning every JSX file by hand is not realistic, so the old cold hues are
+   remapped at the custom-property level instead: Tailwind v4 utilities compile
+   to var(--color-<hue>-<step>) (and color-mix() for opacity modifiers), so
+   overriding those properties re-tints every bg-, text-, border-, from-…
+   utility at once.
+
+   Mapping (keeps hue distinction while pulling everything into the warm,
+   editorial Flight Deck world):
+   - sky, cyan, blue          → International Orange ramp  (old brand → new brand)
+   - indigo, violet, purple,
+     fuchsia                  → Mulberry ramp (warm wine; gradient partner)
+   - teal                     → Runway green ramp (positive / "cleared")
+   Light and dark get separate ramps so text-on-background contrast matches
+   how each theme actually uses these steps.
+   Opt-out: wrap a subtree in .cp-raw-palette (see block below) to restore
+   Tailwind's defaults — used by portfolio templates, which ship their own
+   designed palettes.
+   ========================================================================== */
+
+html:not(.highContrast) {
+  /* sky / cyan / blue → International Orange (light) */
+  --color-sky-50: oklch(97.3% 0.014 46);
+  --color-sky-100: oklch(93.5% 0.032 46);
+  --color-sky-200: oklch(87.5% 0.062 44);
+  --color-sky-300: oklch(80% 0.098 42);
+  --color-sky-400: oklch(70% 0.14 40);
+  --color-sky-500: oklch(54.5% 0.175 35);
+  --color-sky-600: oklch(47% 0.16 33);
+  --color-sky-700: oklch(40.5% 0.135 32);
+  --color-sky-800: oklch(33% 0.105 32);
+  --color-sky-900: oklch(26.5% 0.08 33);
+  --color-sky-950: oklch(17% 0.05 35);
+  --color-cyan-50: oklch(97.3% 0.014 46);
+  --color-cyan-100: oklch(93.5% 0.032 46);
+  --color-cyan-200: oklch(87.5% 0.062 44);
+  --color-cyan-300: oklch(80% 0.098 42);
+  --color-cyan-400: oklch(70% 0.14 40);
+  --color-cyan-500: oklch(54.5% 0.175 35);
+  --color-cyan-600: oklch(47% 0.16 33);
+  --color-cyan-700: oklch(40.5% 0.135 32);
+  --color-cyan-800: oklch(33% 0.105 32);
+  --color-cyan-900: oklch(26.5% 0.08 33);
+  --color-cyan-950: oklch(17% 0.05 35);
+  --color-blue-50: oklch(97.3% 0.014 46);
+  --color-blue-100: oklch(93.5% 0.032 46);
+  --color-blue-200: oklch(87.5% 0.062 44);
+  --color-blue-300: oklch(80% 0.098 42);
+  --color-blue-400: oklch(70% 0.14 40);
+  --color-blue-500: oklch(54.5% 0.175 35);
+  --color-blue-600: oklch(47% 0.16 33);
+  --color-blue-700: oklch(40.5% 0.135 32);
+  --color-blue-800: oklch(33% 0.105 32);
+  --color-blue-900: oklch(26.5% 0.08 33);
+  --color-blue-950: oklch(17% 0.05 35);
+
+  /* indigo / violet / purple / fuchsia → Mulberry (light) */
+  --color-indigo-50: oklch(97% 0.01 5);
+  --color-indigo-100: oklch(93% 0.024 5);
+  --color-indigo-200: oklch(87% 0.045 5);
+  --color-indigo-300: oklch(79% 0.07 5);
+  --color-indigo-400: oklch(69% 0.095 5);
+  --color-indigo-500: oklch(55% 0.105 5);
+  --color-indigo-600: oklch(47% 0.1 5);
+  --color-indigo-700: oklch(40% 0.088 5);
+  --color-indigo-800: oklch(33% 0.07 5);
+  --color-indigo-900: oklch(26% 0.055 5);
+  --color-indigo-950: oklch(17% 0.035 5);
+  --color-violet-50: oklch(97% 0.01 5);
+  --color-violet-100: oklch(93% 0.024 5);
+  --color-violet-200: oklch(87% 0.045 5);
+  --color-violet-300: oklch(79% 0.07 5);
+  --color-violet-400: oklch(69% 0.095 5);
+  --color-violet-500: oklch(55% 0.105 5);
+  --color-violet-600: oklch(47% 0.1 5);
+  --color-violet-700: oklch(40% 0.088 5);
+  --color-violet-800: oklch(33% 0.07 5);
+  --color-violet-900: oklch(26% 0.055 5);
+  --color-violet-950: oklch(17% 0.035 5);
+  --color-purple-50: oklch(97% 0.01 5);
+  --color-purple-100: oklch(93% 0.024 5);
+  --color-purple-200: oklch(87% 0.045 5);
+  --color-purple-300: oklch(79% 0.07 5);
+  --color-purple-400: oklch(69% 0.095 5);
+  --color-purple-500: oklch(55% 0.105 5);
+  --color-purple-600: oklch(47% 0.1 5);
+  --color-purple-700: oklch(40% 0.088 5);
+  --color-purple-800: oklch(33% 0.07 5);
+  --color-purple-900: oklch(26% 0.055 5);
+  --color-purple-950: oklch(17% 0.035 5);
+  --color-fuchsia-50: oklch(97% 0.01 5);
+  --color-fuchsia-100: oklch(93% 0.024 5);
+  --color-fuchsia-200: oklch(87% 0.045 5);
+  --color-fuchsia-300: oklch(79% 0.07 5);
+  --color-fuchsia-400: oklch(69% 0.095 5);
+  --color-fuchsia-500: oklch(55% 0.105 5);
+  --color-fuchsia-600: oklch(47% 0.1 5);
+  --color-fuchsia-700: oklch(40% 0.088 5);
+  --color-fuchsia-800: oklch(33% 0.07 5);
+  --color-fuchsia-900: oklch(26% 0.055 5);
+  --color-fuchsia-950: oklch(17% 0.035 5);
+
+  /* teal → Runway green (light) */
+  --color-teal-50: oklch(97% 0.015 150);
+  --color-teal-100: oklch(93.5% 0.032 150);
+  --color-teal-200: oklch(88% 0.055 150);
+  --color-teal-300: oklch(80% 0.085 150);
+  --color-teal-400: oklch(70% 0.115 150);
+  --color-teal-500: oklch(56% 0.125 150);
+  --color-teal-600: oklch(46% 0.105 152);
+  --color-teal-700: oklch(40% 0.09 152);
+  --color-teal-800: oklch(33% 0.072 152);
+  --color-teal-900: oklch(26% 0.056 152);
+  --color-teal-950: oklch(17% 0.036 152);
+}
+
+html.dark:not(.highContrast) {
+  /* sky / cyan / blue → International Orange (dark) */
+  --color-sky-50: oklch(96% 0.02 60);
+  --color-sky-100: oklch(92% 0.04 55);
+  --color-sky-200: oklch(86% 0.075 50);
+  --color-sky-300: oklch(80% 0.11 45);
+  --color-sky-400: oklch(74% 0.15 42);
+  --color-sky-500: oklch(68% 0.19 38);
+  --color-sky-600: oklch(60% 0.19 36);
+  --color-sky-700: oklch(51% 0.17 34);
+  --color-sky-800: oklch(42% 0.14 33);
+  --color-sky-900: oklch(33% 0.11 33);
+  --color-sky-950: oklch(21% 0.075 35);
+  --color-cyan-50: oklch(96% 0.02 60);
+  --color-cyan-100: oklch(92% 0.04 55);
+  --color-cyan-200: oklch(86% 0.075 50);
+  --color-cyan-300: oklch(80% 0.11 45);
+  --color-cyan-400: oklch(74% 0.15 42);
+  --color-cyan-500: oklch(68% 0.19 38);
+  --color-cyan-600: oklch(60% 0.19 36);
+  --color-cyan-700: oklch(51% 0.17 34);
+  --color-cyan-800: oklch(42% 0.14 33);
+  --color-cyan-900: oklch(33% 0.11 33);
+  --color-cyan-950: oklch(21% 0.075 35);
+  --color-blue-50: oklch(96% 0.02 60);
+  --color-blue-100: oklch(92% 0.04 55);
+  --color-blue-200: oklch(86% 0.075 50);
+  --color-blue-300: oklch(80% 0.11 45);
+  --color-blue-400: oklch(74% 0.15 42);
+  --color-blue-500: oklch(68% 0.19 38);
+  --color-blue-600: oklch(60% 0.19 36);
+  --color-blue-700: oklch(51% 0.17 34);
+  --color-blue-800: oklch(42% 0.14 33);
+  --color-blue-900: oklch(33% 0.11 33);
+  --color-blue-950: oklch(21% 0.075 35);
+
+  /* indigo / violet / purple / fuchsia → Mulberry (dark) */
+  --color-indigo-50: oklch(95.5% 0.015 5);
+  --color-indigo-100: oklch(90% 0.03 5);
+  --color-indigo-200: oklch(84% 0.05 5);
+  --color-indigo-300: oklch(78% 0.075 5);
+  --color-indigo-400: oklch(71% 0.095 5);
+  --color-indigo-500: oklch(63% 0.11 5);
+  --color-indigo-600: oklch(55% 0.105 5);
+  --color-indigo-700: oklch(46% 0.09 5);
+  --color-indigo-800: oklch(37% 0.075 5);
+  --color-indigo-900: oklch(28% 0.06 5);
+  --color-indigo-950: oklch(18% 0.04 5);
+  --color-violet-50: oklch(95.5% 0.015 5);
+  --color-violet-100: oklch(90% 0.03 5);
+  --color-violet-200: oklch(84% 0.05 5);
+  --color-violet-300: oklch(78% 0.075 5);
+  --color-violet-400: oklch(71% 0.095 5);
+  --color-violet-500: oklch(63% 0.11 5);
+  --color-violet-600: oklch(55% 0.105 5);
+  --color-violet-700: oklch(46% 0.09 5);
+  --color-violet-800: oklch(37% 0.075 5);
+  --color-violet-900: oklch(28% 0.06 5);
+  --color-violet-950: oklch(18% 0.04 5);
+  --color-purple-50: oklch(95.5% 0.015 5);
+  --color-purple-100: oklch(90% 0.03 5);
+  --color-purple-200: oklch(84% 0.05 5);
+  --color-purple-300: oklch(78% 0.075 5);
+  --color-purple-400: oklch(71% 0.095 5);
+  --color-purple-500: oklch(63% 0.11 5);
+  --color-purple-600: oklch(55% 0.105 5);
+  --color-purple-700: oklch(46% 0.09 5);
+  --color-purple-800: oklch(37% 0.075 5);
+  --color-purple-900: oklch(28% 0.06 5);
+  --color-purple-950: oklch(18% 0.04 5);
+  --color-fuchsia-50: oklch(95.5% 0.015 5);
+  --color-fuchsia-100: oklch(90% 0.03 5);
+  --color-fuchsia-200: oklch(84% 0.05 5);
+  --color-fuchsia-300: oklch(78% 0.075 5);
+  --color-fuchsia-400: oklch(71% 0.095 5);
+  --color-fuchsia-500: oklch(63% 0.11 5);
+  --color-fuchsia-600: oklch(55% 0.105 5);
+  --color-fuchsia-700: oklch(46% 0.09 5);
+  --color-fuchsia-800: oklch(37% 0.075 5);
+  --color-fuchsia-900: oklch(28% 0.06 5);
+  --color-fuchsia-950: oklch(18% 0.04 5);
+
+  /* teal → Runway green (dark) */
+  --color-teal-50: oklch(96% 0.015 150);
+  --color-teal-100: oklch(91% 0.033 150);
+  --color-teal-200: oklch(85% 0.058 150);
+  --color-teal-300: oklch(80% 0.09 150);
+  --color-teal-400: oklch(74% 0.115 150);
+  --color-teal-500: oklch(66% 0.13 150);
+  --color-teal-600: oklch(58% 0.13 150);
+  --color-teal-700: oklch(49% 0.115 151);
+  --color-teal-800: oklch(40% 0.095 151);
+  --color-teal-900: oklch(31% 0.075 152);
+  --color-teal-950: oklch(20% 0.05 152);
+}
+
+/* Opt-out scope for surfaces that must keep Tailwind's stock palette —
+   portfolio templates ship their own designed look (Deep Ocean, Blueprint,
+   …) and exported sites must render identically to their preview.
+   `display: contents` keeps the wrapper layout-invisible while still
+   re-scoping the custom properties for its subtree. */
+.cp-raw-palette {
+  display: contents;
+  --color-sky-50: oklch(97.7% 0.013 236.62);
+  --color-sky-100: oklch(95.1% 0.026 236.824);
+  --color-sky-200: oklch(90.1% 0.058 230.902);
+  --color-sky-300: oklch(82.8% 0.111 230.318);
+  --color-sky-400: oklch(74.6% 0.16 232.661);
+  --color-sky-500: oklch(68.5% 0.169 237.323);
+  --color-sky-600: oklch(58.8% 0.158 241.966);
+  --color-sky-700: oklch(50% 0.134 242.749);
+  --color-sky-800: oklch(44.3% 0.11 240.79);
+  --color-sky-900: oklch(39.1% 0.09 240.876);
+  --color-sky-950: oklch(29.3% 0.066 243.157);
+  --color-cyan-50: oklch(98.4% 0.019 200.873);
+  --color-cyan-100: oklch(95.6% 0.045 203.388);
+  --color-cyan-200: oklch(91.7% 0.08 205.041);
+  --color-cyan-300: oklch(86.5% 0.127 207.078);
+  --color-cyan-400: oklch(78.9% 0.154 211.53);
+  --color-cyan-500: oklch(71.5% 0.143 215.221);
+  --color-cyan-600: oklch(60.9% 0.126 221.723);
+  --color-cyan-700: oklch(52% 0.105 223.128);
+  --color-cyan-800: oklch(45% 0.085 224.283);
+  --color-cyan-900: oklch(39.8% 0.07 227.392);
+  --color-cyan-950: oklch(30.2% 0.056 229.695);
+  --color-blue-50: oklch(97% 0.014 254.604);
+  --color-blue-100: oklch(93.2% 0.032 255.585);
+  --color-blue-200: oklch(88.2% 0.059 254.128);
+  --color-blue-300: oklch(80.9% 0.105 251.813);
+  --color-blue-400: oklch(70.7% 0.165 254.624);
+  --color-blue-500: oklch(62.3% 0.214 259.815);
+  --color-blue-600: oklch(54.6% 0.245 262.881);
+  --color-blue-700: oklch(48.8% 0.243 264.376);
+  --color-blue-800: oklch(42.4% 0.199 265.638);
+  --color-blue-900: oklch(37.9% 0.146 265.522);
+  --color-blue-950: oklch(28.2% 0.091 267.935);
+  --color-indigo-50: oklch(96.2% 0.018 272.314);
+  --color-indigo-100: oklch(93% 0.034 272.788);
+  --color-indigo-200: oklch(87% 0.065 274.039);
+  --color-indigo-300: oklch(78.5% 0.115 274.713);
+  --color-indigo-400: oklch(67.3% 0.182 276.935);
+  --color-indigo-500: oklch(58.5% 0.233 277.117);
+  --color-indigo-600: oklch(51.1% 0.262 276.966);
+  --color-indigo-700: oklch(45.7% 0.24 277.023);
+  --color-indigo-800: oklch(39.8% 0.195 277.366);
+  --color-indigo-900: oklch(35.9% 0.144 278.697);
+  --color-indigo-950: oklch(25.7% 0.09 281.288);
+  --color-violet-50: oklch(96.9% 0.016 293.756);
+  --color-violet-100: oklch(94.3% 0.029 294.588);
+  --color-violet-200: oklch(89.4% 0.057 293.283);
+  --color-violet-300: oklch(81.1% 0.111 293.571);
+  --color-violet-400: oklch(70.2% 0.183 293.541);
+  --color-violet-500: oklch(60.6% 0.25 292.717);
+  --color-violet-600: oklch(54.1% 0.281 293.009);
+  --color-violet-700: oklch(49.1% 0.27 292.581);
+  --color-violet-800: oklch(43.2% 0.232 292.759);
+  --color-violet-900: oklch(38% 0.189 293.745);
+  --color-violet-950: oklch(28.3% 0.141 291.089);
+  --color-purple-50: oklch(97.7% 0.014 308.299);
+  --color-purple-100: oklch(94.6% 0.033 307.174);
+  --color-purple-200: oklch(90.2% 0.063 306.703);
+  --color-purple-300: oklch(82.7% 0.119 306.383);
+  --color-purple-400: oklch(71.4% 0.203 305.504);
+  --color-purple-500: oklch(62.7% 0.265 303.9);
+  --color-purple-600: oklch(55.8% 0.288 302.321);
+  --color-purple-700: oklch(49.6% 0.265 301.924);
+  --color-purple-800: oklch(43.8% 0.218 303.724);
+  --color-purple-900: oklch(38.1% 0.176 304.987);
+  --color-purple-950: oklch(29.1% 0.149 302.717);
+  --color-fuchsia-50: oklch(97.7% 0.017 320.058);
+  --color-fuchsia-100: oklch(95.2% 0.037 318.852);
+  --color-fuchsia-200: oklch(90.3% 0.076 319.62);
+  --color-fuchsia-300: oklch(83.3% 0.145 321.434);
+  --color-fuchsia-400: oklch(74% 0.238 322.16);
+  --color-fuchsia-500: oklch(66.7% 0.295 322.15);
+  --color-fuchsia-600: oklch(59.1% 0.293 322.896);
+  --color-fuchsia-700: oklch(51.8% 0.253 323.949);
+  --color-fuchsia-800: oklch(45.2% 0.211 324.591);
+  --color-fuchsia-900: oklch(40.1% 0.17 325.612);
+  --color-fuchsia-950: oklch(29.3% 0.136 325.661);
+  --color-teal-50: oklch(98.4% 0.014 180.72);
+  --color-teal-100: oklch(95.3% 0.051 180.801);
+  --color-teal-200: oklch(91% 0.096 180.426);
+  --color-teal-300: oklch(85.5% 0.138 181.071);
+  --color-teal-400: oklch(77.7% 0.152 181.912);
+  --color-teal-500: oklch(70.4% 0.14 182.503);
+  --color-teal-600: oklch(60% 0.118 184.704);
+  --color-teal-700: oklch(51.1% 0.096 186.391);
+  --color-teal-800: oklch(43.7% 0.078 188.216);
+  --color-teal-900: oklch(38.6% 0.063 188.416);
+  --color-teal-950: oklch(27.7% 0.046 192.524);
 }

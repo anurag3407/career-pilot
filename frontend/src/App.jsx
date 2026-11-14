@@ -12,6 +12,7 @@ import { useAuth } from './hooks/useAuth';
 import { SocketProvider } from './context/SocketProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import AppLayout from './components/AppLayout';
+import RawPalette from './components/RawPalette';
 import Footer from './components/ui/Footer';
 
 import CommandPalette from './components/CommandPalette';
@@ -326,45 +327,45 @@ function AppRoutes() {
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<Suspense fallback={<LoadingScreen label="Loading Templates..." />}><TemplateGallery /></Suspense>} />
         <Route path="/preview/:templateId" element={<Suspense fallback={<LoadingScreen label="Loading Preview..." />}><TemplatePreviewOnly /></Suspense>} />
-        <Route path="/preview-inspired-dev-jadiya" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><InspiredDevJadiya /></Suspense>} />
+        <Route path="/preview-inspired-dev-jadiya" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><InspiredDevJadiya /></Suspense></RawPalette>} />
         <Route path="/cover-letter" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><CoverLetter /></Suspense>} />
 
 
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
 
-        <Route path="/templates/rainforest-canopy" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><RainforestCanopy /></Suspense>} />
-        <Route path="/templates/northern-fjords" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><NorthernFjords /></Suspense>} />
-        <Route path="/templates/duotone-bold" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><DuotoneBold /></Suspense>} />
-        <Route path="/templates/chromatic-glitch" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ChromaticGlitch /></Suspense>} />
-        <Route path="/templates/swiss-typography" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><SwissTypography /></Suspense>} />
+        <Route path="/templates/rainforest-canopy" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><RainforestCanopy /></Suspense></RawPalette>} />
+        <Route path="/templates/northern-fjords" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><NorthernFjords /></Suspense></RawPalette>} />
+        <Route path="/templates/duotone-bold" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><DuotoneBold /></Suspense></RawPalette>} />
+        <Route path="/templates/chromatic-glitch" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><ChromaticGlitch /></Suspense></RawPalette>} />
+        <Route path="/templates/swiss-typography" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><SwissTypography /></Suspense></RawPalette>} />
 
-        <Route path="/templates/desert-dunes" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><DesertDunes /></Suspense>} />
-        <Route path="/templates/psychedelic-swirl" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><PsychedelicSwirl /></Suspense>} />
-        <Route path="/templates/memphis-pop" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MemphisPop /></Suspense>} />
-        <Route path="/templates/cassette-mixtape" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><CassetteMixtape /></Suspense>} />
-        <Route path="/templates/hidden-easter-egg-scavenger-hunt" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><HiddenEasterEggScavengerHunt /></Suspense>} />
-        <Route path="/templates/magnetic-dock" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MagneticDock /></Suspense>} />
-        <Route path="/templates/ocean-depths" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><OceanDepths /></Suspense>} />
-        <Route path="/templates/neon-cityscape" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><NeonCityscape /></Suspense>} />
-        <Route path="/templates/planetary-orbit" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><PlanetaryOrbit /></Suspense>} />
-        <Route path="/templates/low-poly-terrain" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><LowPolyTerrain /></Suspense>} />
-        <Route path="/templates/high-fashion" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><HighFashion /></Suspense>} />
-        <Route path="/templates/typographic-wheatpaste-poster-wall" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><TypographicWheatpastePosterWall /></Suspense>} />
-        <Route path="/templates/digital-manifesto-scroll" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><DigitalManifestoScroll /></Suspense>} />
+        <Route path="/templates/desert-dunes" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><DesertDunes /></Suspense></RawPalette>} />
+        <Route path="/templates/psychedelic-swirl" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><PsychedelicSwirl /></Suspense></RawPalette>} />
+        <Route path="/templates/memphis-pop" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><MemphisPop /></Suspense></RawPalette>} />
+        <Route path="/templates/cassette-mixtape" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><CassetteMixtape /></Suspense></RawPalette>} />
+        <Route path="/templates/hidden-easter-egg-scavenger-hunt" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><HiddenEasterEggScavengerHunt /></Suspense></RawPalette>} />
+        <Route path="/templates/magnetic-dock" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><MagneticDock /></Suspense></RawPalette>} />
+        <Route path="/templates/ocean-depths" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><OceanDepths /></Suspense></RawPalette>} />
+        <Route path="/templates/neon-cityscape" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><NeonCityscape /></Suspense></RawPalette>} />
+        <Route path="/templates/planetary-orbit" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><PlanetaryOrbit /></Suspense></RawPalette>} />
+        <Route path="/templates/low-poly-terrain" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><LowPolyTerrain /></Suspense></RawPalette>} />
+        <Route path="/templates/high-fashion" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><HighFashion /></Suspense></RawPalette>} />
+        <Route path="/templates/typographic-wheatpaste-poster-wall" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><TypographicWheatpastePosterWall /></Suspense></RawPalette>} />
+        <Route path="/templates/digital-manifesto-scroll" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><DigitalManifestoScroll /></Suspense></RawPalette>} />
 
-        <Route path="/templates/zine-collage" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ZineCollage /></Suspense>} />
-        <Route path="/templates/chatbot" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ChatbotPortfolio /></Suspense>} />
-        <Route path="/templates/glassmorphism" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><GlassmorphismTemplate /></Suspense>} />
-        <Route path="/templates/transparent-desktop-overlay-os" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><TransparentDesktopOverlayOS /></Suspense>} />
-        <Route path="/templates/commercial-pilot-cockpit" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><CommercialPilotCockpit /></Suspense>} />
-        <Route path="/templates/book-page-flip-3d-render" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><BookPageFlip3DRender /></Suspense>} />
-        <Route path="/templates/ikea-assembly-manual" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><IKEAAssemblyManual /></Suspense>} />
-        <Route path="/templates/michelin-star-chef-plating" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MichelinStarChefPlating /></Suspense>} />
-        <Route path="/templates/sommelier-wine-cellar-racks" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><SommelierWineCellarRacks /></Suspense>} />
-        <Route path="/templates/minimal-dark-fluid" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MinimalDarkFluid /></Suspense>} />
-        <Route path="/templates/terminal-skills" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><TerminalSkills /></Suspense>} />
-        <Route path="/templates/chiragchrg-theme" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ChiragChrgTheme /></Suspense>} />
-        <Route path="/templates/film-director-clapperboard" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><FilmDirectorClapperboard /></Suspense>} />
+        <Route path="/templates/zine-collage" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><ZineCollage /></Suspense></RawPalette>} />
+        <Route path="/templates/chatbot" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><ChatbotPortfolio /></Suspense></RawPalette>} />
+        <Route path="/templates/glassmorphism" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><GlassmorphismTemplate /></Suspense></RawPalette>} />
+        <Route path="/templates/transparent-desktop-overlay-os" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><TransparentDesktopOverlayOS /></Suspense></RawPalette>} />
+        <Route path="/templates/commercial-pilot-cockpit" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><CommercialPilotCockpit /></Suspense></RawPalette>} />
+        <Route path="/templates/book-page-flip-3d-render" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><BookPageFlip3DRender /></Suspense></RawPalette>} />
+        <Route path="/templates/ikea-assembly-manual" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><IKEAAssemblyManual /></Suspense></RawPalette>} />
+        <Route path="/templates/michelin-star-chef-plating" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><MichelinStarChefPlating /></Suspense></RawPalette>} />
+        <Route path="/templates/sommelier-wine-cellar-racks" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><SommelierWineCellarRacks /></Suspense></RawPalette>} />
+        <Route path="/templates/minimal-dark-fluid" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><MinimalDarkFluid /></Suspense></RawPalette>} />
+        <Route path="/templates/terminal-skills" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><TerminalSkills /></Suspense></RawPalette>} />
+        <Route path="/templates/chiragchrg-theme" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><ChiragChrgTheme /></Suspense></RawPalette>} />
+        <Route path="/templates/film-director-clapperboard" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><FilmDirectorClapperboard /></Suspense></RawPalette>} />
         {/* Core Protected Routes */}
         <Route
           path="/dashboard"
@@ -583,7 +584,7 @@ function AppRoutes() {
 
 
         {/* Catch-All Route */}
-        <Route path="/templates/color-block" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ColorBlock /></Suspense>} />
+        <Route path="/templates/color-block" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><ColorBlock /></Suspense></RawPalette>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

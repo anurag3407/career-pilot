@@ -226,7 +226,7 @@ export default function StudioStage() {
   const readiness = useMemo(() => scoreDocument(doc), [doc]);
 
   return (
-    <div id="pf-stage-root" style={{ minHeight: '100vh' }}>
+    <div id="pf-stage-root" className="cp-raw-palette" style={{ minHeight: '100vh' }}>
       <style>{`
         #pf-stage-root.pf-canvas-editing-mode, #pf-stage-root.pf-canvas-editing-mode * { cursor: text !important; }
         #pf-stage-root [data-pf-hover="1"] { outline: 1px dashed rgba(52, 211, 153, 0.8) !important; outline-offset: 3px !important; }

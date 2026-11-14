@@ -284,14 +284,16 @@ export default function TemplatePreviewOnly() {
 
   return (
     <Suspense fallback={<div className="w-full h-full min-h-screen bg-black flex items-center justify-center text-white font-mono">Loading Template...</div>}>
-      <PortfolioProvider portfolioData={portfolioData}>
-        <Component
-  portfolioData={portfolioData}
-  qualityScore={qualityScore}
-  qualitySuggestions={qualitySuggestions}
-  missingInfo={missingInfo}
+      <div className="cp-raw-palette">
+        <PortfolioProvider portfolioData={portfolioData}>
+          <Component
+    portfolioData={portfolioData}
+    qualityScore={qualityScore}
+    qualitySuggestions={qualitySuggestions}
+    missingInfo={missingInfo}
 />
-      </PortfolioProvider>
+        </PortfolioProvider>
+      </div>
     </Suspense>
   );
 }

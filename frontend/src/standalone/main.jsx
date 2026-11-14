@@ -156,11 +156,15 @@ function App() {
   document.title = title ? `${name} — ${title}` : name;
 
   return (
-    <PortfolioProvider portfolioData={portfolioData} isDeploy={true}>
-      <Suspense fallback={<LoadingScreen />}>
-        <TemplateComponent portfolioData={portfolioData} />
-      </Suspense>
-    </PortfolioProvider>
+    // .cp-raw-palette keeps the app-shell palette remap out of exported
+    // portfolios — they must render with Tailwind's stock palette.
+    <div className="cp-raw-palette">
+      <PortfolioProvider portfolioData={portfolioData} isDeploy={true}>
+        <Suspense fallback={<LoadingScreen />}>
+          <TemplateComponent portfolioData={portfolioData} />
+        </Suspense>
+      </PortfolioProvider>
+    </div>
   );
 }
 
