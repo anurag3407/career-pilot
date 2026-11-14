@@ -229,6 +229,9 @@ export async function deploy(portfolioId, htmlContent, assets = {}, customToken,
     for (const [assetPath, content] of Object.entries(assets)) {
       const normalizedPath = assetPath.startsWith('/') ? assetPath.slice(1) : assetPath;
       const fullPath = path.join(tmpDir, normalizedPath);
+      if (path.relative(tmpDir, fullPath).startsWith('..')) {
+        throw new Error(`Security error: Path traversal detected in asset path: ${assetPath}`);
+      }
       await fs.mkdir(path.dirname(fullPath), { recursive: true });
       await fs.writeFile(fullPath, content);
     }

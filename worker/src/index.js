@@ -14,7 +14,11 @@
 //   POST /v1/jobs/track            → extension path: verify Supabase JWT + insert tracked job
 // =============================================================================
 
-const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
+const JSON_HEADERS = {
+  'Content-Type': 'application/json; charset=utf-8',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+};
 
 const DEFAULT_MODELS = {
   cloudflare: '@cf/meta/llama-3.1-8b-instruct',
@@ -581,7 +585,11 @@ async function handleD1Jobs(request, env, url, method) {
   if (method === 'DELETE') {
     const id = url.searchParams.get('id');
     if (!id) return { data: { error: 'id is required' }, status: 400 };
-    await env.DB.prepare(`DELETE FROM tracked_jobs WHERE id = ?`).bind(id).run();
+    if (userId) {
+      await env.DB.prepare(`DELETE FROM tracked_jobs WHERE id = ? AND user_id = ?`).bind(id, userId).run();
+    } else {
+      await env.DB.prepare(`DELETE FROM tracked_jobs WHERE id = ?`).bind(id).run();
+    }
     return { data: { success: true }, status: 200 };
   }
 
@@ -706,7 +714,10 @@ async function handleD1Portfolios(request, env, url, method) {
   if (method === 'DELETE') {
     const id = url.searchParams.get('id');
     const slug = url.searchParams.get('slug');
-    if (id) {
+    if (id && userId) {
+      await env.DB.prepare(`DELETE FROM portfolios WHERE id = ? AND user_id = ?`).bind(id, userId).run();
+      return { data: { success: true }, status: 200 };
+    } else if (id) {
       await env.DB.prepare(`DELETE FROM portfolios WHERE id = ?`).bind(id).run();
       return { data: { success: true }, status: 200 };
     }
@@ -768,6 +779,10 @@ async function handleImageKitUpload(request, env) {
 
   if (contentType.includes('multipart/form-data')) {
     forwardFormData = await request.formData();
+    const fileObj = forwardFormData.get('file');
+    if (fileObj && typeof fileObj.size === 'number' && fileObj.size > 10 * 1024 * 1024) {
+      return { data: { error: 'File size exceeds maximum allowed limit of 10MB' }, status: 413 };
+    }
   } else {
     const body = await request.json().catch(() => ({}));
     if (!body.file || !body.fileName) {
@@ -784,8 +799,11 @@ async function handleImageKitUpload(request, env) {
     if (body.tags) forwardFormData.append('tags', Array.isArray(body.tags) ? body.tags.join(',') : body.tags);
   }
 
-  // File extension whitelist guard
-  const fileName = String(forwardFormData.get('fileName') || '').toLowerCase();
+  // File extension whitelist guard & filename sanitization
+  const rawFileName = String(forwardFormData.get('fileName') || '');
+  const cleanFileName = rawFileName.replace(/[/\\?%*:|"<>]/g, '-').replace(/\.\./g, '').slice(0, 100);
+  forwardFormData.set('fileName', cleanFileName);
+  const fileName = cleanFileName.toLowerCase();
   const ALLOWED_EXTS = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.pdf', '.doc', '.docx', '.txt'];
   const hasValidExt = ALLOWED_EXTS.some((ext) => fileName.endsWith(ext));
   if (!hasValidExt) {
