@@ -1,3 +1,10 @@
+# [1.282.0](https://github.com/anurag3407/career-pilot/compare/v1.281.0...v1.282.0) (2026-11-14)
+
+
+### Features
+
+* **portfolio:** implement Coral Reef template and bump workflow to Node 22 ([ac5e646](https://github.com/anurag3407/career-pilot/commit/ac5e646b45f5e582f256c0eff862724adfb7fd07))
+
 # [1.281.0](https://github.com/anurag3407/career-pilot/compare/v1.280.1...v1.281.0) (2026-11-14)
 
 
