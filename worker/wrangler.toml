@@ -27,7 +27,14 @@ workers_dev = true
 [ai]
 binding = "AI"
 
+[[d1_databases]]
+binding = "DB"
+database_name = "careerpilot-db"
+database_id = "54d97544-d09e-422a-aa17-1be24891f076"
+
 [vars]
 ALLOWED_ORIGINS = "*"
 DEFAULT_AI_PROVIDER = "cloudflare"
 CLOUDFLARE_ACCOUNT_ID = "74d877492e541ba6d459990fff4fad12"
+IMAGEKIT_PUBLIC_KEY = "public_HbKrLXFCb5VWNjz7jBfAteEOhBM="
+IMAGEKIT_URL_ENDPOINT = "https://ik.imagekit.io/anurag3407"

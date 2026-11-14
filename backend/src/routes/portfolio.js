@@ -222,8 +222,9 @@ router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
  * to Cloudflare Pages via the Direct Upload API.
  */
 router.post('/deploy', verifyToken, asyncHandler(async (req, res) => {
-  let { slug, sections, templateId, title, provider = 'cloudflare', token } = req.body;
+  let { slug, sections, templateId, title, provider = 'cloudflare', token, accountId } = req.body;
   if (typeof token === 'string') token = token.trim();
+  if (typeof accountId === 'string') accountId = accountId.trim();
   const userId = req.user.uid;
 
   if (!slug || typeof slug !== 'string') {
@@ -252,7 +253,7 @@ router.post('/deploy', verifyToken, asyncHandler(async (req, res) => {
     } else if (provider === 'netlify') {
       deployment = await netlifyDeploy(slug, html, assets, slug, token);
     } else {
-      deployment = await cloudflareDeploy(slug, html, assets);
+      deployment = await cloudflareDeploy(slug, html, assets, token, accountId);
     }
   } catch (err) {
     console.error(`${provider} deploy error:`, err);

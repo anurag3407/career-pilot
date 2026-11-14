@@ -34,6 +34,7 @@
     "express-rate-limit": "^7.4.1",
     "groq-sdk": "^0.37.0",
     "helmet": "^8.0.0",
+    "imagekit": "^6.0.0",
     "ioredis": "^5.8.2",
     "joi": "^18.2.1",
     "jsdom": "^20.0.3",

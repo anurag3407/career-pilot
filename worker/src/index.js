@@ -456,63 +456,426 @@ async function handleJobsSearch(request, env) {
 
 // Extension path: verify a Supabase access token, then insert the tracked job.
 async function handleJobsTrack(request, env) {
-  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
-    return { data: { error: 'Tracking backend is not configured.' }, status: 503 };
-  }
   const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
-  if (!token) return { data: { error: 'Missing bearer token' }, status: 401 };
-
-  const userRes = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      apikey: env.SUPABASE_SERVICE_ROLE_KEY,
-    },
-  });
-  const user = await userRes.json().catch(() => ({}));
-  if (!userRes.ok || !user?.id) return { data: { error: 'Invalid or expired token' }, status: 401 };
-
   const body = await request.json().catch(() => ({}));
   if (!body.title || !body.company) return { data: { error: 'title and company are required' }, status: 400 };
 
-  const insertRes = await fetch(`${env.SUPABASE_URL}/rest/v1/tracked_jobs`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
-      apikey: env.SUPABASE_SERVICE_ROLE_KEY,
-      'Content-Type': 'application/json',
-      Prefer: 'return=representation',
-    },
-    body: JSON.stringify({
-      user_id: user.id,
-      title: body.title,
-      company: body.company,
-      status: body.status || 'saved',
-      notes: body.notes || '',
-      location: body.location || '',
-      job_url: body.jobUrl || body.url || '',
-      data: body,
-    }),
-  });
-  const inserted = await insertRes.json().catch(() => ({}));
-  if (!insertRes.ok) return { data: { error: inserted?.message || 'Failed to track job' }, status: 502 };
-  return { data: { trackedJob: Array.isArray(inserted) ? inserted[0] : inserted }, status: 200 };
-}
+  let userId = 'anonymous';
 
-// Fire-and-forget usage logging (never blocks or fails the request).
-async function logUsage(env, entry) {
-  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return;
-  try {
-    await fetch(`${env.SUPABASE_URL}/rest/v1/ai_usage`, {
+  // 1. Verify user if Supabase is configured
+  if (env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY && token) {
+    const userRes = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+      },
+    }).catch(() => null);
+    const user = userRes ? await userRes.json().catch(() => ({})) : null;
+    if (user?.id) userId = user.id;
+  }
+
+  // 2. Persist in Cloudflare D1 if bound
+  if (env.DB) {
+    const id = body.id || crypto.randomUUID();
+    await env.DB.prepare(
+      `INSERT INTO tracked_jobs (id, user_id, company, title, location, status, notes, job_url, raw_data, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`
+    ).bind(
+      id,
+      userId,
+      body.company,
+      body.title,
+      body.location || '',
+      body.status || 'saved',
+      body.notes || '',
+      body.jobUrl || body.url || '',
+      JSON.stringify(body)
+    ).run();
+
+    const trackedJob = await env.DB.prepare(`SELECT * FROM tracked_jobs WHERE id = ?`).bind(id).first();
+    return { data: { success: true, trackedJob }, status: 200 };
+  }
+
+  // 3. Fallback to Supabase if D1 is not bound
+  if (env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY) {
+    const insertRes = await fetch(`${env.SUPABASE_URL}/rest/v1/tracked_jobs`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         apikey: env.SUPABASE_SERVICE_ROLE_KEY,
         'Content-Type': 'application/json',
+        Prefer: 'return=representation',
       },
-      body: JSON.stringify(entry),
+      body: JSON.stringify({
+        user_id: userId,
+        title: body.title,
+        company: body.company,
+        status: body.status || 'saved',
+        notes: body.notes || '',
+        location: body.location || '',
+        job_url: body.jobUrl || body.url || '',
+        data: body,
+      }),
     });
-  } catch {
-    // best effort
+    const inserted = await insertRes.json().catch(() => ({}));
+    if (!insertRes.ok) return { data: { error: inserted?.message || 'Failed to track job' }, status: 502 };
+    return { data: { trackedJob: Array.isArray(inserted) ? inserted[0] : inserted }, status: 200 };
+  }
+
+  return { data: { error: 'No database (D1 or Supabase) is configured.' }, status: 503 };
+}
+
+// ---------------------------------------------------------------------------
+// Cloudflare D1 CRUD Handlers
+// ---------------------------------------------------------------------------
+async function handleD1Jobs(request, env, url, method) {
+  if (!env.DB) return { data: { error: 'Cloudflare D1 database is not bound' }, status: 503 };
+
+  const userId = request.headers.get('X-User-Id') || url.searchParams.get('user_id');
+
+  if (method === 'GET') {
+    if (!userId) return { data: { error: 'user_id is required' }, status: 400 };
+    const { results } = await env.DB.prepare(
+      `SELECT * FROM tracked_jobs WHERE user_id = ? ORDER BY created_at DESC`
+    ).bind(userId).all();
+    return { data: { jobs: results || [] }, status: 200 };
+  }
+
+  if (method === 'POST') {
+    const body = await request.json().catch(() => ({}));
+    const uid = body.userId || body.user_id || userId;
+    if (!uid || !body.company || !body.title) {
+      return { data: { error: 'userId, company, and title are required' }, status: 400 };
+    }
+    const id = body.id || crypto.randomUUID();
+    await env.DB.prepare(
+      `INSERT INTO tracked_jobs (id, user_id, company, title, location, status, salary, job_url, notes, raw_data, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+       ON CONFLICT(id) DO UPDATE SET
+         company = excluded.company,
+         title = excluded.title,
+         location = excluded.location,
+         status = excluded.status,
+         salary = excluded.salary,
+         job_url = excluded.job_url,
+         notes = excluded.notes,
+         raw_data = excluded.raw_data,
+         updated_at = datetime('now')`
+    ).bind(
+      id,
+      uid,
+      body.company,
+      body.title,
+      body.location || '',
+      body.status || 'saved',
+      body.salary || '',
+      body.jobUrl || body.url || '',
+      body.notes || '',
+      JSON.stringify(body)
+    ).run();
+
+    const job = await env.DB.prepare(`SELECT * FROM tracked_jobs WHERE id = ?`).bind(id).first();
+    return { data: { success: true, job }, status: 200 };
+  }
+
+  if (method === 'DELETE') {
+    const id = url.searchParams.get('id');
+    if (!id) return { data: { error: 'id is required' }, status: 400 };
+    await env.DB.prepare(`DELETE FROM tracked_jobs WHERE id = ?`).bind(id).run();
+    return { data: { success: true }, status: 200 };
+  }
+
+  return { data: { error: 'Method not allowed' }, status: 405 };
+}
+
+async function handleD1Resumes(request, env, url, method) {
+  if (!env.DB) return { data: { error: 'Cloudflare D1 database is not bound' }, status: 503 };
+
+  const userId = request.headers.get('X-User-Id') || url.searchParams.get('user_id');
+
+  if (method === 'GET') {
+    const resumeId = url.searchParams.get('id');
+    if (resumeId) {
+      const resume = await env.DB.prepare(`SELECT * FROM resumes WHERE id = ?`).bind(resumeId).first();
+      if (!resume) return { data: { error: 'Resume not found' }, status: 404 };
+      return { data: { resume }, status: 200 };
+    }
+    if (!userId) return { data: { error: 'user_id is required' }, status: 400 };
+    const { results } = await env.DB.prepare(
+      `SELECT * FROM resumes WHERE user_id = ? ORDER BY updated_at DESC`
+    ).bind(userId).all();
+    return { data: { resumes: results || [] }, status: 200 };
+  }
+
+  if (method === 'POST') {
+    const body = await request.json().catch(() => ({}));
+    const uid = body.userId || body.user_id || userId;
+    if (!uid || !body.title || !body.originalText) {
+      return { data: { error: 'userId, title, and originalText are required' }, status: 400 };
+    }
+    const id = body.id || crypto.randomUUID();
+    await env.DB.prepare(
+      `INSERT INTO resumes (id, user_id, title, original_text, enhanced_text, job_role, ats_score, pdf_url, preferences_json, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+       ON CONFLICT(id) DO UPDATE SET
+         title = excluded.title,
+         original_text = excluded.original_text,
+         enhanced_text = excluded.enhanced_text,
+         job_role = excluded.job_role,
+         ats_score = excluded.ats_score,
+         pdf_url = excluded.pdf_url,
+         preferences_json = excluded.preferences_json,
+         updated_at = datetime('now')`
+    ).bind(
+      id,
+      uid,
+      body.title,
+      body.originalText,
+      body.enhancedText || null,
+      body.jobRole || null,
+      body.atsScore || null,
+      body.pdfUrl || null,
+      body.preferences ? JSON.stringify(body.preferences) : null
+    ).run();
+
+    const resume = await env.DB.prepare(`SELECT * FROM resumes WHERE id = ?`).bind(id).first();
+    return { data: { success: true, resume }, status: 200 };
+  }
+
+  return { data: { error: 'Method not allowed' }, status: 405 };
+}
+
+async function handleD1Portfolios(request, env, url, method) {
+  if (!env.DB) return { data: { error: 'Cloudflare D1 database is not bound' }, status: 503 };
+
+  const userId = request.headers.get('X-User-Id') || url.searchParams.get('user_id');
+
+  if (method === 'GET') {
+    const slug = url.searchParams.get('slug');
+    const id = url.searchParams.get('id');
+    if (slug) {
+      const portfolio = await env.DB.prepare(`SELECT * FROM portfolios WHERE slug = ?`).bind(slug).first();
+      if (!portfolio) return { data: { error: 'Portfolio not found' }, status: 404 };
+      return { data: { portfolio }, status: 200 };
+    }
+    if (id) {
+      const portfolio = await env.DB.prepare(`SELECT * FROM portfolios WHERE id = ?`).bind(id).first();
+      if (!portfolio) return { data: { error: 'Portfolio not found' }, status: 404 };
+      return { data: { portfolio }, status: 200 };
+    }
+    if (!userId) return { data: { error: 'user_id is required' }, status: 400 };
+    const { results } = await env.DB.prepare(
+      `SELECT * FROM portfolios WHERE user_id = ? ORDER BY updated_at DESC`
+    ).bind(userId).all();
+    return { data: { portfolios: results || [] }, status: 200 };
+  }
+
+  if (method === 'POST') {
+    const body = await request.json().catch(() => ({}));
+    const uid = body.userId || body.user_id || userId;
+    if (!uid || !body.slug) {
+      return { data: { error: 'userId and slug are required' }, status: 400 };
+    }
+    const id = body.id || crypto.randomUUID();
+    const sectionsJson = body.sections ? JSON.stringify(body.sections) : (body.sections_json || '{}');
+    await env.DB.prepare(
+      `INSERT INTO portfolios (id, user_id, slug, template_id, title, sections_json, deployed_url, project_name, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+       ON CONFLICT(user_id, slug) DO UPDATE SET
+         template_id = excluded.template_id,
+         title = excluded.title,
+         sections_json = excluded.sections_json,
+         deployed_url = coalesce(excluded.deployed_url, portfolios.deployed_url),
+         project_name = coalesce(excluded.project_name, portfolios.project_name),
+         updated_at = datetime('now')`
+    ).bind(
+      id,
+      uid,
+      body.slug,
+      body.templateId || body.template_id || 'default',
+      body.title || 'My Portfolio',
+      sectionsJson,
+      body.deployedUrl || body.deployed_url || null,
+      body.projectName || body.project_name || null
+    ).run();
+
+    const portfolio = await env.DB.prepare(`SELECT * FROM portfolios WHERE user_id = ? AND slug = ?`).bind(uid, body.slug).first();
+    return { data: { success: true, portfolio }, status: 200 };
+  }
+
+  if (method === 'DELETE') {
+    const id = url.searchParams.get('id');
+    const slug = url.searchParams.get('slug');
+    if (id) {
+      await env.DB.prepare(`DELETE FROM portfolios WHERE id = ?`).bind(id).run();
+      return { data: { success: true }, status: 200 };
+    }
+    if (slug && userId) {
+      await env.DB.prepare(`DELETE FROM portfolios WHERE user_id = ? AND slug = ?`).bind(userId, slug).run();
+      return { data: { success: true }, status: 200 };
+    }
+    return { data: { error: 'id or slug is required' }, status: 400 };
+  }
+
+  return { data: { error: 'Method not allowed' }, status: 405 };
+}
+
+// ---------------------------------------------------------------------------
+// ImageKit Authentication & Upload Handlers
+// ---------------------------------------------------------------------------
+async function handleImageKitAuth(env) {
+  const privateKey = env.IMAGEKIT_PRIVATE_KEY;
+  if (!privateKey) {
+    return { data: { error: 'IMAGEKIT_PRIVATE_KEY is not configured on gateway' }, status: 503 };
+  }
+  const token = crypto.randomUUID();
+  const expire = Math.floor(Date.now() / 1000) + 1800; // 30 minutes validity
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(privateKey);
+  const message = encoder.encode(token + expire);
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-1' },
+    false,
+    ['sign']
+  );
+  const signatureBuf = await crypto.subtle.sign('HMAC', cryptoKey, message);
+  const signature = Array.from(new Uint8Array(signatureBuf))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  return {
+    data: {
+      token,
+      expire,
+      signature,
+      publicKey: env.IMAGEKIT_PUBLIC_KEY || 'public_HbKrLXFCb5VWNjz7jBfAteEOhBM=',
+      urlEndpoint: env.IMAGEKIT_URL_ENDPOINT || 'https://ik.imagekit.io/anurag3407',
+    },
+    status: 200,
+  };
+}
+
+async function handleImageKitUpload(request, env) {
+  const privateKey = env.IMAGEKIT_PRIVATE_KEY;
+  if (!privateKey) {
+    return { data: { error: 'IMAGEKIT_PRIVATE_KEY is not configured on gateway' }, status: 503 };
+  }
+
+  const contentType = request.headers.get('content-type') || '';
+  let forwardFormData;
+
+  if (contentType.includes('multipart/form-data')) {
+    forwardFormData = await request.formData();
+  } else {
+    const body = await request.json().catch(() => ({}));
+    if (!body.file || !body.fileName) {
+      return { data: { error: 'file and fileName are required' }, status: 400 };
+    }
+    // Size check for base64 uploads (~10MB limit)
+    if (typeof body.file === 'string' && body.file.length > 14 * 1024 * 1024) {
+      return { data: { error: 'File size exceeds maximum allowed limit of 10MB' }, status: 413 };
+    }
+    forwardFormData = new FormData();
+    forwardFormData.append('file', body.file);
+    forwardFormData.append('fileName', body.fileName);
+    if (body.folder) forwardFormData.append('folder', body.folder);
+    if (body.tags) forwardFormData.append('tags', Array.isArray(body.tags) ? body.tags.join(',') : body.tags);
+  }
+
+  // File extension whitelist guard
+  const fileName = String(forwardFormData.get('fileName') || '').toLowerCase();
+  const ALLOWED_EXTS = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.pdf', '.doc', '.docx', '.txt'];
+  const hasValidExt = ALLOWED_EXTS.some((ext) => fileName.endsWith(ext));
+  if (!hasValidExt) {
+    return { data: { error: 'Invalid file format. Allowed: PDF, DOC, DOCX, TXT, PNG, JPG, WEBP, GIF' }, status: 400 };
+  }
+
+  const basicAuth = btoa(`${privateKey}:`);
+  const ikRes = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+    },
+    body: forwardFormData,
+  });
+
+  const ikData = await ikRes.json().catch(() => ({}));
+  if (!ikRes.ok) {
+    return { data: { error: ikData.message || 'ImageKit upload failed' }, status: ikRes.status };
+  }
+
+  // Record uploaded file in Cloudflare D1
+  if (env.DB) {
+    try {
+      const fileId = ikData.fileId || crypto.randomUUID();
+      const userId = request.headers.get('X-User-Id') || 'anonymous';
+      await env.DB.prepare(
+        `INSERT INTO files (id, user_id, file_id, file_name, file_url, file_type, size)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`
+      ).bind(
+        crypto.randomUUID(),
+        userId,
+        fileId,
+        ikData.name || 'file',
+        ikData.url,
+        ikData.fileType || 'file',
+        ikData.size || 0
+      ).run();
+    } catch (dbErr) {
+      console.warn('Failed to record file in D1:', dbErr.message);
+    }
+  }
+
+  return {
+    data: {
+      success: true,
+      fileId: ikData.fileId,
+      name: ikData.name,
+      url: ikData.url,
+      thumbnail: ikData.thumbnailUrl || ikData.thumbnail || ikData.url,
+      size: ikData.size,
+      filePath: ikData.filePath,
+      fileType: ikData.fileType,
+    },
+    status: 200,
+  };
+}
+
+// Fire-and-forget usage logging (never blocks or fails the request).
+async function logUsage(env, entry) {
+  if (env.DB) {
+    try {
+      await env.DB.prepare(
+        `INSERT INTO ai_usage (user_id, provider, model, prompt_tokens, completion_tokens)
+         VALUES (?, ?, ?, ?, ?)`
+      ).bind(
+        entry.user_id || 'anonymous',
+        entry.provider || 'cloudflare',
+        entry.model || '',
+        entry.prompt_tokens || 0,
+        entry.completion_tokens || 0
+      ).run();
+    } catch {
+      // best effort
+    }
+  }
+
+  if (env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      await fetch(`${env.SUPABASE_URL}/rest/v1/ai_usage`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(entry),
+      });
+    } catch {
+      // best effort
+    }
   }
 }
 
@@ -533,10 +896,13 @@ export default {
     try {
       let result;
       if ((request.method === 'GET' || request.method === 'HEAD') && (path === '/v1/health' || path === '/health')) {
-        result = { data: { ok: true, service: 'careerpilot-gateway' }, status: 200 };
+        result = { data: { ok: true, service: 'careerpilot-gateway', d1: Boolean(env.DB), imagekit: Boolean(env.IMAGEKIT_PRIVATE_KEY) }, status: 200 };
       } else if ((request.method === 'GET' || request.method === 'HEAD') && path === '/v1/ai/models') {
         result = handleModels(url);
       } else if (request.method === 'POST' && path === '/v1/ai/generate') {
+        if (!rateLimit(`${ip}:ai`, 20, 60_000)) {
+          return json({ error: 'AI rate limit exceeded (max 20 requests per minute). Please wait a moment.' }, 429, cors);
+        }
         result = await handleGenerate(request, env);
       } else if (request.method === 'POST' && path === '/v1/ai/validate-key') {
         result = await handleValidateKey(request, env);
@@ -544,6 +910,16 @@ export default {
         result = await handleJobsSearch(request, env);
       } else if (request.method === 'POST' && path === '/v1/jobs/track') {
         result = await handleJobsTrack(request, env);
+      } else if (request.method === 'GET' && path === '/v1/imagekit/auth') {
+        result = await handleImageKitAuth(env);
+      } else if (request.method === 'POST' && path === '/v1/imagekit/upload') {
+        result = await handleImageKitUpload(request, env);
+      } else if (path === '/v1/db/jobs') {
+        result = await handleD1Jobs(request, env, url, request.method);
+      } else if (path === '/v1/db/resumes') {
+        result = await handleD1Resumes(request, env, url, request.method);
+      } else if (path === '/v1/db/portfolios') {
+        result = await handleD1Portfolios(request, env, url, request.method);
       } else {
         result = { data: { error: 'Not found' }, status: 404 };
       }

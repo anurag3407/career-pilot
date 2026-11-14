@@ -12,12 +12,24 @@ const CF_API = 'https://api.cloudflare.com/client/v4';
 // Cloudflare Pages project names: lowercase, hyphens only, max 28 chars (DNS label limit).
 const MAX_PROJECT_NAME_LENGTH = 28;
 
-function getCredentials() {
-  const token = process.env.CLOUDFLARE_API_TOKEN;
-  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+async function getCredentials(customToken, customAccountId) {
+  let token = (typeof customToken === 'string' && customToken.trim()) ? customToken.trim() : (process.env.PORTFOLIO_CLOUDFLARE_API_TOKEN || process.env.CLOUDFLARE_API_TOKEN);
+  let accountId = (typeof customAccountId === 'string' && customAccountId.trim()) ? customAccountId.trim() : (process.env.PORTFOLIO_CLOUDFLARE_ACCOUNT_ID || process.env.CLOUDFLARE_ACCOUNT_ID);
+
+  if (token && !accountId) {
+    try {
+      const accounts = await cfRequest('GET', '/accounts', undefined, token);
+      if (Array.isArray(accounts) && accounts.length > 0) {
+        accountId = accounts[0].id;
+      }
+    } catch (e) {
+      console.warn('Could not auto-detect accountId from token:', e.message);
+    }
+  }
+
   if (!token || !accountId) {
     throw new Error(
-      'CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID must be set in environment variables.'
+      'Cloudflare API Token and Account ID are required. Please provide your personal Cloudflare API Token.'
     );
   }
   return { token, accountId };
@@ -129,9 +141,9 @@ function sanitizeHtml(html) {
  * @returns {Promise<{ valid: boolean, tokenId?: string, status?: string, reason?: string }>}
  */
 export async function validateToken(token) {
-  const resolved = token ?? process.env.CLOUDFLARE_API_TOKEN;
+  const resolved = (typeof token === 'string' && token.trim()) ? token.trim() : (process.env.PORTFOLIO_CLOUDFLARE_API_TOKEN || process.env.CLOUDFLARE_API_TOKEN);
   if (!resolved) {
-    return { valid: false, reason: 'CLOUDFLARE_API_TOKEN is not configured.' };
+    return { valid: false, reason: 'Cloudflare API Token is required.' };
   }
 
   let res;
@@ -155,10 +167,25 @@ export async function validateToken(token) {
     return { valid: false, reason: `Cloudflare API error ${res.status}.` };
   }
 
+  // Also auto-fetch account info
+  let accountName = null;
+  let accountId = null;
+  try {
+    const accounts = await cfRequest('GET', '/accounts', undefined, resolved);
+    if (Array.isArray(accounts) && accounts.length > 0) {
+      accountName = accounts[0].name;
+      accountId = accounts[0].id;
+    }
+  } catch {
+    // optional
+  }
+
   return {
     valid: true,
     tokenId: data.result?.id ?? null,
     status: data.result?.status ?? 'active',
+    accountName,
+    accountId,
   };
 }
 
@@ -166,14 +193,16 @@ export async function validateToken(token) {
  * Deploy an HTML portfolio to Cloudflare Pages via Wrangler.
  * HTML is sanitized server-side before upload.
  *
- * @param {string} portfolioId  - Stable identifier used to name/find the Pages project
- * @param {string} htmlContent  - Full HTML string for index.html
- * @param {Object} assets       - Map of relative path → string/Buffer content, e.g. { 'style.css': '...' }
+ * @param {string} portfolioId   - Stable identifier used to name/find the Pages project
+ * @param {string} htmlContent   - Full HTML string for index.html
+ * @param {Object} assets        - Map of relative path → string/Buffer content, e.g. { 'style.css': '...' }
+ * @param {string} [customToken] - Optional user-supplied Cloudflare API Token
+ * @param {string} [customAccountId] - Optional user-supplied Cloudflare Account ID
  * @returns {Promise<{ deploymentId: string, url: string, projectName: string }>}
  */
-export async function deploy(portfolioId, htmlContent, assets = {}) {
+export async function deploy(portfolioId, htmlContent, assets = {}, customToken, customAccountId) {
   assertSafeId(portfolioId, 'portfolioId');
-  const { token, accountId } = getCredentials();
+  const { token, accountId } = await getCredentials(customToken, customAccountId);
 
   const tokenCheck = await validateToken(token);
   if (!tokenCheck.valid) {

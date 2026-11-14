@@ -55,7 +55,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" onClick={handleHomeClick} className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 flex items-center justify-center rounded-lg overflow-hidden group-hover:scale-105 transition-transform">
-              <img src="/speed.png" alt="CareerPilot" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="CareerPilot" className="w-full h-full object-contain" />
             </div>
             <span className="text-lg font-black tracking-tight text-foreground">
               careerpilot

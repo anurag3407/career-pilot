@@ -91,19 +91,22 @@ async function inputupload(req, res) {
 
     
     if (req.file) {
-      supportingDocumentURL = req.file?.path || null;
+      supportingDocumentURL = req.file?.path || req.file?.url || null;
 
-      const response = await axios.get(supportingDocumentURL, {
-        responseType: "arraybuffer",
-      });
+      let buffer = req.file.buffer;
+      if (!buffer && supportingDocumentURL) {
+        const response = await axios.get(supportingDocumentURL, {
+          responseType: "arraybuffer",
+        });
+        buffer = response.data;
+      }
 
-      const pdfData = await pdfParse(response.data);
-
-      resumeText = pdfData.text.replace(/\s+/g, " ").trim();
-
-      extractedSkills = extractSkills(resumeText);
-
-      console.log("EXTRACTED SKILLS:", extractedSkills);
+      if (buffer) {
+        const pdfData = await pdfParse(buffer);
+        resumeText = pdfData.text.replace(/\s+/g, " ").trim();
+        extractedSkills = extractSkills(resumeText);
+        console.log("EXTRACTED SKILLS:", extractedSkills);
+      }
     }
 
     

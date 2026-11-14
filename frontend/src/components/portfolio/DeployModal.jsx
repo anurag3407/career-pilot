@@ -11,8 +11,8 @@ import { portfolioApi } from '../../services/api';
 // We defined some custom metadata here for each hosting platform.
 // Adding a "tag" adds that handcrafted touch that makes standard cards feel alive.
 const PROVIDERS = [
+  { id: 'cloudflare', name: 'Cloudflare Pages', desc: 'Deploy directly to your own Cloudflare account free with global CDN.', icon: '☁️', tag: 'RECOMMENDED', needsToken: true },
   { id: 'github', name: 'GitHub Pages', desc: 'Deploy to your GitHub account repository free.', icon: '⚡', tag: 'EASY & FREE', needsToken: true },
-  { id: 'cloudflare', name: 'Cloudflare Pages', desc: 'Fast, secure hosting with global CDN.', icon: '☁️', tag: 'RECOMMENDED', needsToken: false },
   { id: 'netlify', name: 'Netlify', desc: 'Instant serverless deploys and form handling.', icon: '◈', tag: 'STABLE', needsToken: true },
 ];
 
@@ -33,9 +33,10 @@ function TokenStatusChip({ status }) {
     );
   }
   if (status.valid) {
+    const label = status.accountName ? `✓ ${status.accountName.split("'")[0]}` : '✓ connected';
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-        ✓ connected
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" title={status.accountName || 'Connected'}>
+        {label}
       </span>
     );
   }
@@ -72,8 +73,13 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   }, [aiDraft]);
 
   // Token validation state — one entry per provider that needs a user-supplied token
-  const [tokenInputs, setTokenInputs] = useState({ github: '', netlify: '' });
+  const [tokenInputs, setTokenInputs] = useState(() => ({
+    cloudflare: (typeof window !== 'undefined' && localStorage.getItem('cp_cf_token')) || '',
+    github: (typeof window !== 'undefined' && localStorage.getItem('cp_gh_token')) || '',
+    netlify: (typeof window !== 'undefined' && localStorage.getItem('cp_nf_token')) || '',
+  }));
   const [tokenStatuses, setTokenStatuses] = useState({});
+  const autoCheckedRef = useRef({});
 
   // Refs for tracking async operations.
   // Crucial UX fix: If a user closes the modal before the deployment simulator finishes,
@@ -121,18 +127,25 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
    * Validates a provider token against the backend before allowing deployment.
    * Never caches the result — each call makes a fresh API request.
    */
-  const handleCheckToken = async (providerId) => {
+  const handleCheckToken = async (providerId, customToken) => {
     setTokenStatuses((prev) => ({ ...prev, [providerId]: 'checking' }));
     try {
       const provider = PROVIDERS.find((p) => p.id === providerId);
+      const tokenValue = customToken !== undefined ? customToken : (tokenInputs[providerId] || '');
       const data = await portfolioApi.validateDeployToken(
         providerId,
-        provider?.needsToken ? tokenInputs[providerId] : undefined,
+        provider?.needsToken ? tokenValue : undefined,
       );
       setTokenStatuses((prev) => ({ ...prev, [providerId]: data }));
 
       if (data.valid) {
-        toast.success(`${PROVIDERS.find((p) => p.id === providerId)?.name} token verified!`);
+        if (typeof window !== 'undefined' && tokenValue) {
+          const keyMap = { cloudflare: 'cp_cf_token', github: 'cp_gh_token', netlify: 'cp_nf_token' };
+          if (keyMap[providerId]) {
+            localStorage.setItem(keyMap[providerId], tokenValue);
+          }
+        }
+        toast.success(`${provider?.name || 'Provider'} token verified!`);
       } else {
         toast.error(data.reason || 'Token is invalid.');
       }
@@ -141,6 +154,14 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
       toast.error(err.message || 'Token check failed.');
     }
   };
+
+  // Auto-validate saved tokens on open if available
+  useEffect(() => {
+    if (isOpen && selectedProvider && tokenInputs[selectedProvider] && !autoCheckedRef.current[selectedProvider]) {
+      autoCheckedRef.current[selectedProvider] = true;
+      handleCheckToken(selectedProvider, tokenInputs[selectedProvider]);
+    }
+  }, [isOpen, selectedProvider]);
 
   const handleDeploy = async () => {
     const requestId = ++deployRequestIdRef.current;
@@ -419,28 +440,74 @@ const seoScore = Math.round(
 
                           {/* Token input + check button — shown only when this provider is selected and needs a token */}
                           {isSelected && provider.needsToken && (
-                            <div className="px-4 pb-4 flex gap-2" onClick={(e) => e.stopPropagation()}>
-                              <input
-                                type="password"
-                                placeholder={`Paste your ${provider.name} token…`}
-                                value={tokenInputs[provider.id] ?? ''}
-                                onChange={(e) =>
-                                  setTokenInputs((prev) => ({ ...prev, [provider.id]: e.target.value }))
-                                }
-                                className="flex-1 text-xs rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-100 placeholder-zinc-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
-                              />
-                              <button
-                                type="button"
-                                disabled={!tokenInputs[provider.id] || tokenStatus === 'checking'}
-                                onClick={() => handleCheckToken(provider.id)}
-                                className="text-[10px] font-bold font-mono px-3 py-2 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-600/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-                              >
-                                Check
-                              </button>
+                            <div className="px-4 pb-4 space-y-2.5" onClick={(e) => e.stopPropagation()}>
+                              <div className="flex gap-2">
+                                <input
+                                  type="password"
+                                  placeholder={`Paste your ${provider.name} token…`}
+                                  value={tokenInputs[provider.id] ?? ''}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setTokenInputs((prev) => ({ ...prev, [provider.id]: val }));
+                                    setTokenStatuses((prev) => ({ ...prev, [provider.id]: null }));
+                                  }}
+                                  className="flex-1 text-xs rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-100 placeholder-zinc-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                />
+                                <button
+                                  type="button"
+                                  disabled={!tokenInputs[provider.id] || tokenStatus === 'checking'}
+                                  onClick={() => handleCheckToken(provider.id)}
+                                  className="text-[10px] font-bold font-mono px-3.5 py-2 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-600/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                                >
+                                  {tokenStatus === 'checking' ? 'Checking…' : 'Check'}
+                                </button>
+                              </div>
+
+                              {/* Provider-specific help hints */}
+                              {provider.id === 'cloudflare' && (
+                                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                                  <span>Need a token? In </span>
+                                  <a
+                                    href="https://dash.cloudflare.com/profile/api-tokens"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-indigo-400 hover:text-indigo-300 underline font-medium inline-flex items-center gap-0.5"
+                                  >
+                                    Cloudflare Dash → API Tokens <ExternalLink className="w-2.5 h-2.5 inline" />
+                                  </a>
+                                  <span>, click <strong>Create Token</strong> &amp; select <strong>Cloudflare Pages</strong> template. Your site deploys 100% to your account.</span>
+                                </p>
+                              )}
+                              {provider.id === 'github' && (
+                                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                                  <span>Need a token? Generate a personal access token with <code>repo</code> scope in </span>
+                                  <a
+                                    href="https://github.com/settings/tokens/new?scopes=repo&description=CareerPilot%20Portfolio"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-indigo-400 hover:text-indigo-300 underline font-medium inline-flex items-center gap-0.5"
+                                  >
+                                    GitHub Settings <ExternalLink className="w-2.5 h-2.5 inline" />
+                                  </a>.
+                                </p>
+                              )}
+                              {provider.id === 'netlify' && (
+                                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                                  <span>Need a token? Generate a personal access token in </span>
+                                  <a
+                                    href="https://app.netlify.com/user/applications#personal-access-tokens"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-indigo-400 hover:text-indigo-300 underline font-medium inline-flex items-center gap-0.5"
+                                  >
+                                    Netlify User Settings <ExternalLink className="w-2.5 h-2.5 inline" />
+                                  </a>.
+                                </p>
+                              )}
                             </div>
                           )}
 
-                          {/* Cloudflare: server-side token — show check button with no input */}
+                          {/* Fallback if a provider without needsToken is added */}
                           {isSelected && !provider.needsToken && (
                             <div className="px-4 pb-4 flex justify-end" onClick={(e) => e.stopPropagation()}>
                               <button
