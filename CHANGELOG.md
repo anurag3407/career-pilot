@@ -1,3 +1,10 @@
+# [1.280.0](https://github.com/anurag3407/career-pilot/compare/v1.279.0...v1.280.0) (2026-11-14)
+
+
+### Features
+
+* unify platform with Cloudflare AI gateway, Supabase data layer, and Portfolio Studio ([da5a9b2](https://github.com/anurag3407/career-pilot/commit/da5a9b2a6583f38b85c34ec8e70089aedb4bd9e1))
+
 # [1.279.0](https://github.com/anurag3407/career-pilot/compare/v1.278.1...v1.279.0) (2026-11-05)
 
 
