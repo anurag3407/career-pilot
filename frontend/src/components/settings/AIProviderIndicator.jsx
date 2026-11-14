@@ -16,7 +16,10 @@ export default function AIProviderIndicator({ open, animate }) {
   const setActiveProvider = useAIConfigStore((s) => s.setActiveProvider);
   const getConfiguredProviders = useAIConfigStore((s) => s.getConfiguredProviders);
 
-  const configuredProviders = getConfiguredProviders();
+  const configuredProviders = Array.from(new Set([
+    'cloudflare',
+    ...getConfiguredProviders()
+  ]));
   const activeMeta = activeProvider ? PROVIDER_META[activeProvider] : null;
 
   const icon = activeMeta?.icon ?? "🤖";

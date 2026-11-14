@@ -18,6 +18,7 @@ import { useAIConfigStore } from '../../stores/useAIConfigStore';
  *                 defaults to the BYOK store's active provider.
  */
 const PALETTE = {
+  cloudflare: { from: '#f38020', to: '#faad3f', glow: 'rgba(243,128,32,0.5)' },
   gemini: { from: '#cc420c', to: '#a94a6c', glow: 'rgba(204,66,12,0.5)' },
   openai: { from: '#10a37f', to: '#0d8c6c', glow: 'rgba(16,163,127,0.5)' },
   openrouter: { from: '#a94a6c', to: '#d4183d', glow: 'rgba(212,24,61,0.5)' },
@@ -26,6 +27,13 @@ const PALETTE = {
 
 const renderShape = (provider) => {
   switch (provider) {
+    case 'cloudflare':
+      return (
+        <path
+          d="M60 130 C45 130 35 118 35 105 C35 92 45 82 58 82 C61 68 74 58 90 58 C108 58 122 70 125 86 C130 84 135 83 140 83 C156 83 168 95 168 110 C168 125 156 130 142 130 Z"
+          fill="url(#g)"
+        />
+      );
     case 'openai':
       return (
         <rect x="40" y="40" width="120" height="120" rx="28" fill="url(#g)" />

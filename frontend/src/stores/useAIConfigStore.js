@@ -5,6 +5,21 @@ import { encryptKey, decryptKey } from '../utils/encryption';
 // Provider metadata – UI labels, default models, key URLs, etc.
 // ---------------------------------------------------------------------------
 export const PROVIDER_META = {
+  cloudflare: {
+    name: 'Cloudflare AI',
+    tagline: 'Fast, serverless edge AI (Meta Llama 3.1 & DeepSeek)',
+    icon: '⚡',
+    keyUrl: 'https://dash.cloudflare.com/profile/api-tokens',
+    defaultModel: '@cf/meta/llama-3.1-8b-instruct',
+    color: 'orange',
+    models: [
+      { id: '@cf/meta/llama-3.1-8b-instruct', name: 'Meta: Llama 3.1 8B Instruct (Free)', isFree: true, price: 'Free' },
+      { id: '@cf/meta/llama-3.3-70b-instruct', name: 'Meta: Llama 3.3 70B Instruct (Free)', isFree: true, price: 'Free' },
+      { id: '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b', name: 'DeepSeek: R1 Distill Qwen 32B (Free)', isFree: true, price: 'Free' },
+      { id: '@cf/mistral/mistral-7b-instruct-v0.2', name: 'Mistral: 7B Instruct v0.2 (Free)', isFree: true, price: 'Free' },
+      { id: '@cf/qwen/qwen1.5-14b-chat-awq', name: 'Qwen: 1.5 14B Chat AWQ (Free)', isFree: true, price: 'Free' },
+    ],
+  },
   gemini: {
     name: 'Google Gemini',
     tagline: 'Fast & affordable — free tier available',
@@ -147,7 +162,7 @@ const migrateFromLegacy = () => {
 
 /** Load initial state from localStorage (v2) or migrate from legacy. */
 const hydrate = () => {
-  const defaults = { activeProvider: '', providers: {} };
+  const defaults = { activeProvider: 'cloudflare', providers: {} };
 
   try {
     // First, try the v2 format
@@ -155,7 +170,7 @@ const hydrate = () => {
     if (raw) {
       const parsed = JSON.parse(raw);
       return {
-        activeProvider: parsed.activeProvider || '',
+        activeProvider: parsed.activeProvider || 'cloudflare',
         providers: parsed.providers || {},
       };
     }
@@ -163,6 +178,7 @@ const hydrate = () => {
     // Fall back to legacy migration
     const migrated = migrateFromLegacy();
     if (migrated) {
+      if (!migrated.activeProvider) migrated.activeProvider = 'cloudflare';
       // Persist migrated data in v2 format immediately
       localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
       return migrated;
@@ -273,11 +289,21 @@ export const useAIConfigStore = create((set, get) => ({
       if (configuredProviders.length > 0) {
         activeProvider = configuredProviders[0];
       } else {
-        return null;
+        activeProvider = 'cloudflare';
       }
     }
 
     const entry = providers[activeProvider];
+    // Cloudflare AI has platform support on the gateway worker without requiring a BYOK key
+    if (activeProvider === 'cloudflare' && (!entry || !entry.apiKey)) {
+      return {
+        provider: 'cloudflare',
+        apiKey: '',
+        model: entry?.model || PROVIDER_META.cloudflare?.defaultModel || '@cf/meta/llama-3.1-8b-instruct',
+        baseUrl: '',
+      };
+    }
+
     if (!entry || !entry.apiKey) return null;
 
     return {

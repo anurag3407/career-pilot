@@ -11,10 +11,13 @@ export default function AIProviderSelector() {
   const setActiveProvider = useAIConfigStore((s) => s.setActiveProvider);
   const containerRef = useRef(null);
 
-  // Get only validated providers
-  const validatedProviders = Object.entries(providers)
-    .filter(([_, data]) => data.validated)
-    .map(([id]) => id);
+  // Get validated providers plus built-in Cloudflare AI platform provider
+  const validatedProviders = Array.from(new Set([
+    'cloudflare',
+    ...Object.entries(providers)
+      .filter(([_, data]) => data.validated)
+      .map(([id]) => id)
+  ]));
 
   const activeMeta = activeProviderId ? PROVIDER_META[activeProviderId] : null;
 

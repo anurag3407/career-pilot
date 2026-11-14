@@ -17,6 +17,7 @@
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
 const DEFAULT_MODELS = {
+  cloudflare: '@cf/meta/llama-3.1-8b-instruct',
   gemini: 'gemini-2.5-flash',
   openai: 'gpt-4o-mini',
   groq: 'llama-3.3-70b-versatile',
@@ -80,8 +81,9 @@ function resolveProvider(request, env, body) {
   const byok = Boolean(apiKey);
 
   if (!apiKey) {
-    provider = provider || env.DEFAULT_AI_PROVIDER || 'gemini';
+    provider = provider || env.DEFAULT_AI_PROVIDER || 'cloudflare';
     const platformKeys = {
+      cloudflare: (env.AI ? 'binding' : null) || env.CLOUDFLARE_API_TOKEN,
       gemini: env.GEMINI_API_KEY,
       openai: env.OPENAI_API_KEY,
       groq: env.GROQ_API_KEY,
@@ -103,12 +105,13 @@ function resolveProvider(request, env, body) {
   }
 
   if (!provider) provider = guessProvider(apiKey);
-  model = model || DEFAULT_MODELS[provider] || DEFAULT_MODELS.openai;
+  model = model || DEFAULT_MODELS[provider] || DEFAULT_MODELS.cloudflare || DEFAULT_MODELS.openai;
 
   return { provider, apiKey, model, baseUrl, byok };
 }
 
 function guessProvider(key) {
+  if (key.startsWith('cfat_') || key.length === 40) return 'cloudflare';
   if (key.startsWith('gsk_')) return 'groq';
   if (key.startsWith('sk-or-')) return 'openrouter';
   if (key.startsWith('sk-ant-')) return 'anthropic';
@@ -124,6 +127,102 @@ const PROVIDER_BASES = {
   groq: 'https://api.groq.com/openai/v1',
   openrouter: 'https://openrouter.ai/api/v1',
 };
+
+async function generateCloudflare(env, { apiKey, model }, messages, opts) {
+  const preparedMessages = messages.map((m) => ({ role: m.role, content: m.content }));
+  if (opts.json) {
+    const hasJsonInstruction = preparedMessages.some(
+      (m) => m.content && m.content.toLowerCase().includes('json')
+    );
+    if (!hasJsonInstruction) {
+      const sys = preparedMessages.find((m) => m.role === 'system');
+      if (sys) {
+        sys.content += '\n\nIMPORTANT: Return valid, parseable JSON only. Do not wrap in markdown code blocks.';
+      } else {
+        preparedMessages.unshift({
+          role: 'system',
+          content: 'You are an AI assistant. Return valid, parseable JSON only. Do not wrap in markdown code blocks.',
+        });
+      }
+    }
+  }
+
+  // 1. Try native env.AI binding if present
+  if (env.AI && typeof env.AI.run === 'function') {
+    try {
+      const aiParams = {
+        messages: preparedMessages,
+        max_tokens: opts.maxTokens ?? 2048,
+        temperature: opts.temperature ?? 0.7,
+      };
+      const result = await env.AI.run(model, aiParams);
+      let text = '';
+      if (typeof result === 'string') {
+        text = result;
+      } else if (result?.response) {
+        text = result.response;
+      } else if (result?.choices?.[0]?.message?.content) {
+        text = result.choices[0].message.content;
+      } else if (result?.result?.response) {
+        text = result.result.response;
+      }
+
+      if (text) {
+        return {
+          text,
+          usage: {
+            prompt_tokens: result?.usage?.prompt_tokens ?? 0,
+            completion_tokens: result?.usage?.completion_tokens ?? 0,
+            neurons: result?.usage?.neurons ?? 0,
+          },
+        };
+      }
+    } catch (err) {
+      console.error('env.AI.run error, falling back to REST API:', err);
+    }
+  }
+
+  // 2. Cloudflare Workers AI REST API
+  const token = (apiKey && apiKey !== 'binding') ? apiKey : env.CLOUDFLARE_API_TOKEN;
+  const accountId = env.CLOUDFLARE_ACCOUNT_ID || '74d877492e541ba6d459990fff4fad12';
+  if (!token) {
+    throw new Error('Cloudflare AI is not configured (missing AI binding or API Token).');
+  }
+
+  // Note: model path (e.g. @cf/meta/llama-3.1-8b-instruct) must preserve slashes in URL
+  const res = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messages: preparedMessages,
+        max_tokens: opts.maxTokens ?? 2048,
+        temperature: opts.temperature ?? 0.7,
+      }),
+    }
+  );
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.success === false) {
+    const errMsg = data?.errors?.[0]?.message || data?.messages?.[0] || `Cloudflare AI error (${res.status})`;
+    throw new Error(errMsg);
+  }
+
+  const result = data.result;
+  const text = result?.response || result?.choices?.[0]?.message?.content || (typeof result === 'string' ? result : '');
+  return {
+    text,
+    usage: {
+      prompt_tokens: result?.usage?.prompt_tokens ?? 0,
+      completion_tokens: result?.usage?.completion_tokens ?? 0,
+      neurons: result?.usage?.neurons ?? 0,
+    },
+  };
+}
 
 async function generateOpenAICompatible(provider, { apiKey, model, baseUrl }, messages, opts) {
   const base = (provider === 'custom' && baseUrl) ? baseUrl.replace(/\/$/, '') : PROVIDER_BASES[provider];
@@ -223,7 +322,8 @@ async function generateAnthropic({ apiKey, model }, messages, opts) {
   };
 }
 
-async function generate(provider, config, messages, opts) {
+async function generate(provider, config, messages, opts, env) {
+  if (provider === 'cloudflare') return generateCloudflare(env, config, messages, opts);
   if (provider === 'gemini') return generateGemini(config, messages, opts);
   if (provider === 'anthropic') return generateAnthropic(config, messages, opts);
   return generateOpenAICompatible(provider, config, messages, opts);
@@ -250,7 +350,7 @@ async function handleGenerate(request, env) {
 
   const started = Date.now();
   try {
-    const { text, usage } = await generate(resolved.provider, resolved, messages, body);
+    const { text, usage } = await generate(resolved.provider, resolved, messages, body, env);
     logUsage(env, {
       user_id: body.userId || null,
       feature: request.headers.get('X-Feature') || body.feature || 'unknown',
@@ -267,13 +367,20 @@ async function handleGenerate(request, env) {
   }
 }
 
-async function handleValidateKey(request) {
+async function handleValidateKey(request, env) {
   const { provider, apiKey, baseUrl = '' } = await request.json().catch(() => ({}));
   if (!provider || !apiKey) return { data: { error: 'provider and apiKey are required' }, status: 400 };
 
   try {
     let ok = false;
-    if (provider === 'gemini') {
+    if (provider === 'cloudflare') {
+      const accountId = env?.CLOUDFLARE_ACCOUNT_ID || '74d877492e541ba6d459990fff4fad12';
+      const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/tokens/verify`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      const data = await res.json().catch(() => ({}));
+      ok = res.ok && data.success === true;
+    } else if (provider === 'gemini') {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
       ok = res.ok;
     } else if (provider === 'anthropic') {
@@ -296,10 +403,18 @@ async function handleValidateKey(request) {
 function handleModels(url) {
   const provider = url.searchParams.get('provider') || 'all';
   const catalog = {
+    cloudflare: [
+      '@cf/meta/llama-3.1-8b-instruct',
+      '@cf/meta/llama-3.3-70b-instruct',
+      '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b',
+      '@cf/mistral/mistral-7b-instruct-v0.2',
+      '@cf/qwen/qwen1.5-14b-chat-awq',
+    ],
     gemini: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash'],
     openai: ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo', 'o1-mini'],
     groq: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'],
     openrouter: [
+      'liquid/lfm-3-1.7b:free',
       'google/gemini-2.0-flash-exp:free',
       'meta-llama/llama-3.3-70b-instruct:free',
       'deepseek/deepseek-r1:free',
@@ -424,7 +539,7 @@ export default {
       } else if (request.method === 'POST' && path === '/v1/ai/generate') {
         result = await handleGenerate(request, env);
       } else if (request.method === 'POST' && path === '/v1/ai/validate-key') {
-        result = await handleValidateKey(request);
+        result = await handleValidateKey(request, env);
       } else if (request.method === 'POST' && path === '/v1/jobs/search') {
         result = await handleJobsSearch(request, env);
       } else if (request.method === 'POST' && path === '/v1/jobs/track') {
