@@ -65,7 +65,7 @@ export default function JobsHub() {
       stats={loading ? [] : stats}
     >
       <ToolCard
-        to="/jobs"
+        to="/job-finder/search"
         icon={Search}
         title="Search Jobs"
         description="Find and filter job opportunities aligned with your skills and preferences."
@@ -86,7 +86,7 @@ export default function JobsHub() {
         color="emerald-500"
       />
       <ToolCard
-        to="/jobs"
+        to="/job-finder/search"
         icon={Building2}
         title="Company Research"
         description="Explore detailed insights about hiring organizations and specific roles."

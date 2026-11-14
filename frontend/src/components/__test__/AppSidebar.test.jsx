@@ -89,7 +89,7 @@ describe("AppSidebar", () => {
     ).toBeInTheDocument();
 
     expect(
-      screen.getByRole("button", { name: /resume builder/i })
+      screen.getByRole("button", { name: /resume & documents/i })
     ).toBeInTheDocument();
 
     expect(
@@ -138,21 +138,24 @@ describe("AppSidebar", () => {
     expect(mockLogout).toHaveBeenCalledTimes(1);
   });
 
-  test("expands AI tools section when clicked", async () => {
-    const user = userEvent.setup();
-
+  test("renders journey groups with their key tools", () => {
     render(<AppSidebar />);
 
-    const aiToolsButton = screen.getByRole("button", {
-      name: /ai tools/i,
-    });
-
-    await user.click(aiToolsButton);
+    for (const group of ["Overview", "Prepare", "Find & Apply", "Interview", "Grow", "Connect", "Developer Tools", "Account"]) {
+      expect(screen.getByText(group)).toBeInTheDocument();
+    }
 
     expect(
-      screen.getByRole("button", {
-        name: /recent visualizers/i,
-      })
+      screen.getByRole("button", { name: /^mock interview$/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^job tracker$/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^fellowship$/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /search tools and pages/i })
     ).toBeInTheDocument();
   });
 

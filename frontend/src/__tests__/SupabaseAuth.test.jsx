@@ -90,7 +90,7 @@ describe('SupabaseAuthCard component', () => {
     await waitFor(() => {
       expect(mockSignup).toHaveBeenCalledWith('jane@example.com', 'supersecret', {
         full_name: 'Jane Developer',
-      })
+      }, '/dashboard')
     })
   })
 })

@@ -33,7 +33,7 @@ export default function SupabaseAuthCard({ mode = 'login', fallbackRedirectUrl =
       if (isRegister) {
         const { data, error: signupErr } = await signup(email, password, {
           full_name: name.trim(),
-        });
+        }, fallbackRedirectUrl);
 
         if (signupErr) {
           throw signupErr;
@@ -67,8 +67,8 @@ export default function SupabaseAuthCard({ mode = 'login', fallbackRedirectUrl =
 
   const handleOAuth = async (provider) => {
     try {
-      if (provider === 'google') await loginWithGoogle();
-      if (provider === 'github') await loginWithGitHub();
+      if (provider === 'google') await loginWithGoogle(fallbackRedirectUrl);
+      if (provider === 'github') await loginWithGitHub(fallbackRedirectUrl);
     } catch (err) {
       toast.error(err.message || 'OAuth sign-in failed');
     }

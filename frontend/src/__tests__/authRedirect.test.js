@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { resolvePostAuthRedirect } from '../utils/authRedirect'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { resolvePostAuthRedirect, storePostAuthRedirect, consumePostAuthRedirect } from '../utils/authRedirect'
 
 describe('resolvePostAuthRedirect', () => {
   it('returns the stored internal path', () => {
@@ -25,5 +25,29 @@ describe('resolvePostAuthRedirect', () => {
     expect(resolvePostAuthRedirect(42)).toBe('/dashboard')
     expect(resolvePostAuthRedirect({ path: '/dashboard' })).toBe('/dashboard')
     expect(resolvePostAuthRedirect(['/dashboard'])).toBe('/dashboard')
+  })
+})
+
+describe('post-auth redirect storage (OAuth round-trip)', () => {
+  beforeEach(() => {
+    sessionStorage.clear()
+  })
+
+  it('stores and consumes the intended destination once', () => {
+    storePostAuthRedirect('/job-tracker')
+    expect(consumePostAuthRedirect()).toBe('/job-tracker')
+    // Consumed — a second read falls back to the dashboard.
+    expect(consumePostAuthRedirect()).toBe('/dashboard')
+  })
+
+  it('defaults to the dashboard when nothing was stored', () => {
+    expect(consumePostAuthRedirect()).toBe('/dashboard')
+  })
+
+  it('never stores an external destination', () => {
+    storePostAuthRedirect('https://evil.example.com')
+    expect(consumePostAuthRedirect()).toBe('/dashboard')
+    storePostAuthRedirect('//evil.example.com')
+    expect(consumePostAuthRedirect()).toBe('/dashboard')
   })
 })

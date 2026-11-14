@@ -2,6 +2,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { AuthContext } from './AuthContext'
 import { authApi } from '../services/api'
 import { supabase, isSupabaseConfigured } from '../config/supabase'
+import { storePostAuthRedirect } from '../utils/authRedirect'
+
+// OAuth and email confirmation leave the SPA entirely, so they return through
+// /auth/callback which restores the intended destination (or /dashboard).
+const authCallbackUrl = () => `${window.location.origin}/auth/callback`
 
 function SupabaseAuthState({ children }) {
   const [user, setUser] = useState(null)
@@ -76,17 +81,18 @@ function SupabaseAuthState({ children }) {
     }
   }, [])
 
-  const signup = async (emailOrObj, passwordArg, metaArg = {}) => {
+  const signup = async (emailOrObj, passwordArg, metaArg = {}, redirectTo = '/dashboard') => {
     const email = typeof emailOrObj === 'object' ? emailOrObj.email : emailOrObj
     const password = typeof emailOrObj === 'object' ? emailOrObj.password : passwordArg
     const metadata = typeof emailOrObj === 'object' ? (emailOrObj.metadata || emailOrObj.options?.data || {}) : metaArg
 
+    storePostAuthRedirect(redirectTo)
     return await supabase.auth.signUp({
       email,
       password,
       options: {
         data: metadata,
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: authCallbackUrl(),
       },
     })
   }
@@ -101,29 +107,32 @@ function SupabaseAuthState({ children }) {
     })
   }
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (redirectTo = '/dashboard') => {
+    storePostAuthRedirect(redirectTo)
     return await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: authCallbackUrl(),
       },
     })
   }
 
-  const loginWithLinkedIn = async () => {
+  const loginWithLinkedIn = async (redirectTo = '/dashboard') => {
+    storePostAuthRedirect(redirectTo)
     return await supabase.auth.signInWithOAuth({
       provider: 'linkedin_oidc',
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: authCallbackUrl(),
       },
     })
   }
 
-  const loginWithGitHub = async () => {
+  const loginWithGitHub = async (redirectTo = '/dashboard') => {
+    storePostAuthRedirect(redirectTo)
     return await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: authCallbackUrl(),
       },
     })
   }

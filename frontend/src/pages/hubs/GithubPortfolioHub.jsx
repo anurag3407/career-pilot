@@ -43,7 +43,7 @@ export default function GithubPortfolioHub() {
       breadcrumb="GitHub Portfolio"
     >
       <ToolCard
-        to="/portfolio/github"
+        to="/github-portfolio/build"
         icon={Sparkles}
         title="Build a Portfolio"
         description="Choose a username, pick your best repos, and AI drafts hero, about, projects and skills sections."

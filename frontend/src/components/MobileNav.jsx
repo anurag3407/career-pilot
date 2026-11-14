@@ -7,10 +7,10 @@ import {
     Globe,
     User,
     Menu,
-    Settings,
     X,
 } from "lucide-react";
 import { cn } from "../lib/utils";
+import { NAV_GROUPS, ACCOUNT_LINKS } from "../constants/navigation";
 
 const defaultTabs = [
     { to: "/dashboard", icon: LayoutDashboard, label: "Home" },
@@ -20,8 +20,13 @@ const defaultTabs = [
     { to: "/profile", icon: User, label: "Profile" },
 ];
 
-const secondaryLinks = [
-    { to: "/settings", icon: Settings, label: "Settings" },
+const menuGroups = [
+    ...NAV_GROUPS.map((group) => ({
+        id: group.id,
+        label: group.label,
+        items: group.items.filter((item) => item.primary),
+    })),
+    { id: "account", label: "Account", items: ACCOUNT_LINKS },
 ];
 
 function MobileNavItem({ item, onClick, drawerItem = false }) {
@@ -50,7 +55,6 @@ function MobileNavItem({ item, onClick, drawerItem = false }) {
 
 export default function MobileNav({
     tabs = defaultTabs,
-    menuLinks = secondaryLinks,
 }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -123,14 +127,23 @@ export default function MobileNav({
                             </button>
                         </div>
 
-                        <div className="mt-3 grid gap-1.5">
-                            {menuLinks.map((item) => (
-                                <MobileNavItem
-                                    key={item.to || item.label}
-                                    item={item}
-                                    drawerItem
-                                    onClick={() => setIsMenuOpen(false)}
-                                />
+                        <div className="mt-3 space-y-4 pb-2">
+                            {menuGroups.map((group) => (
+                                <div key={group.id}>
+                                    <p className="px-1 pb-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
+                                        {group.label}
+                                    </p>
+                                    <div className="grid gap-1.5">
+                                        {group.items.map((item) => (
+                                            <MobileNavItem
+                                                key={item.to}
+                                                item={item}
+                                                drawerItem
+                                                onClick={() => setIsMenuOpen(false)}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </aside>

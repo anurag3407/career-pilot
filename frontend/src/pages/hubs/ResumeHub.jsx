@@ -77,7 +77,7 @@ export default function ResumeHub() {
       stats={loading ? [] : stats}
     >
       <ToolCard
-        to="/resume-builder"
+        to="/resume-builder/build"
         icon={PlusCircle}
         title="Create from Scratch"
         description="Build a structured, ATS-friendly resume from scratch using our multi-step builder."
@@ -92,7 +92,7 @@ export default function ResumeHub() {
         color="primary"
       />
       <ToolCard
-        to="/github-dashboard"
+        to="/github"
         icon={Github}
         title="GitHub to Resume"
         description="Import your GitHub profile and repositories to instantly generate a developer resume."
@@ -114,7 +114,7 @@ export default function ResumeHub() {
         color="secondary"
       />
       <ToolCard
-        to="/linkedin-dashboard"
+        to="/linkedin"
         icon={Linkedin}
         title="LinkedIn Import"
         description="Import your LinkedIn profile and convert it into a polished resume instantly."

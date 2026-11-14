@@ -28,7 +28,6 @@ const About = lazy(() => import("./components/portfolio/templates/Tech_Startup/A
 const ChatbotPortfolio = lazy(() => import("./components/portfolio/templates/Chatbot_Portfolio"));
 const GlassmorphismTemplate = lazy(() => import("./components/portfolio/templates/Glassmorphism/index"));
 const JobTracker = lazy(() => import("./pages/JobTracker"));
-const TestSocialLinks = lazy(() => import("./pages/TestSocialLinks"));
 const NorthernFjords = lazy(() => import("./components/portfolio/templates/Northern_Fjords"));
 const RainforestCanopy = lazy(() => import("./components/portfolio/templates/Rainforest_Canopy/index.jsx"));
 const DuotoneBold = lazy(() => import("./components/portfolio/templates/Duotone_Bold/index.jsx"));
@@ -71,6 +70,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 
 const OpenRouterCallback = lazy(() => import("./pages/OpenRouterCallback"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const Upload = lazy(() => import("./pages/Upload"));
 const Enhance = lazy(() => import("./pages/Enhance"));
 const ResumeView = lazy(() => import("./pages/ResumeView"));
@@ -251,8 +251,13 @@ function AppRoutes() {
         setIsCommandPaletteOpen((prev) => !prev);
       }
     };
+    const handleOpenPalette = () => setIsCommandPaletteOpen(true);
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('cp:open-command-palette', handleOpenPalette);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('cp:open-command-palette', handleOpenPalette);
+    };
   }, [user]);
 
   return (
@@ -293,6 +298,8 @@ function AppRoutes() {
         <Route path="/register/*" element={<PublicRoute><Suspense fallback={<LoadingScreen label="Loading Registration..." />}><Register /></Suspense></PublicRoute>} />
 
         <Route path="/auth/openrouter/callback" element={<Suspense fallback={<LoadingScreen label="Loading callback..." />}><OpenRouterCallback /></Suspense>} />
+        {/* OAuth / email-confirmation return point — forwards to the dashboard or intended page */}
+        <Route path="/auth/callback" element={<Suspense fallback={<LoadingScreen label="Completing sign-in..." />}><AuthCallback /></Suspense>} />
 
         {/* Feature SaaS Landing Pages (Clean Slugs) */}
         <Route path="/resume-builder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ResumeBuilderLanding /></Suspense>} />
@@ -328,7 +335,7 @@ function AppRoutes() {
         <Route path="/templates" element={<Suspense fallback={<LoadingScreen label="Loading Templates..." />}><TemplateGallery /></Suspense>} />
         <Route path="/preview/:templateId" element={<Suspense fallback={<LoadingScreen label="Loading Preview..." />}><TemplatePreviewOnly /></Suspense>} />
         <Route path="/preview-inspired-dev-jadiya" element={<RawPalette><Suspense fallback={<LoadingScreen label="Loading..." />}><InspiredDevJadiya /></Suspense></RawPalette>} />
-        <Route path="/cover-letter" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><CoverLetter /></Suspense>} />
+        <Route path="/cover-letter" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Cover Letter..." />}><CoverLetter /></Suspense></ProtectedRoute>} />
 
 
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
@@ -380,9 +387,11 @@ function AppRoutes() {
         <Route
           path="/dashboard/analytics"
           element={
-            <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
-              <Analytics />
-            </Suspense>
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
+                <Analytics />
+              </Suspense>
+            </ProtectedRoute>
           }
         />
         <Route path="/upload" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Upload..." />}><Upload /></Suspense></ProtectedRoute>} />
@@ -501,16 +510,8 @@ function AppRoutes() {
         <Route path="/hub/portfolio" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Portfolio Hub..." />}><PortfolioHub /></Suspense></ProtectedRoute>} />
         <Route path="/hub/career" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Career Hub..." />}><CareerGrowthHub /></Suspense></ProtectedRoute>} />
         <Route path="/hub/community" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Community Hub..." />}><CommunityHub /></Suspense></ProtectedRoute>} />
-        <Route
-          path="/github-dashboard"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<LoadingScreen label="Loading GitHub Dashboard..." />}>
-                <GitHubDashboard />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
+        {/* Canonical GitHub dashboard is /github */}
+        <Route path="/github-dashboard" element={<Navigate to="/github" replace />} />
         <Route
           path="/github"
           element={
@@ -522,16 +523,8 @@ function AppRoutes() {
           }
         />
 
-        <Route
-          path="/linkedin-dashboard"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<LoadingScreen label="Loading LinkedIn Dashboard..." />}>
-                <LinkedInDashboard />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
+        {/* Canonical LinkedIn dashboard is /linkedin */}
+        <Route path="/linkedin-dashboard" element={<Navigate to="/linkedin" replace />} />
         <Route
           path="/linkedin"
           element={
@@ -578,9 +571,6 @@ function AppRoutes() {
           <Route path="messages" element={<Suspense fallback={<LoadingScreen label="Loading Fellowship Messages..." />}><FellowshipMessages /></Suspense>} />
           <Route path="messages/:roomId" element={<Suspense fallback={<LoadingScreen label="Loading Chat..." />}><FellowshipChat /></Suspense>} />
         </Route>
-
-
-        <Route path="/test-social-links" element={<Suspense fallback={<LoadingScreen label="Loading Test Social Links..." />}><Suspense fallback={<LoadingScreen label="Loading..." />}><TestSocialLinks /></Suspense></Suspense>} />
 
 
         {/* Catch-All Route */}

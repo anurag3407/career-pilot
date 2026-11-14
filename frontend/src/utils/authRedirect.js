@@ -23,3 +23,28 @@ export function resolvePostAuthRedirect(from) {
 
   return trimmed;
 }
+
+const POST_AUTH_STORAGE_KEY = 'cp.postAuthRedirect';
+
+/**
+ * Persists the intended destination across a full-page OAuth or email
+ * confirmation round-trip, where router state cannot survive.
+ */
+export function storePostAuthRedirect(from) {
+  try {
+    sessionStorage.setItem(POST_AUTH_STORAGE_KEY, resolvePostAuthRedirect(from));
+  } catch {
+    // Storage unavailable (private mode etc.) — the callback falls back to /dashboard.
+  }
+}
+
+/** Reads and clears the stored destination, always returning a safe path. */
+export function consumePostAuthRedirect() {
+  try {
+    const stored = sessionStorage.getItem(POST_AUTH_STORAGE_KEY);
+    sessionStorage.removeItem(POST_AUTH_STORAGE_KEY);
+    return resolvePostAuthRedirect(stored);
+  } catch {
+    return '/dashboard';
+  }
+}

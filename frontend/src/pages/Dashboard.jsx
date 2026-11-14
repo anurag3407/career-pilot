@@ -9,29 +9,17 @@ import {
   Plus,
   ArrowRight,
   ArrowUpRight,
-  Target,
-  TrendingUp,
-  Users,
   Sparkles,
-  GraduationCap,
-  Bell,
   Mic,
-  Globe,
   Github,
   Flame,
-  Code2,
   Palette,
-  Network,
   BookMarked,
-  Linkedin,
-  BarChart3,
-  PenLine,
-  Video,
-  GitBranch,
-  Award,
   Settings as SettingsIcon,
+  Check,
+  Compass,
 } from 'lucide-react'
-import { resumeApi, jobTrackerApi, portfolioApi, userProfileApi } from '../services/api'
+import { resumeApi, jobTrackerApi, portfolioApi, userProfileApi, interviewApi } from '../services/api'
 import {
   SkeletonAction,
   SkeletonStat,
@@ -40,76 +28,14 @@ import {
 } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
 import { cn } from '../lib/utils'
+import { useAuth } from '../hooks/useAuth'
+import { NAV_GROUPS } from '../constants/navigation'
 
 /* Dashboard — "Flight Deck" design system (src/styles/flightdeck.css).
    Monochrome tools, one orange signal for "in motion", green for wins. */
 
-/* ─── Feature Categories (all shown at once — the single curated surface) ─ */
-const FEATURE_CATEGORIES = [
-  {
-    id: 'resume',
-    label: 'Resume & Documents',
-    icon: FileText,
-    features: [
-      { name: 'Resume Builder', desc: 'AI-powered ATS-optimized resumes', to: '/hub/resume', icon: FileText },
-      { name: 'Resume Roast', desc: 'Brutally honest AI feedback', to: '/resume-roast/analyze', icon: Flame },
-      { name: 'Cover Letter', desc: 'Tailored cover letters in seconds', to: '/cover-letter', icon: PenLine },
-      { name: 'Text to Resume', desc: 'Paste text, get a formatted resume', to: '/text-to-resume', icon: Sparkles },
-    ],
-  },
-  {
-    id: 'jobs',
-    label: 'Job Search & Tracking',
-    icon: Briefcase,
-    features: [
-      { name: 'Job Finder', desc: 'AI-matched job search', to: '/job-finder/search', icon: Search },
-      { name: 'Job Tracker', desc: 'Kanban board for applications', to: '/job-tracker', icon: Target },
-      { name: 'Job Alerts', desc: 'Smart notifications for new roles', to: '/job-alerts', icon: Bell },
-      { name: 'Analytics', desc: 'Application success insights', to: '/dashboard/analytics', icon: BarChart3 },
-    ],
-  },
-  {
-    id: 'portfolio',
-    label: 'Portfolio & Online Presence',
-    icon: Globe,
-    features: [
-      { name: 'Portfolio Builder', desc: 'Deploy a stunning portfolio', to: '/hub/portfolio', icon: Palette },
-      { name: 'GitHub Portfolio', desc: 'Turn repos into a portfolio', to: '/github-portfolio/build', icon: Github },
-      { name: 'README Generator', desc: 'AI GitHub profile README', to: '/readme-generator', icon: BookMarked },
-      { name: 'LinkedIn Optimizer', desc: 'Boost your LinkedIn profile', to: '/linkedin-optimizer', icon: Linkedin },
-    ],
-  },
-  {
-    id: 'interview',
-    label: 'Interview Preparation',
-    icon: Mic,
-    features: [
-      { name: 'Mock Interview', desc: 'AI voice interview practice', to: '/mock-interview/practice', icon: Mic },
-      { name: 'Interview History', desc: 'Review past sessions', to: '/interview-history', icon: Video },
-      { name: 'Skill Gap Analyzer', desc: 'Find missing skills for roles', to: '/skill-gap', icon: TrendingUp },
-    ],
-  },
-  {
-    id: 'devtools',
-    label: 'Developer Tools',
-    icon: Code2,
-    features: [
-      { name: 'Project Visualizer', desc: 'AI architecture maps for repos', to: '/project-visualizer', icon: Network },
-      { name: 'GitHub Dashboard', desc: 'Repo analytics & insights', to: '/github', icon: GitBranch },
-      { name: 'LinkedIn Dashboard', desc: 'Profile performance metrics', to: '/linkedin', icon: Linkedin },
-    ],
-  },
-  {
-    id: 'growth',
-    label: 'Career Growth & Community',
-    icon: GraduationCap,
-    features: [
-      { name: 'Career Growth', desc: 'Readiness score & learning paths', to: '/hub/career', icon: GraduationCap },
-      { name: 'Community', desc: 'Network with job seekers', to: '/hub/community', icon: Users },
-      { name: 'Fellowship', desc: 'Collaborative challenges', to: '/fellowship', icon: Award },
-    ],
-  },
-]
+/* ─── Tool directory (shared navigation config, ordered by career journey) ─ */
+const TOOL_DIRECTORY = NAV_GROUPS.filter((group) => group.id !== 'overview')
 
 /* ─── Quick Actions ──────────────────────────────────────────────────── */
 const QUICK_ACTIONS = [
@@ -197,6 +123,93 @@ function greetingFor(date = new Date()) {
   return 'Good evening'
 }
 
+/* ─── Mission brief ──────────────────────────────────────────────────────
+   New users get a four-step setup checklist computed from their real data.
+   Once setup is complete (or skipped) it collapses into a single
+   state-driven "next move" so the dashboard always answers "what now?". */
+function MissionBrief({ steps, nextAction, dismissed, onDismiss }) {
+  const doneCount = steps.filter((s) => s.done).length
+  const allDone = doneCount === steps.length
+
+  if (allDone || dismissed) {
+    return (
+      <div className="flex flex-col gap-4 rounded-xl border border-primary/25 bg-primary/[0.05] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-primary/15 text-primary">
+            <Compass className="h-4 w-4" />
+          </span>
+          <div>
+            <Mono className="text-primary/80">Next move</Mono>
+            <p className="mt-1 text-[14px] font-semibold tracking-tight">{nextAction.title}</p>
+            <p className="mt-0.5 text-[12.5px] text-foreground/55">{nextAction.desc}</p>
+          </div>
+        </div>
+        <Link
+          to={nextAction.to}
+          className="inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-md bg-primary px-4 text-[13px] font-medium text-primary-foreground transition hover:brightness-110 sm:self-auto"
+        >
+          {nextAction.cta} <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    )
+  }
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
+      <div className="flex h-11 items-center justify-between border-b border-border px-5">
+        <Mono>Get started · {doneCount}/{steps.length}</Mono>
+        <button
+          onClick={onDismiss}
+          className="text-[12px] font-medium text-foreground/45 transition-colors hover:text-foreground"
+        >
+          Skip setup
+        </button>
+      </div>
+      <div className="h-1 bg-foreground/[0.06]">
+        <motion.div
+          className="h-full bg-primary"
+          initial={{ width: 0 }}
+          animate={{ width: `${(doneCount / steps.length) * 100}%` }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </div>
+      <ul className="grid gap-px bg-border sm:grid-cols-2 xl:grid-cols-4">
+        {steps.map((step, idx) => (
+          <li key={step.id} className="bg-card">
+            <Link
+              to={step.to}
+              className={cn(
+                'group flex h-full flex-col gap-2 px-5 py-4 transition-colors hover:bg-background',
+                step.done && 'opacity-70'
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <span
+                  className={cn(
+                    'grid h-6 w-6 place-items-center rounded-full border font-mono text-[10px] tabular-nums',
+                    step.done
+                      ? 'border-accent-foreground/40 bg-accent text-accent-foreground'
+                      : 'border-dashed border-foreground/30 text-foreground/40'
+                  )}
+                >
+                  {step.done ? <Check className="h-3 w-3" /> : idx + 1}
+                </span>
+                {!step.done && (
+                  <ArrowUpRight className="h-3.5 w-3.5 text-foreground/25 transition group-hover:text-primary" />
+                )}
+              </div>
+              <p className={cn('text-[13.5px] font-semibold tracking-tight', step.done && 'line-through decoration-foreground/30')}>
+                {step.label}
+              </p>
+              <p className="text-[12px] leading-relaxed text-foreground/50">{step.hint}</p>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 /* ─── Skeleton ───────────────────────────────────────────────────────── */
 function DashboardSkeleton() {
   return (
@@ -223,16 +236,41 @@ function DashboardSkeleton() {
 
 /* ─── Main Dashboard ─────────────────────────────────────────────────── */
 export default function Dashboard() {
+  const { user } = useAuth()
   const [resumes, setResumes] = useState([])
   const [trackedJobs, setTrackedJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState('')
   const [jobStats, setJobStats] = useState({ total: 0, saved: 0, applied: 0, interviewing: 0, offered: 0 })
   const [portfolioCount, setPortfolioCount] = useState(0)
+  const [interviewCount, setInterviewCount] = useState(0)
   const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({ connected: false, loading: false, stats: null })
+  const [setupDismissed, setSetupDismissed] = useState(false)
   const fetchRequestId = useRef(0)
   const isMounted = useRef(false)
+
+  const setupStorageKey = user?.uid ? `cp.setup.dismissed.${user.uid}` : null
+
+  useEffect(() => {
+    if (!setupStorageKey) return
+    try {
+      setSetupDismissed(localStorage.getItem(setupStorageKey) === '1')
+    } catch {
+      // Storage unavailable — show the checklist until data completes it.
+    }
+  }, [setupStorageKey])
+
+  const dismissSetup = () => {
+    setSetupDismissed(true)
+    if (setupStorageKey) {
+      try {
+        localStorage.setItem(setupStorageKey, '1')
+      } catch {
+        // Non-fatal: dismissal still applies for this session.
+      }
+    }
+  }
 
   useEffect(() => {
     isMounted.current = true
@@ -246,11 +284,12 @@ export default function Dashboard() {
     const canUpdate = () => isMounted.current && fetchRequestId.current === requestId
 
     try {
-      const [resumeRes, jobsRes, portfolioRes, userProfileRes] = await Promise.all([
+      const [resumeRes, jobsRes, portfolioRes, userProfileRes, interviewRes] = await Promise.all([
         resumeApi.getAll().catch(() => ({ resumes: [] })),
         jobTrackerApi.getAll().catch(() => ({ trackedJobs: [] })),
         portfolioApi.getAll().catch(() => ({ portfolioItems: [] })),
         userProfileApi.getMyProfile().catch(() => null),
+        interviewApi.getHistory().catch(() => null),
       ])
       if (!canUpdate()) return
 
@@ -261,6 +300,9 @@ export default function Dashboard() {
 
       const portfolios = portfolioRes.portfolios || portfolioRes.data?.portfolios || portfolioRes.data || []
       setPortfolioCount(Array.isArray(portfolios) ? portfolios.length : 0)
+
+      const interviews = interviewRes?.data || interviewRes?.history || []
+      setInterviewCount(Array.isArray(interviews) ? interviews.length : 0)
 
       const githubUsername = getGithubUsername(
         userProfileRes?.profile?.github || userProfileRes?.data?.github || userProfileRes?.github
@@ -346,7 +388,58 @@ export default function Dashboard() {
     jobStats.interviewing > 0 && `${jobStats.interviewing} interview${jobStats.interviewing === 1 ? '' : 's'} in flight`,
     jobStats.applied > 0 && `${jobStats.applied} application${jobStats.applied === 1 ? '' : 's'} out`,
     resumes.length > 0 && `${resumes.length} resume${resumes.length === 1 ? '' : 's'} ready`,
+    interviewCount > 0 && `${interviewCount} practice session${interviewCount === 1 ? '' : 's'}`,
   ].filter(Boolean)
+
+  const setupSteps = [
+    {
+      id: 'profile',
+      label: 'Complete your profile',
+      hint: 'Add your name and GitHub so every tool can personalize output.',
+      to: '/profile',
+      done: Boolean(candidateName) && githubOverview.connected,
+    },
+    {
+      id: 'resume',
+      label: 'Create your first resume',
+      hint: 'Build from scratch, upload an old one, or paste plain text.',
+      to: resumes.length > 0 ? '/hub/resume' : '/resume-builder/build',
+      done: resumes.length > 0,
+    },
+    {
+      id: 'job',
+      label: 'Save your first job',
+      hint: 'Search matching roles and track them on your pipeline.',
+      to: trackedJobs.length > 0 ? '/job-tracker' : '/job-finder/search',
+      done: trackedJobs.length > 0,
+    },
+    {
+      id: 'interview',
+      label: 'Run a mock interview',
+      hint: 'Practice out loud with AI and get scored feedback.',
+      to: interviewCount > 0 ? '/interview-history' : '/mock-interview/practice',
+      done: interviewCount > 0,
+    },
+  ]
+
+  const nextAction = (() => {
+    if (resumes.length === 0) {
+      return { title: 'Build the resume everything else relies on', desc: 'ATS-friendly, tailored, and ready to export in minutes.', cta: 'Build resume', to: '/resume-builder/build' }
+    }
+    if (jobStats.total === 0) {
+      return { title: 'Find roles that match your resume', desc: 'AI-matched search across your skills and target titles.', cta: 'Search jobs', to: '/job-finder/search' }
+    }
+    if (jobStats.interviewing > 0) {
+      return { title: 'Prep for the interviews already in flight', desc: 'Rehearse answers out loud and review past session feedback.', cta: 'Practice now', to: '/mock-interview/practice' }
+    }
+    if (jobStats.applied > 0) {
+      return { title: 'Follow up before your applications go quiet', desc: 'A short, well-timed note keeps you visible to recruiters.', cta: 'Draft follow-up', to: '/email-generator' }
+    }
+    if (portfolioCount === 0) {
+      return { title: 'Ship a portfolio that works while you sleep', desc: 'Turn your repos and resume into a live, shareable site.', cta: 'Open studio', to: '/hub/portfolio' }
+    }
+    return { title: 'Sharpen your edge with a mock interview', desc: 'Keep answers crisp between applications with scored practice.', cta: 'Practice now', to: '/mock-interview/practice' }
+  })()
 
   return (
     <div className="cp-flight min-h-full bg-background text-foreground antialiased">
@@ -375,6 +468,14 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('cp:open-command-palette'))}
+              className="hidden h-9 items-center gap-2 rounded-md border border-border px-3 text-[12px] text-foreground/50 transition hover:border-foreground/30 hover:text-foreground sm:inline-flex"
+            >
+              <Search className="h-3.5 w-3.5" /> Quick search
+              <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
+            </button>
             <Link
               to="/settings"
               aria-label="Settings"
@@ -416,6 +517,16 @@ export default function Dashboard() {
                 </button>
               </div>
             )}
+
+            {/* ─── Mission brief (setup checklist → next best action) ─── */}
+            <motion.div variants={item}>
+              <MissionBrief
+                steps={setupSteps}
+                nextAction={nextAction}
+                dismissed={setupDismissed}
+                onDismiss={dismissSetup}
+              />
+            </motion.div>
 
             {/* ─── Instrument panel (stats) ─────────────────────────── */}
             <motion.div variants={item} className="overflow-hidden rounded-xl border border-border">
@@ -663,50 +774,57 @@ export default function Dashboard() {
               )}
             </motion.div>
 
-            {/* ─── Tool suite ───────────────────────────────────────── */}
+            {/* ─── Tool directory (ordered by the career journey) ───── */}
             <motion.section variants={item} className="pt-6">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <Eyebrow>Tool suite</Eyebrow>
-                  <h2 className="mt-2 text-[1.5rem] font-medium tracking-[-0.035em]">Everything in the cockpit.</h2>
+                  <Eyebrow>Tool directory</Eyebrow>
+                  <h2 className="mt-2 text-[1.5rem] font-medium tracking-[-0.035em]">Every tool, in journey order.</h2>
+                  <p className="mt-1 text-[13px] text-foreground/50">
+                    Prepare → find &amp; apply → interview → grow → connect. Start anywhere; the dashboard keeps your place.
+                  </p>
                 </div>
                 <Mono className="text-foreground/35">
-                  {FEATURE_CATEGORIES.reduce((n, c) => n + c.features.length, 0)} tools · {FEATURE_CATEGORIES.length} groups
+                  {TOOL_DIRECTORY.reduce((n, g) => n + g.items.length, 0)} tools · {TOOL_DIRECTORY.length} groups
                 </Mono>
               </div>
 
               <div className="mt-6 overflow-hidden rounded-xl border border-border">
-                {FEATURE_CATEGORIES.map((cat, ci) => (
-                  <div key={cat.id} className={cn('grid lg:grid-cols-[15rem_minmax(0,1fr)]', ci > 0 && 'border-t border-border')}>
+                {TOOL_DIRECTORY.map((group, gi) => (
+                  <div key={group.id} className={cn('grid lg:grid-cols-[15rem_minmax(0,1fr)]', gi > 0 && 'border-t border-border')}>
                     <div className="flex items-center gap-3 border-b border-border bg-background px-5 py-4 lg:border-b-0 lg:border-r">
-                      <cat.icon className="h-4 w-4 text-foreground/40" />
+                      {group.stage ? (
+                        <span className="font-mono text-[11px] tabular-nums text-primary/80">{group.stage}</span>
+                      ) : (
+                        <span className="font-mono text-[11px] text-foreground/30">+</span>
+                      )}
                       <div className="min-w-0">
-                        <p className="truncate text-[13px] font-semibold tracking-tight">{cat.label}</p>
-                        <Mono className="text-foreground/30">{String(cat.features.length).padStart(2, '0')} tools</Mono>
+                        <p className="truncate text-[13px] font-semibold tracking-tight">{group.label}</p>
+                        <Mono className="normal-case tracking-normal text-foreground/40">{group.tagline || `${group.items.length} tools`}</Mono>
                       </div>
                     </div>
-                    <div className="grid gap-px bg-border sm:grid-cols-2 xl:grid-cols-4">
-                      {cat.features.map((feature) => (
+                    <div className="grid gap-px bg-border sm:grid-cols-2 xl:grid-cols-3">
+                      {group.items.map((tool) => (
                         <Link
-                          key={feature.name}
-                          to={feature.to}
+                          key={tool.to}
+                          to={tool.to}
                           className="group flex items-start gap-3 bg-card px-4 py-4 transition-colors hover:bg-background"
                         >
-                          <feature.icon className="mt-0.5 h-4 w-4 shrink-0 text-foreground/40 transition-colors group-hover:text-primary" />
+                          <tool.icon className="mt-0.5 h-4 w-4 shrink-0 text-foreground/40 transition-colors group-hover:text-primary" />
                           <div className="min-w-0">
                             <p className="flex items-center gap-1 text-[13px] font-medium transition-colors group-hover:text-primary">
-                              {feature.name}
+                              {tool.label}
                               <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
                             </p>
-                            <p className="mt-0.5 line-clamp-1 text-[12px] text-foreground/50">{feature.desc}</p>
+                            <p className="mt-0.5 line-clamp-1 text-[12px] text-foreground/50">{tool.desc}</p>
                           </div>
                         </Link>
                       ))}
                       {/* pad the hairline grid so short rows don't expose the border colour */}
                       {(() => {
-                        const n = cat.features.length
+                        const n = group.items.length
                         const padSm = (2 - (n % 2)) % 2
-                        const padXl = (4 - (n % 4)) % 4
+                        const padXl = (3 - (n % 3)) % 3
                         return Array.from({ length: Math.max(padSm, padXl) }).map((_, i) => (
                           <div
                             key={`pad-${i}`}

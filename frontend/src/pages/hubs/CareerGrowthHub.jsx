@@ -12,7 +12,7 @@ export default function CareerGrowthHub() {
       breadcrumb="Career Growth"
     >
       <ToolCard
-        to="/interview-prep"
+        to="/mock-interview/practice"
         icon={Mic}
         title="AI Interview Prep"
         description="Practice answering mock interview questions and receive instant AI grading and tips."

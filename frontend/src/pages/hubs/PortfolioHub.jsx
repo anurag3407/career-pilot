@@ -277,7 +277,7 @@ export default function PortfolioHub() {
         color="secondary"
       />
       <ToolCard
-        to="/github-dashboard"
+        to="/github"
         icon={Github}
         title="GitHub Dashboard"
         description="Connect your repositories, track stats, and manage synced showcase items."
