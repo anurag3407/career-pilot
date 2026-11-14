@@ -1,3 +1,11 @@
+# [1.281.0](https://github.com/anurag3407/career-pilot/compare/v1.280.1...v1.281.0) (2026-11-14)
+
+
+### Features
+
+* **gateway:** configure default AI provider to OpenRouter with platform key ([f7cfad7](https://github.com/anurag3407/career-pilot/commit/f7cfad749e1ed33a9544082d370b8534b2b42437))
+* **portfolio:** add smoke tests and template refinements ([06b4bcf](https://github.com/anurag3407/career-pilot/commit/06b4bcfc9dceec284e291ce8b8526276de515ba6))
+
 ## [1.280.1](https://github.com/anurag3407/career-pilot/compare/v1.280.0...v1.280.1) (2026-11-14)
 
 
