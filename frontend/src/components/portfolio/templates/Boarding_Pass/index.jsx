@@ -199,11 +199,9 @@ const Skills = ({ skills }) => {
           </motion.div>
           <div className="flex flex-wrap justify-center gap-5">
             {skills.map((s, i) => (
-              <motion.div key={i} variants={fadeUp}
-                className="hover:-translate-y-1 transition-transform"
-                style={{ transform: `rotate(${((i * 37) % 7) - 3}deg)` }}>
+              <motion.div key={i} variants={fadeUp} whileHover={{ y: -4 }}>
                 <div className="relative w-44 rounded-xl rounded-l-md p-4 pl-8 shadow-lg border-2"
-                  style={{ backgroundColor: PAPER, borderColor: i % 2 === 0 ? NAVY : RED }}>
+                  style={{ backgroundColor: PAPER, borderColor: i % 2 === 0 ? NAVY : RED, transform: `rotate(${((i * 37) % 7) - 3}deg)` }}>
                   <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 bg-[#0b1733]" style={{ borderColor: '#cbd5e1' }} />
                   <div className="text-[9px] font-bold tracking-[0.25em] uppercase" style={{ color: i % 2 === 0 ? '#5b6b8c' : RED }}>
                     Tag {String(i + 1).padStart(2, '0')}

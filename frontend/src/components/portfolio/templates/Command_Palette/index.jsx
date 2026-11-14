@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Home, User, Wrench, Layers, Clock, MessageSquare, Mail, Github,
-  Linkedin, Twitter, ExternalLink, CornerDownLeft, FolderGit2, MapPin, Command
+  Linkedin, Twitter, ExternalLink, CornerDownLeft, FolderGit2, Command
 } from 'lucide-react';
 
 /**

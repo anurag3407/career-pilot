@@ -2,7 +2,7 @@ import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Gauge, Power, Mail, Github, Linkedin, Twitter, ExternalLink, Wrench,
+  Gauge, Power, Mail, Github, Linkedin, Twitter, Wrench,
   Flag, Star, User, ChevronDown, Cog, Route, Timer
 } from 'lucide-react';
 

@@ -55,13 +55,15 @@ const Enso = ({ className = '', stroke = INK, opacity = 0.45 }) => (
   </svg>
 );
 
-const Stone = ({ size = 64, className = '' }) => (
-  <div aria-hidden="true" className={className}
+const Stone = ({ size = 64, className = '', children }) => (
+  <div className={className}
     style={{
       width: size, height: size * 0.6, borderRadius: '50%',
       background: 'radial-gradient(ellipse at 35% 30%, #a89e8b, #6e6759 72%)',
       boxShadow: '0 12px 20px rgba(60,52,40,0.22)'
-    }} />
+    }}>
+    {children}
+  </div>
 );
 
 const rakedSand = {
