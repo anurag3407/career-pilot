@@ -18,9 +18,9 @@ import { useAIConfigStore } from '../../stores/useAIConfigStore';
  *                 defaults to the BYOK store's active provider.
  */
 const PALETTE = {
-  gemini: { from: '#6366f1', to: '#a855f7', glow: 'rgba(168,85,247,0.5)' },
+  gemini: { from: '#cc420c', to: '#a94a6c', glow: 'rgba(204,66,12,0.5)' },
   openai: { from: '#10a37f', to: '#0d8c6c', glow: 'rgba(16,163,127,0.5)' },
-  openrouter: { from: '#8b5cf6', to: '#ec4899', glow: 'rgba(236,72,153,0.5)' },
+  openrouter: { from: '#a94a6c', to: '#d4183d', glow: 'rgba(212,24,61,0.5)' },
   groq: { from: '#f59e0b', to: '#ef4444', glow: 'rgba(245,158,11,0.5)' }
 };
 

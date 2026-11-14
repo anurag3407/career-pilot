@@ -186,7 +186,7 @@ const ArchitectureCanvas = () => {
         <Controls className="bg-[#0f172a] border-slate-700 fill-white text-white" />
         <MiniMap 
           nodeColor={(n) => {
-            if (n.type === 'moduleNode') return '#06b6d4';
+            if (n.type === 'moduleNode') return '#cc420c';
             return '#3178c6';
           }}
           className="bg-[#0f172a] border-slate-700 !bottom-4 !right-4 rounded-lg overflow-hidden"

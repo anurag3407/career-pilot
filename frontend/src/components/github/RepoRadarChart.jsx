@@ -18,7 +18,7 @@ const INNER_STEPS = [0.2, 0.4, 0.6, 0.8, 1]
 const DEFAULT_REPOS = [
   {
     name: 'Repository A',
-    color: '#3b82f6',
+    color: '#a94a6c',
     values: {
       activity: 72,
       community: 64,

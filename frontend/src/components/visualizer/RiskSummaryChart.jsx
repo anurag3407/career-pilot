@@ -55,7 +55,7 @@ const RiskSummaryChart = ({ risks }) => {
     critical: '#ef4444',
     high: '#f97316',
     medium: '#eab308',
-    low: '#06b6d4'
+    low: '#2e7d44'
   };
 
   return (

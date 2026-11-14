@@ -144,7 +144,7 @@ const improvement = insights.improvement || 0
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} />
                     <Line type="monotone" dataKey="overallScore" name="Overall" stroke="#22c55e" strokeWidth={3} dot={{ r: 4 }} />
-                    <Line type="monotone" dataKey="communication" name="Communication" stroke="#60a5fa" strokeWidth={3} dot={{ r: 4 }} />
+                    <Line type="monotone" dataKey="communication" name="Communication" stroke="#a94a6c" strokeWidth={3} dot={{ r: 4 }} />
                     <Line type="monotone" dataKey="technicalAccuracy" name="Technical" stroke="#f97316" strokeWidth={3} dot={{ r: 4 }} />
                     <Line type="monotone" dataKey="confidence" name="Confidence" stroke="#facc15" strokeWidth={3} dot={{ r: 4 }} />
                   </LineChart>
@@ -169,7 +169,7 @@ const improvement = insights.improvement || 0
                     <PolarGrid stroke="#cbd5e1" />
                     <PolarAngleAxis dataKey="subject" stroke="#64748b" />
                     <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                    <Radar name="Latest Session" dataKey="A" stroke="#0ea5e9" fill="#0ea5e9" fillOpacity={0.2} />
+                    <Radar name="Latest Session" dataKey="A" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.2} />
                     <Legend />
                   </RadarChart>
                 </ResponsiveContainer>

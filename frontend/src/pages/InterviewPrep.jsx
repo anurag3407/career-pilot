@@ -728,7 +728,7 @@ export default function InterviewPrep() {
       ctx.fillStyle = 'rgba(15, 23, 42, 0.2)';
       ctx.fillRect(0, 0, width, height);
       
-      ctx.strokeStyle = 'rgba(129, 140, 248, 0.04)';
+      ctx.strokeStyle = 'rgba(204, 66, 12, 0.05)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, height / 2);
@@ -738,13 +738,13 @@ export default function InterviewPrep() {
       ctx.lineWidth = 2.5;
       
       const gradient = ctx.createLinearGradient(0, 0, width, 0);
-      gradient.addColorStop(0, '#6366f1');
-      gradient.addColorStop(0.5, '#a855f7');
-      gradient.addColorStop(1, '#ec4899');
+      gradient.addColorStop(0, '#cc420c');
+      gradient.addColorStop(0.5, '#a94a6c');
+      gradient.addColorStop(1, '#d4183d');
       ctx.strokeStyle = gradient;
       
       ctx.shadowBlur = 6;
-      ctx.shadowColor = 'rgba(168, 85, 247, 0.4)';
+      ctx.shadowColor = 'rgba(204, 66, 12, 0.4)';
       
       ctx.beginPath();
       
@@ -2098,8 +2098,8 @@ if (communicationTips.length === 0) {
                     <motion.circle initial={{ strokeDashoffset: 478 }} animate={{ strokeDashoffset: 478 - (478 * overallResults.overallScore) / 100 }} transition={{ delay: 0.5, duration: 1.5, ease: 'easeOut' }} cx="88" cy="88" r="76" stroke="url(#scoreGradient)" strokeWidth="12" fill="none" strokeLinecap="round" strokeDasharray="478" />
                     <defs>
                       <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#818cf8" />
-                        <stop offset="100%" stopColor="#c084fc" />
+                        <stop offset="0%" stopColor="var(--primary)" />
+                        <stop offset="100%" stopColor="var(--secondary)" />
                       </linearGradient>
                     </defs>
                   </svg>

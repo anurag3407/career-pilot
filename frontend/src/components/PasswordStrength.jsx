@@ -22,7 +22,7 @@ export default function PasswordStrength({ password }) {
     { label: "Weak",      color: "#ef4444", segments: 1 },
     { label: "Fair",      color: "#f97316", segments: 2 },
     { label: "Strong",    color: "#22c55e", segments: 3 },
-    { label: "Very Strong", color: "#06b6d4", segments: 4 },
+    { label: "Very Strong", color: "#1d6b3c", segments: 4 },
   ];
 
   const current = levels[Math.min(score, 4)];

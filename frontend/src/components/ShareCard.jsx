@@ -27,11 +27,11 @@ const ShareCard = ({ interview }, ref) => {
       {/* Background decoration */}
       <div
         className="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-30"
-        style={{ background: 'radial-gradient(circle, #a855f7 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)' }}
       />
       <div
         className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-30"
-        style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, var(--secondary) 0%, transparent 70%)' }}
       />
 
       <div className="relative flex items-center justify-between">

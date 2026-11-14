@@ -8,7 +8,7 @@ let cachedSvgMap = null;
 
 export default function WorldMap({
   dots = [],
-  lineColor = "#6366f1",
+  lineColor = "#cc420c",
 }) {
   const svgRef = useRef(null);
 const [isMounted, setIsMounted] = useState(false);

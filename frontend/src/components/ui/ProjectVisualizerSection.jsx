@@ -123,8 +123,8 @@ export default function ProjectVisualizerSection() {
               <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-40">
                 <defs>
                   <linearGradient id="pv-grad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#22d3ee" />
-                    <stop offset="100%" stopColor="#8b5cf6" />
+                    <stop offset="0%" stopColor="var(--primary)" />
+                    <stop offset="100%" stopColor="var(--secondary)" />
                   </linearGradient>
                 </defs>
                 <motion.path

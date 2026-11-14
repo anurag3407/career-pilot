@@ -445,8 +445,8 @@ const CoverLetter = () => {
               disabled={loading}
               className="w-full py-4 rounded-2xl font-semibold text-white text-base transition-all duration-200 disabled:opacity-50"
               style={{
-                background: "linear-gradient(135deg, #2563eb, #7c3aed)",
-                boxShadow: "0 0 40px rgba(99,102,241,0.3)",
+                background: "linear-gradient(135deg, #cc420c, #a94a6c)",
+                boxShadow: "0 0 40px rgba(204,66,12,0.3)",
               }}
             >
               <span className="flex items-center justify-center gap-2">

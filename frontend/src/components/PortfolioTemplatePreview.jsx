@@ -3,7 +3,7 @@ import { Eye, RotateCcw, Palette, Type } from "lucide-react";
 
 export default function PortfolioTemplatePreview() {
   const defaultSettings = {
-    color: "#2563eb",
+    color: "#cc420c",
     fontSize: "16px",
     layout: "Modern",
   };

@@ -107,7 +107,7 @@ export default function GraphCanvas() {
         <Controls className="!bg-[#0f172a] !border-slate-700 !fill-slate-300" />
         <MiniMap 
           className="!bg-[#0f172a] !border-slate-700" 
-          nodeColor="#3b82f6" 
+          nodeColor="#cc420c" 
           maskColor="rgba(5, 8, 22, 0.7)"
         />
       </ReactFlow>

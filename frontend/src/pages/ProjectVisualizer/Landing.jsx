@@ -174,7 +174,7 @@ export default function ProjectVisualizerLanding({ embedded = false }) {
       <div 
         className="fixed inset-0 pointer-events-none opacity-[0.15] z-0" 
         style={{ 
-          backgroundImage: `radial-gradient(#38bdf8 1px, transparent 1px)`, 
+          backgroundImage: `radial-gradient(#cc420c 1px, transparent 1px)`, 
           backgroundSize: '32px 32px' 
         }} 
       />
@@ -350,8 +350,8 @@ export default function ProjectVisualizerLanding({ embedded = false }) {
                 {/* Node Graph Mockup */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-90">
                   <svg className="w-full h-full" viewBox="0 0 600 300">
-                    <line x1="150" y1="150" x2="300" y2="80" stroke="#38bdf8" strokeWidth="2" strokeDasharray="4 4" className="animate-pulse" />
-                    <line x1="150" y1="150" x2="300" y2="220" stroke="#818cf8" strokeWidth="2" />
+                    <line x1="150" y1="150" x2="300" y2="80" stroke="#cc420c" strokeWidth="2" strokeDasharray="4 4" className="animate-pulse" />
+                    <line x1="150" y1="150" x2="300" y2="220" stroke="#a94a6c" strokeWidth="2" />
                     <line x1="300" y1="80" x2="450" y2="150" stroke="#34d399" strokeWidth="2" />
                     <line x1="300" y1="220" x2="450" y2="150" stroke="#f472b6" strokeWidth="2" />
                   </svg>

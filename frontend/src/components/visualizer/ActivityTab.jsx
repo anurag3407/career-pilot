@@ -15,8 +15,8 @@ import { cn } from '../../lib/utils';
 
 // Palette for stacked authors (top 5) + "Others".
 const AUTHOR_COLORS = [
-  '#22d3ee', // cyan
-  '#a78bfa', // violet
+  '#cc420c', // primary
+  '#a94a6c', // mulberry
   '#f472b6', // pink
   '#fb923c', // orange
   '#34d399', // emerald

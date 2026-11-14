@@ -158,7 +158,7 @@ Return ONLY the raw markdown content, no explanations.`
           font-weight: 800;
           font-size: 1.5rem;
           letter-spacing: -0.5px;
-          background: linear-gradient(135deg, #7dd3fc 0%, #a78bfa 100%);
+          background: linear-gradient(135deg, #ff8a52 0%, #cf8ba3 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
@@ -177,7 +177,7 @@ Return ONLY the raw markdown content, no explanations.`
           transition: border-color 0.2s;
           line-height: 1.6;
         }
-        .prompt-box:focus { border-color: #7dd3fc44; }
+        .prompt-box:focus { border-color: #ff8a5244; }
         .prompt-box::placeholder { color: #3a4255; }
 
         .btn {
@@ -195,7 +195,7 @@ Return ONLY the raw markdown content, no explanations.`
           white-space: nowrap;
         }
         .btn-primary {
-          background: linear-gradient(135deg, #7dd3fc, #a78bfa);
+          background: linear-gradient(135deg, #ff8a52, #cf8ba3);
           color: #0d0f12;
         }
         .btn-primary:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
@@ -307,19 +307,19 @@ Return ONLY the raw markdown content, no explanations.`
         .preview-pane ul { padding-left: 20px; margin-bottom: 12px; }
         .preview-pane li { color: #94a3b8; font-size: 0.875rem; margin-bottom: 4px; }
         .preview-pane blockquote {
-          border-left: 3px solid #7dd3fc55;
+          border-left: 3px solid #ff8a5255;
           padding: 8px 16px;
           background: #0a1628;
           border-radius: 0 6px 6px 0;
-          color: #7dd3fc;
+          color: #ff8a52;
           font-size: 0.875rem;
           margin: 12px 0;
         }
-        .preview-pane a { color: #7dd3fc; text-decoration: none; }
+        .preview-pane a { color: #ff8a52; text-decoration: none; }
         .preview-pane a:hover { text-decoration: underline; }
         .preview-pane hr { border: none; border-top: 1px solid #1e2535; margin: 20px 0; }
         .preview-pane strong { color: #e2e8f0; }
-        .preview-pane em { color: #a78bfa; }
+        .preview-pane em { color: #cf8ba3; }
         .code-block {
           background: #0a0c10;
           border: 1px solid #1e2535;
@@ -327,7 +327,7 @@ Return ONLY the raw markdown content, no explanations.`
           padding: 14px 16px;
           overflow-x: auto;
           font-size: 0.8rem;
-          color: #7dd3fc;
+          color: #ff8a52;
           margin: 12px 0;
           line-height: 1.6;
         }
@@ -337,7 +337,7 @@ Return ONLY the raw markdown content, no explanations.`
           border-radius: 4px;
           padding: 1px 6px;
           font-size: 0.82em;
-          color: #a78bfa;
+          color: #cf8ba3;
         }
 
         .spinner {
@@ -374,7 +374,7 @@ Return ONLY the raw markdown content, no explanations.`
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{
             width: 32, height: 32, borderRadius: 8,
-            background: "linear-gradient(135deg, #7dd3fc22, #a78bfa22)",
+            background: "linear-gradient(135deg, #ff8a5222, #cf8ba322)",
             border: "1px solid #2a3448",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: "1rem",

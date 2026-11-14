@@ -90,7 +90,7 @@ const PLATFORM_DEFS = {
     },
     website: {
         label: 'Personal Website',
-        color: '#6366f1',
+        color: 'var(--primary)',
         initials: '🌐',
         placeholder: 'https://yourwebsite.com',
     },

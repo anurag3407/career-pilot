@@ -11,7 +11,7 @@ const getLangColor = (lang) => {
     'C++': '#f34b7d', 'Swift': '#F05138', 'JSON': '#292929',
     'Markdown': '#083fa1', 'Shell': '#89e051'
   };
-  return map[lang] || '#8b5cf6'; // fallback to violet
+  return map[lang] || '#a94a6c'; // fallback to mulberry
 };
 
 const LanguageBar = ({ languages }) => {

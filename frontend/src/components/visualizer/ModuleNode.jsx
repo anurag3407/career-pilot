@@ -4,12 +4,12 @@ import { FolderCode, Box, AlertCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const typeColors = {
-  core: '#06b6d4',
-  util: '#8b5cf6',
+  core: '#cc420c',
+  util: '#a94a6c',
   test: '#22c55e',
   config: '#f59e0b',
   ui: '#ec4899',
-  api: '#3b82f6',
+  api: '#d4183d',
   docs: '#64748b',
   assets: '#f97316',
   other: '#6b7280'
@@ -19,7 +19,7 @@ const riskColors = {
   critical: '#ef4444',
   high: '#f97316',
   medium: '#eab308',
-  low: '#06b6d4'
+  low: '#2e7d44'
 };
 
 const ModuleNode = ({ data, selected }) => {

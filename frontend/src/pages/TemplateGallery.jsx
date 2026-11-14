@@ -182,8 +182,8 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
           y: -10,
           scale: 1.02,
           boxShadow:
-            '0 28px 52px rgba(0,0,0,0.50), 0 0 0 1px rgba(99,102,241,0.55)',
-          borderColor: 'rgba(99,102,241,0.65)',
+            '0 28px 52px rgba(0,0,0,0.50), 0 0 0 1px rgba(204,66,12,0.55)',
+          borderColor: 'rgba(204,66,12,0.65)',
           transition: { type: 'spring', stiffness: 280, damping: 22 },
         },
       }}

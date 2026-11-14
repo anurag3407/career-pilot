@@ -2,7 +2,19 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 
+/* Flight Deck editorial chips — literal class strings so Tailwind can see
+   them (the old runtime-built bg-${color} classes never compiled). */
+const CHIP = {
+  primary: 'bg-primary/10 border-primary/20 text-primary',
+  secondary: 'bg-secondary/10 border-secondary/20 text-secondary',
+  amber: 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400',
+  emerald: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400',
+  foreground: 'bg-muted border-border text-foreground',
+}
+
 export default function HubLayout({ icon: Icon, title, description, color = 'primary', breadcrumb, children, stats }) {
+  const chip = CHIP[color] || CHIP.primary
+
   return (
     <div className="min-h-screen bg-background">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -23,48 +35,51 @@ export default function HubLayout({ icon: Icon, title, description, color = 'pri
           <span className="text-foreground font-semibold">{breadcrumb || title}</span>
         </motion.div>
 
-        {/* Hub Header */}
-        <motion.div
+        {/* Hub Header — Flight Deck editorial: quiet surface, blueprint grid,
+           mono eyebrow, one primary accent */}
+        <motion.header
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
-          className="mb-10 p-8 glass rounded-3xl glow border-border/50 relative overflow-hidden"
+          className="relative mb-10 rounded-2xl border border-border bg-card overflow-hidden"
         >
-          {/* Decorative gradient blob */}
-          <div className={`absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-${color}/10 rounded-full blur-3xl animate-pulse pointer-events-none`} />
-          <div className={`absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-${color}/5 rounded-full blur-2xl pointer-events-none`} />
+          <div className="fd-grid-bg pointer-events-none absolute inset-0" />
+          <div className="relative p-8">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/40 mb-4">
+              {breadcrumb || title}
+            </p>
+            <div className="flex items-start gap-5">
+              <div className={`w-14 h-14 rounded-xl border flex items-center justify-center shrink-0 ${chip}`}>
+                <Icon className="w-7 h-7" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-2">
+                  {title}
+                </h1>
+                <p className="text-base md:text-lg text-muted-foreground max-w-2xl">
+                  {description}
+                </p>
+              </div>
+            </div>
 
-          <div className="relative flex items-start gap-5">
-            <div className={`w-16 h-16 rounded-2xl bg-${color}/15 border border-${color}/20 flex items-center justify-center shrink-0`}>
-              <Icon className={`w-8 h-8 text-${color}`} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight mb-2">
-                {title}
-              </h1>
-              <p className="text-base md:text-lg text-muted-foreground font-medium max-w-2xl">
-                {description}
-              </p>
-            </div>
+            {/* Stats Row */}
+            {stats && stats.length > 0 && (
+              <div className="relative flex flex-wrap gap-6 mt-6 pt-6 border-t border-border">
+                {stats.map((stat, idx) => (
+                  <div key={idx} className="flex items-center gap-2.5">
+                    <div className={`w-9 h-9 rounded-lg ${stat.bg || 'bg-muted'} flex items-center justify-center`}>
+                      <stat.icon className={`w-4.5 h-4.5 ${stat.color || 'text-muted-foreground'}`} />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-foreground leading-none tabular-nums">{stat.value}</p>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground mt-1">{stat.label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-
-          {/* Stats Row */}
-          {stats && stats.length > 0 && (
-            <div className="relative flex flex-wrap gap-6 mt-6 pt-6 border-t border-border/50">
-              {stats.map((stat, idx) => (
-                <div key={idx} className="flex items-center gap-2.5">
-                  <div className={`w-9 h-9 rounded-lg ${stat.bg || 'bg-muted'} flex items-center justify-center`}>
-                    <stat.icon className={`w-4.5 h-4.5 ${stat.color || 'text-muted-foreground'}`} />
-                  </div>
-                  <div>
-                    <p className="text-lg font-black text-foreground leading-none">{stat.value}</p>
-                    <p className="text-xs text-muted-foreground font-medium">{stat.label}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </motion.div>
+        </motion.header>
 
         {/* Tool Grid */}
         <motion.div
@@ -72,8 +87,8 @@ export default function HubLayout({ icon: Icon, title, description, color = 'pri
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.4 }}
         >
-          <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-            <span className="w-1.5 h-6 rounded-full bg-primary" />
+          <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/50 mb-6 flex items-center gap-3">
+            <span className="w-1.5 h-4 rounded-full bg-primary" />
             Tools
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
