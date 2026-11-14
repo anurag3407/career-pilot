@@ -1,3 +1,11 @@
+## [1.280.1](https://github.com/anurag3407/career-pilot/compare/v1.280.0...v1.280.1) (2026-11-14)
+
+
+### Bug Fixes
+
+* **deploy:** optimize gateway worker for Cloudflare free tier and /gateway route ([c6a5346](https://github.com/anurag3407/career-pilot/commit/c6a5346208c59e247cbc852fb39d8211151e9f4e))
+* **gateway:** support HEAD requests for health and models endpoints ([0cd7ac8](https://github.com/anurag3407/career-pilot/commit/0cd7ac82c1e908da291d376dc967eb77ebde7747))
+
 # [1.280.0](https://github.com/anurag3407/career-pilot/compare/v1.279.0...v1.280.0) (2026-11-14)
 
 
