@@ -1,3 +1,15 @@
+# [1.286.0](https://github.com/anurag3407/career-pilot/compare/v1.285.0...v1.286.0) (2026-11-15)
+
+
+### Bug Fixes
+
+* **security:** multi-tenant scoping on d1 delete, filename sanitization, and path traversal guards ([e883265](https://github.com/anurag3407/career-pilot/commit/e88326561b56b0a7923ecaa27deae85316ba245c))
+
+
+### Features
+
+* complete cloudflare d1, imagekit, and custom portfolio deployment ([9d69b73](https://github.com/anurag3407/career-pilot/commit/9d69b733b17714b21ad0d76c356d8a3e3b03465f))
+
 # [1.285.0](https://github.com/anurag3407/career-pilot/compare/v1.284.0...v1.285.0) (2026-11-14)
 
 
