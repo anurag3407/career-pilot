@@ -241,6 +241,9 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
       ) : (
         <div 
           ref={messagesContainerRef}
+          role="log"
+          aria-live="polite"
+          aria-label={`Messages in ${channel.name}`}
           className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-background"
         >
           {Object.entries(groupedMessages).map(([date, dateMessages]) => (
