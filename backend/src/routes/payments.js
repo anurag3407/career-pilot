@@ -24,6 +24,23 @@ router.post('/create-order', verifyToken, validate(createOrderSchema), asyncHand
         throw new ApiError(400, 'Proposal ID is required');
     }
 
+    // Escrow amount validation (paise). Runs on the amount that will be charged.
+    const MIN = 10000;
+    const MAX = 50000000;
+    const bodyAmount = req.body.amount;
+    if (bodyAmount !== undefined && bodyAmount !== null) {
+        if (isNaN(Number(bodyAmount))) {
+            return res.status(400).json({ success: false, message: 'Amount is required and must be a number.' });
+        }
+        const numBodyAmount = Number(bodyAmount);
+        if (numBodyAmount < MIN) {
+            return res.status(400).json({ success: false, message: `Minimum escrow amount is ₹${MIN / 100}.` });
+        }
+        if (numBodyAmount > MAX) {
+            return res.status(400).json({ success: false, message: `Maximum escrow amount is ₹${MAX / 100}.` });
+        }
+    }
+
     // Find the proposal
     const proposal = await Proposal.findById(proposalId);
     if (!proposal) {

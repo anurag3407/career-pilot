@@ -23,6 +23,9 @@ const CATEGORIES = [
     { id: 'marketing', label: 'Marketing', icon: '📈' },
 ]
 
+const MIN_AMOUNT = 100
+const MAX_AMOUNT = 500000
+
 export default function CreateChallenge() {
     const navigate = useNavigate()
     const { profile } = useOutletContext()
@@ -35,6 +38,21 @@ export default function CreateChallenge() {
     const [newRequirement, setNewRequirement] = useState('')
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
+    const [budgetError, setBudgetError] = useState('')
+
+    const handleAmountChange = (e) => {
+        const val = Number(e.target.value)
+        setPrice(e.target.value)
+        if (e.target.value === '' || Number.isNaN(val)) {
+            setBudgetError('')
+        } else if (val < MIN_AMOUNT) {
+            setBudgetError(`Minimum amount is ₹${MIN_AMOUNT}`)
+        } else if (val > MAX_AMOUNT) {
+            setBudgetError(`Maximum amount is ₹${MAX_AMOUNT.toLocaleString('en-IN')}`)
+        } else {
+            setBudgetError('')
+        }
+    }
 
     const handleAddRequirement = () => {
         if (newRequirement.trim() && requirements.length < 10) {
@@ -55,6 +73,13 @@ export default function CreateChallenge() {
 
     const handleSubmit = async () => {
         if (!isValid) return
+
+        // Budget / escrow limit validation
+        const priceNum = parseInt(price)
+        if (!price || Number.isNaN(priceNum) || priceNum < MIN_AMOUNT || priceNum > MAX_AMOUNT) {
+            setBudgetError(`Amount must be between ₹${MIN_AMOUNT} and ₹${MAX_AMOUNT.toLocaleString('en-IN')}`)
+            return
+        }
 
         setLoading(true)
         try {
@@ -160,18 +185,22 @@ export default function CreateChallenge() {
                 <div className="grid gap-4 sm:grid-cols-2">
                     <div>
                         <label className="block text-sm text-muted-foreground mb-2">Reward Amount (₹) *</label>
+                        <span className="block text-xs text-gray-400 mb-1">Min: ₹100 · Max: ₹5,00,000</span>
                         <div className="relative">
                             <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                                 type="number"
                                 value={price}
-                                onChange={(e) => setPrice(e.target.value)}
+                                onChange={handleAmountChange}
                                 placeholder="5000"
-                                min="1000"
+                                min={MIN_AMOUNT}
+                                max={MAX_AMOUNT}
                                 className="w-full pl-10 pr-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
                             />
                         </div>
-                        <p className="mt-1 text-xs text-muted-foreground">Minimum ₹1,000</p>
+                        {budgetError && (
+                            <p className="text-red-500 text-sm mt-1">{budgetError}</p>
+                        )}
                     </div>
                     <div>
                         <label className="block text-sm text-muted-foreground mb-2">Deadline *</label>
@@ -231,8 +260,8 @@ export default function CreateChallenge() {
                     </button>
                     <button
                         onClick={handleSubmit}
-                        disabled={!isValid || loading}
-                        className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        disabled={!isValid || loading || !!budgetError}
+                        className={`flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${!!budgetError ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         {loading ? (
                             <><Loader2 className="w-5 h-5 animate-spin" /> Creating...</>
