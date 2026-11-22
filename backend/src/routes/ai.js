@@ -1,8 +1,27 @@
 import express from 'express';
 import { generateHeadline } from '../services/ai/linkedinHelper.js';
+import { generateResumeSuggestion } from '../services/ai/resumeSuggestion.js';
 import { verifyToken } from '../middleware/auth.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
+import { aiRateLimiter } from '../middleware/rateLimiter.js';
 const router = express.Router();
+
+// Inline resume autocomplete (ghost text). Rate-limited because the editor
+// fires this on a typing pause; the client also debounces and de-dupes.
+router.post('/resume-suggestion', verifyToken, extractAIProvider, aiRateLimiter, async (req, res) => {
+    try {
+        const { sectionName, field, text } = req.body || {};
+        if (typeof text !== 'string') {
+            return res.status(400).json({ success: false, error: 'text is required' });
+        }
+
+        const suggestion = await generateResumeSuggestion({ sectionName, field, text }, req.aiProvider);
+        res.status(200).json({ success: true, suggestion });
+    } catch (error) {
+        console.error('Resume Suggestion Error:', error);
+        res.status(500).json({ success: false, error: 'Failed to generate suggestion' });
+    }
+});
 
 router.post('/linkedin-headline', verifyToken, extractAIProvider, async (req, res) => {
     try {

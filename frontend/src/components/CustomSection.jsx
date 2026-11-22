@@ -3,6 +3,7 @@ import toast from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import Button from './Button'
 import DragHandle from './DragHandle'
+import useAICompletion from '../hooks/useAICompletion'
 
 // ─── Icons (inline SVG to keep zero extra deps) ────────────────────────────
 
@@ -63,10 +64,44 @@ const makeEntry = () => ({
 
 // ─── Entry editor ──────────────────────────────────────────────────────────
 
-function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst, isLast }) {
+function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst, isLast, sectionName }) {
   const [expanded, setExpanded] = useState(!entry.title)
 
   const update = (field) => (e) => onChange({ ...entry, [field]: e.target.value })
+
+  // Inline AI suggestions (ghost text) for the free-text description field.
+  const completion = useAICompletion({ sectionName, field: 'description' })
+
+  const onDescChange = (e) => {
+    const value = e.target.value
+    onChange({ ...entry, description: value })
+    completion.request(value)
+  }
+
+  const onDescKeyDown = (e) => {
+    if (completion.suggestion && e.key === 'Tab') {
+      e.preventDefault()
+      const current = entry.description || ''
+      // Respect the textarea's maxLength: a provider response can exceed the
+      // remaining capacity, so truncate the accepted addition to fit 500.
+      const addition = completion.accept().slice(0, Math.max(0, 500 - current.length))
+      onChange({ ...entry, description: current + addition })
+    } else if (e.key === 'Escape' && completion.suggestion) {
+      e.preventDefault()
+      completion.dismiss()
+    }
+  }
+
+  // Shared typography so the ghost-text mirror lines up with the textarea.
+  const descTypography = 'px-3 py-2 text-sm leading-[1.4] whitespace-pre-wrap break-words'
+
+  // Keep the ghost-text mirror scrolled in lockstep with the textarea so the
+  // suggestion stays aligned once the content grows past the visible rows.
+  const taRef = useRef(null)
+  const mirrorRef = useRef(null)
+  const syncScroll = () => {
+    if (mirrorRef.current && taRef.current) mirrorRef.current.scrollTop = taRef.current.scrollTop
+  }
 
   return (
     <div className="border border-border/50 rounded-xl overflow-hidden bg-muted/30 group/entry">
@@ -170,23 +205,57 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
           </div>
           <div className="sm:col-span-2">
             <label className="block text-xs font-medium text-muted-foreground mb-1">Description</label>
-            <textarea
-  rows={2}
-  value={entry.description}
-  onChange={update('description')}
-  maxLength={500}
-              placeholder="Brief description (optional)"
-              className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors resize-none"
-            />
-            <p
-  className={`text-sm mt-1 ${
-    (entry.description?.length || 0) > 450
-      ? 'text-red-500'
-      : 'text-gray-500'
-  }`}
->
-  {entry.description?.length || 0} / 500
-</p>
+            {/* Ghost-text overlay: a mirror div behind the (transparent) textarea
+                renders the typed text invisibly plus the AI suggestion in muted
+                grey, so the suggestion appears inline right after the caret.
+                ponytail: tuned for this short 2-row field; a long, scrolling
+                textarea would need a caret-anchored overlay instead. */}
+            <div className="relative">
+              <div
+                ref={mirrorRef}
+                aria-hidden="true"
+                className={cn(
+                  descTypography,
+                  'absolute inset-0 rounded-lg border border-transparent overflow-hidden pointer-events-none text-transparent',
+                )}
+              >
+                {entry.description || ''}
+                {completion.suggestion && (
+                  <span className="text-muted-foreground/50">{completion.suggestion}</span>
+                )}
+              </div>
+              <textarea
+                ref={taRef}
+                rows={2}
+                value={entry.description}
+                onChange={onDescChange}
+                onKeyDown={onDescKeyDown}
+                onScroll={syncScroll}
+                onBlur={completion.dismiss}
+                maxLength={500}
+                placeholder="Brief description (optional)"
+                className={cn(
+                  descTypography,
+                  'relative w-full rounded-lg bg-transparent border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors resize-none',
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-xs text-muted-foreground italic" role="status" aria-live="polite">
+                {completion.loading
+                  ? 'Thinking…'
+                  : completion.suggestion
+                    ? 'AI suggestion available — press Tab to accept · Esc to dismiss'
+                    : ''}
+              </span>
+              <span
+                className={`text-sm ${
+                  (entry.description?.length || 0) > 450 ? 'text-red-500' : 'text-gray-500'
+                }`}
+              >
+                {entry.description?.length || 0} / 500
+              </span>
+            </div>
           </div>
         </div>
       )}
@@ -422,6 +491,7 @@ function SectionCard({
             <EntryEditor
               key={entry.id}
               entry={entry}
+              sectionName={section.name}
               onChange={(updated) => updateEntry(entry.id, updated)}
               onDelete={() => deleteEntry(entry.id)}
               onMoveUp={() => moveEntry(idx, -1)}
