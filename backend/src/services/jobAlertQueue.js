@@ -48,10 +48,10 @@ export const initializeQueue = async () => {
         jobAlertQueue = new Queue(QUEUE_NAME, {
             connection: client,
             defaultJobOptions: {
-                attempts: 3,
+                attempts: 5,
                 backoff: {
                     type: 'exponential',
-                    delay: 5000
+                    delay: 2000
                 },
                 removeOnComplete: {
                     age: 24 * 3600,
@@ -100,6 +100,11 @@ export const addAlertToQueue = async (alertData, options = {}) => {
         jobId,
         delay: options.delay || 0,
         priority: options.priority || 1,
+        attempts: 5,
+        backoff: {
+            type: 'exponential',
+            delay: 2000
+        },
         ...options
     });
 
@@ -133,7 +138,12 @@ export const addBatchAlertsToQueue = async (alerts) => {
             opts: {
                 jobId,
                 delay,
-                priority: 1
+                priority: 1,
+                attempts: 5,
+                backoff: {
+                    type: 'exponential',
+                    delay: 2000
+                }
             }
         };
     });
