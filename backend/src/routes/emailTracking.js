@@ -21,7 +21,9 @@ router.get('/open/:token', asyncHandler(async (req, res) => {
     const { token } = req.params;
 
     // Fire-and-forget: do not await so the pixel is served immediately
-    recordOpen(token);
+    recordOpen(token).catch(err => 
+        console.error('Failed to record open:', err)
+    );
 
     res.set({
         'Content-Type': 'image/gif',
