@@ -10,6 +10,7 @@ import FellowshipProfile from '../models/FellowshipProfile.model.js';
 import { sendProposalApprovalEmail } from '../services/mailService.js';
 import { validate } from '../middleware/validate.js';
 import { createOrderSchema, verifyPaymentSchema } from '../schemas/payments.schema.js';
+import EscrowPayment from '../models/EscrowPayment.model.js';
 
 const router = express.Router();
 
@@ -61,6 +62,16 @@ router.post('/create-order', verifyToken, validate(createOrderSchema), asyncHand
         studentId: proposal.studentId,
         corporateId: challenge.corporateId
     });
+      // Persist order-to-proposal binding
+await EscrowPayment.create({
+    proposalId: proposal._id,
+    challengeId: challenge._id,
+    payerId: req.user.uid,
+    razorpayOrderId: order.id,
+    expectedAmount: Math.round(amount * 100),
+    status: 'pending'
+});
+    
 
     res.json({
         success: true,
@@ -99,6 +110,17 @@ router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), async
     if (!isValid) {
         throw new ApiError(400, 'Invalid payment signature');
     }
+        // Verify payment belongs to this proposal (binding check)
+    const escrow = await EscrowPayment.findOne({ razorpayOrderId: razorpay_order_id });
+    if (!escrow) {
+      throw new ApiError(400, 'Payment order not found on server');
+    }
+    if (escrow.proposalId.toString() !== proposalId) {
+      throw new ApiError(403, 'Payment does not belong to this proposal');
+    }
+    if (escrow.payerId !== req.user.uid) {
+      throw new ApiError(403, 'Payment payer mismatch');
+    }        
 
     // Find proposal and challenge
     let proposal = await Proposal.findById(proposalId);
@@ -119,6 +141,11 @@ router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), async
     if (proposal.status !== 'pending') {
         throw new ApiError(409, 'Proposal already processed');
     }
+    // Mark escrow as verified
+    await EscrowPayment.findByIdAndUpdate(escrow._id, {
+        status: 'verified',
+        razorpayPaymentId: razorpay_payment_id
+    });
 
     const updatedProposal = await Proposal.findOneAndUpdate(
         { _id: proposalId, status: 'pending' },
@@ -185,7 +212,7 @@ router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), async
         orderId: razorpay_order_id,
         paymentId: razorpay_payment_id,
         amount: challenge.price
-    });
+    }); 
 
     res.json({
         success: true,
