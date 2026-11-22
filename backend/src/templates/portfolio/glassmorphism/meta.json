@@ -1,0 +1,13 @@
+{
+  "name": "Glassmorphism",
+  "description": "A modern glassmorphism-style portfolio theme with frosted glass cards, animated gradient background, and floating orb decorations.",
+  "version": "1.0.0",
+  "author": "career-pilot contributors",
+  "preview": "preview.png",
+  "tags": ["dark", "glassmorphism", "animated", "modern", "gradient", "blur"],
+  "colors": {
+    "primary": "#a78bfa",
+    "background": "#0f0c29",
+    "text": "#f1f5f9"
+  }
+}
