@@ -91,9 +91,9 @@ const GithubPortfolioHub = lazy(() => import('./pages/hubs/GithubPortfolioHub'))
 const GithubCallback = lazy(() => import('./pages/auth/GithubCallback'));
 const SkillGap = lazy(() => import("./pages/SkillGap"));
 const SalaryEstimate = lazy(() => import("./pages/SalaryEstimate"));
-const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
+const CareerProfile = lazy(() => import("./pages/CareerProfile"));
+const MessageComposerPage = lazy(() => import("./pages/MessageComposerPage"));
 const CareerPath = lazy(() => import("./pages/CareerPath"));
-const Outreach = lazy(() => import("./pages/Outreach"));
 const ResumeHub = lazy(() => import("./pages/hubs/ResumeHub"));
 const JobsHub = lazy(() => import("./pages/hubs/JobsHub"));
 const PortfolioHub = lazy(() => import("./pages/hubs/PortfolioHub"));
@@ -313,8 +313,8 @@ function AppRoutes() {
         <Route path="/job-finder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><JobFinderLanding /></Suspense>} />
         <Route path="/mock-interview" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MockInterviewLanding /></Suspense>} />
         <Route path="/recruiters" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><RecruitersLanding /></Suspense>} />
-                <Route path="/readme-generator" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><GithubReadmeGeneratorLanding /></Suspense>} />
-        <Route path="/readme-generator/generate" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading README Generator..." />}><GithubReadmeGenerator /></Suspense></ProtectedRoute>} />
+        <Route path="/readme-generator" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><GithubReadmeGeneratorLanding /></Suspense>} />
+        <Route path="/readme-generator/generate" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading README Generator..." />}><GithubReadmeGenerator embedded /></Suspense></ProtectedRoute>} />
 
         <Route path="/project-visualizer/analyze" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Project Visualizer..." />}><ProjectVisualizerWorkspace /></Suspense></ProtectedRoute>} />
 
@@ -476,9 +476,12 @@ function AppRoutes() {
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading LinkedIn Optimizer..." />}><LinkedInOptimizer /></Suspense></ProtectedRoute>} />
         <Route path="/skill-gap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Skill Gap Analyzer..." />}><SkillGap /></Suspense></ProtectedRoute>} />
         <Route path="/salary-estimate" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Salary Estimator..." />}><SalaryEstimate /></Suspense></ProtectedRoute>} />
-        <Route path="/email-generator" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Email Generator..." />}><EmailGenerator /></Suspense></ProtectedRoute>} />
+        <Route path="/offer-desk" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Offer Desk..." />}><SalaryEstimate /></Suspense></ProtectedRoute>} />
+        <Route path="/career-profile" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Career Profile..." />}><CareerProfile /></Suspense></ProtectedRoute>} />
+        <Route path="/email-generator" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Composer..." />}><MessageComposerPage /></Suspense></ProtectedRoute>} />
         <Route path="/career-path" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Career Trajectory..." />}><CareerPath /></Suspense></ProtectedRoute>} />
-        <Route path="/outreach" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Cold Outreach..." />}><Outreach /></Suspense></ProtectedRoute>} />
+        {/* Folded into the composer: cold outreach was the same tool with one template */}
+        <Route path="/outreach" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Composer..." />}><MessageComposerPage /></Suspense></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Deployments..." />}><Suspense fallback={<LoadingScreen label="Loading..." />}><Deployments /></Suspense></Suspense></ProtectedRoute>} />
         <Route path="/resume-roast/analyze" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume Roast..." />}><ResumeRoast /></Suspense></ProtectedRoute>} />
         <Route path="/github-portfolio/build" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading GitHub Portfolio Builder..." />}><PortfolioGithub /></Suspense></ProtectedRoute>} />

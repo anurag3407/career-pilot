@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Flame, History, Trash2 } from 'lucide-react';
+import { Flame, History, Trash2, ArrowRight } from 'lucide-react';
 import HubLayout from '../../components/HubLayout';
 import ToolCard from '../../components/ToolCard';
-import { motion } from 'framer-motion';
 import { roastApi } from '../../services/api';
 import { useRoastStore } from '../../stores/useRoastStore';
 import toast from 'react-hot-toast';
@@ -11,75 +10,103 @@ import toast from 'react-hot-toast';
 export default function RoastHub() {
   const history = useRoastStore((s) => s.history);
   const setHistory = useRoastStore((s) => s.setHistory);
-  const lastResult = useRoastStore((s) => s.lastResult);
+
+  useEffect(() => {
+    if (history.length > 0) return;
+    roastApi
+      .getHistory()
+      .then((res) => {
+        const list = res?.data || res?.history || res;
+        if (Array.isArray(list) && list.length > 0) {
+          setHistory(list);
+        }
+      })
+      .catch(() => {});
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const removeFromHistory = (id) => {
-    // optimistic local removal
     setHistory(history.filter((r) => (r._id || r.id) !== id));
-    roastApi.remove(id).catch(() => toast.error('Failed to delete'));
+    roastApi.remove(id).catch(() => toast.error('Failed to delete roast'));
   };
 
   return (
     <HubLayout
       icon={Flame}
       title="Resume Roast"
-      description="Get a brutally honest, comedic critique of your resume in 30 seconds. Free, BYOK, shareable."
+      description="Get a direct, unfiltered AI critique of your resume in 30 seconds, then jump straight to the builder to fix weak spots."
       color="amber"
+      suite="01 Career Studio"
       breadcrumb="Resume Roast"
+      actions={
+        <Link
+          to="/resume-roast/analyze"
+          className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3.5 text-xs font-semibold text-primary-foreground transition hover:brightness-110"
+        >
+          Roast a resume <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </Link>
+      }
     >
       <ToolCard
-        to="/resume-roast"
+        to="/resume-roast/analyze"
         icon={Flame}
         title="Roast a Resume"
-        description="Paste your resume text or upload a PDF — AI delivers a comedic critique with star ratings and quick wins."
-        badge="FREE"
+        description="Paste your resume text or upload a PDF to get scored feedback, blunt takeaways, and quick fixes."
+        badge="BYOK"
         color="amber"
+      />
+      <ToolCard
+        to="/resume-builder/build"
+        icon={ArrowRight}
+        title="Open Resume Builder"
+        description="Apply critique insights directly to your structured resume and export a clean PDF."
+        color="primary"
       />
 
       {history.length > 0 && (
-        <div className="mt-12">
-          <div className="flex items-center gap-2 mb-4">
-            <History className="w-5 h-5 text-muted-foreground" />
-            <h2 className="text-lg font-bold">Recent Roasts</h2>
+        <div className="col-span-full mt-8">
+          <div className="mb-4 flex items-center gap-2">
+            <History className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <h2 className="text-lg font-semibold text-foreground">Recent roasts</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {history.slice(0, 6).map((r, i) => (
-              <motion.div
-                key={r._id || r.id || i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="relative group rounded-2xl border border-border bg-card p-4 hover:border-amber-500/40 transition-colors"
-              >
-                <Link to="/resume-roast" className="block">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-2xl">{r.emoji || '🔥'}</span>
-                    <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                      {r.overallScore}
-                    </span>
-                    <span className="text-xs text-muted-foreground">/100</span>
-                  </div>
-                  <p className="text-sm font-medium line-clamp-2">{r.tagline}</p>
-                  {r.jobRole && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {r.jobRole}
-                    </p>
-                  )}
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {new Date(r.createdAt).toLocaleDateString()}
-                  </p>
-                </Link>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    removeFromHistory(r._id || r.id);
-                  }}
-                  className="absolute top-3 right-3 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
-                  aria-label="Delete roast"
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {history.slice(0, 6).map((r, i) => {
+              const rid = r._id || r.id;
+              return (
+                <div
+                  key={rid || i}
+                  className="group relative rounded-xl border border-border bg-card p-5 transition-colors hover:border-amber-500/40"
                 >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </motion.div>
-            ))}
+                  <Link to="/resume-roast/analyze" className="block pr-6">
+                    <div className="mb-2 flex items-baseline gap-2">
+                      <span className="text-2xl font-semibold tabular-nums text-amber-600 dark:text-amber-400">
+                        {r.overallScore}
+                      </span>
+                      <span className="font-mono text-xs text-muted-foreground">/ 100</span>
+                    </div>
+                    <p className="line-clamp-2 text-sm font-medium text-foreground">{r.tagline}</p>
+                    {r.jobRole && (
+                      <p className="mt-1 text-xs text-muted-foreground">{r.jobRole}</p>
+                    )}
+                    <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+                      {r.createdAt ? new Date(r.createdAt).toLocaleDateString() : 'Recent'}
+                    </p>
+                  </Link>
+                  {rid && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        removeFromHistory(rid);
+                      }}
+                      className="absolute right-3 top-3 rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-destructive"
+                      aria-label="Delete roast"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

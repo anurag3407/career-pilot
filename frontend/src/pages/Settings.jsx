@@ -1,7 +1,19 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Bell, Mail, MessageSquare, FileText, Save, Sparkles, Github } from 'lucide-react'
-import { notificationApi } from '../services/api'
+import {
+  Bell,
+  Mail,
+  MessageSquare,
+  FileText,
+  Save,
+  Sparkles,
+  Github,
+  CreditCard,
+  ArrowRight,
+  CheckCircle2,
+} from 'lucide-react'
+import { notificationApi, subscriptionApi } from '../services/api'
 import Button from '../components/Button'
 import toast from 'react-hot-toast'
 import { SkeletonList } from '../components/ui/Skeleton'
@@ -12,6 +24,7 @@ const tabs = [
   { id: 'ai-providers', label: 'AI Providers', icon: Sparkles },
   { id: 'integrations', label: 'Integrations', icon: Github },
   { id: 'notifications', label: 'Notifications', icon: Bell },
+  { id: 'billing', label: 'Plan & Billing', icon: CreditCard },
 ]
 
 export default function Settings() {
@@ -21,19 +34,24 @@ export default function Settings() {
     directMessages: true,
     proposalUpdates: true,
   })
+  const [subscription, setSubscription] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    loadPreferences()
+    loadData()
   }, [])
 
-  const loadPreferences = async () => {
+  const loadData = async () => {
     try {
-      const data = await notificationApi.getPreferences()
-      setPreferences(data.preferences)
-    } catch (error) {
-      toast.error('Failed to load preferences')
+      const [prefRes, subRes] = await Promise.all([
+        notificationApi.getPreferences().catch(() => null),
+        subscriptionApi.getMySubscription().catch(() => null),
+      ])
+      if (prefRes?.preferences) setPreferences(prefRes.preferences)
+      if (subRes?.plan) setSubscription(subRes)
+    } catch {
+      toast.error('Failed to load settings')
     } finally {
       setLoading(false)
     }
@@ -43,186 +61,230 @@ export default function Settings() {
     setSaving(true)
     try {
       await notificationApi.updatePreferences(preferences)
-      toast.success('Preferences saved!')
-    } catch (error) {
+      toast.success('Preferences saved')
+    } catch {
       toast.error('Failed to save preferences')
     } finally {
       setSaving(false)
     }
   }
 
-  const Toggle = ({ value, onChange }) => (
+  const Toggle = ({ value, onChange, label }) => (
     <button
+      type="button"
       role="switch"
       aria-checked={value}
+      aria-label={label}
       onClick={() => onChange(!value)}
-      className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${value ? 'bg-indigo-500' : 'bg-muted'
-        }`}
+      className={`relative h-6 w-11 rounded-full transition-colors cursor-pointer ${
+        value ? 'bg-primary' : 'bg-muted border border-border'
+      }`}
     >
-      <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${value ? 'left-7' : 'left-1'
-        }`} />
+      <span
+        className={`absolute top-0.5 h-4.5 w-4.5 rounded-full bg-background shadow transition-all ${
+          value ? 'left-6' : 'left-0.5'
+        }`}
+      />
     </button>
   )
 
-  if (loading) return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="space-y-6"
-        >
-          <div className="space-y-2 mb-8">
-            <div className="h-9 bg-muted rounded-lg w-1/3 animate-pulse" />
-            <div className="h-4 bg-muted rounded-lg w-2/3 animate-pulse" />
+  if (loading) {
+    return (
+      <div className="min-h-full bg-background">
+        <div className="mx-auto max-w-4xl px-4 py-8">
+          <div className="space-y-6">
+            <div className="space-y-2 mb-8">
+              <div className="h-9 w-1/3 animate-pulse rounded-lg bg-muted" />
+              <div className="h-4 w-2/3 animate-pulse rounded-lg bg-muted" />
+            </div>
+            <div className="space-y-6 rounded-xl border border-border bg-card p-6">
+              <div className="h-5 w-1/4 animate-pulse rounded-lg bg-muted" />
+              <SkeletonList count={3} />
+            </div>
           </div>
-          <div className="p-6 rounded-2xl bg-card border border-border space-y-6">
-            <div className="h-5 bg-muted rounded-lg w-1/4 animate-pulse" />
-            <SkeletonList count={3} />
-          </div>
-        </motion.div>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
+
+  const currentPlanName = subscription?.plan?.name || 'Free Starter (BYOK)'
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-3xl font-bold text-foreground mb-1">Settings</h1>
-          <p className="text-muted-foreground mb-8">Manage notifications and AI provider configuration</p>
+    <div className="cp-flight min-h-full bg-background text-foreground antialiased">
+      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        <header className="mb-6 border-b border-border pb-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary/85">
+            Workspace settings
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-[-0.03em] text-foreground">Settings</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage AI provider keys, GitHub integrations, notification channels, and your CareerPilot plan.
+          </p>
+        </header>
 
-          {/* Tab Navigation */}
-          <div className="flex gap-1 p-1 rounded-xl bg-muted/50 border border-border mb-8 w-fit">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? 'bg-card text-foreground shadow-sm border border-border'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
+        {/* Tab Navigation */}
+        <div
+          role="tablist"
+          aria-label="Settings sections"
+          className="mb-7 flex flex-wrap gap-1 rounded-xl border border-border bg-muted/50 p-1 w-fit"
+        >
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition-all ${
+                activeTab === tab.id
+                  ? 'border border-border bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <tab.icon className="h-4 w-4" aria-hidden="true" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-          <AnimatePresence mode="wait">
-            {/* NOTIFICATIONS TAB */}
-            {activeTab === 'notifications' && (
-              <motion.div
-                key="notifications"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.25 }}
-              >
-                <div className="relative overflow-hidden p-6 rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 space-y-6">
-                  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                    <Bell className="w-5 h-5 text-indigo-400" />
-                    Email Notifications
-                  </h2>
+        <AnimatePresence mode="wait">
+          {activeTab === 'notifications' && (
+            <motion.div
+              key="notifications"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="space-y-6 rounded-xl border border-border bg-card p-6">
+                <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
+                  <Bell className="h-4 w-4 text-primary" aria-hidden="true" />
+                  Email Notifications
+                </h2>
 
-                  {/* Job Alerts */}
-                  <div className="flex items-center justify-between py-4 border-b border-border">
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-5 h-5 text-indigo-400" />
-                      <div>
-                        <p className="text-foreground font-medium">Job Alerts</p>
-                        <p className="text-muted-foreground text-sm">Get notified when new jobs match your alerts</p>
-                      </div>
+                <div className="flex items-center justify-between border-b border-border py-4">
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Job Alerts</p>
+                      <p className="text-xs text-muted-foreground">Get notified when new roles match your saved alerts</p>
                     </div>
-                    <Toggle
-                      value={preferences.jobAlerts}
-                      onChange={(val) => setPreferences({ ...preferences, jobAlerts: val })}
-                    />
                   </div>
-
-                  {/* Direct Messages */}
-                  <div className="flex items-center justify-between py-4 border-b border-border">
-                    <div className="flex items-center gap-3">
-                      <MessageSquare className="w-5 h-5 text-purple-400" />
-                      <div>
-                        <p className="text-foreground font-medium">Direct Messages</p>
-                        <p className="text-muted-foreground text-sm">Get notified when you receive a DM</p>
-                      </div>
-                    </div>
-                    <Toggle
-                      value={preferences.directMessages}
-                      onChange={(val) => setPreferences({ ...preferences, directMessages: val })}
-                    />
-                  </div>
-
-                  {/* Proposal Updates */}
-                  <div className="flex items-center justify-between py-4">
-                    <div className="flex items-center gap-3">
-                      <FileText className="w-5 h-5 text-green-400" />
-                      <div>
-                        <p className="text-foreground font-medium">Proposal Updates</p>
-                        <p className="text-muted-foreground text-sm">Get notified on fellowship proposal changes</p>
-                      </div>
-                    </div>
-                    <Toggle
-                      value={preferences.proposalUpdates}
-                      onChange={(val) => setPreferences({ ...preferences, proposalUpdates: val })}
-                    />
-                  </div>
-
-                  <Button
-                    onClick={handleSave}
-                    loading={saving}
-                    variant="gradient"
-                    className="w-full flex items-center justify-center gap-2"
-                  >
-                    <Save className="w-4 h-4" />
-                    Save Preferences
-                  </Button>
+                  <Toggle
+                    label="Toggle Job Alerts"
+                    value={preferences.jobAlerts}
+                    onChange={(val) => setPreferences({ ...preferences, jobAlerts: val })}
+                  />
                 </div>
-              </motion.div>
-            )}
 
-            {/* AI PROVIDERS TAB */}
-            {activeTab === 'ai-providers' && (
-              <motion.div
-                key="ai-providers"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25 }}
-              >
-                <AIProviderSetup />
-              </motion.div>
-            )}
+                <div className="flex items-center justify-between border-b border-border py-4">
+                  <div className="flex items-center gap-3">
+                    <MessageSquare className="h-4 w-4 text-secondary" aria-hidden="true" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Direct Messages</p>
+                      <p className="text-xs text-muted-foreground">Receive alerts for community direct messages</p>
+                    </div>
+                  </div>
+                  <Toggle
+                    label="Toggle Direct Messages"
+                    value={preferences.directMessages}
+                    onChange={(val) => setPreferences({ ...preferences, directMessages: val })}
+                  />
+                </div>
 
-            {/* INTEGRATIONS TAB — GitHub, etc. */}
-            {activeTab === 'integrations' && (
-              <motion.div
-                key="integrations"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25 }}
-                className="space-y-4"
-              >
-                <div className="mb-2">
-                  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                    <Github className="w-5 h-5" />
-                    GitHub Integration
+                <div className="flex items-center justify-between py-4">
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-4 w-4 text-accent-foreground" aria-hidden="true" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Fellowship Updates</p>
+                      <p className="text-xs text-muted-foreground">Updates when challenge proposals change status</p>
+                    </div>
+                  </div>
+                  <Toggle
+                    label="Toggle Fellowship Updates"
+                    value={preferences.proposalUpdates}
+                    onChange={(val) => setPreferences({ ...preferences, proposalUpdates: val })}
+                  />
+                </div>
+
+                <Button
+                  onClick={handleSave}
+                  loading={saving}
+                  className="flex w-full items-center justify-center gap-2"
+                >
+                  <Save className="h-4 w-4" aria-hidden="true" />
+                  Save Preferences
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'ai-providers' && (
+            <motion.div
+              key="ai-providers"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+            >
+              <AIProviderSetup />
+            </motion.div>
+          )}
+
+          {activeTab === 'integrations' && (
+            <motion.div
+              key="integrations"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-4"
+            >
+              <div>
+                <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
+                  <Github className="h-4 w-4" aria-hidden="true" />
+                  GitHub Integration
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Connect GitHub to power the GitHub Suite (Resume import, Portfolio builder, README generator, and Repo Visualizer) with higher API limits.
+                </p>
+              </div>
+              <GithubTokenCard />
+            </motion.div>
+          )}
+
+          {activeTab === 'billing' && (
+            <motion.div
+              key="billing"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="rounded-xl border border-border bg-card p-6 space-y-5"
+            >
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                    Current subscription
+                  </p>
+                  <h2 className="mt-1 flex items-center gap-2 text-xl font-semibold text-foreground">
+                    <CheckCircle2 className="h-5 w-5 text-accent-foreground" aria-hidden="true" />
+                    {currentPlanName}
                   </h2>
-                  <p className="text-sm text-muted-foreground">
-                    Connect GitHub to power the GitHub-Powered Portfolio Builder
-                    and unlock private repos + 5,000 req/hr.
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Bring your own AI keys for free, or upgrade for managed models, higher job-tracking capacity, and automated alerts.
                   </p>
                 </div>
-                <GithubTokenCard />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                <Link
+                  to="/pricing"
+                  className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 text-xs font-semibold text-primary-foreground transition hover:brightness-110"
+                >
+                  Compare plans <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

@@ -1,56 +1,140 @@
-import { GraduationCap, Mic, Mail, Linkedin, Sparkles, Award } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import {
+  GraduationCap,
+  Mic,
+  Video,
+  TrendingUp,
+  UserRound,
+  DollarSign,
+  BookOpen,
+  ArrowRight,
+} from 'lucide-react'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
+import { careerProfileApi, interviewApi, starStoriesApi } from '../../services/api'
 
 export default function CareerGrowthHub() {
+  const [loading, setLoading] = useState(true)
+  const [interviewCount, setInterviewCount] = useState(0)
+  const [avgScore, setAvgScore] = useState(null)
+  const [storyCount, setStoryCount] = useState(0)
+  const [targetRoles, setTargetRoles] = useState([])
+
+  useEffect(() => {
+    Promise.all([
+      interviewApi.getHistory().catch(() => null),
+      starStoriesApi.getAll().catch(() => null),
+      careerProfileApi.get().catch(() => null),
+    ])
+      .then(([intRes, storiesRes, profRes]) => {
+        const list = intRes?.data || intRes?.history || []
+        const sessions = Array.isArray(list) ? list : []
+        setInterviewCount(sessions.length)
+        if (sessions.length > 0) {
+          const avg = Math.round(
+            sessions.reduce((acc, s) => acc + Number(s.overallScore || 0), 0) / sessions.length,
+          )
+          setAvgScore(`${avg}%`)
+        }
+        const stories = storiesRes?.stories || storiesRes?.data || []
+        setStoryCount(Array.isArray(stories) ? stories.length : 0)
+        setTargetRoles(profRes?.profile?.targetRoles || [])
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  const stats = [
+    { icon: Mic, value: interviewCount, label: 'Mock interviews', color: 'text-primary', bg: 'bg-primary/10' },
+    { icon: TrendingUp, value: avgScore ?? 'No data', label: 'Avg score', color: 'text-accent-foreground', bg: 'bg-accent' },
+    { icon: BookOpen, value: storyCount, label: 'STAR stories', color: 'text-foreground', bg: 'bg-muted' },
+  ]
+
   return (
     <HubLayout
       icon={GraduationCap}
-      title="Career Growth"
-      description="Level up your skills, practice mock interviews, automate professional emails, and optimize your LinkedIn presence."
+      title="Interview & Career Growth"
+      description="Practice mock interviews out loud, review session replays, analyze JD skill gaps, and map your next career move."
       color="primary"
-      breadcrumb="Career Growth"
+      suite="03 Interview & Growth"
+      breadcrumb="Interview & Growth"
+      stats={loading ? [] : stats}
+      actions={
+        <Link
+          to="/mock-interview/practice"
+          className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3.5 text-xs font-semibold text-primary-foreground transition hover:brightness-110"
+        >
+          Start mock interview <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </Link>
+      }
     >
       <ToolCard
         to="/mock-interview/practice"
         icon={Mic}
-        title="AI Interview Prep"
-        description="Practice answering mock interview questions and receive instant AI grading and tips."
-        badge="Audio AI"
+        title="Mock Interview Lab"
+        description="Practice behavioral, technical, and coding rounds with role-aware AI scoring."
+        badge="Voice + Code"
         color="primary"
       />
       <ToolCard
-        to="/fellowship"
-        icon={GraduationCap}
-        title="Developer Fellowship"
-        description="Join peer groups to work on open-source projects, complete challenges, and earn credentials."
+        to="/interview-history"
+        icon={Video}
+        title="Interview Replay & History"
+        description="Review past transcripts, score progression, and debrief notes."
         color="secondary"
       />
       <ToolCard
         to="/skill-gap"
-        icon={Sparkles}
+        icon={TrendingUp}
         title="Skill Gap Analyzer"
-        description="Identify gaps in your skill set against target job requirements."
-        badge="AI"
-        color="emerald-500"
+        description="Compare your resume against any job description and review rejection learnings."
+        color="emerald"
       />
       <ToolCard
         to="/career-path"
         icon={GraduationCap}
-        title="Career Trajectory"
-        description="Map out potential future career steps and the skills needed to reach them."
+        title="Career Path Planner"
+        description="Explore realistic next roles, skill requirements, and step-by-step roadmaps."
         color="primary"
       />
+      <ToolCard
+        to="/career-profile"
+        icon={UserRound}
+        title="Career Profile & STAR Bank"
+        description="Manage your master resume, target roles, and reusable STAR interview stories."
+        color="foreground"
+      />
+      <ToolCard
+        to="/salary-estimate"
+        icon={DollarSign}
+        title="Offer Desk & Salary Bands"
+        description="Benchmark role compensation by market tier and generate counter-offer drafts."
+        color="amber"
+      />
 
-      {/* Static premium tips section */}
-      <div className="col-span-full mt-8 p-6 rounded-2xl bg-card border border-border">
-        <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
-          <Award className="w-5 h-5 text-amber-500" />
-          Growth Roadmap
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Combine these tools to maximize your success: Start by practicing your elevator pitch in <strong>AI Interview Prep</strong>, draft your networking messages using the <strong>Email Generator</strong>, and make sure your <strong>LinkedIn profile</strong> is fully optimized before reaching out to hiring managers.
-        </p>
+      {/* Contextual guidance based on real user state */}
+      <div className="col-span-full mt-4 flex flex-col justify-between gap-4 rounded-xl border border-border bg-card p-6 sm:flex-row sm:items-center">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">
+            Personalization context
+          </p>
+          <h3 className="mt-1 text-base font-semibold text-foreground">
+            {targetRoles.length > 0
+              ? `Targeting: ${targetRoles.join(', ')}`
+              : 'Set your target roles in Career Profile'}
+          </h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {targetRoles.length > 0
+              ? 'Mock interviews, LinkedIn optimization, and skill gap checks automatically calibrate to these roles.'
+              : 'Add 2 to 3 target roles and STAR stories so every interview and outreach tool is preloaded.'}
+          </p>
+        </div>
+        <Link
+          to="/career-profile"
+          className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border border-border bg-background px-4 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary"
+        >
+          Manage Career Profile <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </Link>
       </div>
     </HubLayout>
   )

@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Linkedin, Sparkles, Target, Copy, Check,
   ChevronDown, ChevronUp, TrendingUp, Zap,
   AlertCircle, CheckCircle2, Star
 } from 'lucide-react'
-import { enhanceApi } from '../services/api'
+import { enhanceApi, careerProfileApi } from '../services/api'
 import { toast } from 'react-hot-toast'
 
 const IMPACT_CONFIG = {
@@ -85,6 +86,24 @@ export default function LinkedInOptimizer() {
   const [copiedSkill, setCopiedSkill] = useState(null)
   const [aboutExpanded, setAboutExpanded] = useState(false)
   const [aboutCopied, setAboutCopied] = useState(false)
+  const [masterResume, setMasterResume] = useState(null)
+
+  // The career profile feeds this tool — no pasting the same material again.
+  useEffect(() => {
+    let cancelled = false
+    careerProfileApi
+      .get()
+      .then((res) => {
+        if (cancelled) return
+        const profile = res?.profile
+        if (!profile) return
+        if (profile.masterResumeText) setMasterResume(profile.masterResumeText)
+        const roles = profile.targetRoles || []
+        if (roles.length && !targetRole) setTargetRole(roles[0])
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [])
 
   const handleOptimize = async (e) => {
     e.preventDefault()
@@ -253,7 +272,22 @@ export default function LinkedInOptimizer() {
                   value={profileText}
                   onChange={(e) => setProfileText(e.target.value)}
                 />
-                <p className="text-xs text-muted-foreground mt-1 text-right">{profileText.length}/5000</p>
+                <div className="flex items-center justify-between gap-2 mt-1">
+                  {masterResume ? (
+                    <button
+                      type="button"
+                      onClick={() => setProfileText(masterResume.slice(0, 5000))}
+                      className="text-xs font-semibold text-primary hover:underline"
+                    >
+                      Use my master resume instead
+                    </button>
+                  ) : (
+                    <Link to="/career-profile" className="text-xs font-semibold text-muted-foreground hover:text-primary">
+                      Set a master resume in your career profile →
+                    </Link>
+                  )}
+                  <p className="text-xs text-muted-foreground">{profileText.length}/5000</p>
+                </div>
               </div>
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">

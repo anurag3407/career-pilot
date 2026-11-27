@@ -389,6 +389,19 @@ const trackerColumnsFrom = (payload = {}) => {
   if (payload.jobUrl !== undefined) cols.job_url = payload.jobUrl;
   if (payload.url !== undefined && payload.jobUrl === undefined) cols.job_url = payload.url;
   if (payload.appliedDate !== undefined) cols.applied_date = payload.appliedDate;
+  // Application packet + follow-up calendar (20261115000000 migration)
+  if (payload.resumeId !== undefined) cols.resume_id = payload.resumeId || null;
+  if (payload.resumeVersionId !== undefined) cols.resume_version_id = payload.resumeVersionId || null;
+  if (payload.coverLetterId !== undefined) cols.cover_letter_id = payload.coverLetterId || null;
+  if (payload.interviewId !== undefined) cols.interview_id = payload.interviewId || null;
+  if (payload.appliedAt !== undefined) cols.applied_at = payload.appliedAt || null;
+  if (payload.nextActionAt !== undefined) cols.next_action_at = payload.nextActionAt || null;
+  if (payload.nextActionType !== undefined) cols.next_action_type = payload.nextActionType || null;
+  if (payload.interviewAt !== undefined) cols.interview_at = payload.interviewAt || null;
+  if (payload.lastActivityAt !== undefined) cols.last_activity_at = payload.lastActivityAt || null;
+  if (payload.packet !== undefined) cols.packet = payload.packet || {};
+  if (payload.offer !== undefined) cols.offer = payload.offer || {};
+  if (payload.rejection !== undefined) cols.rejection = payload.rejection || {};
   return cols;
 };
 
@@ -419,9 +432,25 @@ export const trackerData = {
   },
 
   async updateStatus(jobId, status, notes = '') {
-    const update = { status };
-    if (notes) update.notes = notes;
-    if (status === 'applied') update.applied_date = new Date().toISOString();
+    const now = new Date().toISOString();
+    // The `data` JSONB doc wins on read (mapRow), so notes appended from the
+    // card must be merged into it — not just the legacy TEXT column.
+    const { data: existing } = await supabase.from('tracked_jobs').select('data').eq('id', jobId).maybeSingle();
+    const doc = { ...(existing?.data || {}) };
+    const notesArray = Array.isArray(doc.notes) ? [...doc.notes] : [];
+    if (notes && notes.trim()) notesArray.push({ content: notes.trim(), createdAt: now });
+    if (notesArray.length || Array.isArray(doc.notes)) doc.notes = notesArray;
+    if (status === 'applied') doc.appliedAt = doc.appliedAt || now;
+
+    const update = {
+      status,
+      last_activity_at: now,
+      data: doc,
+      ...trackerColumnsFrom({ appliedAt: status === 'applied' ? now : undefined }),
+    };
+    if (notes && notes.trim()) update.notes = notes.trim(); // legacy TEXT column
+    if (status === 'applied') update.applied_date = now;
+
     const { data, error } = await supabase.from('tracked_jobs').update(update).eq('id', jobId).select().single();
     throwIf(error, 'tracker/update');
     return { success: true, trackedJob: mapRow(data), data: mapRow(data) };
@@ -734,6 +763,151 @@ export const settingsData = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// Career profile — one master resume + target roles feeding every tool
+// ---------------------------------------------------------------------------
+const careerProfileColumnsFrom = (payload = {}) => {
+  const cols = {};
+  if (payload.masterResumeId !== undefined) cols.master_resume_id = payload.masterResumeId || null;
+  if (payload.masterResumeText !== undefined) cols.master_resume_text = payload.masterResumeText || '';
+  if (payload.targetRoles !== undefined) cols.target_roles = Array.isArray(payload.targetRoles) ? payload.targetRoles : [];
+  if (payload.weeklyApplyTarget !== undefined) cols.weekly_apply_target = Number(payload.weeklyApplyTarget) || 0;
+  return cols;
+};
+
+export const careerProfileData = {
+  async get() {
+    const uid = await requireUserId();
+    const { data, error } = await supabase.from('career_profiles').select('*').eq('user_id', uid).maybeSingle();
+    throwIf(error, 'career-profile/get');
+    const profile = mapRow(data);
+    return { success: true, data: profile, profile };
+  },
+
+  async update(payload) {
+    const uid = await requireUserId();
+    const { data: existing } = await supabase.from('career_profiles').select('data').eq('user_id', uid).maybeSingle();
+    const body = {
+      user_id: uid,
+      data: { ...(existing?.data || {}), ...stripMeta(payload) },
+      ...careerProfileColumnsFrom(payload),
+    };
+    const { data, error } = await supabase.from('career_profiles').upsert(body, { onConflict: 'user_id' }).select().single();
+    throwIf(error, 'career-profile/update');
+    const profile = mapRow(data);
+    return { success: true, data: profile, profile };
+  },
+};
+
+// ---------------------------------------------------------------------------
+// STAR story bank — feeds interviews, tailoring, outreach, skill-gap
+// ---------------------------------------------------------------------------
+const storyColumnsFrom = (payload = {}) => {
+  const cols = {};
+  if (payload.title !== undefined) cols.title = payload.title || '';
+  if (payload.situation !== undefined) cols.situation = payload.situation || '';
+  if (payload.task !== undefined) cols.task = payload.task || '';
+  if (payload.action !== undefined) cols.action = payload.action || '';
+  if (payload.result !== undefined) cols.result = payload.result || '';
+  if (payload.skills !== undefined) {
+    cols.skills = Array.isArray(payload.skills)
+      ? payload.skills
+      : String(payload.skills).split(',').map((s) => s.trim()).filter(Boolean);
+  }
+  if (payload.roleTags !== undefined) {
+    cols.role_tags = Array.isArray(payload.roleTags)
+      ? payload.roleTags
+      : String(payload.roleTags).split(',').map((s) => s.trim()).filter(Boolean);
+  }
+  if (payload.source !== undefined) cols.source = payload.source || 'manual';
+  if (payload.trackedJobId !== undefined) cols.tracked_job_id = payload.trackedJobId || null;
+  return cols;
+};
+
+export const starStoriesData = {
+  async getAll() {
+    const uid = await requireUserId();
+    const { data, error } = await supabase
+      .from('star_stories')
+      .select('*')
+      .eq('user_id', uid)
+      .order('updated_at', { ascending: false });
+    throwIf(error, 'stories/list');
+    const list = (data || []).map(mapRow);
+    return { success: true, data: list, stories: list };
+  },
+
+  async create(payload) {
+    const uid = await requireUserId();
+    const body = {
+      user_id: uid,
+      data: stripMeta(payload),
+      ...storyColumnsFrom(payload),
+    };
+    const { data, error } = await supabase.from('star_stories').insert(body).select().single();
+    throwIf(error, 'stories/create');
+    return { success: true, data: mapRow(data), story: mapRow(data) };
+  },
+
+  async update(storyId, payload) {
+    const { data: existing } = await supabase.from('star_stories').select('data').eq('id', storyId).maybeSingle();
+    const mergedDoc = { ...(existing?.data || {}), ...stripMeta(payload) };
+    const { data, error } = await supabase
+      .from('star_stories')
+      .update({ data: mergedDoc, ...storyColumnsFrom(payload) })
+      .eq('id', storyId)
+      .select()
+      .single();
+    throwIf(error, 'stories/update');
+    return { success: true, data: mapRow(data), story: mapRow(data) };
+  },
+
+  async delete(storyId) {
+    const { error } = await supabase.from('star_stories').delete().eq('id', storyId);
+    throwIf(error, 'stories/delete');
+    return { success: true };
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Cover letters (table exists since v2 — now written by the packet builder)
+// ---------------------------------------------------------------------------
+const coverLetterColumnsFrom = (payload = {}) => {
+  const cols = {};
+  if (payload.resumeId !== undefined) cols.resume_id = payload.resumeId || null;
+  if (payload.jobTitle !== undefined) cols.job_title = payload.jobTitle || '';
+  if (payload.company !== undefined) cols.company = payload.company || '';
+  if (payload.tone !== undefined) cols.tone = payload.tone || 'professional';
+  if (payload.content !== undefined) cols.content = payload.content || '';
+  return cols;
+};
+
+export const coverLetterData = {
+  async getAll() {
+    const uid = await requireUserId();
+    const { data, error } = await supabase
+      .from('cover_letters')
+      .select('*')
+      .eq('user_id', uid)
+      .order('created_at', { ascending: false });
+    throwIf(error, 'cover-letters/list');
+    const list = (data || []).map(mapRow);
+    return { success: true, data: list, coverLetters: list };
+  },
+
+  async create(payload) {
+    const uid = await requireUserId();
+    const body = {
+      user_id: uid,
+      data: stripMeta(payload),
+      ...coverLetterColumnsFrom(payload),
+    };
+    const { data, error } = await supabase.from('cover_letters').insert(body).select().single();
+    throwIf(error, 'cover-letters/create');
+    return { success: true, data: mapRow(data), coverLetter: mapRow(data) };
+  },
+};
+
 export default {
   authData,
   profileData,
@@ -745,4 +919,7 @@ export default {
   portfolioData,
   roastData,
   settingsData,
+  careerProfileData,
+  starStoriesData,
+  coverLetterData,
 };

@@ -51,17 +51,16 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Seo
-        title="Pricing & Plans — CareerPilot"
+        title="Pricing & Plans | CareerPilot"
         description="Choose the right CareerPilot plan for your job hunt: from our Free BYOK starter to Pro with unlimited resumes, AI mock interviews, and 1-click tracking."
       />
       <Navbar />
 
       <main className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary mb-4">
-            <Sparkles className="h-3.5 w-3.5" />
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary mb-3">
             Simple, Transparent Career OS Pricing
-          </div>
+          </p>
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
             Supercharge your job hunt without the SaaS tax
           </h1>
@@ -100,8 +99,8 @@ export default function Pricing() {
 
           {/* Pro Tier (Featured) */}
           <div className="relative rounded-2xl border-2 border-primary bg-card p-8 shadow-xl flex flex-col justify-between">
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-0.5 text-xs font-semibold text-white shadow-md">
-              Most Popular
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-0.5 text-xs font-semibold text-primary-foreground shadow-md">
+              Recommended
             </div>
             <div>
               <div className="flex items-center justify-between">

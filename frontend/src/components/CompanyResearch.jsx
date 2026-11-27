@@ -8,7 +8,7 @@ import {
 import { jobTrackerApi } from '../services/api'
 import { SkeletonList } from './ui/Skeleton'
 
-export default function CompanyResearch({ companyName, industry = '', onClose }) {
+export default function CompanyResearch({ companyName, industry = '', jobDescription = '', onClose }) {
   const [loading, setLoading] = useState(true)
   const [researchData, setResearchData] = useState(null)
   const [error, setError] = useState(null)
@@ -20,7 +20,9 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
       try {
         setLoading(true)
         setError(null)
-        const response = await jobTrackerApi.researchCompany(companyName, industry)
+        // The stored job description grounds the research in the role the
+        // user is actually applying to.
+        const response = await jobTrackerApi.researchCompany(companyName, industry, jobDescription)
         if (response.success && response.data) {
           setResearchData(response.data)
         } else {
@@ -35,7 +37,7 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
     }
 
     loadResearch()
-  }, [companyName, industry])
+  }, [companyName, industry, jobDescription])
 
   return (
     <AnimatePresence>

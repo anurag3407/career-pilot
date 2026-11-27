@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { DollarSign, Loader2, Info, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { DollarSign, Loader2, Info, TrendingUp, PartyPopper } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { salaryApi } from '../services/api';
+import Layout from '../components/Layout';
+import { salaryApi, jobTrackerApi } from '../services/api';
+import { OfferDeskBody } from '../components/packet/OfferDeskPanel';
 
 const EXPERIENCE_LEVELS = ['Entry level', 'Mid level', 'Senior', 'Lead', 'Principal'];
 
@@ -12,11 +15,31 @@ const formatUsd = (value) =>
     : '—';
 
 export default function SalaryEstimate() {
+  const [searchParams] = useSearchParams();
+  const jobId = searchParams.get('job');
+  const [boundJob, setBoundJob] = useState(null);
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [experienceLevel, setExperienceLevel] = useState('Mid level');
   const [loading, setLoading] = useState(false);
   const [estimate, setEstimate] = useState(null);
+
+  // Offer-desk binding: ?job=<trackedJobId> loads the offered card and
+  // surfaces the desk exactly when the user needs it.
+  useEffect(() => {
+    if (!jobId) return;
+    jobTrackerApi
+      .getAll()
+      .then((res) => {
+        const found = (res.trackedJobs || []).find((j) => j.id === jobId);
+        if (found) {
+          setBoundJob(found);
+          setTitle(found.title || '');
+          setLocation(found.offer?.location || found.location || '');
+        }
+      })
+      .catch(() => {});
+  }, [jobId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,6 +80,7 @@ export default function SalaryEstimate() {
     : [];
 
   return (
+    <Layout>
     <div className="min-h-screen bg-background">
       <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         <div className="absolute top-1/4 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
@@ -64,6 +88,31 @@ export default function SalaryEstimate() {
       </div>
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Offer desk for a bound card */}
+        {boundJob && (
+          <motion.section
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 p-6 rounded-2xl bg-emerald-500/[0.05] border border-emerald-500/25"
+          >
+            <div className="flex items-center gap-3 mb-1.5">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-500 shrink-0">
+                <PartyPopper className="w-5 h-5" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Offer desk</h1>
+                <p className="text-sm text-muted-foreground">
+                  {boundJob.title} · {boundJob.company} — <Link to="/job-tracker" className="text-primary hover:underline">open the board</Link>
+                </p>
+              </div>
+            </div>
+            <p className="mb-5 text-[13px] text-muted-foreground">
+              Capture the numbers while the offer is live; the counter-email drafts from the market band below.
+            </p>
+            <OfferDeskBody job={boundJob} onSaved={() => toast.success('Offer saved')} />
+          </motion.section>
+        )}
+
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-4">
             <DollarSign className="w-4 h-4" />
@@ -192,5 +241,6 @@ export default function SalaryEstimate() {
         )}
       </div>
     </div>
+    </Layout>
   );
 }

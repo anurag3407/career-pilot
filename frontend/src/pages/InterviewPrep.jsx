@@ -1,12 +1,13 @@
 import { triggerConfetti } from '../utils/confetti'
 import { useState, useRef, useEffect, lazy, Suspense } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X, Globe, Code2, Play, Link as LinkIcon, Share2, Download } from 'lucide-react';
+import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X, Globe, Code2, Play, Link as LinkIcon, Share2, Download, Briefcase } from 'lucide-react';
+import toast from 'react-hot-toast';
 import Button from '../components/Button';
 import BodyLanguageTips from '../components/BodyLanguageTips';
 import VoiceToTextButton from '../components/VoiceToTextButton';
-import { interviewApi, uploadApi, resumeApi } from '../services/api';
+import { interviewApi, uploadApi, resumeApi, jobTrackerApi, careerProfileApi } from '../services/api';
 import ConfidenceMeter from "../components/ConfidenceMeter";
 import {DEFAULT_PROGRESS,updateDifficulty} from '../utils/interviewDifficulty';
 import LearningRecommendations from "../components/LearningRecommendations";
@@ -84,9 +85,12 @@ const CODING_LANGUAGES = [
 export default function InterviewPrep() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const boundJobId = searchParams.get('job');
   const [step, setStep] = useState('setup'); // 'setup' | 'warmup' | 'av-check' | 'interview' | 'feedback'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [boundJob, setBoundJob] = useState(null);
 
   // Device/browser compatibility state
   const [isMobile, setIsMobile] = useState(false);
@@ -220,7 +224,7 @@ export default function InterviewPrep() {
       let hasLegacyKey = false;
       try { hasLegacyKey = legacyConfigStr && JSON.parse(legacyConfigStr).apiKey; } catch(e) {}
       const hasOpenRouterKey = localStorage.getItem('openRouterApiKey');
-      
+
       if (!hasStoreKey && !hasLegacyKey && !hasOpenRouterKey) {
         navigate('/settings?tab=ai&return_url=/interview-prep');
         return;
@@ -234,7 +238,7 @@ export default function InterviewPrep() {
         else if (Array.isArray(response.data)) fetchedResumes = response.data;
         else if (Array.isArray(response.resumes)) fetchedResumes = response.resumes;
         else if (response.data && Array.isArray(response.data.resumes)) fetchedResumes = response.data.resumes;
-        
+
         setSavedResumes(fetchedResumes);
       } catch (err) {
         console.error('Failed to fetch saved resumes:', err);
@@ -242,6 +246,45 @@ export default function InterviewPrep() {
     };
     checkAuthAndFetch();
   }, [navigate]);
+
+  // "Practice for this role" — ?job=<trackedJobId> preloads the card's job
+  // description and tailored resume so the session belongs to that job.
+  useEffect(() => {
+    if (!boundJobId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await jobTrackerApi.getAll();
+        const job = (res.trackedJobs || []).find((j) => j.id === boundJobId);
+        if (cancelled || !job) return;
+        setBoundJob(job);
+        setFormData((prev) => ({
+          ...prev,
+          jobRole: job.title || prev.jobRole,
+          companyName: job.company || prev.companyName,
+        }));
+        if (job.description) {
+          setJdMode('paste');
+          setJdInput(job.description.slice(0, 20000));
+          setJdSummary({ role: job.title || '', company: job.company || '', jdText: job.description });
+        }
+        const tailored = job.packet?.tailoredResumeText || '';
+        if (tailored) {
+          setResumeText(tailored);
+          setSelectedResumeId('none');
+        } else {
+          const prof = await careerProfileApi.get().catch(() => null);
+          if (!cancelled && prof?.profile?.masterResumeText) {
+            setResumeText(prof.profile.masterResumeText);
+            setSelectedResumeId('none');
+          }
+        }
+      } catch (err) {
+        console.warn('Could not bind interview to job card:', err.message);
+      }
+    })();
+    return () => { cancelled = true };
+  }, [boundJobId]);
 
   useEffect(() => {
     if (step === 'interview') initializeMedia();
@@ -1043,6 +1086,33 @@ ${updatedProgress.level}`
     setOverallResults(response.data);
     setStep('feedback');
 
+    // The debrief lands on the card: session id, score, and a suggested next
+    // status — so Thursday's card knows Wednesday's practice happened.
+    if (boundJob) {
+      const score = response.data?.overallScore;
+      const suggested = boundJob.status === 'saved' ? 'applied' : boundJob.status === 'applied' ? 'interviewing' : null;
+      const note = `Mock interview debrief — score ${score ?? '—'}/100${suggested ? `. Suggested next step: mark as ${suggested}.` : ''}`;
+      try {
+        await jobTrackerApi.updateStatus(boundJob.id, boundJob.status, note);
+        await jobTrackerApi.update(boundJob.id, {
+          interviewId: String(interviewId || ''),
+          lastActivityAt: new Date().toISOString(),
+          packet: {
+            ...(boundJob.packet || {}),
+            lastDebrief: {
+              interviewId: String(interviewId || ''),
+              overallScore: score ?? null,
+              suggestedStatus: suggested,
+              at: new Date().toISOString(),
+            },
+          },
+        });
+        toast.success(`Debrief saved to ${boundJob.company} card${suggested ? ` — suggested next status: ${suggested}` : ''}`);
+      } catch (err) {
+        console.warn('Could not save debrief to the job card:', err.message);
+      }
+    }
+
     triggerConfetti({
       duration: 3500,
       particleCount: 180,
@@ -1266,6 +1336,17 @@ ${updatedProgress.level}`
             <div className="p-8 rounded-3xl glass glow border border-border shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
               <form onSubmit={handleStartInterview} className="space-y-6 relative z-10">
+                {boundJob && (
+                  <div className="flex items-start gap-3 rounded-xl border border-violet-500/30 bg-violet-500/10 px-4 py-3">
+                    <Briefcase className="mt-0.5 h-4 w-4 shrink-0 text-violet-400" />
+                    <div className="text-[13px]">
+                      <p className="font-bold text-foreground">Practicing for {boundJob.title} · {boundJob.company}</p>
+                      <p className="text-[12px] text-muted-foreground">
+                        Preloaded this card's job description{boundJob.packet?.tailoredResumeText ? ' and your tailored resume' : ''}. When you finish, the debrief lands on the card.
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-medium text-muted-foreground mb-2">Job Role *</label>
                   <input

@@ -1,61 +1,66 @@
 import { CheckCircle2, FileText, Globe, Mic, Target } from "lucide-react";
+import { Link } from "react-router-dom";
 
-export default function CareerReadinessChecklistDashboard() {
+/**
+ * CareerReadinessChecklistDashboard: renders checklist progress from real
+ * props so no hardcoded sample state is shown.
+ */
+export default function CareerReadinessChecklistDashboard({
+  hasResume = false,
+  hasPortfolio = false,
+  hasTargetRoles = false,
+  hasInterview = false,
+  hasApplied = false,
+}) {
   const checklist = [
-    { label: "Resume Completed", status: true, icon: FileText },
-    { label: "Portfolio Ready", status: true, icon: Globe },
-    { label: "Skill Assessment Completed", status: false, icon: Target },
-    { label: "Interview Preparation", status: true, icon: Mic },
-    { label: "Application Ready", status: false, icon: CheckCircle2 },
+    { label: "Resume created", status: hasResume, icon: FileText, to: "/hub/resume" },
+    { label: "Target roles set", status: hasTargetRoles, icon: Target, to: "/career-profile" },
+    { label: "Portfolio published", status: hasPortfolio, icon: Globe, to: "/hub/portfolio" },
+    { label: "Interview practiced", status: hasInterview, icon: Mic, to: "/mock-interview/practice" },
+    { label: "Application submitted", status: hasApplied, icon: CheckCircle2, to: "/job-tracker" },
   ];
 
   const completed = checklist.filter((item) => item.status).length;
-  const readinessScore = Math.round(
-    (completed / checklist.length) * 100
-  );
+  const readinessScore = Math.round((completed / checklist.length) * 100);
 
   return (
-    <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
-      <div className="flex items-center gap-3 mb-6">
-        <CheckCircle2 className="w-6 h-6 text-primary" />
-        <h2 className="text-xl font-black">
-          Career Readiness Checklist
-        </h2>
-      </div>
-
-      <div className="mb-6 p-5 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Readiness Score
-        </p>
-        <p className="text-3xl font-black text-emerald-500">
+    <div className="rounded-xl bg-card border border-border p-6">
+      <div className="flex items-center justify-between gap-3 mb-5">
+        <div className="flex items-center gap-2.5">
+          <CheckCircle2 className="w-5 h-5 text-primary" aria-hidden="true" />
+          <h2 className="text-lg font-semibold text-foreground">
+            Career readiness
+          </h2>
+        </div>
+        <span className="font-mono text-sm font-semibold tabular-nums text-primary">
           {readinessScore}%
-        </p>
+        </span>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {checklist.map((item) => {
           const Icon = item.icon;
-
           return (
-            <div
+            <Link
               key={item.label}
-              className="flex items-center justify-between p-4 rounded-xl border border-border"
+              to={item.to}
+              className="flex items-center justify-between p-3.5 rounded-lg border border-border bg-background/50 hover:border-primary/40 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <Icon className="w-5 h-5 text-primary" />
-                <span className="font-semibold">{item.label}</span>
+                <Icon className="w-4 h-4 text-primary" aria-hidden="true" />
+                <span className="text-sm font-medium text-foreground">{item.label}</span>
               </div>
 
               {item.status ? (
-                <span className="text-emerald-500 font-bold">
+                <span className="font-mono text-[11px] uppercase tracking-wider text-accent-foreground font-semibold">
                   Complete
                 </span>
               ) : (
-                <span className="text-amber-500 font-bold">
+                <span className="font-mono text-[11px] uppercase tracking-wider text-foreground/45 font-medium">
                   Pending
                 </span>
               )}
-            </div>
+            </Link>
           );
         })}
       </div>

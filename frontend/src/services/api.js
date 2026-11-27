@@ -7,6 +7,9 @@ import {
   trackerData as sbTracker,
   alertData as sbAlerts,
   portfolioData as sbPortfolios,
+  careerProfileData as sbCareerProfile,
+  starStoriesData as sbStories,
+  coverLetterData as sbCoverLetters,
 } from './supabaseData'
 import { searchJobs as gatewaySearchJobs, getModels as gatewayModels, validateKey as gatewayValidateKey } from './aiGateway'
 import { estimateSalaryClient } from '../lib/salaryEstimator'
@@ -894,6 +897,18 @@ export const interviewApi = {
     return handleResponse(response);
   },
 
+  // Preview likely interview questions for a role WITHOUT creating a session
+  // (used by the application packet builder)
+  async previewQuestions(data) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/preview-questions`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    });
+    return handleResponse(response);
+  },
+
   // Submit an answer for a specific question (multipart; transcript + optional audio + optional code)
   async submitAnswer(interviewId, data) {
     const headers = await getAuthHeaders();
@@ -1064,13 +1079,14 @@ export const jobTrackerApi = {
     return sbTracker.delete(jobId)
   },
 
-  // Research a company (AI — backend service)
-  async researchCompany(companyName, industry = '') {
+  // Research a company (AI — backend service). jobDescription grounds the
+  // research in the role the user is actually applying to.
+  async researchCompany(companyName, industry = '', jobDescription = '') {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/job-tracker/research`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ companyName, industry })
+      body: JSON.stringify({ companyName, industry, jobDescription: jobDescription || undefined })
     })
     return handleResponse(response)
   },
@@ -1079,6 +1095,60 @@ export const jobTrackerApi = {
   async getStats() {
     return sbTracker.getStats()
   }
+}
+
+// ============ CAREER PROFILE API ============
+// One master resume + target roles + weekly apply target feeding every tool.
+export const careerProfileApi = {
+  async get() {
+    return sbCareerProfile.get()
+  },
+
+  async update(payload) {
+    return sbCareerProfile.update(payload)
+  },
+}
+
+// ============ STAR STORIES API ============
+export const starStoriesApi = {
+  async getAll() {
+    return sbStories.getAll()
+  },
+
+  async create(payload) {
+    return sbStories.create(payload)
+  },
+
+  async update(storyId, payload) {
+    return sbStories.update(storyId, payload)
+  },
+
+  async delete(storyId) {
+    return sbStories.delete(storyId)
+  },
+}
+
+// ============ COVER LETTERS API ============
+export const coverLetterApi = {
+  async getAll() {
+    return sbCoverLetters.getAll()
+  },
+
+  async create(payload) {
+    return sbCoverLetters.create(payload)
+  },
+
+  // AI generation (backend service) — payload {resumeText, jobDescription,
+  // companyName, hiringManager, tone} → {coverLetter}
+  async generateText(payload) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/cover-letter/generate-text`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload)
+    })
+    return handleResponse(response)
+  },
 }
 
 // ============ JOB ALERTS API ============

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Target, Sparkles, CheckCircle, XCircle, TrendingUp, FileText } from 'lucide-react';
+import { Target, Sparkles, CheckCircle, XCircle, TrendingUp, FileText, ShieldAlert, History } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { enhanceApi, resumeApi } from '../services/api';
+import { enhanceApi, resumeApi, jobTrackerApi } from '../services/api';
 import toast from 'react-hot-toast';
 import CopyButton from '../components/CopyButton';
 import {
@@ -23,6 +23,7 @@ const SkillGap = () => {
   const [careerFocus, setCareerFocus] = useState('General Career Growth');
   const [synergyInsights, setSynergyInsights] = useState([]);
   const [detectedSkills, setDetectedSkills] = useState([]);
+  const [rejections, setRejections] = useState([]);
   // detectedSkills is the inferred set of skills from the resume text
   // careerFocus is the role/category inferred from the job description.
 
@@ -40,6 +41,20 @@ const SkillGap = () => {
       }
     };
     fetchResumes();
+  }, []);
+
+  // Rejection debriefs feed this view — what actually came up short.
+  useEffect(() => {
+    jobTrackerApi
+      .getAll()
+      .then((res) => {
+        setRejections(
+          (res.trackedJobs || []).filter(
+            (j) => (j.status || '').toLowerCase() === 'rejected',
+          ),
+        );
+      })
+      .catch(() => {});
   }, []);
 
   const handleAnalyze = async (e) => {
@@ -123,6 +138,64 @@ const SkillGap = () => {
             Compare your resume against any job description to identify matching skills, gaps, and get personalized learning suggestions.
           </p>
         </motion.div>
+
+        {/* Rejection learnings — the product gets smarter about this person */}
+        {rejections.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 rounded-2xl border border-border bg-card/40 p-5"
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <History className="w-4.5 h-4.5 text-red-400" />
+              <h2 className="text-lg font-bold text-foreground">Rejection learnings</h2>
+              <span className="rounded-full bg-red-500/10 border border-red-500/25 px-2 py-0.5 text-[11px] font-bold text-red-400">
+                {rejections.length}
+              </span>
+            </div>
+            <p className="mb-4 text-[12.5px] text-muted-foreground">
+              From your rejection debriefs — the gaps that actually showed up, so you know what to train next.
+            </p>
+            <div className="grid gap-3 md:grid-cols-2">
+              {rejections.slice(0, 6).map((job) => {
+                const r = job.rejection || {};
+                const skills = r.missingSkills || r.gapAnalysis?.missingSkills || [];
+                return (
+                  <div key={job.id} className="rounded-xl border border-border bg-background/60 p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-[13.5px] font-bold text-foreground">{job.title} · {job.company}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {r.stage ? `Rejected ${r.stage === 'interviewing' ? 'after interviews' : r.stage === 'applied' ? 'at application' : 'with no response'}` : 'No debrief yet'}
+                          {r.debriefedAt ? ` · ${new Date(r.debriefedAt).toLocaleDateString()}` : ''}
+                        </p>
+                      </div>
+                      {!r.debriefedAt && (
+                        <span className="shrink-0 rounded-full bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 text-[10px] font-bold text-amber-500">
+                          debrief missing
+                        </span>
+                      )}
+                    </div>
+                    {r.reason && (
+                      <p className="mt-2 text-[12px] text-foreground/75 leading-relaxed flex items-start gap-1.5">
+                        <ShieldAlert className="w-3.5 h-3.5 mt-0.5 shrink-0 text-red-400" /> {r.reason}
+                      </p>
+                    )}
+                    {skills.length > 0 && (
+                      <div className="mt-2.5 flex flex-wrap gap-1.5">
+                        {skills.slice(0, 6).map((s) => (
+                          <span key={s} className="rounded-full bg-red-500/10 border border-red-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-red-400">
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </motion.section>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Section */}

@@ -1,58 +1,54 @@
-import { Users, MessageSquare, FileText, Mail, ArrowRight } from 'lucide-react'
+import { Users, MessageSquare, FileText, Mail, Award, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
-import { Link } from 'react-router-dom'
 
 export default function CommunityHub() {
   return (
     <HubLayout
       icon={Users}
-      title="Community Hub"
-      description="Connect with other developers, share career insights, participate in live discussion channels, and expand your professional network."
+      title="Community & Network"
+      description="Share career insights, ask for resume feedback in topic channels, message peers directly, and join fellowship challenges."
       color="primary"
-      breadcrumb="Community Hub"
+      suite="04 Presence & Network"
+      breadcrumb="Community"
+      actions={
+        <Link
+          to="/community"
+          className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3.5 text-xs font-semibold text-primary-foreground transition hover:brightness-110"
+        >
+          Open community <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </Link>
+      }
     >
       <ToolCard
         to="/community?view=posts"
         icon={FileText}
         title="Community Feed"
-        description="Browse, write, and engage with professional posts and articles published by community members."
+        description="Browse and publish career posts, interview takeaways, and portfolio showcases."
         color="primary"
       />
       <ToolCard
         to="/community?view=channels"
         icon={MessageSquare}
         title="Chat Channels"
-        description="Participate in real-time developer group chat channels organized by topic."
+        description="Participate in real-time topic channels with fellow engineers and job seekers."
         color="secondary"
       />
       <ToolCard
         to="/community?view=dms"
         icon={Mail}
         title="Direct Messages"
-        description="Initiate and manage one-on-one direct message conversations with peers."
-        color="emerald-500"
+        description="Connect one-on-one with peers for mock interviews, referrals, and project feedback."
+        color="emerald"
       />
-
-      {/* Community overview card */}
-      <div className="col-span-full mt-6 p-6 rounded-2xl bg-card border border-border flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h3 className="text-lg font-bold text-foreground mb-1.5 flex items-center gap-2">
-            <Users className="w-5 h-5 text-primary" />
-            Engage with the Community
-          </h3>
-          <p className="text-sm text-muted-foreground max-w-xl">
-            Building a strong network is one of the most effective ways to accelerate your career. Join conversations, ask for resume feedback, and stay connected with fellow job seekers.
-          </p>
-        </div>
-        <Link
-          to="/community"
-          className="px-5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
-        >
-          Go to Community Dashboard
-          <ArrowRight className="w-4 h-4" />
-        </Link>
-      </div>
+      <ToolCard
+        to="/fellowship"
+        icon={Award}
+        title="Fellowship Challenges"
+        description="Collaborate on scoped engineering challenges, submit proposals, and build proof of work."
+        color="amber"
+      />
     </HubLayout>
   )
 }

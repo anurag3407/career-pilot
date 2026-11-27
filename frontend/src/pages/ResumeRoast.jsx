@@ -44,7 +44,7 @@ export default function ResumeRoast() {
       toast.success(`Roasted! Score: ${data.overallScore}/100`);
     } catch (err) {
       console.error(err);
-      const msg = err?.message || 'Roast failed — please try again';
+      const msg = err?.message || 'Roast failed. Please try again';
       setError(msg);
       if (err?.status === 403 || err?.requireApiKey) {
         toast.error('Add an AI provider key in Settings first');
@@ -94,14 +94,14 @@ export default function ResumeRoast() {
           className="mb-8 text-center"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-3">
-            <Flame className="w-3.5 h-3.5" />
+            <Flame className="w-3.5 h-3.5" aria-hidden="true" />
             BYOK · Zero cost to you
           </div>
           <h1 className="text-3xl md:text-4xl font-black tracking-tight">
-            🔥 Resume Roast
+            Resume Roast
           </h1>
           <p className="mt-2 text-muted-foreground max-w-xl mx-auto">
-            Brutally honest. Surprisingly helpful. 100% free — uses your own AI key.
+            Brutally honest. Surprisingly helpful. 100% free with your own AI key.
             <br />
             <span className="text-xs">Shareable to LinkedIn when you survive it.</span>
           </p>
@@ -132,7 +132,7 @@ export default function ResumeRoast() {
                   <Link to="/settings" className="text-amber-600 font-semibold hover:underline">
                     Add your key
                   </Link>{' '}
-                  to start roasting — your key never leaves your browser.
+                  to start roasting. Your key never leaves your browser.
                 </p>
               </div>
             )}
@@ -142,11 +142,11 @@ export default function ResumeRoast() {
             <ShareCard result={result} jobRole={jobRole} />
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button onClick={startOver} variant="outline" size="lg">
-                🔥 Roast another
+                Roast another
               </Button>
               <Link to="/hub/resume">
                 <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg">
-                  🛠 Fix this with the Builder
+                  Fix in Resume Builder
                 </Button>
               </Link>
             </div>

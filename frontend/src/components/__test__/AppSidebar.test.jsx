@@ -141,7 +141,14 @@ describe("AppSidebar", () => {
   test("renders journey groups with their key tools", () => {
     render(<AppSidebar />);
 
-    for (const group of ["Overview", "Prepare", "Find & Apply", "Interview", "Grow", "Connect", "Developer Tools", "Account"]) {
+    for (const group of [
+      "Command Center",
+      "Career Studio",
+      "Job Pipeline",
+      "Interview & Growth",
+      "Presence & Network",
+      "Account",
+    ]) {
       expect(screen.getByText(group)).toBeInTheDocument();
     }
 

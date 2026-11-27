@@ -55,8 +55,11 @@ function NavGroup({ group, pathname, onNavigate, first }) {
             {collapsed ? (
                 !first && <div className="mx-2 my-2 h-px bg-border/60" aria-hidden="true" />
             ) : (
-                <p className="px-3 pb-1 pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
-                    {group.label}
+                <p className="flex items-center gap-1.5 px-3 pb-1 pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+                    {group.stage && (
+                        <span className="text-primary/80">{group.stage}</span>
+                    )}
+                    <span>{group.label}</span>
                 </p>
             )}
             <div className="flex flex-col gap-1">
@@ -66,11 +69,11 @@ function NavGroup({ group, pathname, onNavigate, first }) {
                         link={{
                             label: item.label,
                             href: item.to,
-                            icon: <item.icon className="w-5 h-5 shrink-0" />,
+                            icon: <item.icon className="w-4.5 h-4.5 shrink-0" />,
                         }}
                         active={isNavItemActive(pathname, item)}
                         onClick={onNavigate}
-                        className="text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all rounded-xl"
+                        className="text-muted-foreground hover:text-foreground hover:bg-muted font-medium transition-all rounded-xl"
                     />
                 ))}
             </div>
@@ -246,13 +249,14 @@ export default function AppSidebar({ animate = true }) {
                     </div>
                     <div className="shrink-0 space-y-2">
                         <button
+                            type="button"
                             onClick={() => setIsBugModalOpen(true)}
                             className={cn(
-                                "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 w-full cursor-pointer text-red-500 bg-red-500/10 hover:bg-red-500/20",
+                                "flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 w-full cursor-pointer text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border",
                                 !open && animate ? "px-0 justify-center" : "justify-start"
                             )}
                         >
-                            <Bug className="w-5 h-5 shrink-0" />
+                            <Bug className="w-4 h-4 shrink-0" aria-hidden="true" />
                             <motion.span
                                 animate={{
                                     display: animate ? (open ? "inline-block" : "none") : "inline-block",

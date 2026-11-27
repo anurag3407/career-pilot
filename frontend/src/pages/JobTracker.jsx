@@ -16,8 +16,15 @@ import {
   Send,
   X,
   Mail,
+  Layers,
+  Mic,
+  AlarmClock,
+  PartyPopper,
+  ShieldAlert,
+  Bookmark,
+  XCircle,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Layout from "../components/Layout";
 import { jobTrackerApi } from "../services/api";
 
@@ -25,9 +32,16 @@ import Button from "../components/Button";
 import Card from "../components/Card";
 import { useAuth } from "../hooks/useAuth";
 import CompanyResearch from "../components/CompanyResearch";
-import EmailGeneratorPanel from "../components/EmailGeneratorPanel";
-import OutreachPanel from "../components/OutreachPanel";
+import MessageComposer from "../components/MessageComposer";
+import ApplicationPacketPanel from "../components/packet/ApplicationPacketPanel";
+import OfferDeskPanel from "../components/packet/OfferDeskPanel";
+import RejectionDebriefModal from "../components/packet/RejectionDebriefModal";
 import { SkeletonTracker } from "../components/ui/Skeleton";
+import {
+  dueFollowUps,
+  interviewsSoon,
+  quietApplications,
+} from "../utils/applicationFlow";
 import {
   calculateJobStats,
   getQueuedStatusUpdates,
@@ -52,34 +66,47 @@ const JobTracker = () => {
   const [pendingSyncCount, setPendingSyncCount] = useState(0);
   const [noteEditing, setNoteEditing] = useState(null); // jobId or null
   const [noteText, setNoteText] = useState("");
-  const [emailGeneratorJob, setEmailGeneratorJob] = useState(null);
-  const [outreachJob, setOutreachJob] = useState(null);
+  const [packetJob, setPacketJob] = useState(null);
+  const [composerJob, setComposerJob] = useState(null);
+  const [offerJob, setOfferJob] = useState(null);
+  const [debriefJob, setDebriefJob] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { user: authUser } = useAuth();
   const currentUserId = authUser?.uid || "anonymous";
 
   const statusOptions = [
-    {
-      value: "saved",
-      label: "Saved",
-      color: "bg-muted-foreground",
-      icon: "📌",
-    },
-    { value: "applied", label: "Applied", color: "bg-blue-500", icon: "✉️" },
-    {
-      value: "interviewing",
-      label: "Interviewing",
-      color: "bg-yellow-500",
-      icon: "🎤",
-    },
-    { value: "offered", label: "Offered", color: "bg-green-500", icon: "🎉" },
-    { value: "rejected", label: "Rejected", color: "bg-red-500", icon: "❌" },
+    { value: "saved", label: "Saved", color: "bg-muted-foreground", Icon: Bookmark },
+    { value: "applied", label: "Applied", color: "bg-primary", Icon: Send },
+    { value: "interviewing", label: "Interviewing", color: "bg-amber-500", Icon: Mic },
+    { value: "offered", label: "Offered", color: "bg-emerald-500", Icon: PartyPopper },
+    { value: "rejected", label: "Rejected", color: "bg-destructive", Icon: XCircle },
   ];
 
   useEffect(() => {
+    const initialStatus = searchParams.get("status");
+    if (initialStatus && statusOptions.some((s) => s.value === initialStatus)) {
+      setFilterStatus(initialStatus);
+    }
     fetchJobs();
     fetchStats();
   }, []);
+
+  // Deep link from the extension / dashboard: ?job=<id>&packet=1 opens that
+  // card's application packet immediately — the apply moment.
+  useEffect(() => {
+    if (loading) return;
+    const jobId = searchParams.get("job");
+    if (jobId && trackedJobs.some((j) => j.id === jobId)) {
+      setPacketJob(trackedJobs.find((j) => j.id === jobId));
+      setSearchParams({}, { replace: true });
+    }
+  }, [loading, trackedJobs, searchParams, setSearchParams]);
+
+  // "What is due" sets — same definitions the dashboard uses.
+  const dueFollowUpIds = new Set(dueFollowUps(trackedJobs).map((j) => j.id));
+  const interviewSoonIds = new Set(interviewsSoon(trackedJobs).map((j) => j.id));
+  const quietIds = new Set(quietApplications(trackedJobs).map((j) => j.id));
 
   useEffect(() => {
     const updateConnectionState = () => {
@@ -249,11 +276,12 @@ const JobTracker = () => {
 
     try {
       setUpdateLoading((prev) => ({ ...prev, [jobId]: true }));
-      await jobTrackerApi.updateStatus(jobId, newStatus);
+      const res = await jobTrackerApi.updateStatus(jobId, newStatus);
+      const updatedJob = res?.trackedJob || res?.data;
 
       const updatedJobs = previousJobs.map((job) =>
           job.id === jobId
-            ? { ...job, status: newStatus, updatedAt: new Date() }
+            ? { ...job, ...(updatedJob || {}), status: newStatus, updatedAt: new Date() }
             : job,
       );
       setTrackedJobs(updatedJobs);
@@ -261,6 +289,7 @@ const JobTracker = () => {
 
       toast.success("Status updated!");
       fetchStats();
+      openContextualPanel(updatedJobs.find((j) => j.id === jobId) || { id: jobId, status: newStatus }, newStatus);
     } catch (error) {
       console.error("Error updating status:", error);
       if (isNetworkError(error)) {
@@ -270,6 +299,16 @@ const JobTracker = () => {
       }
     } finally {
       setUpdateLoading((prev) => ({ ...prev, [jobId]: false }));
+    }
+  };
+
+  // A card moving to offered opens the offer desk; to rejected, the debrief.
+  const openContextualPanel = (job, newStatus) => {
+    if (!job) return;
+    if (newStatus === "offered") {
+      setOfferJob(job);
+    } else if (newStatus === "rejected" && !job.rejection?.debriefedAt) {
+      setDebriefJob(job);
     }
   };
 
@@ -301,9 +340,16 @@ const JobTracker = () => {
 
     // Backend update
     try {
-      await jobTrackerApi.updateStatus(draggableId, newStatus);
+      const res = await jobTrackerApi.updateStatus(draggableId, newStatus);
+      const updatedJob = res?.trackedJob || res?.data;
+      const mergedJobs = updatedJob
+        ? updatedJobs.map((job) => (job.id === draggableId ? { ...job, ...updatedJob } : job))
+        : updatedJobs;
+      setTrackedJobs(mergedJobs);
+      persistTrackerSnapshot(mergedJobs, calculateJobStats(mergedJobs));
       toast.success("Status updated!");
       fetchStats();
+      openContextualPanel(mergedJobs.find((j) => j.id === draggableId), newStatus);
     } catch (error) {
       console.error("Error updating status:", error);
       if (isNetworkError(error)) {
@@ -533,14 +579,16 @@ const JobTracker = () => {
             {statusOptions.map((status) => (
               <button
                 key={status.value}
+                type="button"
                 onClick={() => setFilterStatus(status.value)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium transition-colors ${
                   filterStatus === status.value
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-foreground hover:bg-muted/80"
                 }`}
               >
-                {status.icon} {status.label}
+                <status.Icon className="w-3.5 h-3.5" aria-hidden="true" />
+                {status.label}
               </button>
             ))}
           </div>
@@ -577,7 +625,8 @@ const JobTracker = () => {
                     <div key={status.value} className="shrink-0 w-80 bg-muted/20 rounded-2xl p-4 flex flex-col snap-start border border-border/40 shadow-sm">
                       <div className="flex items-center justify-between mb-4 px-2">
                         <h3 className="font-bold flex items-center gap-2 text-foreground text-sm uppercase tracking-wider">
-                          <span>{status.icon}</span> {status.label}
+                          <status.Icon className="w-4 h-4 text-primary" aria-hidden="true" />
+                          {status.label}
                         </h3>
                         <span className="bg-background px-2.5 py-0.5 rounded-full text-xs font-black border border-border text-muted-foreground">
                           {columnJobs.length}
@@ -618,7 +667,53 @@ const JobTracker = () => {
                                       <p className="text-primary font-black text-xs mb-3 tracking-wide">
                                         {job.company}
                                       </p>
-                                      
+
+                                      {/* Due badges — what needs action on this card */}
+                                      {(dueFollowUpIds.has(job.id) || interviewSoonIds.has(job.id) || quietIds.has(job.id)) && (
+                                        <div className="flex flex-wrap gap-1.5 mb-2.5">
+                                          {dueFollowUpIds.has(job.id) && (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 text-[10px] font-bold text-amber-500">
+                                              <AlarmClock className="w-3 h-3" /> Follow-up due
+                                            </span>
+                                          )}
+                                          {interviewSoonIds.has(job.id) && (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-violet-500/15 border border-violet-500/30 px-2 py-0.5 text-[10px] font-bold text-violet-400">
+                                              <Mic className="w-3 h-3" /> Interview soon
+                                            </span>
+                                          )}
+                                          {quietIds.has(job.id) && (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 border border-orange-500/30 px-2 py-0.5 text-[10px] font-bold text-orange-400">
+                                              <AlarmClock className="w-3 h-3" /> Gone quiet
+                                            </span>
+                                          )}
+                                        </div>
+                                      )}
+
+                                      {/* Application packet chips */}
+                                      <div className="flex flex-wrap gap-1 mb-3">
+                                        <button
+                                          onClick={() => setPacketJob(job)}
+                                          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold transition-colors ${
+                                            job.packet?.tailoredResumeText
+                                              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20'
+                                              : 'bg-primary/10 border-primary/25 text-primary hover:bg-primary/20'
+                                          }`}
+                                          title="Open the application packet"
+                                        >
+                                          <Layers className="w-3 h-3" />
+                                          {job.packet?.tailoredResumeText ? 'Packet ready' : 'Build packet'}
+                                        </button>
+                                        {job.packet?.coverLetter && (
+                                          <span className="rounded-full bg-muted/60 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">Letter ✓</span>
+                                        )}
+                                        {job.packet?.questions?.length > 0 && (
+                                          <span className="rounded-full bg-muted/60 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">{job.packet.questions.length} questions</span>
+                                        )}
+                                        {job.packet?.followUpEmail && (
+                                          <span className="rounded-full bg-muted/60 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">Follow-up ✓</span>
+                                        )}
+                                      </div>
+
                                       <div className="flex flex-col gap-1.5 text-[11px] font-semibold text-muted-foreground mb-4">
                                         {job.location && (
                                           <div className="flex items-center gap-1.5">
@@ -631,9 +726,17 @@ const JobTracker = () => {
                                           </div>
                                         )}
                                         <div className="flex items-center gap-1.5">
-                                          <Calendar className="w-3.5 h-3.5 text-foreground/40" /> 
-                                          Added {formatDate(job.createdAt)}
+                                          <Calendar className="w-3.5 h-3.5 text-foreground/40" />
+                                          {job.appliedAt || job.applied_date
+                                            ? `Applied ${formatDate(job.appliedAt || job.applied_date)}`
+                                            : `Added ${formatDate(job.createdAt)}`}
                                         </div>
+                                        {job.nextActionAt && (
+                                          <div className="flex items-center gap-1.5 text-amber-500">
+                                            <AlarmClock className="w-3.5 h-3.5" />
+                                            {job.nextActionType === 'follow_up' ? 'Follow up' : 'Next action'} {formatDate(job.nextActionAt)}
+                                          </div>
+                                        )}
                                       </div>
 
                                       <div className="flex gap-2 mt-auto pt-3 border-t border-border/50">
@@ -647,29 +750,50 @@ const JobTracker = () => {
                                             <ExternalLink className="w-3 h-3" /> Apply
                                           </a>
                                         )}
+                                        <Link
+                                          to={`/mock-interview/practice?job=${job.id}`}
+                                          title="Practice for this role — preloads the job description and tailored resume"
+                                          className="flex-1 bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
+                                        >
+                                          <Mic className="w-3 h-3" /> Practice
+                                        </Link>
+                                        <button
+                                          onClick={() => setComposerJob(job)}
+                                          className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
+                                        >
+                                          <Mail className="w-3 h-3" /> Message
+                                        </button>
                                         <button
                                           onClick={() =>
                                             setResearchCompany({
                                               name: job.company,
                                               industry: job.industry || "",
+                                              jobDescription: job.description || "",
                                             })
                                           }
+                                          title="Company research — grounded in this role's description"
                                           className="flex-1 bg-primary/10 hover:bg-primary/20 text-primary py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
                                         >
-                                          <Sparkles className="w-3 h-3" /> AI Research
+                                          <Sparkles className="w-3 h-3" /> Research
                                         </button>
-                                        <button
-                                          onClick={() => setEmailGeneratorJob(job)}
-                                          className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
-                                        >
-                                          <Mail className="w-3 h-3" /> Draft Email
-                                        </button>
-                                        <button
-                                          onClick={() => setOutreachJob(job)}
-                                          className="flex-1 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
-                                        >
-                                          <Send className="w-3 h-3" /> Outreach
-                                        </button>
+                                        {job.status === "offered" && (
+                                          <button
+                                            onClick={() => setOfferJob(job)}
+                                            title="Open the offer desk"
+                                            className="flex-1 bg-green-500/10 hover:bg-green-500/20 text-green-500 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
+                                          >
+                                            <PartyPopper className="w-3 h-3" /> Offer desk
+                                          </button>
+                                        )}
+                                        {job.status === "rejected" && !job.rejection?.debriefedAt && (
+                                          <button
+                                            onClick={() => setDebriefJob(job)}
+                                            title="Rejection debrief — feeds the skill-gap view and story bank"
+                                            className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
+                                          >
+                                            <ShieldAlert className="w-3 h-3" /> Debrief
+                                          </button>
+                                        )}
                                         {/* Notes toggle button */}
                                         <button
                                           onClick={(e) => {
@@ -788,20 +912,37 @@ const JobTracker = () => {
         <CompanyResearch
           companyName={researchCompany.name}
           industry={researchCompany.industry}
+          jobDescription={researchCompany.jobDescription}
           onClose={() => setResearchCompany(null)}
         />
       )}
-      {emailGeneratorJob && (
-        <EmailGeneratorPanel
-          companyName={emailGeneratorJob.company}
-          jobTitle={emailGeneratorJob.title}
-          onClose={() => setEmailGeneratorJob(null)}
+      {packetJob && (
+        <ApplicationPacketPanel
+          job={trackedJobs.find((j) => j.id === packetJob.id) || packetJob}
+          onClose={() => setPacketJob(null)}
+          onUpdated={() => fetchJobs()}
         />
       )}
-      {outreachJob && (
-        <OutreachPanel
-          companyName={outreachJob.company}
-          onClose={() => setOutreachJob(null)}
+      {composerJob && (
+        <MessageComposer
+          job={trackedJobs.find((j) => j.id === composerJob.id) || composerJob}
+          variant="drawer"
+          initialTemplate={composerJob.status === "offered" ? "negotiate" : composerJob.status === "interviewing" ? "thank_you" : composerJob.status === "applied" ? "follow_up" : "application"}
+          onClose={() => setComposerJob(null)}
+        />
+      )}
+      {offerJob && (
+        <OfferDeskPanel
+          job={trackedJobs.find((j) => j.id === offerJob.id) || offerJob}
+          onClose={() => setOfferJob(null)}
+          onSaved={() => fetchJobs()}
+        />
+      )}
+      {debriefJob && (
+        <RejectionDebriefModal
+          job={trackedJobs.find((j) => j.id === debriefJob.id) || debriefJob}
+          onClose={() => setDebriefJob(null)}
+          onSaved={() => fetchJobs()}
         />
       )}
     </Layout>
