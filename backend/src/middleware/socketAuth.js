@@ -1,5 +1,6 @@
 import { createClerkClient, verifyToken as verifyClerkToken } from '@clerk/express';
 import { supabaseAdmin, isSupabaseConfigured } from '../config/supabase.js';
+import { verifyD1Token } from '../config/d1.js';
 
 export const socketAuthMiddleware = async (socket, next) => {
   try {
@@ -9,7 +10,21 @@ export const socketAuthMiddleware = async (socket, next) => {
       return next(new Error('Authentication token required'));
     }
 
-    // 1. Try Supabase Auth
+    // 1. Try Cloudflare D1 Auth
+    const d1User = await verifyD1Token(token);
+    if (d1User) {
+      socket.user = {
+        uid: d1User.uid || d1User.id,
+        id: d1User.id || d1User.uid,
+        email: d1User.email,
+        name: d1User.displayName || d1User.name || d1User.email?.split('@')[0] || 'User',
+        picture: d1User.photoURL || d1User.avatarUrl || null,
+        emailVerified: Boolean(d1User.emailVerified ?? true),
+      };
+      return next();
+    }
+
+    // 2. Try Supabase Auth (if configured)
     if (supabaseAdmin?.auth) {
       try {
         const { data, error } = await supabaseAdmin.auth.getUser(token);

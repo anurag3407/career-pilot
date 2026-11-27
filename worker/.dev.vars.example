@@ -1,6 +1,7 @@
 # Copy to .dev.vars for local development (npx wrangler dev)
 # These mirror `wrangler secret put` values used in production.
 
+AUTH_SECRET=careerpilot-local-dev-secret-change-me
 GEMINI_API_KEY=
 OPENAI_API_KEY=
 GROQ_API_KEY=
@@ -8,5 +9,5 @@ OPENROUTER_API_KEY=
 ANTHROPIC_API_KEY=
 RAPIDAPI_KEY=
 RAPIDAPI_HOST=jsearch.p.rapidapi.com
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+IMAGEKIT_PRIVATE_KEY=
+ADMIN_EMAILS=

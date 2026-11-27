@@ -79,17 +79,17 @@
 
   <div id="settingsPanel" class="settings-panel hidden">
     <div class="field">
-      <label for="apiUrl">CareerPilot API URL</label>
-      <input type="text" id="apiUrl" value="http://localhost:5000">
+      <label for="apiUrl">CareerPilot Gateway / API URL</label>
+      <input type="text" id="apiUrl" value="https://careerpilot.sayalabs.in/gateway/v1">
     </div>
     <div class="field">
       <label for="appUrl">CareerPilot Web App URL</label>
-      <input type="text" id="appUrl" value="http://localhost:5173">
+      <input type="text" id="appUrl" value="https://careerpilot.sayalabs.in">
     </div>
     <div class="field">
-      <label for="authToken">Supabase / JWT Auth Token</label>
+      <label for="authToken">CareerPilot Auth Token</label>
       <input type="password" id="authToken" placeholder="Bearer eyJhbGci...">
-      <small>Found in CareerPilot dashboard settings</small>
+      <small>Found in CareerPilot session / dashboard settings</small>
     </div>
     <button type="button" id="saveSettingsBtn" class="btn secondary">Save Settings</button>
   </div>

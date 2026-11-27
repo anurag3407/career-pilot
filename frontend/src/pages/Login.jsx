@@ -1,15 +1,15 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import AuthNotConfigured from '../components/ui/AuthNotConfigured';
-import SupabaseAuthCard from '../components/auth/SupabaseAuthCard';
-import { isSupabaseConfigured } from '../config/supabase';
+import D1AuthCard from '../components/auth/D1AuthCard';
+import { isD1Configured } from '../config/d1';
 import { resolvePostAuthRedirect } from '../utils/authRedirect';
 
 export default function Login() {
   const location = useLocation();
   const fallbackRedirectUrl = resolvePostAuthRedirect(location.state?.from);
 
-  if (!isSupabaseConfigured) {
+  if (!isD1Configured) {
     return <AuthNotConfigured mode="login" />;
   }
 
@@ -22,7 +22,7 @@ export default function Login() {
       </div>
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-12">
-        <SupabaseAuthCard mode="login" fallbackRedirectUrl={fallbackRedirectUrl} />
+        <D1AuthCard mode="login" fallbackRedirectUrl={fallbackRedirectUrl} />
       </div>
     </div>
   );

@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   saveSettingsBtn.addEventListener('click', async () => {
     await chrome.storage.sync.set({
-      apiUrl: apiUrlInput.value.trim() || 'http://localhost:5000',
-      appUrl: appUrlInput.value.trim() || 'http://localhost:5173',
+      apiUrl: apiUrlInput.value.trim() || 'https://careerpilot.sayalabs.in/gateway/v1',
+      appUrl: appUrlInput.value.trim() || 'https://careerpilot.sayalabs.in',
       authToken: authTokenInput.value.trim(),
     });
     showAlert('Settings saved successfully!', 'success');
@@ -100,11 +100,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function getApiUrl() {
-    return apiUrlInput.value.trim() || 'http://localhost:5000';
+    return (apiUrlInput.value.trim() || 'https://careerpilot.sayalabs.in/gateway/v1').replace(/\/$/, '');
+  }
+
+  function isGatewayUrl(baseUrl) {
+    return baseUrl.endsWith('/v1') || baseUrl.includes('/gateway');
   }
 
   function getAppUrl() {
-    return appUrlInput.value.trim() || 'http://localhost:5173';
+    return (appUrlInput.value.trim() || 'https://careerpilot.sayalabs.in').replace(/\/$/, '');
   }
 
   // Query active tab and extract job details
@@ -127,7 +131,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // The apply moment — score the listing against the master profile.
         try {
-          const res = await fetch(`${getApiUrl()}/api/career-profile`, {
+          const base = getApiUrl();
+          const profileUrl = isGatewayUrl(base) ? `${base}/db/career-profile` : `${base}/api/career-profile`;
+          const res = await fetch(profileUrl, {
             method: 'GET',
             headers: await getAuthHeaders(),
           });
@@ -177,14 +183,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       jobId: window._extractedJob?.jobId || undefined,
     };
 
-    const res = await fetch(`${getApiUrl()}/api/jobs/track`, {
+    const base = getApiUrl();
+    const trackUrl = isGatewayUrl(base) ? `${base}/jobs/track` : `${base}/api/jobs/track`;
+    const res = await fetch(trackUrl, {
       method: 'POST',
       headers: await getAuthHeaders(),
       body: JSON.stringify(payload),
     });
     if (!res.ok) {
       const errJson = await res.json().catch(() => ({}));
-      throw new Error(errJson.message || `Server returned ${res.status}`);
+      throw new Error(errJson.error || errJson.message || `Server returned ${res.status}`);
     }
     return res.json();
   }

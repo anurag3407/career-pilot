@@ -1,13 +1,14 @@
 # =============================================================================
-# CareerPilot AI Gateway — Cloudflare Worker
+# CareerPilot AI & D1 Gateway — Cloudflare Worker
 # =============================================================================
-# The single AI configuration point for the whole platform. All AI calls from
-# the frontend route through here; platform keys never touch the browser.
+# Single gateway for CareerPilot: Cloudflare D1 (database + auth), Workers AI,
+# BYOK passthrough, RapidAPI job search proxy, and ImageKit uploads.
 #
 # Deploy (free tier: 100k requests/day):
 #   cd worker && npx wrangler login && npx wrangler deploy
 #
 # Secrets (set once — never commit):
+#   npx wrangler secret put AUTH_SECRET
 #   npx wrangler secret put CLOUDFLARE_API_TOKEN
 #   npx wrangler secret put GEMINI_API_KEY
 #   npx wrangler secret put OPENAI_API_KEY
@@ -15,8 +16,7 @@
 #   npx wrangler secret put OPENROUTER_API_KEY
 #   npx wrangler secret put ANTHROPIC_API_KEY
 #   npx wrangler secret put RAPIDAPI_KEY
-#   npx wrangler secret put SUPABASE_URL
-#   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+#   npx wrangler secret put IMAGEKIT_PRIVATE_KEY
 # =============================================================================
 
 name = "careerpilot-gateway"
@@ -31,6 +31,7 @@ binding = "AI"
 binding = "DB"
 database_name = "careerpilot-db"
 database_id = "54d97544-d09e-422a-aa17-1be24891f076"
+migrations_dir = "migrations"
 
 [vars]
 ALLOWED_ORIGINS = "*"

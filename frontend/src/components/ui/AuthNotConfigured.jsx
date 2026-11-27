@@ -22,9 +22,8 @@ export default function AuthNotConfigured({ mode }) {
             {isRegister ? 'Create your free account' : 'Welcome back'}
           </h1>
           <p className="mx-auto max-w-xl text-muted-foreground">
-            Authentication is not configured in this preview. Explore the product pages and
-            templates now; add <code className="rounded bg-muted px-1.5 py-0.5">VITE_SUPABASE_URL</code> and{' '}
-            <code className="rounded bg-muted px-1.5 py-0.5">VITE_SUPABASE_ANON_KEY</code> to enable sign-in and account creation.
+            Authentication is disabled in this preview. Explore the product pages and
+            templates now, or enable the Cloudflare D1 Worker gateway to sign in and save your work.
           </p>
         </div>
         <div className="flex flex-col items-center gap-3 sm:flex-row">

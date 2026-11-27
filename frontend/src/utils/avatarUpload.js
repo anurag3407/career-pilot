@@ -1,5 +1,4 @@
 import { uploadToImageKit, getOptimizedImageUrl } from '../services/imagekit'
-import { supabase, isSupabaseConfigured } from '../config/supabase'
 import { storage } from '../config/appwrite'
 import { ID } from 'appwrite'
 
@@ -62,34 +61,10 @@ export async function uploadAvatar(file, uid, onProgress) {
       })
     }
   } catch (ikErr) {
-    console.warn('ImageKit avatar upload failed, attempting Supabase fallback:', ikErr.message)
+    console.warn('ImageKit avatar upload failed, attempting Appwrite fallback:', ikErr.message)
   }
 
-  // 2. Fallback: Supabase Storage if configured
-  if (isSupabaseConfigured) {
-    try {
-      if (onProgress) onProgress(30)
-      const filePath = `${uid}/${Date.now()}.${fileExt}`
-
-      const { error } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { upsert: true })
-
-      if (error) throw error
-
-      if (onProgress) onProgress(90)
-      const { data: publicUrlData } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath)
-
-      if (onProgress) onProgress(100)
-      return publicUrlData.publicUrl
-    } catch (supaErr) {
-      console.warn('Supabase storage upload failed, attempting Appwrite fallback:', supaErr.message)
-    }
-  }
-
-  // 3. Fallback: Appwrite Storage
+  // 2. Fallback: Appwrite Storage
   const BUCKET_ID = import.meta.env.VITE_APPWRITE_BUCKET_ID || 'avatars'
   try {
     if (onProgress) onProgress(50)

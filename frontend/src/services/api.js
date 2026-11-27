@@ -1,17 +1,27 @@
 import { decryptKey } from '../utils/encryption'
 import {
-  authData as sbAuth,
-  resumeData as sbResumes,
-  resumeVersionData as sbVersions,
-  resumeAtsData as sbAts,
-  trackerData as sbTracker,
-  alertData as sbAlerts,
-  portfolioData as sbPortfolios,
-  careerProfileData as sbCareerProfile,
-  starStoriesData as sbStories,
-  coverLetterData as sbCoverLetters,
-} from './supabaseData'
-import { searchJobs as gatewaySearchJobs, getModels as gatewayModels, validateKey as gatewayValidateKey } from './aiGateway'
+  authData as d1AuthData,
+  profileData as d1Profile,
+  resumeData as d1Resumes,
+  resumeVersionData as d1Versions,
+  resumeAtsData as d1Ats,
+  trackerData as d1Tracker,
+  alertData as d1Alerts,
+  portfolioData as d1Portfolios,
+  roastData as d1Roasts,
+  settingsData as d1Settings,
+  careerProfileData as d1CareerProfile,
+  starStoriesData as d1Stories,
+  coverLetterData as d1CoverLetters,
+} from './d1Data'
+import { getD1AccessToken } from '../config/d1'
+import {
+  generate as gatewayGenerate,
+  generateJson as gatewayGenerateJson,
+  searchJobs as gatewaySearchJobs,
+  getModels as gatewayModels,
+  validateKey as gatewayValidateKey,
+} from './aiGateway'
 import { estimateSalaryClient } from '../lib/salaryEstimator'
 
 export const apiEvents = new EventTarget();
@@ -23,9 +33,7 @@ export async function getAuthHeaders() {
   let token = null;
 
   try {
-    const { supabase } = await import('../config/supabase.js');
-    const { data } = await supabase.auth.getSession();
-    token = data?.session?.access_token || null;
+    token = await getD1AccessToken();
   } catch {
     // fallback
   }
@@ -165,16 +173,16 @@ async function handleResponse(response) {
   return data || {};
 }
 // ============ AUTH API ============
-// Auth data lives in Supabase directly (profiles table + auth.users).
+// Auth data lives in Cloudflare D1 directly (users + profiles tables).
 export const authApi = {
   // Verify the current session
   async verifyToken() {
-    return sbAuth.verifyToken();
+    return d1AuthData.verifyToken();
   },
 
   // Get user profile
   async getProfile() {
-    return sbAuth.getProfile();
+    return d1AuthData.getProfile();
   }
 }
 
@@ -182,7 +190,7 @@ export const authApi = {
 export const uploadApi = {
   // Upload PDF and extract text
   async uploadPdf(file, options = {}) {
-    const token = await getSupabaseToken();
+    const token = await getD1AuthToken();
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -200,7 +208,7 @@ export const uploadApi = {
 
   // Extract text from PDF (re-process)
   async extractText(file, options = {}) {
-    const token = await getSupabaseToken();
+    const token = await getD1AuthToken();
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -217,50 +225,49 @@ export const uploadApi = {
   }
 }
 
-// Supabase access token for legacy multipart endpoints (null in dev → mock token)
-async function getSupabaseToken() {
-  if (import.meta.env.DEV) return 'mock-dev-token'
+// D1 JWT access token for multipart endpoints (null in dev → mock token)
+async function getD1AuthToken() {
   try {
-    const { supabase } = await import('../config/supabase.js')
-    const { data } = await supabase.auth.getSession()
-    const token = data?.session?.access_token
-    if (!token) throw new Error('Not authenticated')
-    return token
+    const token = await getD1AccessToken()
+    if (token) return token
+    if (import.meta.env.DEV) return 'mock-dev-token'
+    throw new Error('Not authenticated')
   } catch (err) {
+    if (import.meta.env.DEV) return 'mock-dev-token'
     throw new Error(err.message || 'Not authenticated')
   }
 }
 
 // ============ RESUME API ============
 export const resumeApi = {
-  // Get all resumes (Supabase)
+  // Get all resumes (Cloudflare D1)
   async getAll() {
-    return sbResumes.getAll()
+    return d1Resumes.getAll()
   },
 
-  // Get single resume (Supabase)
+  // Get single resume (Cloudflare D1)
   async getById(resumeId) {
-    return sbResumes.getById(resumeId)
+    return d1Resumes.getById(resumeId)
   },
 
-  // Create resume (Supabase)
+  // Create resume (Cloudflare D1)
   async create(data, options = {}) {
-    return sbResumes.create(data, options)
+    return d1Resumes.create(data, options)
   },
 
-  // Update resume (Supabase)
+  // Update resume (Cloudflare D1)
   async update(resumeId, data) {
-    return sbResumes.update(resumeId, data)
+    return d1Resumes.update(resumeId, data)
   },
 
-  // Reorder sections (Supabase — merged into the stored document)
+  // Reorder sections (Cloudflare D1 — merged into the stored document)
   async reorderSections(resumeId, sectionOrder) {
-    return sbResumes.update(resumeId, { sectionOrder })
+    return d1Resumes.update(resumeId, { sectionOrder })
   },
 
-  // Delete resume (Supabase)
+  // Delete resume (Cloudflare D1)
   async delete(resumeId) {
-    return sbResumes.delete(resumeId)
+    return d1Resumes.delete(resumeId)
   },
 
   // Preview LinkedIn profile data before importing
@@ -310,7 +317,7 @@ export const resumeApi = {
   // Download resume as PDF (server-rendered; client-side export exists in
   // services/atsPdfExport.js for Cloudflare-only deployments)
   async downloadPdf(resumeId, version = 'enhanced') {
-    const token = await getSupabaseToken()
+    const token = await getD1AuthToken()
     const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}`, {
       method: 'GET',
       headers: {
@@ -349,78 +356,72 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
-  // Get all versions of a resume (Supabase)
+  // Get all versions of a resume (Cloudflare D1)
   async getVersions(resumeId) {
-    return sbVersions.getAll(resumeId)
+    return d1Versions.getAll(resumeId)
   },
 
-  // Create a new snapshot/version of a resume (Supabase)
+  // Create a new snapshot/version of a resume (Cloudflare D1)
   async createVersion(resumeId, data) {
-    return sbVersions.create(resumeId, data)
+    return d1Versions.create(resumeId, data)
   },
 
-  // Update specific version metadata
+  // Update specific version metadata (Cloudflare D1)
   async updateVersion(resumeId, versionId, data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
+    return d1Versions.update(resumeId, versionId, data)
   },
 
-  // Delete specific version (Supabase)
+  // Delete specific version (Cloudflare D1)
   async deleteVersion(resumeId, versionId) {
-    return sbVersions.remove(resumeId, versionId)
+    return d1Versions.remove(resumeId, versionId)
   },
 
-  // Restore resume to a specific version (Supabase)
+  // Restore resume to a specific version (Cloudflare D1)
   async restoreVersion(resumeId, versionId) {
-    return sbVersions.restore(resumeId, versionId)
+    return d1Versions.restore(resumeId, versionId)
   },
 
-  // Get ATS score progression history (Supabase)
+  // Get ATS score progression history (Cloudflare D1)
   async getAtsHistory(resumeId) {
-    return sbAts.get(resumeId)
+    return d1Ats.get(resumeId)
   },
 
-  // Log a new ATS score run to history (Supabase)
+  // Log a new ATS score run to history (Cloudflare D1)
   async logAtsHistory(resumeId, data) {
-    return sbAts.log(resumeId, data)
+    return d1Ats.log(resumeId, data)
   }
 }
 
 // ============ PORTFOLIO API ============
 export const portfolioApi = {
-  // Get all portfolios (Supabase)
+  // Get all portfolios (Cloudflare D1)
   async getAll() {
-    return sbPortfolios.getAll()
+    return d1Portfolios.getAll()
   },
 
-  // Create portfolio (Supabase)
+  // Create portfolio (Cloudflare D1)
   async create(data) {
-    return sbPortfolios.create(data)
+    return d1Portfolios.create(data)
   },
 
-  // Update portfolio section data (Supabase)
+  // Update portfolio section data (Cloudflare D1)
   async update(portfolioId, data) {
-    return sbPortfolios.update(portfolioId, data)
+    return d1Portfolios.update(portfolioId, data)
   },
 
-  // Get single portfolio (Supabase)
+  // Get single portfolio (Cloudflare D1)
   async getById(portfolioId) {
-    return sbPortfolios.getById(portfolioId)
+    return d1Portfolios.getById(portfolioId)
   },
 
-  // Delete portfolio (Supabase)
+  // Delete portfolio (Cloudflare D1)
   async delete(portfolioId) {
-    return sbPortfolios.delete(portfolioId)
+    return d1Portfolios.delete(portfolioId)
   },
 
-  // List portfolio deployments (Supabase)
+  // List portfolio deployments (Cloudflare D1)
   async listDeployments() {
-    return sbPortfolios.listDeployments()
+    return d1Portfolios.listDeployments()
   },
 
   // Extract portfolio JSON from raw resume text (AI — backend service)
@@ -729,47 +730,62 @@ export const enhanceApi = {
 
 // ============ Resume Roast API ============
 export const roastApi = {
-  // Create a new roast
+  // Create a new roast (tries backend first, falls back to AI Gateway + D1)
   async create({ resumeText, jobRole = '', isPublic = false }) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/roast`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ resumeText, jobRole, isPublic })
-    })
-    return handleResponse(response)
+    try {
+      const headers = await getAuthHeaders()
+      const response = await fetch(`${API_BASE}/roast`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ resumeText, jobRole, isPublic })
+      })
+      if (response.ok && (response.headers.get('content-type') || '').includes('application/json')) {
+        return handleResponse(response)
+      }
+    } catch {
+      // Fall back to Worker AI Gateway + D1
+    }
+
+    const roastPrompt = `Critique this resume brutally and helpfully for role "${jobRole || 'Software Engineer'}". Return strict JSON with keys: overallScore (0-100), tagline, emoji, roast (array of 3-5 punchy critiques), silverLinings (array of 2-3 strengths), quickWins (array of 3-5 actionable fixes), ratings ({ impact: number, clarity: number, ats: number, originality: number }).\n\nResume:\n${resumeText.slice(0, 12000)}`;
+    const aiResult = await gatewayGenerateJson({
+      system: 'You are a witty, sharp senior tech recruiter. Return valid JSON only.',
+      prompt: roastPrompt,
+      feature: 'resume-roast',
+    });
+    const payload = {
+      resumeText,
+      jobRole,
+      isPublic,
+      overallScore: aiResult?.overallScore ?? 72,
+      tagline: aiResult?.tagline || 'Solid base, needs sharper metrics.',
+      emoji: aiResult?.emoji || '🔥',
+      roast: aiResult?.roast || ['Tighten bullet points with measurable impact.'],
+      silverLinings: aiResult?.silverLinings || ['Clear technical foundation.'],
+      quickWins: aiResult?.quickWins || ['Add quantified outcomes to every role.'],
+      ratings: aiResult?.ratings || { impact: 7, clarity: 7, ats: 7, originality: 7 },
+    };
+    const saved = await d1Roasts.save(payload);
+    return { success: true, data: saved.roast || saved.data };
   },
 
-  // List user's roast history
+  // List user's roast history (Cloudflare D1)
   async getHistory(limit = 20) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/roast/history?limit=${limit}`, {
-      headers
-    })
-    return handleResponse(response)
+    return d1Roasts.getHistory(limit)
   },
 
-  // Fetch a single roast by id
+  // Fetch a single roast by id (Cloudflare D1)
   async getById(id) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/roast/${id}`, { headers })
-    return handleResponse(response)
+    return d1Roasts.getById(id)
   },
 
-  // Fetch a public roast by share token
+  // Fetch a public roast by share token (Cloudflare D1)
   async getByShareToken(token) {
-    const response = await fetch(`${API_BASE}/roast/share/${token}`)
-    return handleResponse(response)
+    return d1Roasts.getByShareToken(token)
   },
 
-  // Delete a roast
+  // Delete a roast (Cloudflare D1)
   async remove(id) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/roast/${id}`, {
-      method: 'DELETE',
-      headers
-    })
-    return handleResponse(response)
+    return d1Roasts.remove(id)
   }
 }
 
@@ -1054,46 +1070,57 @@ export const jobsApi = {
 
 // ============ JOB TRACKER API ============
 export const jobTrackerApi = {
-  // Get all tracked jobs (Supabase)
+  // Get all tracked jobs (Cloudflare D1)
   async getAll() {
-    return sbTracker.getAll()
+    return d1Tracker.getAll()
   },
 
-  // Track a new job application (Supabase)
+  // Track a new job application (Cloudflare D1)
   async track(jobData) {
-    return sbTracker.track(jobData)
+    return d1Tracker.track(jobData)
   },
 
-  // Update job application status (Supabase)
+  // Update job application status (Cloudflare D1)
   async updateStatus(jobId, status, notes = '') {
-    return sbTracker.updateStatus(jobId, status, notes)
+    return d1Tracker.updateStatus(jobId, status, notes)
   },
 
-  // Update any tracked job fields (Supabase)
+  // Update any tracked job fields (Cloudflare D1)
   async update(jobId, payload) {
-    return sbTracker.update(jobId, payload)
+    return d1Tracker.update(jobId, payload)
   },
 
-  // Delete tracked job (Supabase)
+  // Delete tracked job (Cloudflare D1)
   async delete(jobId) {
-    return sbTracker.delete(jobId)
+    return d1Tracker.delete(jobId)
   },
 
-  // Research a company (AI — backend service). jobDescription grounds the
-  // research in the role the user is actually applying to.
+  // Research a company (AI — backend service with Gateway fallback).
   async researchCompany(companyName, industry = '', jobDescription = '') {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-tracker/research`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ companyName, industry, jobDescription: jobDescription || undefined })
+    try {
+      const headers = await getAuthHeaders()
+      const response = await fetch(`${API_BASE}/job-tracker/research`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ companyName, industry, jobDescription: jobDescription || undefined })
+      })
+      if (response.ok && (response.headers.get('content-type') || '').includes('application/json')) {
+        return handleResponse(response)
+      }
+    } catch {
+      // Fall back to AI Gateway
+    }
+    const research = await gatewayGenerateJson({
+      system: 'You are a career research analyst. Return concise JSON with keys: overview, culture, interviewTips (array), keyQuestions (array).',
+      prompt: `Research "${companyName}"${industry ? ` (${industry})` : ''} for a candidate applying to: ${jobDescription || 'a technical role'}.`,
+      feature: 'company-research',
     })
-    return handleResponse(response)
+    return { success: true, research: research || { overview: `${companyName} company brief` } }
   },
 
-  // Get job tracker stats (Supabase, computed client-side)
+  // Get job tracker stats (Cloudflare D1)
   async getStats() {
-    return sbTracker.getStats()
+    return d1Tracker.getStats()
   }
 }
 
@@ -1101,108 +1128,123 @@ export const jobTrackerApi = {
 // One master resume + target roles + weekly apply target feeding every tool.
 export const careerProfileApi = {
   async get() {
-    return sbCareerProfile.get()
+    return d1CareerProfile.get()
   },
 
   async update(payload) {
-    return sbCareerProfile.update(payload)
+    return d1CareerProfile.update(payload)
   },
 }
 
 // ============ STAR STORIES API ============
 export const starStoriesApi = {
   async getAll() {
-    return sbStories.getAll()
+    return d1Stories.getAll()
   },
 
   async create(payload) {
-    return sbStories.create(payload)
+    return d1Stories.create(payload)
   },
 
   async update(storyId, payload) {
-    return sbStories.update(storyId, payload)
+    return d1Stories.update(storyId, payload)
   },
 
   async delete(storyId) {
-    return sbStories.delete(storyId)
+    return d1Stories.delete(storyId)
   },
 }
 
 // ============ COVER LETTERS API ============
 export const coverLetterApi = {
   async getAll() {
-    return sbCoverLetters.getAll()
+    return d1CoverLetters.getAll()
   },
 
   async create(payload) {
-    return sbCoverLetters.create(payload)
+    return d1CoverLetters.create(payload)
   },
 
-  // AI generation (backend service) — payload {resumeText, jobDescription,
-  // companyName, hiringManager, tone} → {coverLetter}
+  // AI generation (backend with AI Gateway fallback)
   async generateText(payload) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/cover-letter/generate-text`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(payload)
+    try {
+      const headers = await getAuthHeaders()
+      const response = await fetch(`${API_BASE}/cover-letter/generate-text`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      })
+      if (response.ok && (response.headers.get('content-type') || '').includes('application/json')) {
+        return handleResponse(response)
+      }
+    } catch {
+      // Fall back to AI Gateway
+    }
+    const { text } = await gatewayGenerate({
+      system: `Write a tailored, concise ${payload.tone || 'professional'} cover letter.`,
+      prompt: `Company: ${payload.companyName || 'the company'}\nHiring Manager: ${payload.hiringManager || 'Hiring Team'}\nJob Description:\n${payload.jobDescription || ''}\n\nCandidate Resume:\n${payload.resumeText || ''}`,
+      feature: 'cover-letter',
     })
-    return handleResponse(response)
+    return { success: true, coverLetter: text }
   },
 }
 
 // ============ JOB ALERTS API ============
 export const jobAlertsApi = {
-  // Get all job alerts (Supabase)
+  // Get all job alerts (Cloudflare D1)
   async getAll() {
-    return sbAlerts.getAll()
+    return d1Alerts.getAll()
   },
 
-  // Get single alert with notification history (Supabase)
+  // Get single alert (Cloudflare D1)
   async getById(alertId) {
-    const { alerts } = await sbAlerts.getAll()
-    const alert = alerts.find((a) => a.id === alertId)
-    if (!alert) {
-      const err = new Error('Alert not found')
-      err.status = 404
-      throw err
-    }
-    return { success: true, data: alert, alert }
+    return d1Alerts.getById(alertId)
   },
 
-  // Create new job alert (Supabase)
+  // Create new job alert (Cloudflare D1)
   async create(alertData) {
-    return sbAlerts.create(alertData)
+    return d1Alerts.create(alertData)
   },
 
-  // Update job alert (Supabase)
+  // Update job alert (Cloudflare D1)
   async update(alertId, alertData) {
-    return sbAlerts.update(alertId, alertData)
+    return d1Alerts.update(alertId, alertData)
   },
 
-  // Delete job alert (Supabase)
+  // Delete job alert (Cloudflare D1)
   async delete(alertId) {
-    return sbAlerts.delete(alertId)
+    return d1Alerts.delete(alertId)
   },
 
-  // Toggle alert active status (Supabase)
+  // Toggle alert active status (Cloudflare D1)
   async toggle(alertId) {
-    return sbAlerts.toggle(alertId)
+    return d1Alerts.toggle(alertId)
   },
 
-  // Trigger test fetch for an alert (needs the backend queue worker)
+  // Trigger test fetch for an alert (uses gateway searchJobs fallback)
   async test(alertId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/job-alerts/${alertId}/test`, {
-      method: 'POST',
-      headers
-    })
-    return handleResponse(response)
+    try {
+      const headers = await getAuthHeaders()
+      const response = await fetch(`${API_BASE}/job-alerts/${alertId}/test`, {
+        method: 'POST',
+        headers
+      })
+      if (response.ok && (response.headers.get('content-type') || '').includes('application/json')) {
+        return handleResponse(response)
+      }
+    } catch {
+      // Fall back to gateway search
+    }
+    const { alert } = await d1Alerts.getById(alertId)
+    const keywords = Array.isArray(alert?.keywords) ? alert.keywords.join(' ') : (alert?.title || 'software engineer')
+    const searchRes = await gatewaySearchJobs({ query: keywords, location: alert?.location || undefined })
+    const jobs = Array.isArray(searchRes?.data) ? searchRes.data : []
+    return { success: true, message: `Found ${jobs.length} matching roles`, result: { matchedCount: jobs.length, jobs } }
   },
 
-  // Get alerts summary stats (Supabase, computed client-side)
+  // Get alerts summary stats (Cloudflare D1)
   async getStats() {
-    return sbAlerts.getStats()
+    return d1Alerts.getStats()
   }
 }
 
@@ -1587,71 +1629,43 @@ export const fellowshipApi = {
 // ============ USER PROFILE API ============
 export const userProfileApi = {
   async getMyProfile() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/me`, { method: 'GET', headers })
-    return handleResponse(response)
+    return d1Profile.getMyProfile()
   },
 
   async updateMyProfile(data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/me`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
+    return d1Profile.updateMyProfile(data)
   },
 
   async getMyStats() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/me/stats`, { method: 'GET', headers })
-    return handleResponse(response)
+    return d1Profile.getMyStats()
   },
 
   async getMyActivity() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/me/activity`, { method: 'GET', headers })
-    return handleResponse(response)
+    return d1Profile.getMyActivity()
   },
 
   async setMyAvatar(avatarUrl) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/me/avatar`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ avatarUrl })
-    })
-    return handleResponse(response)
+    return d1Profile.setMyAvatar(avatarUrl)
   },
 
   async deleteMyAvatar() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/me/avatar`, { method: 'DELETE', headers })
-    return handleResponse(response)
+    return d1Profile.deleteMyAvatar()
   },
 
   async getProfile(uid) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
-    return handleResponse(response)
+    return d1Profile.getProfile(uid)
   },
 
   async getPublicProfile(uid) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
-    return handleResponse(response)
+    return d1Profile.getProfile(uid)
   },
 
   async getStats(uid) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/${uid}/stats`, { method: 'GET', headers })
-    return handleResponse(response)
+    return d1Profile.getStats(uid)
   },
 
   async getActivity(uid) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
-    return handleResponse(response)
+    return d1Profile.getActivity(uid)
   }
 }
 // ============ TWO-FACTOR AUTH API ============
@@ -1794,22 +1808,11 @@ export const paymentApi = {
 // ============ NOTIFICATION PREFERENCES API ============
 export const notificationApi = {
   async getPreferences() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
+    return d1Settings.getNotificationPreferences()
   },
 
   async updatePreferences(preferences) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(preferences)
-    })
-    return handleResponse(response)
+    return d1Settings.updateNotificationPreferences(preferences)
   }
 }
 
@@ -2007,32 +2010,89 @@ export const bugsApi = {
 
 export const subscriptionApi = {
   async getPlans() {
-    const response = await fetch(`${API_BASE}/subscription/plans`);
-    return handleResponse(response);
+    try {
+      const response = await fetch(`${API_BASE}/subscription/plans`);
+      if (response.ok && (response.headers.get('content-type') || '').includes('application/json')) {
+        return handleResponse(response);
+      }
+    } catch {
+      // Fall back to static plan catalog
+    }
+    return {
+      success: true,
+      plans: [
+        { id: 'free', name: 'Free Starter (BYOK)', price: 0, limits: { resumes: 5, trackedJobs: 50 } },
+        { id: 'pro', name: 'CareerPilot Pro', price: 12, limits: { resumes: Infinity, trackedJobs: Infinity } },
+      ],
+    };
   },
 
   async getMySubscription() {
-    const headers = await getAuthHeaders();
-    const response = await fetch(`${API_BASE}/subscription/me`, { headers });
-    return handleResponse(response);
+    try {
+      const headers = await getAuthHeaders();
+      const response = await fetch(`${API_BASE}/subscription/me`, { headers });
+      if (response.ok && (response.headers.get('content-type') || '').includes('application/json')) {
+        return handleResponse(response);
+      }
+    } catch {
+      // Fall back to D1 profile + stats
+    }
+    const [profRes, statsRes] = await Promise.all([
+      d1Profile.getMyProfile().catch(() => null),
+      d1Profile.getMyStats().catch(() => null),
+    ]);
+    const planId = profRes?.profile?.plan || 'free';
+    const isPro = planId === 'pro';
+    return {
+      success: true,
+      plan: {
+        id: planId,
+        name: isPro ? 'CareerPilot Pro' : 'Free Starter (BYOK)',
+        limits: { resumes: isPro ? Infinity : 5, trackedJobs: isPro ? Infinity : 50 },
+      },
+      usage: {
+        resumes: statsRes?.stats?.resumesCreated ?? 0,
+        trackedJobs: statsRes?.stats?.applicationsTracked ?? 0,
+      },
+    };
   },
 
   async createCheckoutSession(planId = 'pro') {
-    const headers = await getAuthHeaders();
-    const response = await fetch(`${API_BASE}/subscription/create-checkout-session`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ planId }),
-    });
-    return handleResponse(response);
+    try {
+      const headers = await getAuthHeaders();
+      const response = await fetch(`${API_BASE}/subscription/create-checkout-session`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ planId }),
+      });
+      if (response.ok && (response.headers.get('content-type') || '').includes('application/json')) {
+        return handleResponse(response);
+      }
+    } catch {
+      // Fall back to D1 profile upgrade in preview/BYOK mode
+    }
+    await d1Profile.updateMyProfile({ plan: planId, isPro: planId === 'pro' });
+    return {
+      success: true,
+      sessionId: `d1_demo_${Date.now()}`,
+      checkoutUrl: `${window.location.origin}/dashboard?payment=success&plan=${planId}`,
+      message: `Upgraded to ${planId} in D1 preview mode!`,
+    };
   },
 
   async createPortalSession() {
-    const headers = await getAuthHeaders();
-    const response = await fetch(`${API_BASE}/subscription/create-portal-session`, {
-      method: 'POST',
-      headers,
-    });
-    return handleResponse(response);
+    try {
+      const headers = await getAuthHeaders();
+      const response = await fetch(`${API_BASE}/subscription/create-portal-session`, {
+        method: 'POST',
+        headers,
+      });
+      if (response.ok && (response.headers.get('content-type') || '').includes('application/json')) {
+        return handleResponse(response);
+      }
+    } catch {
+      // Fall back to settings route
+    }
+    return { success: true, portalUrl: `${window.location.origin}/settings` };
   },
 };

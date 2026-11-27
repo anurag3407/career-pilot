@@ -4,14 +4,14 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { validate } from '../middleware/validate.js';
 import { supabaseAdmin, isSupabaseConfigured } from '../config/supabase.js';
+import { isD1Configured, isD1RestConfigured, queryD1, gatewayRequest } from '../config/d1.js';
 
 const router = express.Router();
 
 // ---------------------------------------------------------------------------
 // Career profile — one master resume, target roles, and weekly apply target
 // that feed tailoring, mock interviews, LinkedIn rewrites, and outreach.
-// Stored in Supabase `career_profiles` (one row per user, service-role writes
-// from this route; the web app also reads/writes it client-side via RLS).
+// Stored in Cloudflare D1 `career_profiles` (or Supabase if configured).
 // ---------------------------------------------------------------------------
 
 const careerProfileSchema = z.object({
@@ -37,6 +37,21 @@ function mapProfile(row) {
 }
 
 router.get('/', verifyToken, asyncHandler(async (req, res) => {
+  if (isD1Configured) {
+    if (isD1RestConfigured) {
+      const rows = await queryD1(`SELECT * FROM career_profiles WHERE user_id = ? LIMIT 1`, [req.user.uid]);
+      const row = rows[0] || null;
+      if (row) {
+        row.target_roles = typeof row.target_roles === 'string' ? JSON.parse(row.target_roles || '[]') : row.target_roles;
+        row.data = typeof row.data === 'string' ? JSON.parse(row.data || '{}') : row.data;
+      }
+      return res.json({ success: true, data: mapProfile(row), profile: mapProfile(row) });
+    }
+    const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+    const result = await gatewayRequest('/db/career-profile', { method: 'GET', token, userId: req.user.uid });
+    return res.json(result);
+  }
+
   if (!isSupabaseConfigured) throw new ApiError(503, 'Career profile storage is not configured');
 
   const { data, error } = await supabaseAdmin
@@ -50,6 +65,17 @@ router.get('/', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 router.put('/', verifyToken, validate(careerProfileSchema), asyncHandler(async (req, res) => {
+  if (isD1Configured) {
+    const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+    const result = await gatewayRequest('/db/career-profile', {
+      method: 'PUT',
+      body: req.body,
+      token,
+      userId: req.user.uid,
+    });
+    return res.json(result);
+  }
+
   if (!isSupabaseConfigured) throw new ApiError(503, 'Career profile storage is not configured');
 
   const body = req.body;

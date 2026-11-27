@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Login from '../pages/Login'
@@ -7,15 +7,15 @@ vi.mock('../hooks/useAuth', () => ({
   useAuth: () => ({
     user: null,
     loading: false,
+    login: vi.fn(),
+    signup: vi.fn(),
+    loginWithGoogle: vi.fn(),
+    loginWithGitHub: vi.fn(),
   }),
 }))
 
-vi.mock('../components/Navbar', () => ({
-  default: () => <div>Mock Navbar</div>,
-}))
-
 describe('Login page', () => {
-  test('renders a safe preview state when auth is not configured', () => {
+  test('renders Cloudflare D1 authentication card by default', () => {
     render(
       <MemoryRouter>
         <Login />
@@ -23,17 +23,17 @@ describe('Login page', () => {
     )
 
     expect(screen.getByRole('heading', { name: /welcome back/i })).toBeInTheDocument()
-    expect(screen.getByText(/authentication is not configured/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/you@example.com/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
   })
 
-  test('keeps users in the product flow with template and home links', () => {
+  test('provides link to register for new accounts', () => {
     render(
       <MemoryRouter>
         <Login />
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('link', { name: /browse templates/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /back to home/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /create one now/i })).toBeInTheDocument()
   })
 })

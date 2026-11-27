@@ -4,6 +4,8 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { validate } from '../middleware/validate.js';
 import { supabaseAdmin, isSupabaseConfigured } from '../config/supabase.js';
+import { isD1RestConfigured, queryD1 } from '../config/d1.js';
+import { saveTrackedJobToD1 } from '../services/d1DataService.js';
 import TrackedJob from '../models/TrackedJob.model.js';
 
 const router = express.Router();
@@ -73,7 +75,14 @@ router.post('/track', verifyToken, validate(extensionTrackSchema), asyncHandler(
   // Idempotent save — re-tracking the same listing returns the existing card
   // so the extension can always deep-link to its packet.
   let existing = null;
-  if (isSupabaseConfigured) {
+  if (isD1RestConfigured) {
+    const rows = await queryD1(
+      `SELECT * FROM tracked_jobs WHERE user_id = ? AND job_id = ? LIMIT 1`,
+      [userId, jobId]
+    ).catch(() => []);
+    existing = rows[0] || null;
+  }
+  if (!existing && isSupabaseConfigured) {
     const { data } = await supabaseAdmin
       .from('tracked_jobs')
       .select('*')
@@ -84,7 +93,7 @@ router.post('/track', verifyToken, validate(extensionTrackSchema), asyncHandler(
   }
   if (!existing) {
     existing = await TrackedJob.findOne({ userId, jobId }).lean().catch(() => null);
-    if (existing && isSupabaseConfigured) {
+    if (existing && (isD1RestConfigured || isSupabaseConfigured)) {
       // Mongo-only row (pre-unification): surface it as its Mongo id.
       existing = { ...existing, id: existing._id?.toString?.() ?? existing._id };
     }
@@ -97,9 +106,12 @@ router.post('/track', verifyToken, validate(extensionTrackSchema), asyncHandler(
     });
   }
 
-  // 1. Supabase — the board's source of truth.
+  // 1. Cloudflare D1 (primary) or Supabase
   let saved = null;
-  if (isSupabaseConfigured) {
+  if (isD1RestConfigured) {
+    saved = await saveTrackedJobToD1(toSupabasePayload(userId, body, jobId));
+  }
+  if (!saved && isSupabaseConfigured) {
     try {
       const { data, error } = await supabaseAdmin
         .from('tracked_jobs')

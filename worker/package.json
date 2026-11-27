@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Single AI gateway for CareerPilot — provider router, BYOK passthrough, job search proxy",
+  "description": "Single AI & D1 gateway for CareerPilot — auth, D1 CRUD, AI router, BYOK passthrough, job search proxy",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "tail": "wrangler tail"
+    "tail": "wrangler tail",
+    "test": "node --test test/*.test.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

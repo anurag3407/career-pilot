@@ -490,7 +490,7 @@ const OSS_POINTS = [
   {
     icon: ShieldCheck,
     title: 'Your data, your database',
-    desc: 'Self-host against your own Supabase project. BYOK means AI keys never leave your control.',
+    desc: 'Self-host against your own Cloudflare D1 database. BYOK means AI keys never leave your control.',
   },
   {
     icon: GitFork,
@@ -520,7 +520,7 @@ export function OpenSourceSection() {
             </h2>
             <p className="mt-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
               CareerPilot is a monorepo you can read, run and remix: a React frontend, a single
-              Cloudflare Worker gateway, and a Supabase schema you fully own. No black boxes, no
+              Cloudflare Worker gateway, and a Cloudflare D1 schema you fully own. No black boxes, no
               vendor lock-in — star it, fork it, ship it.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">

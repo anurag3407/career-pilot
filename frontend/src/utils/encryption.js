@@ -2,9 +2,14 @@ import CryptoJS from 'crypto-js';
 
 const FALLBACK_SECRET = 'fallback_secret_key_careerpilot';
 
-function getSupabaseUserId() {
+function getActiveUserId() {
   if (typeof window === 'undefined' || !window.localStorage) return null;
   try {
+    const d1Raw = localStorage.getItem('careerpilot:d1:session');
+    if (d1Raw) {
+      const parsed = JSON.parse(d1Raw);
+      if (parsed?.user?.id) return parsed.user.id;
+    }
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key && (key.startsWith('sb-') && key.endsWith('-auth-token'))) {
@@ -19,7 +24,7 @@ function getSupabaseUserId() {
 }
 
 const getSecretKey = () => {
-  const userId = getSupabaseUserId();
+  const userId = getActiveUserId();
   return userId || FALLBACK_SECRET;
 };
 

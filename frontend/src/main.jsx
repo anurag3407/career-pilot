@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
-import { isSupabaseConfigured } from './config/supabase'
+import { isD1Configured } from './config/d1'
 
 class DebugBoundary extends React.Component {
   constructor(props) {
@@ -56,9 +56,9 @@ class DebugBoundary extends React.Component {
   }
 }
 
-if (import.meta.env.DEV && !isSupabaseConfigured) {
+if (import.meta.env.DEV && !isD1Configured) {
   console.warn(
-    'Supabase is not configured (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY missing); running in public-preview mode.',
+    'D1 auth is disabled (VITE_DISABLE_D1_AUTH=true); running in public-preview mode.',
   )
 }
 

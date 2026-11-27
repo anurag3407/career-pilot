@@ -2,22 +2,33 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Loader2, ShieldAlert } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import { d1Auth } from '../config/d1'
 import { consumePostAuthRedirect } from '../utils/authRedirect'
 
 /**
- * Landing point for OAuth and email-confirmation round-trips. Supabase
- * detects the session from the URL hash; once the user resolves we forward
- * them to their intended destination (stored before the redirect) or the
- * dashboard — never the marketing home page.
+ * Landing point for OAuth round-trips from the Cloudflare Worker gateway.
+ * Extracts `#access_token=...`, hydrates the D1 auth session, and redirects
+ * to the stored post-auth destination (or /dashboard).
  */
 export default function AuthCallback() {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
   const [timedOut, setTimedOut] = useState(false)
+  const [tokenError, setTokenError] = useState(null)
   const [urlError] = useState(() => {
     const params = new URLSearchParams(window.location.hash.replace(/^#/, ''))
     return params.get('error_description') || params.get('error')
   })
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+    const accessToken = params.get('access_token')
+    if (accessToken && !urlError) {
+      d1Auth.setSessionFromToken(accessToken).then(({ error }) => {
+        if (error) setTokenError(error.message || 'Could not verify token')
+      })
+    }
+  }, [urlError])
 
   useEffect(() => {
     if (!loading && user) {
@@ -26,12 +37,12 @@ export default function AuthCallback() {
   }, [user, loading, navigate])
 
   useEffect(() => {
-    if (urlError) return undefined
+    if (urlError || tokenError) return undefined
     const timer = setTimeout(() => setTimedOut(true), 12000)
     return () => clearTimeout(timer)
-  }, [urlError])
+  }, [urlError, tokenError])
 
-  const failed = Boolean(urlError) || (timedOut && !loading && !user)
+  const failed = Boolean(urlError || tokenError) || (timedOut && !loading && !user)
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -47,7 +58,7 @@ export default function AuthCallback() {
             <p className="mt-2 text-sm text-muted-foreground">
               {urlError
                 ? decodeURIComponent(urlError.replace(/\+/g, ' '))
-                : 'We couldn’t verify your session. Please try signing in again.'}
+                : (tokenError || 'We couldn’t verify your session. Please try signing in again.')}
             </p>
             <Link
               to="/login"

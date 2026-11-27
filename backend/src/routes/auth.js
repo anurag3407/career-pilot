@@ -4,6 +4,7 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import { saveUserToAppwrite } from '../services/appwriteDataService.js';
 import { saveUserToSupabase } from '../services/supabaseDataService.js';
+import { saveUserToD1 } from '../services/d1DataService.js';
 import { validate } from '../middleware/validate.js';
 import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 import User from '../models/User.model.js';
@@ -115,7 +116,12 @@ router.post('/verify', verifyToken, asyncHandler(async (req, res) => {
     console.warn('Could not save user to Appwrite:', error.message);
   }
 
-  // Save/update user in Supabase on each verification
+  // Save/update user in Cloudflare D1 & Supabase on each verification
+  try {
+    await saveUserToD1(req.user);
+  } catch (error) {
+    console.warn('Could not save user to D1:', error.message);
+  }
   try {
     await saveUserToSupabase(req.user);
   } catch (error) {

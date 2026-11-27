@@ -1,6 +1,7 @@
 import { clerkMiddleware, createClerkClient } from '@clerk/express';
 import { ApiError } from './errorHandler.js';
 import { supabaseAdmin, isSupabaseConfigured } from '../config/supabase.js';
+import { verifyD1Token } from '../config/d1.js';
 
 const getClerkClient = () => {
   if (process.env.CLERK_SECRET_KEY) {
@@ -42,10 +43,29 @@ const attachUserToReq = async (req, res, next) => {
       return next();
     }
 
-    // 2. Supabase Auth via Bearer token
+    // 2. Cloudflare D1 Auth via Bearer JWT
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
+    if (token) {
+      const d1User = await verifyD1Token(token);
+      if (d1User) {
+        const email = (d1User.email || '').toLowerCase();
+        const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+        req.user = {
+          id: d1User.id || d1User.uid,
+          uid: d1User.uid || d1User.id,
+          email: d1User.email,
+          name: d1User.displayName || d1User.name || d1User.email?.split('@')[0] || 'User',
+          picture: d1User.photoURL || d1User.avatarUrl || null,
+          emailVerified: Boolean(d1User.emailVerified ?? true),
+          isAdmin: Boolean(d1User.isAdmin || adminEmails.includes(email)),
+        };
+        return next();
+      }
+    }
+
+    // 3. Fallback: Supabase Auth via Bearer token (if configured)
     if (token && supabaseAdmin?.auth) {
       try {
         const { data, error } = await supabaseAdmin.auth.getUser(token);

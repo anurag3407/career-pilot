@@ -3,6 +3,7 @@ import { ApiError } from './errorHandler.js';
 import Resume from '../models/Resume.model.js';
 import TrackedJob from '../models/TrackedJob.model.js';
 import { getUserFromSupabase } from '../services/supabaseDataService.js';
+import { getUserFromD1 } from '../services/d1DataService.js';
 
 /**
  * Resolves the authenticated user's current subscription plan.
@@ -17,9 +18,12 @@ export async function attachUserPlan(req, res, next) {
     const userId = req.user.id || req.user.uid;
     let planId = 'free';
 
-    // 1. Check Supabase profile
-    const supaProfile = await getUserFromSupabase(userId);
-    if (supaProfile?.plan) {
+    // 1. Check D1 profile, then Supabase profile
+    const d1Profile = await getUserFromD1(userId);
+    const supaProfile = d1Profile ? null : await getUserFromSupabase(userId);
+    if (d1Profile?.plan) {
+      planId = d1Profile.plan;
+    } else if (supaProfile?.plan) {
       planId = supaProfile.plan;
     } else if (req.user.plan) {
       planId = req.user.plan;

@@ -40,9 +40,8 @@ export default function ChatPanel() {
     addMessage({ role: 'assistant', content: '' });
 
     try {
-      const { supabase } = await import('../../config/supabase');
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData?.session?.access_token || null;
+      const { getD1AccessToken } = await import('../../config/d1');
+      const token = await getD1AccessToken();
 
       const response = await fetch(`${API_BASE}/analyzer/chat`, {
         method: 'POST',

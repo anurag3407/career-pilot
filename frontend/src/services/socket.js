@@ -17,10 +17,10 @@ export const initializeSocket = async () => {
 
   const getFreshToken = async () => {
     try {
-      const { supabase } = await import('../config/supabase.js');
-      const { data } = await supabase.auth.getSession();
-      if (data?.session?.access_token) {
-        return data.session.access_token;
+      const { getD1AccessToken } = await import('../config/d1.js');
+      const token = await getD1AccessToken();
+      if (token) {
+        return token;
       }
     } catch {
       // fallback
@@ -31,9 +31,8 @@ export const initializeSocket = async () => {
 
   let hasAuth = false;
   try {
-    const { supabase } = await import('../config/supabase.js');
-    const { data } = await supabase.auth.getSession();
-    hasAuth = Boolean(data?.session);
+    const { getD1AccessToken } = await import('../config/d1.js');
+    hasAuth = Boolean(await getD1AccessToken());
   } catch {
     hasAuth = false;
   }

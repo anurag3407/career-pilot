@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AuthContext } from './AuthContext'
 import { authApi } from '../services/api'
-import { supabase, isSupabaseConfigured } from '../config/supabase'
+import { d1Auth, isD1Configured } from '../config/d1'
 import { storePostAuthRedirect } from '../utils/authRedirect'
 
-// OAuth and email confirmation leave the SPA entirely, so they return through
-// /auth/callback which restores the intended destination (or /dashboard).
 const authCallbackUrl = () => `${window.location.origin}/auth/callback`
 
-function SupabaseAuthState({ children }) {
+function D1AuthState({ children }) {
   const [user, setUser] = useState(null)
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -17,8 +15,7 @@ function SupabaseAuthState({ children }) {
   useEffect(() => {
     let mounted = true
 
-    // Initial session load
-    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+    d1Auth.getSession().then(({ data: { session: initialSession } }) => {
       if (!mounted) return
       setSession(initialSession)
       if (initialSession?.user) {
@@ -31,8 +28,7 @@ function SupabaseAuthState({ children }) {
       if (mounted) setLoading(false)
     })
 
-    // Listen to Supabase auth events
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+    const { data: { subscription } } = d1Auth.onAuthStateChange(async (_event, newSession) => {
       if (!mounted) return
       setSession(newSession)
       if (newSession?.user) {
@@ -44,29 +40,40 @@ function SupabaseAuthState({ children }) {
       }
     })
 
-    async function mapAndSetUser(supaUser) {
-      const meta = supaUser.user_metadata || {}
+    async function mapAndSetUser(d1User) {
       const mapped = {
-        uid: supaUser.id,
-        id: supaUser.id,
-        email: supaUser.email,
+        uid: d1User.uid || d1User.id,
+        id: d1User.id || d1User.uid,
+        email: d1User.email,
         displayName:
-          meta.full_name ||
-          meta.name ||
-          meta.username ||
-          supaUser.email?.split('@')[0],
-        photoURL: meta.avatar_url || meta.picture || null,
-        isAdmin: false,
+          d1User.displayName ||
+          d1User.name ||
+          d1User.username ||
+          d1User.email?.split('@')[0],
+        photoURL: d1User.photoURL || d1User.avatarUrl || null,
+        isAdmin: Boolean(d1User.isAdmin),
       }
 
       try {
         const res = await authApi.getProfile()
         if (mounted && res?.success && res?.user) {
           mapped.isAdmin = !!res.user.isAdmin
+          mapped.displayName = res.user.displayName || mapped.displayName
+          mapped.photoURL = res.user.photoURL || mapped.photoURL
           setIsAdmin(mapped.isAdmin)
         }
       } catch (err) {
-        console.warn('Profile fetch for admin check:', err.message)
+        if (err?.status === 401) {
+          await d1Auth.signOut().catch(() => {})
+          if (mounted) {
+            setUser(null)
+            setSession(null)
+            setIsAdmin(false)
+            setLoading(false)
+          }
+          return
+        }
+        console.warn('Profile fetch for user hydration:', err.message)
       } finally {
         if (mounted) {
           setUser(mapped)
@@ -87,7 +94,7 @@ function SupabaseAuthState({ children }) {
     const metadata = typeof emailOrObj === 'object' ? (emailOrObj.metadata || emailOrObj.options?.data || {}) : metaArg
 
     storePostAuthRedirect(redirectTo)
-    return await supabase.auth.signUp({
+    return await d1Auth.signUp({
       email,
       password,
       options: {
@@ -101,7 +108,7 @@ function SupabaseAuthState({ children }) {
     const email = typeof emailOrObj === 'object' ? emailOrObj.email : emailOrObj
     const password = typeof emailOrObj === 'object' ? emailOrObj.password : passwordArg
 
-    return await supabase.auth.signInWithPassword({
+    return await d1Auth.signInWithPassword({
       email,
       password,
     })
@@ -109,42 +116,37 @@ function SupabaseAuthState({ children }) {
 
   const loginWithGoogle = async (redirectTo = '/dashboard') => {
     storePostAuthRedirect(redirectTo)
-    return await supabase.auth.signInWithOAuth({
+    return await d1Auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: authCallbackUrl(),
-      },
+      options: { redirectTo },
     })
   }
 
   const loginWithLinkedIn = async (redirectTo = '/dashboard') => {
     storePostAuthRedirect(redirectTo)
-    return await supabase.auth.signInWithOAuth({
+    return await d1Auth.signInWithOAuth({
       provider: 'linkedin_oidc',
-      options: {
-        redirectTo: authCallbackUrl(),
-      },
+      options: { redirectTo },
     })
   }
 
   const loginWithGitHub = async (redirectTo = '/dashboard') => {
     storePostAuthRedirect(redirectTo)
-    return await supabase.auth.signInWithOAuth({
+    return await d1Auth.signInWithOAuth({
       provider: 'github',
-      options: {
-        redirectTo: authCallbackUrl(),
-      },
+      options: { redirectTo },
     })
   }
 
   const logout = async () => {
-    await supabase.auth.signOut()
+    await d1Auth.signOut()
     setUser(null)
     setSession(null)
+    setIsAdmin(false)
   }
 
   const getToken = async () => {
-    const { data } = await supabase.auth.getSession()
+    const { data } = await d1Auth.getSession()
     return data?.session?.access_token || null
   }
 
@@ -162,7 +164,8 @@ function SupabaseAuthState({ children }) {
       logout,
       getToken,
       isConfigured: true,
-      isSupabaseConfigured: true,
+      isD1Configured: true,
+      isSupabaseConfigured: false,
       isMockAuth: false,
     }),
     [user, session, loading, isAdmin],
@@ -178,6 +181,7 @@ function PublicPreviewAuthState({ children }) {
       loading: false,
       isAdmin: false,
       isConfigured: false,
+      isD1Configured: false,
       isSupabaseConfigured: false,
       signup: async () => {},
       login: async () => {},
@@ -195,8 +199,8 @@ function PublicPreviewAuthState({ children }) {
 }
 
 export function AuthProvider({ children }) {
-  if (isSupabaseConfigured) {
-    return <SupabaseAuthState>{children}</SupabaseAuthState>
+  if (isD1Configured) {
+    return <D1AuthState>{children}</D1AuthState>
   }
   return <PublicPreviewAuthState>{children}</PublicPreviewAuthState>
 }
