@@ -13,6 +13,7 @@ on:
       - master
     paths:
       - 'backend/**'
+  workflow_dispatch:
 
 jobs:
   test:
@@ -32,10 +33,22 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: './backend/package-lock.json'
+          cache-dependency-path: |
+            ./backend/package-lock.json
+            ./frontend/package-lock.json
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
+
+      # portfolioHtmlGenerator tests read the pre-built standalone bundle, so
+      # build it before testing — otherwise they fail on a missing dist-portfolio.
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Build portfolio bundle
+        working-directory: ./frontend
+        run: npm run build:portfolio
 
       - name: Run linter
         run: npm run lint
