@@ -16,6 +16,18 @@
 
   <div id="alertBox" class="alert-box hidden"></div>
 
+  <!-- Profile match — is this role even worth applying to? -->
+  <div id="matchPanel" class="hidden" style="background: rgba(204,66,12,0.08); border: 1px solid rgba(204,66,12,0.25); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+      <strong style="font-size: 12px;">Profile match</strong>
+      <span id="matchScore" style="font-weight: 800; font-size: 14px;">—</span>
+    </div>
+    <div style="height: 6px; border-radius: 3px; background: rgba(0,0,0,0.12); overflow: hidden;">
+      <div id="matchBar" style="height: 100%; width: 0%; background: #CC420C; transition: width .4s ease;"></div>
+    </div>
+    <p id="matchDetail" style="font-size: 11px; margin-top: 6px; opacity: .8;">Checking against your master profile…</p>
+  </div>
+
   <form id="jobForm" class="form">
     <div class="field">
       <label for="jobTitle">Job Title</label>
@@ -56,6 +68,9 @@
     <button type="submit" id="saveBtn" class="btn primary">
       <span>Save to CareerPilot</span>
     </button>
+    <button type="button" id="openPacketBtn" class="btn primary" style="margin-top: 8px;">
+      <span>Save &amp; build the packet →</span>
+    </button>
   </form>
 
   <div class="settings-toggle">
@@ -66,6 +81,10 @@
     <div class="field">
       <label for="apiUrl">CareerPilot API URL</label>
       <input type="text" id="apiUrl" value="http://localhost:5000">
+    </div>
+    <div class="field">
+      <label for="appUrl">CareerPilot Web App URL</label>
+      <input type="text" id="appUrl" value="http://localhost:5173">
     </div>
     <div class="field">
       <label for="authToken">Supabase / JWT Auth Token</label>
