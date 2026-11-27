@@ -477,7 +477,7 @@ router.post(
   aiRateLimiter,
   validate(generateEmailSchema),
   asyncHandler(async (req, res) => {
-    const { resume, jobDesc, tone } = req.body;
+    const { resume, jobDesc, tone, emailType, context } = req.body;
 
     if (!resume || !jobDesc) {
       throw new ApiError(400, "Resume and Job Description are required");
@@ -490,6 +490,8 @@ router.post(
         jobDesc,
         tone || "Professional",
         req.aiProvider,
+        emailType || "application",
+        context || "",
       );
       res.json({
         success: true,

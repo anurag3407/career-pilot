@@ -10,6 +10,9 @@ export const companyResearchSchema = z.object({
     .string({ required_error: 'companyName is required' })
     .min(1, 'companyName cannot be empty'),
   industry: z.string().optional(),
+  // Optional job description — lets the research panel on a tracked job
+  // ground the research in the role the user is actually applying to.
+  jobDescription: z.string().max(10000).optional(),
 });
 
 /**

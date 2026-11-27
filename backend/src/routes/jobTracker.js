@@ -25,13 +25,13 @@ const router = express.Router();
 
 // Research a company using AI
 router.post('/research', verifyToken, extractAIProvider, aiRateLimiter, validate(companyResearchSchema), asyncHandler(async (req, res) => {
-  const { companyName, industry } = req.body;
+  const { companyName, industry, jobDescription } = req.body;
 
   if (!companyName || !companyName.trim()) {
     throw new ApiError(400, 'Company name is required for research');
   }
 
-  const research = await researchCompany(companyName, industry, req.aiProvider);
+  const research = await researchCompany(companyName, industry, req.aiProvider, jobDescription);
   res.json({
     success: true,
     data: research,

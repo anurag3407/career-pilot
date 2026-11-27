@@ -13,16 +13,21 @@ const resolveProvider = (aiProvider) => aiProvider || getDefaultProvider();
  * @param {string} companyName - Name of the company to research
  * @param {string} [fallbackIndustry] - Fallback industry if available
  * @param {object} [aiProvider] - Optional AI provider adapter (from middleware)
+ * @param {string} [jobDescription] - Optional stored job description to ground
+ *   the research in the role the user is applying to
  */
-export const researchCompany = async (companyName, fallbackIndustry = '', aiProvider) => {
+export const researchCompany = async (companyName, fallbackIndustry = '', aiProvider, jobDescription = '') => {
   if (!companyName || !companyName.trim()) {
     throw new Error('Company name is required for research.');
   }
 
   const provider = resolveProvider(aiProvider);
+  const jdContext = jobDescription && jobDescription.trim()
+    ? `\n  The user is applying to this specific role there:\n  """\n  ${jobDescription.trim().slice(0, 4000)}\n  """\n  Where relevant, orient the research (culture, news, interview angles) toward what matters for this role.`
+    : '';
 
   const prompt = `
-  You are an expert market analyst and corporate researcher. Conduct deep research on the company: "${companyName.trim()}" (Industry: "${fallbackIndustry}").
+  You are an expert market analyst and corporate researcher. Conduct deep research on the company: "${companyName.trim()}" (Industry: "${fallbackIndustry}").${jdContext}
   Provide detailed, accurate, and current information. If the company is small or highly private, provide highly realistic, context-appropriate estimations based on market peers.
 
   You MUST return ONLY a valid JSON object in the exact format shown below.

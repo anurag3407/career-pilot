@@ -86,6 +86,8 @@ export const tailorResumeSchema = z.object({
 
 /**
  * POST /api/enhance/generate-email
+ * emailType selects the composer template: first note, follow-up,
+ * thank-you, or negotiate.
  */
 export const generateEmailSchema = z.object({
   resume: z
@@ -98,6 +100,11 @@ export const generateEmailSchema = z.object({
     .enum(['Professional', 'Friendly', 'Formal', 'Casual'])
     .optional()
     .default('Professional'),
+  emailType: z
+    .enum(['application', 'follow_up', 'thank_you', 'negotiate'])
+    .optional()
+    .default('application'),
+  context: z.string().max(4000).optional(),
 });
 
 /**

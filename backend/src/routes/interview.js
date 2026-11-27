@@ -195,6 +195,36 @@ router.post('/start', verifyToken, extractAIProvider, aiRateLimiter, validate(st
 }));
 
 // ---------------------------------------------------------------------------
+// POST /api/interview/preview-questions
+// Lightweight question preview for the application packet: generates likely
+// interview questions for a role WITHOUT creating an interview session.
+// ---------------------------------------------------------------------------
+router.post('/preview-questions', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+    const {
+        jobRole = 'this role',
+        industry = 'technology',
+        experienceLevel = 'Mid',
+        questionCount = 5,
+        resumeText = '',
+        jobDescriptionText = '',
+        language = 'en'
+    } = req.body || {};
+
+    const count = Math.min(Math.max(parseInt(questionCount) || 5, 1), 10);
+    const questions = await generateInterviewQuestions(
+        { jobRole, industry, experienceLevel, questionCount: count, resumeText, jobDescriptionText, language },
+        req.aiProvider
+    );
+
+    res.json({
+        success: true,
+        data: { questions },
+        provider: req.aiProvider.providerName,
+        providerSource: req.aiProviderSource
+    });
+}));
+
+// ---------------------------------------------------------------------------
 // POST /api/interview/warmup-questions
 // ---------------------------------------------------------------------------
 router.post('/warmup-questions', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {

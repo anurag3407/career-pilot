@@ -57,7 +57,22 @@ const trackedJobSchema = new mongoose.Schema({
         default: 'saved',
         index: true
     },
-    notes: [noteSchema]
+    notes: [noteSchema],
+    // Application packet — mirrors the Supabase columns added in
+    // 20261115000000_application_packets.sql. The Supabase row is the
+    // board's source of truth; these keep the REST API in sync.
+    resumeId: { type: String, default: null },
+    resumeVersionId: { type: String, default: null },
+    coverLetterId: { type: String, default: null },
+    interviewId: { type: String, default: null },
+    appliedAt: { type: Date, default: null },
+    nextActionAt: { type: Date, default: null, index: true },
+    nextActionType: { type: String, default: null },
+    interviewAt: { type: Date, default: null },
+    lastActivityAt: { type: Date, default: Date.now },
+    packet: { type: mongoose.Schema.Types.Mixed, default: {} },
+    offer: { type: mongoose.Schema.Types.Mixed, default: {} },
+    rejection: { type: mongoose.Schema.Types.Mixed, default: {} }
 }, {
     timestamps: {
         createdAt: 'createdAt',
