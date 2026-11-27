@@ -1,3 +1,13 @@
+# [1.287.0](https://github.com/anurag3407/career-pilot/compare/v1.286.0...v1.287.0) (2026-11-27)
+
+
+### Features
+
+* **db:** application packets migration and documentation ([ba3a4b0](https://github.com/anurag3407/career-pilot/commit/ba3a4b0cae326c21587a2eb10c71f1cb049ab7f7))
+* **extension:** score listings against the master profile before saving ([6bd0a33](https://github.com/anurag3407/career-pilot/commit/6bd0a337cc16303e8242d7933d56d53030db5d8a))
+* **frontend:** application packets workspace, career profile, message composer ([841ab8e](https://github.com/anurag3407/career-pilot/commit/841ab8ee26f40f7d09eeb0bfd1aa21f2d1f120a2))
+* **jobs:** application packets API with career profile and jobs tracking ([52ad69e](https://github.com/anurag3407/career-pilot/commit/52ad69e679d7d1bd12f0394e71ec47937ae6662e))
+
 # [1.286.0](https://github.com/anurag3407/career-pilot/compare/v1.285.0...v1.286.0) (2026-11-15)
 
 
