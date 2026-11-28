@@ -23,6 +23,8 @@ export default function CanvasPreview({
   scrollToken = null,
   reloadToken = 0,
   onCommit,
+  onAction,
+  onSwitchToStudio,
   onNoField,
 }) {
   const iframeRef = useRef(null);
@@ -66,12 +68,13 @@ export default function CanvasPreview({
         post({ type: 'pf:doc', doc });
         post({ type: 'pf:editing', enabled: editing });
       }
-      if (data.type === 'pf:commit') onCommit?.(data.path, data.value);
+      if (data.type === 'pf:commit') onCommit?.(data.path, data.value, data.options);
+      if (data.type === 'pf:action') onAction?.(data.action, data.payload);
       if (data.type === 'pf:no-field') onNoField?.(data.text);
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [doc, editing, onCommit, onNoField, post]);
+  }, [doc, editing, onCommit, onAction, onNoField, post]);
 
   useEffect(() => {
     if (!ready) return;
@@ -115,12 +118,24 @@ export default function CanvasPreview({
         <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
           {editing ? (
             <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-500">
-              <MousePointerClick className="h-3 w-3" /> Click text to edit
+              <MousePointerClick className="h-3 w-3" />
+              {(!doc?.pf?.templateId || doc.pf.templateId === 'Studio')
+                ? 'Click text to edit · Drag edges to resize'
+                : 'Click text to edit'}
             </span>
           ) : (
             <span className="flex items-center gap-1.5 rounded-full bg-muted px-2 py-0.5 font-medium">
               <ShieldCheck className="h-3 w-3" /> Preview mode
             </span>
+          )}
+          {editing && doc?.pf?.templateId && doc.pf.templateId !== 'Studio' && onSwitchToStudio && (
+            <button
+              type="button"
+              onClick={onSwitchToStudio}
+              className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary hover:bg-primary/20"
+            >
+              Use Studio layout to resize items
+            </button>
           )}
           <span className="hidden sm:inline">
             {activeDevice.label} · {frameWidth}px

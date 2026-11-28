@@ -867,6 +867,16 @@ export const githubPortfolioApi = {
     return handleResponse(response)
   },
 
+  async update(id, payload) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/${id}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify(payload),
+    })
+    return handleResponse(response)
+  },
+
   async remove(id) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/portfolio/github/${id}`, {

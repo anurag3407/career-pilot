@@ -11,6 +11,7 @@ const buildSchema = new mongoose.Schema(
     repoCount: { type: Number, default: 0 },
     selectedRepos: { type: [String], default: [] }, // ['owner/repo', ...]
     sections: { type: mongoose.Schema.Types.Mixed, default: {} },
+    layout: { type: mongoose.Schema.Types.Mixed, default: {} },
     templateSlug: { type: String, default: 'github-default' },
     profile: { type: mongoose.Schema.Types.Mixed, default: {} },
     languageStats: { type: mongoose.Schema.Types.Mixed, default: {} },

@@ -9,6 +9,7 @@ import { validate } from '../middleware/validate.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import {
   buildGithubPortfolioSchema,
+  updateGithubPortfolioSchema,
   validateTokenSchema,
 } from '../schemas/portfolioGithub.schema.js';
 import {
@@ -251,6 +252,7 @@ router.post(
       profile: profile || {},
       languageStats: aggregate.topLanguages,
       aggregateStats: aggregate,
+      layout: {},
       authMode: req.githubAuthMode === 'env' ? 'public' : req.githubAuthMode || 'public',
       shareToken,
       isPublic: Boolean(isPublic),
@@ -261,9 +263,11 @@ router.post(
       success: true,
       data: {
         id: saved._id,
+        _id: saved._id,
         shareToken,
         username,
         sections,
+        layout: saved.layout || {},
         profile,
         languageStats: aggregate.topLanguages,
         aggregateStats: aggregate,
@@ -301,6 +305,32 @@ router.get(
     const build = await GithubPortfolioBuild.findOne({ _id: req.params.id, userId }).lean();
     if (!build) throw new ApiError(404, 'Build not found');
     res.json({ success: true, data: build });
+  })
+);
+
+// PATCH /api/portfolio/github/:id — save post-generation edits & layout sizes
+router.patch(
+  '/:id',
+  verifyToken,
+  validate(updateGithubPortfolioSchema),
+  asyncHandler(async (req, res) => {
+    const { uid: userId } = req.user;
+    const updates = {};
+    if (req.body.sections !== undefined) updates.sections = req.body.sections;
+    if (req.body.layout !== undefined) updates.layout = req.body.layout;
+    if (req.body.templateSlug !== undefined) updates.templateSlug = req.body.templateSlug;
+    if (req.body.isPublic !== undefined) updates.isPublic = req.body.isPublic;
+
+    const updated = await GithubPortfolioBuild.findOneAndUpdate(
+      { _id: req.params.id, userId },
+      { $set: updates },
+      { new: true }
+    )
+      .select('-__v')
+      .lean();
+
+    if (!updated) throw new ApiError(404, 'Build not found');
+    res.json({ success: true, data: updated });
   })
 );
 

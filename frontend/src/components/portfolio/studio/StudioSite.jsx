@@ -3,8 +3,15 @@ import {
   DEFAULT_DESIGN,
   getDensity,
   getFontPair,
+  getSectionMaxWidth,
   getWidth,
 } from './portfolioDocument';
+import ResizableBox, {
+  SECTION_WIDTH_STEPS,
+  snapColSpan,
+  snapSectionWidth,
+  snapStep,
+} from './ResizableBox';
 
 /* ─────────────────────────────── small helpers ─────────────────────────────── */
 
@@ -159,9 +166,75 @@ const NAV_TYPES = new Set([
   'contact',
 ]);
 
+const chromeBtnStyle = {
+  background: 'rgba(255,255,255,0.12)',
+  border: 'none',
+  borderRadius: 999,
+  padding: '2px 6px',
+  color: '#fff',
+  fontSize: 10,
+  fontWeight: 600,
+  cursor: 'pointer',
+};
+
+function SectionWrap({ section, editable, accentColor, onAction, className = 'pf-block', children }) {
+  const customMax = getSectionMaxWidth(section.maxWidth);
+  const customPad = section.paddingY ? Number(section.paddingY) : null;
+  const widthLabel = SECTION_WIDTH_STEPS.find((w) => w.id === section.maxWidth)?.label || 'Default';
+  const sizeLabel = [
+    section.maxWidth && section.maxWidth !== 'auto' ? widthLabel : null,
+    customPad ? `${customPad}px pad` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ') || 'Auto';
+
+  const blockStyle = {
+    ...(customMax ? { '--pf-max': `${customMax}px` } : {}),
+    ...(customPad ? { paddingTop: `${customPad}px`, paddingBottom: `${customPad}px` } : {}),
+  };
+
+  return (
+    <section id={section.id} data-pf-section={section.id} className={className} style={blockStyle}>
+      <ResizableBox
+        enabled={editable}
+        variant="section"
+        label={section.type}
+        sizeLabel={sizeLabel}
+        accentColor={accentColor}
+        isCustomized={Boolean((section.maxWidth && section.maxWidth !== 'auto') || customPad)}
+        onResizeX={(dx, rect) => {
+          const nextWidth = snapSectionWidth(rect.width, dx);
+          onAction?.('patchSection', {
+            sectionId: section.id,
+            patch: { maxWidth: nextWidth },
+            mergeKey: `resize:section:${section.id}:w`,
+          });
+        }}
+        onResizeY={(dy, rect) => {
+          const basePad = customPad || 76;
+          const nextPad = snapStep(basePad + dy / 2, 12, 24, 180);
+          onAction?.('patchSection', {
+            sectionId: section.id,
+            patch: { paddingY: nextPad },
+            mergeKey: `resize:section:${section.id}:h`,
+          });
+        }}
+        onReset={() =>
+          onAction?.('patchSection', {
+            sectionId: section.id,
+            patch: { maxWidth: 'auto', paddingY: null },
+          })
+        }
+      >
+        {children}
+      </ResizableBox>
+    </section>
+  );
+}
+
 /* ─────────────────────────────────── sections ──────────────────────────────── */
 
-export default function StudioSite({ doc, editable = false, onEdit }) {
+export default function StudioSite({ doc, editable = false, onEdit, onAction }) {
   const design = { ...DEFAULT_DESIGN, ...(doc?.pf?.design || {}) };
   const font = getFontPair(design.font);
   const width = getWidth(design.width);
@@ -176,6 +249,7 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
   const navSections = sections.filter((section) => NAV_TYPES.has(section.type));
   const email = doc?.contact?.email || doc?.personal?.email || '';
   const location = doc?.contact?.location || doc?.personal?.location || '';
+  const projectCols = Math.max(1, Math.min(3, Number(design.projectColumns) || 2));
 
   const style = {
     '--pf-bg': design.background,
@@ -194,19 +268,24 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
     '--pf-display': font.display,
     '--pf-body': font.body,
     '--pf-mono': font.mono,
-    '--pf-cols': String(design.projectColumns || 2),
+    '--pf-cols': String(projectCols),
   };
 
   const edit = editable ? onEdit : undefined;
+  const act = editable ? onAction : undefined;
 
   const renderSection = (section) => {
     switch (section.type) {
       case 'hero':
-        return <Hero key={section.id} doc={doc} design={design} editable={editable} onEdit={edit} email={email} />;
+        return (
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act} className="pf-hero">
+            <Hero doc={doc} design={design} editable={editable} onEdit={edit} onAction={act} email={email} />
+          </SectionWrap>
+        );
 
       case 'about':
         return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block">
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act}>
             <div className="pf-shell">
               <SectionHead eyebrow="About" title="The short version" accent={design.accent} />
               <div className="pf-prose">
@@ -259,95 +338,246 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
                 )}
               </div>
             </div>
-          </section>
+          </SectionWrap>
         );
 
       case 'stats':
         return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block pf-block-tight">
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act} className="pf-block pf-block-tight">
             <div className="pf-shell">
               <div className="pf-stats">
-                {(doc.stats || []).map((stat, index) => (
-                  <div className="pf-stat" key={stat.id || index}>
-                    <div className="pf-stat-value">
-                      <Editable path={`stats.${index}.value`} value={stat.value} editable={editable} onEdit={edit} />
-                      <Editable path={`stats.${index}.suffix`} value={stat.suffix} editable={editable} onEdit={edit} />
-                    </div>
-                    <Editable
-                      className="pf-stat-label"
-                      path={`stats.${index}.label`}
-                      value={stat.label}
-                      editable={editable}
-                      onEdit={edit}
-                    />
-                  </div>
-                ))}
+                {(doc.stats || []).map((stat, index) => {
+                  const span = stat.colSpan || 1;
+                  const cardH = stat.cardHeight || null;
+                  return (
+                    <ResizableBox
+                      key={stat.id || index}
+                      enabled={editable}
+                      className="pf-stat"
+                      label="Stat"
+                      sizeLabel={`${span > 1 ? `${span} cols` : '1 col'}${cardH ? ` · ${cardH}px` : ''}`}
+                      accentColor={design.accent}
+                      isCustomized={Boolean(span > 1 || cardH)}
+                      style={{
+                        gridColumn: span > 1 ? `span ${span}` : undefined,
+                        minHeight: cardH ? `${cardH}px` : undefined,
+                      }}
+                      onResizeX={(dx, rect) => {
+                        const nextSpan = snapColSpan(span, rect.width, dx, 2);
+                        onEdit?.(`stats.${index}.colSpan`, nextSpan, { mergeKey: `resize:stats.${index}:x` });
+                      }}
+                      onResizeY={(dy, rect) => {
+                        const nextH = snapStep(rect.height + dy, 16, 96, 340);
+                        onEdit?.(`stats.${index}.cardHeight`, nextH, { mergeKey: `resize:stats.${index}:y` });
+                      }}
+                      onReset={() => {
+                        act?.('patchItemLayout', { path: 'stats', index, patch: { colSpan: 1, cardHeight: null } });
+                      }}
+                      actions={
+                        <button
+                          type="button"
+                          style={chromeBtnStyle}
+                          onClick={() => act?.('removeItem', { path: 'stats', index })}
+                          title="Remove stat"
+                        >
+                          Remove
+                        </button>
+                      }
+                    >
+                      <div className="pf-stat-value">
+                        <Editable path={`stats.${index}.value`} value={stat.value} editable={editable} onEdit={edit} />
+                        <Editable path={`stats.${index}.suffix`} value={stat.suffix} editable={editable} onEdit={edit} />
+                      </div>
+                      <Editable
+                        className="pf-stat-label"
+                        path={`stats.${index}.label`}
+                        value={stat.label}
+                        editable={editable}
+                        onEdit={edit}
+                      />
+                    </ResizableBox>
+                  );
+                })}
               </div>
+              {editable && (
+                <div className="pf-canvas-add-row">
+                  <button
+                    type="button"
+                    data-pf-chrome="1"
+                    className="pf-canvas-add-btn"
+                    onClick={() =>
+                      act?.('addItem', {
+                        path: 'stats',
+                        item: { value: '10', suffix: '+', label: 'New highlight' },
+                      })
+                    }
+                  >
+                    + Add highlight
+                  </button>
+                </div>
+              )}
             </div>
-          </section>
+          </SectionWrap>
         );
 
       case 'projects':
         return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block">
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act}>
             <div className="pf-shell">
               <SectionHead eyebrow="Selected work" title="Projects" accent={design.accent} />
               <div className="pf-projects">
-                {(doc.projects || []).map((project, index) => (
-                  <article className="pf-project" key={project.id || index}>
-                    {project.image ? (
-                      <img className="pf-project-media" src={project.image} alt="" loading="lazy" />
-                    ) : (
-                      <div className="pf-project-media pf-project-placeholder" aria-hidden="true">
-                        <span>{initials(project.title)}</span>
-                      </div>
-                    )}
-                    <div className="pf-project-body">
-                      {project.featured && <span className="pf-pill">Featured</span>}
-                      <Editable
-                        as="h3"
-                        className="pf-project-title"
-                        path={`projects.${index}.title`}
-                        value={project.title}
-                        editable={editable}
-                        onEdit={edit}
-                      />
-                      <Editable
-                        as="p"
-                        className="pf-project-desc"
-                        path={`projects.${index}.description`}
-                        value={project.description}
-                        editable={editable}
-                        multiline
-                        onEdit={edit}
-                      />
-                      {(project.techStack || []).length > 0 && (
-                        <div className="pf-tags">
-                          {project.techStack.map((tag, tagIndex) => (
-                            <span className="pf-tag" key={`${tag}-${tagIndex}`}>
-                              {tag}
-                            </span>
-                          ))}
+                {(doc.projects || []).map((project, index) => {
+                  const span = Math.min(projectCols, project.colSpan || 1);
+                  const cardH = project.cardHeight || null;
+                  const mediaH = project.mediaHeight || null;
+                  return (
+                    <ResizableBox
+                      key={project.id || index}
+                      enabled={editable}
+                      className="pf-project"
+                      label="Project"
+                      sizeLabel={`${span > 1 ? `${span} cols` : '1 col'}${cardH ? ` · ${cardH}px` : ''}`}
+                      accentColor={design.accent}
+                      isCustomized={Boolean(span > 1 || cardH || mediaH)}
+                      style={{
+                        gridColumn: span > 1 ? `span ${span}` : undefined,
+                        minHeight: cardH ? `${cardH}px` : undefined,
+                      }}
+                      onResizeX={(dx, rect) => {
+                        const nextSpan = snapColSpan(span, rect.width, dx, projectCols);
+                        onEdit?.(`projects.${index}.colSpan`, nextSpan, { mergeKey: `resize:projects.${index}:x` });
+                      }}
+                      onResizeY={(dy, rect) => {
+                        const nextH = snapStep(rect.height + dy, 20, 240, 760);
+                        onEdit?.(`projects.${index}.cardHeight`, nextH, { mergeKey: `resize:projects.${index}:y` });
+                      }}
+                      onReset={() => {
+                        act?.('patchItemLayout', {
+                          path: 'projects',
+                          index,
+                          patch: { colSpan: 1, cardHeight: null, mediaHeight: null },
+                        });
+                      }}
+                      actions={
+                        <button
+                          type="button"
+                          style={chromeBtnStyle}
+                          onClick={() => act?.('removeItem', { path: 'projects', index })}
+                          title="Remove project"
+                        >
+                          Delete
+                        </button>
+                      }
+                    >
+                      <ResizableBox
+                        enabled={editable}
+                        variant="media"
+                        label="Media"
+                        sizeLabel={mediaH ? `${mediaH}px` : '16:9'}
+                        accentColor={design.accent}
+                        isCustomized={Boolean(mediaH)}
+                        onResizeY={(dy, rect) => {
+                          const nextM = snapStep(rect.height + dy, 16, 100, 420);
+                          onEdit?.(`projects.${index}.mediaHeight`, nextM, { mergeKey: `resize:projects.${index}:media` });
+                        }}
+                        onReset={() => {
+                          onEdit?.(`projects.${index}.mediaHeight`, null);
+                        }}
+                      >
+                        {project.image ? (
+                          <img
+                            className="pf-project-media"
+                            src={project.image}
+                            alt=""
+                            loading="lazy"
+                            style={mediaH ? { height: `${mediaH}px`, aspectRatio: 'auto' } : undefined}
+                          />
+                        ) : (
+                          <div
+                            className="pf-project-media pf-project-placeholder"
+                            aria-hidden="true"
+                            style={mediaH ? { height: `${mediaH}px`, aspectRatio: 'auto' } : undefined}
+                          >
+                            <span>{initials(project.title)}</span>
+                          </div>
+                        )}
+                      </ResizableBox>
+                      <div className="pf-project-body">
+                        {project.featured && <span className="pf-pill">Featured</span>}
+                        <Editable
+                          as="h3"
+                          className="pf-project-title"
+                          path={`projects.${index}.title`}
+                          value={project.title}
+                          editable={editable}
+                          onEdit={edit}
+                        />
+                        <Editable
+                          as="p"
+                          className="pf-project-desc"
+                          path={`projects.${index}.description`}
+                          value={project.description}
+                          editable={editable}
+                          multiline
+                          onEdit={edit}
+                        />
+                        {(project.techStack || []).length > 0 && (
+                          <div className="pf-tags">
+                            {project.techStack.map((tag, tagIndex) => (
+                              <span className="pf-tag" key={`${tag}-${tagIndex}`}>
+                                <Editable
+                                  path={`projects.${index}.techStack.${tagIndex}`}
+                                  value={tag}
+                                  editable={editable}
+                                  onEdit={edit}
+                                />
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        <div className="pf-project-links">
+                          {project.liveUrl && (
+                            <a href={hrefFor(project.liveUrl)} target="_blank" rel="noreferrer">
+                              Live site <span aria-hidden="true">↗</span>
+                            </a>
+                          )}
+                          {project.githubUrl && (
+                            <a href={hrefFor(project.githubUrl)} target="_blank" rel="noreferrer">
+                              Code <span aria-hidden="true">↗</span>
+                            </a>
+                          )}
                         </div>
-                      )}
-                      <div className="pf-project-links">
-                        {project.liveUrl && (
-                          <a href={hrefFor(project.liveUrl)} target="_blank" rel="noreferrer">
-                            Live site <span aria-hidden="true">↗</span>
-                          </a>
-                        )}
-                        {project.githubUrl && (
-                          <a href={hrefFor(project.githubUrl)} target="_blank" rel="noreferrer">
-                            Code <span aria-hidden="true">↗</span>
-                          </a>
-                        )}
                       </div>
-                    </div>
-                  </article>
-                ))}
+                    </ResizableBox>
+                  );
+                })}
               </div>
+              {editable && (
+                <div className="pf-canvas-add-row">
+                  <button
+                    type="button"
+                    data-pf-chrome="1"
+                    className="pf-canvas-add-btn"
+                    onClick={() =>
+                      act?.('addItem', {
+                        path: 'projects',
+                        item: {
+                          title: 'New Project',
+                          description: 'Describe what you built, your role, and the measurable outcome.',
+                          techStack: ['TypeScript', 'React'],
+                          liveUrl: '',
+                          githubUrl: '',
+                          featured: false,
+                        },
+                      })
+                    }
+                  >
+                    + Add project
+                  </button>
+                </div>
+              )}
             </div>
-          </section>
+          </SectionWrap>
         );
 
       case 'skills': {
@@ -358,45 +588,98 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
           grouped.get(key).push(skill);
         }
         return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block">
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act}>
             <div className="pf-shell">
               <SectionHead eyebrow="Toolkit" title="Skills" accent={design.accent} />
               <div className="pf-skill-groups">
-                {[...grouped.entries()].map(([category, skills]) => (
-                  <div className="pf-skill-group" key={category}>
-                    <h3 className="pf-skill-category">{category}</h3>
-                    <div className="pf-skill-list">
-                      {skills.map((skill) => {
-                        const index = doc.skills.indexOf(skill);
-                        return (
-                          <div className="pf-skill" key={skill.id || skill.name}>
-                            <div className="pf-skill-head">
-                              <Editable
-                                path={`skills.${index}.name`}
-                                value={skill.name}
-                                editable={editable}
-                                onEdit={edit}
-                              />
-                              <span className="pf-skill-level">{Math.round(skill.level)}%</span>
-                            </div>
-                            <div className="pf-skill-track">
-                              <span style={{ width: `${Math.max(4, Math.min(100, skill.level))}%` }} />
-                            </div>
-                          </div>
+                {[...grouped.entries()].map(([category, skills]) => {
+                  const groupLayout = design.skillGroupLayouts?.[category] || {};
+                  const gSpan = groupLayout.colSpan || 1;
+                  const gHeight = groupLayout.cardHeight || null;
+                  return (
+                    <ResizableBox
+                      key={category}
+                      enabled={editable}
+                      className="pf-skill-group"
+                      label={category}
+                      sizeLabel={`${gSpan > 1 ? `${gSpan} cols` : '1 col'}${gHeight ? ` · ${gHeight}px` : ''}`}
+                      accentColor={design.accent}
+                      isCustomized={Boolean(gSpan > 1 || gHeight)}
+                      style={{
+                        gridColumn: gSpan > 1 ? `span ${gSpan}` : undefined,
+                        minHeight: gHeight ? `${gHeight}px` : undefined,
+                      }}
+                      onResizeX={(dx, rect) => {
+                        const nextSpan = snapColSpan(gSpan, rect.width, dx, 2);
+                        onEdit?.(
+                          `pf.design.skillGroupLayouts.${category}`,
+                          { ...groupLayout, colSpan: nextSpan },
+                          { mergeKey: `resize:skillgroup:${category}:x` },
                         );
-                      })}
-                    </div>
-                  </div>
-                ))}
+                      }}
+                      onResizeY={(dy, rect) => {
+                        const nextH = snapStep(rect.height + dy, 20, 140, 520);
+                        onEdit?.(
+                          `pf.design.skillGroupLayouts.${category}`,
+                          { ...groupLayout, cardHeight: nextH },
+                          { mergeKey: `resize:skillgroup:${category}:y` },
+                        );
+                      }}
+                      onReset={() => {
+                        onEdit?.(`pf.design.skillGroupLayouts.${category}`, {});
+                      }}
+                    >
+                      <h3 className="pf-skill-category">{category}</h3>
+                      <div className="pf-skill-list">
+                        {skills.map((skill) => {
+                          const index = doc.skills.indexOf(skill);
+                          return (
+                            <div className="pf-skill" key={skill.id || skill.name}>
+                              <div className="pf-skill-head">
+                                <Editable
+                                  path={`skills.${index}.name`}
+                                  value={skill.name}
+                                  editable={editable}
+                                  onEdit={edit}
+                                />
+                                <span className="pf-skill-level">{Math.round(skill.level)}%</span>
+                              </div>
+                              <div className="pf-skill-track">
+                                <span style={{ width: `${Math.max(4, Math.min(100, skill.level))}%` }} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </ResizableBox>
+                  );
+                })}
               </div>
+              {editable && (
+                <div className="pf-canvas-add-row">
+                  <button
+                    type="button"
+                    data-pf-chrome="1"
+                    className="pf-canvas-add-btn"
+                    onClick={() =>
+                      act?.('addItem', {
+                        path: 'skills',
+                        item: { name: 'New skill', category: 'Core', level: 85 },
+                      })
+                    }
+                  >
+                    + Add skill
+                  </button>
+                </div>
+              )}
             </div>
-          </section>
+          </SectionWrap>
         );
       }
 
       case 'experience':
         return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block">
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act}>
             <div className="pf-shell">
               <SectionHead eyebrow="Track record" title="Experience" accent={design.accent} />
               <div className="pf-timeline">
@@ -433,7 +716,14 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
                       {(role.bullets || []).length > 0 && (
                         <ul className="pf-bullets">
                           {role.bullets.map((bullet, bulletIndex) => (
-                            <li key={bulletIndex}>{bullet}</li>
+                            <li key={bulletIndex}>
+                              <Editable
+                                path={`experience.${index}.bullets.${bulletIndex}`}
+                                value={bullet}
+                                editable={editable}
+                                onEdit={edit}
+                              />
+                            </li>
                           ))}
                         </ul>
                       )}
@@ -442,12 +732,12 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
                 ))}
               </div>
             </div>
-          </section>
+          </SectionWrap>
         );
 
       case 'education':
         return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block">
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act}>
             <div className="pf-shell">
               <SectionHead eyebrow="Foundations" title="Education" accent={design.accent} />
               <div className="pf-edu-grid">
@@ -471,62 +761,108 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
                       editable={editable}
                       onEdit={edit}
                     />
-                    {entry.description && <p className="pf-muted">{entry.description}</p>}
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
-        );
-
-      case 'testimonials':
-        return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block">
-            <div className="pf-shell">
-              <SectionHead eyebrow="Kind words" title="Testimonials" accent={design.accent} />
-              <div className="pf-quotes">
-                {(doc.testimonials || []).map((quote, index) => (
-                  <figure className="pf-quote" key={quote.id || index}>
-                    <blockquote>
+                    {entry.description && (
                       <Editable
-                        path={`testimonials.${index}.content`}
-                        value={quote.content}
+                        as="p"
+                        className="pf-muted"
+                        path={`education.${index}.description`}
+                        value={entry.description}
                         editable={editable}
                         multiline
                         onEdit={edit}
                       />
-                    </blockquote>
-                    <figcaption>
-                      <span className="pf-avatar" aria-hidden="true">
-                        {initials(quote.author)}
-                      </span>
-                      <span>
-                        <Editable
-                          className="pf-quote-author"
-                          path={`testimonials.${index}.author`}
-                          value={quote.author}
-                          editable={editable}
-                          onEdit={edit}
-                        />
-                        <Editable
-                          className="pf-quote-role"
-                          path={`testimonials.${index}.role`}
-                          value={quote.role}
-                          editable={editable}
-                          onEdit={edit}
-                        />
-                      </span>
-                    </figcaption>
-                  </figure>
+                    )}
+                  </article>
                 ))}
               </div>
             </div>
-          </section>
+          </SectionWrap>
+        );
+
+      case 'testimonials':
+        return (
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act}>
+            <div className="pf-shell">
+              <SectionHead eyebrow="Kind words" title="Testimonials" accent={design.accent} />
+              <div className="pf-quotes">
+                {(doc.testimonials || []).map((quote, index) => {
+                  const span = quote.colSpan || 1;
+                  const cardH = quote.cardHeight || null;
+                  return (
+                    <ResizableBox
+                      key={quote.id || index}
+                      enabled={editable}
+                      className="pf-quote"
+                      label="Quote"
+                      sizeLabel={`${span > 1 ? `${span} cols` : '1 col'}${cardH ? ` · ${cardH}px` : ''}`}
+                      accentColor={design.accent}
+                      isCustomized={Boolean(span > 1 || cardH)}
+                      style={{
+                        gridColumn: span > 1 ? `span ${span}` : undefined,
+                        minHeight: cardH ? `${cardH}px` : undefined,
+                      }}
+                      onResizeX={(dx, rect) => {
+                        const nextSpan = snapColSpan(span, rect.width, dx, 2);
+                        onEdit?.(`testimonials.${index}.colSpan`, nextSpan, { mergeKey: `resize:testimonials.${index}:x` });
+                      }}
+                      onResizeY={(dy, rect) => {
+                        const nextH = snapStep(rect.height + dy, 20, 140, 440);
+                        onEdit?.(`testimonials.${index}.cardHeight`, nextH, { mergeKey: `resize:testimonials.${index}:y` });
+                      }}
+                      onReset={() => {
+                        act?.('patchItemLayout', { path: 'testimonials', index, patch: { colSpan: 1, cardHeight: null } });
+                      }}
+                      actions={
+                        <button
+                          type="button"
+                          style={chromeBtnStyle}
+                          onClick={() => act?.('removeItem', { path: 'testimonials', index })}
+                        >
+                          Remove
+                        </button>
+                      }
+                    >
+                      <blockquote>
+                        <Editable
+                          path={`testimonials.${index}.content`}
+                          value={quote.content}
+                          editable={editable}
+                          multiline
+                          onEdit={edit}
+                        />
+                      </blockquote>
+                      <figcaption>
+                        <span className="pf-avatar" aria-hidden="true">
+                          {initials(quote.author)}
+                        </span>
+                        <span>
+                          <Editable
+                            className="pf-quote-author"
+                            path={`testimonials.${index}.author`}
+                            value={quote.author}
+                            editable={editable}
+                            onEdit={edit}
+                          />
+                          <Editable
+                            className="pf-quote-role"
+                            path={`testimonials.${index}.role`}
+                            value={quote.role}
+                            editable={editable}
+                            onEdit={edit}
+                          />
+                        </span>
+                      </figcaption>
+                    </ResizableBox>
+                  );
+                })}
+              </div>
+            </div>
+          </SectionWrap>
         );
 
       case 'contact':
         return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block">
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act}>
             <div className="pf-shell">
               <div className="pf-contact">
                 <div>
@@ -579,12 +915,12 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
                 )}
               </div>
             </div>
-          </section>
+          </SectionWrap>
         );
 
       case 'socials':
         return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block pf-block-tight">
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act} className="pf-block pf-block-tight">
             <div className="pf-shell pf-socials">
               {Object.entries(SOCIAL_META).map(([key, meta]) =>
                 doc.socials?.[key] ? (
@@ -596,25 +932,69 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
                 ) : null,
               )}
             </div>
-          </section>
+          </SectionWrap>
         );
 
       case 'custom': {
-        const custom = customById.get(section.customId);
+        const customIdx = (doc.custom || []).findIndex((entry) => entry.id === section.customId);
+        const custom = customIdx >= 0 ? doc.custom[customIdx] : null;
         if (!custom) return null;
         return (
-          <section key={section.id} id={section.id} data-pf-section={section.id} className="pf-block">
+          <SectionWrap key={section.id} section={section} editable={editable} accentColor={design.accent} onAction={act}>
             <div className="pf-shell">
-              <SectionHead eyebrow="More" title={custom.title || 'More'} accent={design.accent} />
-              {custom.description && <p className="pf-muted">{custom.description}</p>}
+              <div className="pf-section-head">
+                <span className="pf-eyebrow" style={{ color: design.accent }}>More</span>
+                <Editable
+                  as="h2"
+                  className="pf-section-title"
+                  path={`custom.${customIdx}.title`}
+                  value={custom.title || 'More'}
+                  editable={editable}
+                  onEdit={edit}
+                />
+              </div>
+              {(custom.description || editable) && (
+                <Editable
+                  as="p"
+                  className="pf-muted"
+                  path={`custom.${customIdx}.description`}
+                  value={custom.description || (editable ? 'Add a short intro for this section.' : '')}
+                  editable={editable}
+                  multiline
+                  onEdit={edit}
+                />
+              )}
               <div className="pf-custom-list">
                 {(custom.items || []).map((item, index) => (
                   <article className="pf-custom-item" key={item.id || index}>
                     <div className="pf-custom-head">
-                      <h3>{item.title}</h3>
-                      {item.meta && <span className="pf-muted">{item.meta}</span>}
+                      <Editable
+                        as="h3"
+                        path={`custom.${customIdx}.items.${index}.title`}
+                        value={item.title}
+                        editable={editable}
+                        onEdit={edit}
+                      />
+                      {item.meta && (
+                        <Editable
+                          className="pf-muted"
+                          path={`custom.${customIdx}.items.${index}.meta`}
+                          value={item.meta}
+                          editable={editable}
+                          onEdit={edit}
+                        />
+                      )}
                     </div>
-                    {item.description && <p>{item.description}</p>}
+                    {(item.description || editable) && (
+                      <Editable
+                        as="p"
+                        path={`custom.${customIdx}.items.${index}.description`}
+                        value={item.description || ''}
+                        editable={editable}
+                        multiline
+                        onEdit={edit}
+                      />
+                    )}
                     {item.url && (
                       <a href={hrefFor(item.url)} target="_blank" rel="noreferrer">
                         Open <span aria-hidden="true">↗</span>
@@ -624,7 +1004,7 @@ export default function StudioSite({ doc, editable = false, onEdit }) {
                 ))}
               </div>
             </div>
-          </section>
+          </SectionWrap>
         );
       }
 
@@ -691,83 +1071,110 @@ function Hero({ doc, design, editable, onEdit, email }) {
   const primaryHref = hrefFor(doc.hero.primaryHref, email) || '#projects';
   const secondaryHref = hrefFor(doc.hero.secondaryHref || email, email);
   const socials = Object.entries(SOCIAL_META).filter(([key]) => doc.socials?.[key]);
+  const avatarSize = Number(design.avatarSize) || 340;
 
   return (
-    <section id="hero" data-pf-section="hero" className="pf-hero">
-      <div className={`pf-shell pf-hero-grid${design.heroLayout === 'centered' ? ' is-centered' : ''}`}>
-        <div className="pf-hero-copy">
-          {doc.hero.availability && (
-            <span className="pf-available">
-              <span className="pf-dot" aria-hidden="true" />
-              <Editable path="hero.availability" value={doc.hero.availability} editable={editable} onEdit={onEdit} />
-            </span>
+    <div className={`pf-shell pf-hero-grid${design.heroLayout === 'centered' ? ' is-centered' : ''}`}>
+      <div className="pf-hero-copy">
+        {doc.hero.availability && (
+          <span className="pf-available">
+            <span className="pf-dot" aria-hidden="true" />
+            <Editable path="hero.availability" value={doc.hero.availability} editable={editable} onEdit={onEdit} />
+          </span>
+        )}
+        <Editable as="h1" className="pf-name" path="personal.name" value={name} editable={editable} onEdit={onEdit} />
+        <Editable
+          as="p"
+          className="pf-hero-role"
+          path="personal.title"
+          value={role}
+          editable={editable}
+          onEdit={onEdit}
+        />
+        <Editable
+          as="p"
+          className="pf-tagline"
+          path={doc.hero.subheadline ? 'hero.subheadline' : 'personal.tagline'}
+          value={doc.hero.subheadline || doc.personal.tagline}
+          editable={editable}
+          multiline
+          onEdit={onEdit}
+        />
+
+        <div className="pf-hero-actions">
+          {doc.hero.primaryLabel && (
+            <a className="pf-button pf-button-lg" href={primaryHref}>
+              <Editable
+                path="hero.primaryLabel"
+                value={doc.hero.primaryLabel}
+                editable={editable}
+                onEdit={onEdit}
+              />
+            </a>
           )}
-          <Editable as="h1" className="pf-name" path="personal.name" value={name} editable={editable} onEdit={onEdit} />
-          <Editable
-            as="p"
-            className="pf-hero-role"
-            path="personal.title"
-            value={role}
-            editable={editable}
-            onEdit={onEdit}
-          />
-          <Editable
-            as="p"
-            className="pf-tagline"
-            path={doc.hero.subheadline ? 'hero.subheadline' : 'personal.tagline'}
-            value={doc.hero.subheadline || doc.personal.tagline}
-            editable={editable}
-            multiline
-            onEdit={onEdit}
-          />
-
-          <div className="pf-hero-actions">
-            {doc.hero.primaryLabel && (
-              <a className="pf-button pf-button-lg" href={primaryHref}>
-                {doc.hero.primaryLabel}
-              </a>
-            )}
-            {doc.hero.secondaryLabel && (
-              <a className="pf-button-ghost" href={secondaryHref}>
-                {doc.hero.secondaryLabel}
-              </a>
-            )}
-          </div>
-
-          {socials.length > 0 && (
-            <div className="pf-hero-socials">
-              {socials.map(([key, meta]) => (
-                <a key={key} href={hrefFor(doc.socials[key], email)} target="_blank" rel="noreferrer">
-                  {meta.label}
-                </a>
-              ))}
-            </div>
+          {doc.hero.secondaryLabel && (
+            <a className="pf-button-ghost" href={secondaryHref}>
+              <Editable
+                path="hero.secondaryLabel"
+                value={doc.hero.secondaryLabel}
+                editable={editable}
+                onEdit={onEdit}
+              />
+            </a>
           )}
         </div>
 
-        {design.heroLayout !== 'centered' && (
-          <div className="pf-portrait-wrap">
-            <div className="pf-portrait-glow" aria-hidden="true" />
-            {doc.personal.avatar ? (
-              <img className="pf-portrait" src={doc.personal.avatar} alt={name} />
-            ) : (
-              <div className="pf-portrait pf-portrait-mono" aria-hidden="true">
-                <span>{initials(name) || 'ME'}</span>
-              </div>
-            )}
-            {(doc.stats || []).length > 0 && (
-              <div className="pf-portrait-card">
-                <span className="pf-portrait-value">
-                  {doc.stats[0].value}
-                  {doc.stats[0].suffix}
-                </span>
-                <span className="pf-portrait-label">{doc.stats[0].label}</span>
-              </div>
-            )}
+        {socials.length > 0 && (
+          <div className="pf-hero-socials">
+            {socials.map(([key, meta]) => (
+              <a key={key} href={hrefFor(doc.socials[key], email)} target="_blank" rel="noreferrer">
+                {meta.label}
+              </a>
+            ))}
           </div>
         )}
       </div>
-    </section>
+
+      {design.heroLayout !== 'centered' && (
+        <ResizableBox
+          enabled={editable}
+          variant="media"
+          className="pf-portrait-wrap"
+          label="Portrait"
+          sizeLabel={`${avatarSize}px`}
+          accentColor={design.accent}
+          isCustomized={avatarSize !== 340}
+          style={{ width: `min(${avatarSize}px, 100%)` }}
+          onResizeX={(dx, rect) => {
+            const next = snapStep(rect.width - dx, 20, 180, 480);
+            onEdit?.('pf.design.avatarSize', next, { mergeKey: 'resize:avatar' });
+          }}
+          onResizeXY={(dx, dy, rect) => {
+            const next = snapStep(rect.width + Math.max(dx, dy), 20, 180, 480);
+            onEdit?.('pf.design.avatarSize', next, { mergeKey: 'resize:avatar' });
+          }}
+          onReset={() => onEdit?.('pf.design.avatarSize', 340)}
+        >
+          <div className="pf-portrait-glow" aria-hidden="true" />
+          {doc.personal.avatar ? (
+            <img className="pf-portrait" src={doc.personal.avatar} alt={name} />
+          ) : (
+            <div className="pf-portrait pf-portrait-mono" aria-hidden="true">
+              <span>{initials(name) || 'ME'}</span>
+            </div>
+          )}
+          {(doc.stats || []).length > 0 && (
+            <div className="pf-portrait-card">
+              <span className="pf-portrait-value">
+                {doc.stats[0].value}
+                {doc.stats[0].suffix}
+              </span>
+              <span className="pf-portrait-label">{doc.stats[0].label}</span>
+            </div>
+          )}
+        </ResizableBox>
+      )}
+    </div>
   );
 }
 
@@ -1002,6 +1409,15 @@ const SITE_CSS = `
 .pf-site .pf-editable:hover, .pf-site .pf-editable:focus { outline: 1px dashed color-mix(in srgb, var(--pf-accent) 70%, transparent); outline-offset: 4px; background: color-mix(in srgb, var(--pf-accent) 7%, transparent); }
 .pf-site .pf-editable:focus { outline-style: solid; outline-width: 2px; }
 .pf-placeholder { color: color-mix(in srgb, var(--pf-muted) 80%, transparent); }
+.pf-canvas-add-row { display: flex; justify-content: flex-start; margin-top: 16px; }
+.pf-canvas-add-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
+  border-radius: 999px; border: 1px dashed var(--pf-line-strong);
+  background: color-mix(in srgb, var(--pf-surface) 70%, transparent);
+  color: var(--pf-accent); font-size: 0.78rem; font-weight: 650; cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.pf-canvas-add-btn:hover { border-color: var(--pf-accent); background: var(--pf-soft); }
 
 @media (max-width: 900px) {
   .pf-hero-grid { grid-template-columns: minmax(0, 1fr); }
@@ -1010,6 +1426,7 @@ const SITE_CSS = `
   .pf-role { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .pf-nav-links { display: none; }
   .pf-projects { grid-template-columns: minmax(0, 1fr); }
+  .pf-projects > *, .pf-stats > *, .pf-quotes > *, .pf-skill-groups > * { grid-column: 1 / -1 !important; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pf-site *, .pf-site *::before, .pf-site *::after { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }

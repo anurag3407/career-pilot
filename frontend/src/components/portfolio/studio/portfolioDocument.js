@@ -100,7 +100,21 @@ export const DEFAULT_DESIGN = {
   heroLayout: 'split',
   projectColumns: 2,
   showNav: true,
+  avatarSize: 340,
+  skillGroupLayouts: {},
 };
+
+export const SECTION_WIDTH_PRESETS = [
+  { id: 'auto', label: 'Default', max: null },
+  { id: 'narrow', label: 'Narrow', max: 760 },
+  { id: 'regular', label: 'Regular', max: 1080 },
+  { id: 'wide', label: 'Wide', max: 1280 },
+  { id: 'full', label: 'Full', max: 1440 },
+];
+
+export function getSectionMaxWidth(widthId) {
+  return SECTION_WIDTH_PRESETS.find((option) => option.id === widthId)?.max || null;
+}
 
 export function getDesignPreset(id) {
   return DESIGN_PRESETS.find((preset) => preset.id === id) || DESIGN_PRESETS[0];
@@ -321,21 +335,38 @@ function withIds(list, prefix, mapper) {
   });
 }
 
+const clampNumber = (value, min, max) => {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return null;
+  return Math.max(min, Math.min(max, Math.round(num)));
+};
+
+const clampSpan = (value, max = 3) => {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num < 1) return 1;
+  return Math.max(1, Math.min(max, Math.round(num)));
+};
+
 function normalizeSections(rawSections) {
   const input = asArray(rawSections);
   const seen = new Set();
   const sections = [];
 
   for (const entry of input) {
-    const type = asString(asObject(entry).type || entry);
+    const obj = asObject(entry);
+    const type = asString(obj.type || entry);
     if (!type || seen.has(type)) continue;
     if (type !== 'custom' && !SECTION_TYPE_MAP[type]) continue;
     seen.add(type);
+    const maxWidth = ['auto', 'narrow', 'regular', 'wide', 'full'].includes(obj.maxWidth) ? obj.maxWidth : 'auto';
+    const paddingY = clampNumber(obj.paddingY, 24, 180);
     sections.push({
-      id: asString(asObject(entry).id) || type,
+      id: asString(obj.id) || type,
       type,
-      visible: asObject(entry).visible !== false,
-      customId: asString(asObject(entry).customId),
+      visible: obj.visible !== false,
+      customId: asString(obj.customId),
+      ...(maxWidth !== 'auto' ? { maxWidth } : {}),
+      ...(paddingY ? { paddingY } : {}),
     });
   }
 
@@ -391,11 +422,17 @@ export function normalizeDocument(raw) {
       website: asString(socials.website || socials.portfolio),
       email: asString(socials.email || email),
     },
-    stats: withIds(source.stats, 'stat', (item) => ({
-      value: asString(item.value),
-      suffix: asString(item.suffix),
-      label: asString(item.label),
-    })),
+    stats: withIds(source.stats, 'stat', (item) => {
+      const colSpan = clampSpan(item.colSpan, 2);
+      const cardHeight = clampNumber(item.cardHeight, 96, 360);
+      return {
+        value: asString(item.value),
+        suffix: asString(item.suffix),
+        label: asString(item.label),
+        ...(colSpan > 1 ? { colSpan } : {}),
+        ...(cardHeight ? { cardHeight } : {}),
+      };
+    }),
     skills: withIds(source.skills, 'skill', (item, index) => ({
       name: asString(typeof item === 'string' ? item : item.name),
       category: asString(item.category) || 'Core',
@@ -406,6 +443,9 @@ export function normalizeDocument(raw) {
     })),
     projects: withIds(source.projects, 'project', (item, index) => {
       const stack = item.techStack || item.technologies || item.tech;
+      const colSpan = clampSpan(item.colSpan, 3);
+      const cardHeight = clampNumber(item.cardHeight, 220, 760);
+      const mediaHeight = clampNumber(item.mediaHeight, 100, 420);
       return {
         title: asString(item.title || item.name) || `Project ${index + 1}`,
         description: asString(item.description || item.summary),
@@ -414,6 +454,9 @@ export function normalizeDocument(raw) {
         githubUrl: asString(item.githubUrl || item.repoUrl),
         image: asString(item.image || item.imageUrl),
         featured: Boolean(item.featured),
+        ...(colSpan > 1 ? { colSpan } : {}),
+        ...(cardHeight ? { cardHeight } : {}),
+        ...(mediaHeight ? { mediaHeight } : {}),
       };
     }),
     experience: withIds(source.experience, 'role', (item) => ({
@@ -437,11 +480,17 @@ export function normalizeDocument(raw) {
       year: asString(item.year || item.endDate),
       description: asString(item.description),
     })),
-    testimonials: withIds(source.testimonials, 'quote', (item) => ({
-      author: asString(item.author || item.name),
-      role: asString(item.role || item.title),
-      content: asString(item.content || item.quote || item.text),
-    })),
+    testimonials: withIds(source.testimonials, 'quote', (item) => {
+      const colSpan = clampSpan(item.colSpan, 2);
+      const cardHeight = clampNumber(item.cardHeight, 140, 440);
+      return {
+        author: asString(item.author || item.name),
+        role: asString(item.role || item.title),
+        content: asString(item.content || item.quote || item.text),
+        ...(colSpan > 1 ? { colSpan } : {}),
+        ...(cardHeight ? { cardHeight } : {}),
+      };
+    }),
     contact: {
       email,
       phone: asString(contact.phone || personal.phone),
@@ -478,6 +527,8 @@ export function normalizeDocument(raw) {
         projectColumns: [1, 2, 3].includes(Number(design.projectColumns))
           ? Number(design.projectColumns)
           : DEFAULT_DESIGN.projectColumns,
+        avatarSize: clampNumber(design.avatarSize, 180, 480) || DEFAULT_DESIGN.avatarSize,
+        skillGroupLayouts: asObject(design.skillGroupLayouts),
       },
       meta: {
         siteTitle: asString(meta.siteTitle),
@@ -722,4 +773,114 @@ export function toPortfolioData(doc) {
     },
     about: { bio: doc.personal.bio },
   };
+}
+
+/** True when any section, card, or avatar has a custom in-canvas size override. */
+export function hasCustomLayout(doc) {
+  if (!doc) return false;
+  if ((doc.pf?.sections || []).some((s) => (s.maxWidth && s.maxWidth !== 'auto') || s.paddingY)) return true;
+  if (doc.pf?.design?.avatarSize && doc.pf.design.avatarSize !== DEFAULT_DESIGN.avatarSize) return true;
+  if (Object.keys(doc.pf?.design?.skillGroupLayouts || {}).length > 0) return true;
+  if ((doc.projects || []).some((p) => (p.colSpan && p.colSpan > 1) || p.cardHeight || p.mediaHeight)) return true;
+  if ((doc.stats || []).some((s) => (s.colSpan && s.colSpan > 1) || s.cardHeight)) return true;
+  if ((doc.testimonials || []).some((t) => (t.colSpan && t.colSpan > 1) || t.cardHeight)) return true;
+  return false;
+}
+
+/** Convert a GitHub AI portfolio build into a full Studio document. */
+export function fromGithubPortfolioBuild(build) {
+  const sections = asObject(build?.sections);
+  const hero = asObject(sections.hero);
+  const profile = asObject(build?.profile);
+  const stats = asObject(build?.aggregateStats);
+  const layout = asObject(build?.layout);
+  const rawProjects = asArray(sections.projects);
+  const rawSkills = asObject(sections.skills);
+
+  const skills = [
+    ...asArray(rawSkills.languages).map((l) => ({
+      name: asString(l?.name || l),
+      category: 'Languages',
+      level: Math.max(20, Math.min(100, (Number(l?.level) || 3) * 20)),
+    })),
+    ...asArray(rawSkills.tools).map((t) => ({
+      name: asString(t),
+      category: 'Tools',
+      level: 85,
+    })),
+    ...asArray(rawSkills.domains).map((d) => ({
+      name: asString(d),
+      category: 'Domains',
+      level: 85,
+    })),
+  ].filter((s) => s.name);
+
+  const projects = rawProjects.map((proj, index) => {
+    const key = proj?.id || proj?.name || `proj-${index}`;
+    const cardLayout = asObject(layout?.projects?.[key]);
+    return {
+      title: asString(proj?.title || proj?.name) || `Project ${index + 1}`,
+      description: [asString(proj?.summary), ...asArray(proj?.highlights).map((h) => `• ${h}`)]
+        .filter(Boolean)
+        .join('\n'),
+      techStack: asArray(proj?.tech).map(asString).filter(Boolean),
+      githubUrl: asString(proj?.url),
+      liveUrl: asString(proj?.liveUrl),
+      featured: index === 0,
+      colSpan: cardLayout.colSpan || 1,
+      cardHeight: cardLayout.cardHeight || null,
+    };
+  });
+
+  const statCards = [
+    stats.stars != null ? { value: String(stats.stars), suffix: '', label: 'GitHub Stars' } : null,
+    stats.forks != null ? { value: String(stats.forks), suffix: '', label: 'Total Forks' } : null,
+    { value: String(stats.reposAnalyzed || projects.length), suffix: '', label: 'Repositories' },
+  ].filter(Boolean);
+
+  return normalizeDocument({
+    personal: {
+      name: asString(profile.name || build?.username || 'Developer'),
+      title: asString(hero.headline || 'Software Engineer'),
+      tagline: asString(hero.subheadline),
+      bio: asString(sections.about),
+      location: asString(hero.location || profile.location),
+      email: asString(profile.email),
+      avatar: asString(profile.avatarUrl),
+    },
+    hero: {
+      headline: asString(hero.headline),
+      subheadline: asString(hero.subheadline),
+      availability: asString(hero.availableFor),
+      primaryLabel: 'View projects',
+      primaryHref: '#projects',
+      secondaryLabel: build?.username ? 'GitHub Profile' : '',
+      secondaryHref: asString(profile.htmlUrl),
+    },
+    socials: {
+      github: asString(profile.htmlUrl || (build?.username ? `https://github.com/${build.username}` : '')),
+      website: asString(profile.blog),
+    },
+    stats: statCards,
+    skills,
+    projects,
+    contact: {
+      email: asString(profile.email),
+      location: asString(hero.location || profile.location),
+      message: asString(sections.callToAction || 'Get in touch to collaborate.'),
+      showForm: true,
+    },
+    pf: {
+      templateId: 'Studio',
+      design: {
+        ...DEFAULT_DESIGN,
+        avatarSize: layout?.avatarSize ? clampNumber(layout.avatarSize * 3, 180, 480) || 340 : 340,
+      },
+      meta: {
+        siteTitle: asString(profile.name || build?.username),
+        description: asString(hero.subheadline || sections.about).slice(0, 160),
+        slug: slugify(build?.username || profile.name || 'github-portfolio'),
+      },
+    },
+  });
 }

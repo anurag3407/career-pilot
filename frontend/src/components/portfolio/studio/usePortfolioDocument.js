@@ -336,6 +336,25 @@ export function usePortfolioDocument({ templateId = 'Studio', portfolioId: initi
     [apply],
   );
 
+  const resetLayout = useCallback(() => {
+    apply((current) => ({
+      ...current,
+      projects: (current.projects || []).map(({ colSpan, cardHeight, mediaHeight, ...rest }) => rest),
+      stats: (current.stats || []).map(({ colSpan, cardHeight, ...rest }) => rest),
+      testimonials: (current.testimonials || []).map(({ colSpan, cardHeight, ...rest }) => rest),
+      pf: {
+        ...current.pf,
+        sections: (current.pf?.sections || []).map(({ maxWidth, paddingY, ...rest }) => rest),
+        design: {
+          ...current.pf.design,
+          avatarSize: 340,
+          skillGroupLayouts: {},
+        },
+      },
+    }));
+    toast.success('Item sizes reset');
+  }, [apply]);
+
   /* ── persistence ───────────────────────────────────────────────────────── */
   const save = useCallback(async () => {
     setSaving(true);
@@ -435,6 +454,7 @@ export function usePortfolioDocument({ templateId = 'Studio', portfolioId: initi
     removeSection,
     setTemplate,
     setDesign,
+    resetLayout,
     save,
     exportDocument,
     importDocument,

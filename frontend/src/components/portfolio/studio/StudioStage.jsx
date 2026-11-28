@@ -23,7 +23,7 @@ function normalizeText(value) {
 function findTextElement(target) {
   let element = target;
   if (!(element instanceof HTMLElement)) return null;
-  if (element.closest('input, textarea, select, button, svg, [contenteditable="true"]')) return null;
+  if (element.closest('input, textarea, select, button, svg, [contenteditable="true"], [data-pf-chrome="1"]')) return null;
 
   while (element.children.length > 0) {
     const child = element.lastElementChild;
@@ -237,7 +237,8 @@ export default function StudioStage() {
         <StudioSite
           doc={doc}
           editable={editing}
-          onEdit={(path, value) => post({ type: 'pf:commit', path, value })}
+          onEdit={(path, value, options) => post({ type: 'pf:commit', path, value, options })}
+          onAction={(action, payload) => post({ type: 'pf:action', action, payload })}
         />
       ) : (
         <Suspense

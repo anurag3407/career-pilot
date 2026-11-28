@@ -34,3 +34,14 @@ export const listReposSchema = z.object({
 export const validateTokenSchema = z.object({
   token: z.string({ required_error: 'GitHub token is required' }).min(10),
 });
+
+/**
+ * PATCH /api/portfolio/github/:id
+ * Persists post-generation content edits and in-window layout/size overrides.
+ */
+export const updateGithubPortfolioSchema = z.object({
+  sections: z.record(z.any()).optional(),
+  layout: z.record(z.any()).optional(),
+  templateSlug: z.string().max(80).optional(),
+  isPublic: z.boolean().optional(),
+});

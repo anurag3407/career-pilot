@@ -28,7 +28,7 @@ import Inspector from '../components/portfolio/studio/Inspector';
 import SectionsPanel from '../components/portfolio/studio/SectionsPanel';
 import TemplatesPanel from '../components/portfolio/studio/TemplatesPanel';
 import DeployModal from '../components/portfolio/DeployModal';
-import { SECTION_TYPES, scoreDocument } from '../components/portfolio/studio/portfolioDocument';
+import { SECTION_TYPES, hasCustomLayout, scoreDocument } from '../components/portfolio/studio/portfolioDocument';
 import { getTemplateMeta } from '../data/portfolioTemplates';
 import { cn } from '../lib/utils';
 
@@ -79,6 +79,7 @@ export default function PortfolioStudio() {
   );
 
   const readiness = useMemo(() => scoreDocument(doc), [doc]);
+  const customizedLayout = useMemo(() => hasCustomLayout(doc), [doc]);
   const templateMeta = getTemplateMeta(doc.pf.templateId);
   const title = doc.pf.meta.siteTitle || [doc.personal.name, doc.personal.title].filter(Boolean).join(' — ') || 'Untitled portfolio';
 
@@ -136,12 +137,55 @@ export default function PortfolioStudio() {
   );
 
   const handleCommit = useCallback(
-    (path, value) => {
+    (path, value, options) => {
       const current = path.split('.').reduce((acc, key) => (acc == null ? undefined : acc[key]), doc);
       if (typeof current === 'string' && current === value) return;
-      store.patch(path, value, { history: true, mergeKey: null });
+      store.patch(path, value, {
+        history: true,
+        mergeKey: options?.mergeKey !== undefined ? options.mergeKey : null,
+      });
     },
     [doc, store],
+  );
+
+  const handleCanvasAction = useCallback(
+    (action, payload = {}) => {
+      if (action === 'addItem' && payload.path) {
+        store.addItem(payload.path, payload.item || {});
+        return;
+      }
+      if (action === 'removeItem' && payload.path != null && typeof payload.index === 'number') {
+        store.removeItem(payload.path, payload.index);
+        return;
+      }
+      if (action === 'patchSection' && payload.sectionId) {
+        store.apply(
+          (current) => ({
+            ...current,
+            pf: {
+              ...current.pf,
+              sections: (current.pf?.sections || []).map((sec) =>
+                sec.id === payload.sectionId ? { ...sec, ...(payload.patch || {}) } : sec,
+              ),
+            },
+          }),
+          { mergeKey: payload.mergeKey || null },
+        );
+        return;
+      }
+      if (action === 'patchItemLayout' && payload.path && typeof payload.index === 'number') {
+        store.apply((current) => {
+          const list = Array.isArray(current[payload.path]) ? current[payload.path] : [];
+          return {
+            ...current,
+            [payload.path]: list.map((item, idx) =>
+              idx === payload.index ? { ...item, ...(payload.patch || {}) } : item,
+            ),
+          };
+        });
+      }
+    },
+    [store],
   );
 
   /* keyboard shortcuts */
@@ -270,7 +314,7 @@ export default function PortfolioStudio() {
             type="button"
             onClick={() => setEditing((value) => !value)}
             aria-pressed={editing}
-            title="Click-to-edit on the canvas (⌘E)"
+            title="Edit text and drag-resize items on canvas (⌘E)"
             className={cn(
               'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition',
               editing
@@ -279,8 +323,20 @@ export default function PortfolioStudio() {
             )}
           >
             <MousePointerClick className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">{editing ? 'Editing' : 'Edit on canvas'}</span>
+            <span className="hidden sm:inline">{editing ? 'Editing & resizing' : 'Edit & resize'}</span>
           </button>
+
+          {customizedLayout && (
+            <button
+              type="button"
+              onClick={store.resetLayout}
+              title="Reset custom item and section sizes"
+              className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2 py-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw className="h-3 w-3" />
+              <span className="hidden xl:inline">Reset sizes</span>
+            </button>
+          )}
 
           <button
             type="button"
@@ -439,6 +495,8 @@ export default function PortfolioStudio() {
             scrollToken={scrollToken}
             reloadToken={reloadToken}
             onCommit={handleCommit}
+            onAction={handleCanvasAction}
+            onSwitchToStudio={() => handleSelectTemplate('Studio')}
             onNoField={() =>
               toast('That text belongs to the template itself — edit it from the panel on the right.', {
                 icon: 'ℹ️',
