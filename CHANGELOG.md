@@ -1,3 +1,10 @@
+# [1.289.0](https://github.com/anurag3407/career-pilot/compare/v1.288.0...v1.289.0) (2026-11-28)
+
+
+### Features
+
+* add layout reset functionality and enhance portfolio editing experience ([c614256](https://github.com/anurag3407/career-pilot/commit/c61425668f61bd3b73b2b75a6c31a1fb5396a408))
+
 # [1.288.0](https://github.com/anurag3407/career-pilot/compare/v1.287.0...v1.288.0) (2026-11-28)
 
 
