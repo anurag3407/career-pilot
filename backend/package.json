@@ -29,7 +29,7 @@
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^18.0.10",
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.1",
     "groq-sdk": "^0.37.0",
