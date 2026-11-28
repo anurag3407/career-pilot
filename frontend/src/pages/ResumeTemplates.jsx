@@ -46,6 +46,7 @@ export default function ResumeTemplates() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user } = useAuth()
+  const resumeId = searchParams.get('resumeId')
 
   const [selectedId, setSelectedId] = useState(null)
   const [resumeData, setResumeData] = useState(null)     // raw incoming data
@@ -54,6 +55,11 @@ export default function ResumeTemplates() {
   const [layout, setLayout] = useState(DEFAULT_LAYOUT)
 
   const previewRef = useRef(null)
+  // Presentation choices restored from a saved resume. The template-selection
+  // effect below consumes this once so it does not overwrite the saved accent
+  // and font with that template's defaults.
+  const savedPresentationRef = useRef(null)
+  const presentationHydratedRef = useRef(false)
 
   // ─── Load resume data from one of three sources ───────────────────────────
   useEffect(() => {
@@ -73,7 +79,6 @@ export default function ResumeTemplates() {
         }
 
         // Priority 2: ?resumeId= query param (from ResumeView / Enhance)
-        const resumeId = searchParams.get('resumeId')
         if (resumeId) {
           const res = await resumeApi.getById(resumeId)
           // getById returns { success, data: {...resume} }. (Older code read
@@ -85,8 +90,17 @@ export default function ResumeTemplates() {
             parsed = markdownToStructured(text, record.title) || {}
           }
           if (!cancelled) {
+            const savedTemplate = record.template || parsed.template || ''
+            const savedOptions = record.templateOptions || parsed.templateOptions || {}
+            if (savedTemplate && GALLERY.some((t) => t.id === savedTemplate)) {
+              setSelectedId(savedTemplate)
+            }
+            savedPresentationRef.current = savedOptions
+            presentationHydratedRef.current = true
             setResumeData({
               ...parsed,
+              template: savedTemplate,
+              templateOptions: savedOptions,
               sectionOrder: record.sectionOrder || parsed.sectionOrder,
               customSections: (record.customSections && record.customSections.length > 0)
                 ? record.customSections
@@ -152,16 +166,42 @@ export default function ResumeTemplates() {
     return selectedEntry.fontId || ACCENT_PRESETS[selectedEntry.id]?.defaultFont || ACCENT_PRESETS[selectedEntry.baseId]?.defaultFont || 'sans'
   })
 
-  // When the selection changes, reset color/font picks to its defaults
+  // When the selection changes, reset color/font picks to its defaults — unless
+  // a saved resume supplied explicit choices, which win once.
   useEffect(() => {
     if (!selectedEntry) return
+    const saved = savedPresentationRef.current
+    savedPresentationRef.current = null
     const presets =
       ACCENT_PRESETS[selectedEntry.id] || ACCENT_PRESETS[selectedEntry.baseId]
-    if (presets) {
+    if (saved?.accentColorId) {
+      setAccentColorId(saved.accentColorId)
+    } else if (presets) {
       setAccentColorId(selectedEntry.accentId || presets.defaultColor)
+    }
+    if (saved?.fontFamilyId) {
+      setFontFamilyId(saved.fontFamilyId)
+    } else if (presets) {
       setFontFamilyId(selectedEntry.fontId || presets.defaultFont)
     }
   }, [selectedEntry?.id])
+
+  // Persist the chosen template + theme back to the saved resume. Debounced so
+  // clicking through swatches does not spam D1. Only runs for ?resumeId=.
+  useEffect(() => {
+    if (!resumeId || !presentationHydratedRef.current || !selectedEntry) return
+    const timer = setTimeout(() => {
+      resumeApi
+        .update(resumeId, {
+          template: selectedBaseId || selectedEntry.id,
+          templateOptions: { accentColorId, fontFamilyId },
+        })
+        .catch(() => {
+          /* the preview still works; the next selection retries the save */
+        })
+    }, 600)
+    return () => clearTimeout(timer)
+  }, [resumeId, selectedEntry?.id, selectedBaseId, accentColorId, fontFamilyId])
 
   const accentSwatch = COLOR_SWATCHES.find((s) => s.id === accentColorId) || COLOR_SWATCHES[0]
   const fontPairing = FONT_PAIRINGS.find((f) => f.id === fontFamilyId) || FONT_PAIRINGS[0]
@@ -171,6 +211,21 @@ export default function ResumeTemplates() {
   const handleResetData = () => {
     setResumeData(null)
     toast.success('Switched to sample data')
+  }
+
+  // Apply a photo to the live document instead of asking for a refresh (which
+  // used to discard the builder state). Saved resumes persist it in D1.
+  const handlePhotoChange = (dataUrl) => {
+    setResumeData((prev) => {
+      const next = {
+        ...(prev || {}),
+        personal: { ...(prev?.personal || {}), photo: dataUrl },
+      }
+      if (resumeId) {
+        resumeApi.update(resumeId, { structuredData: next }).catch(() => {})
+      }
+      return next
+    })
   }
 
   // ─── ATS-safe PDF export ─────────────────────────────────────────────────
@@ -344,6 +399,7 @@ export default function ResumeTemplates() {
                 fontFamilyId={fontFamilyId}
                 onAccentColorChange={setAccentColorId}
                 onFontFamilyChange={setFontFamilyId}
+                onPhotoChange={handlePhotoChange}
                 onBack={handleBack}
                 onDownload={handleDownloadPdf}
                 onDownloadTxt={handleDownloadTxt}
@@ -619,11 +675,36 @@ function PreviewView({
   accentColor, fontFamily,
   accentColorId, fontFamilyId,
   onAccentColorChange, onFontFamilyChange,
+  onPhotoChange,
   onBack, onDownload, onDownloadTxt, onDownloadDocx,
   exporting, docxBuilding,
   layout, onLayoutChange,
 }) {
   const TemplateComp = baseId ? templateLoaders[baseId] : null
+  const [atsReport, setAtsReport] = useState(null)
+  useEffect(() => {
+    let cancelled = false
+    import('../utils/atsReadability')
+      .then(({ checkAtsReadability }) => checkAtsReadability(data || {}))
+      .then((report) => {
+        if (!cancelled) setAtsReport(report)
+      })
+      .catch(() => {
+        if (!cancelled) setAtsReport(null)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [data])
+
+  const atsScore = atsReport?.score
+  const atsTone = atsScore == null
+    ? 'border-border bg-muted text-muted-foreground'
+    : atsScore >= 80
+    ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+    : atsScore >= 60
+    ? 'border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400'
+    : 'border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400'
 
   return (
     <motion.div
@@ -642,6 +723,15 @@ function PreviewView({
         </button>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-sm font-medium text-foreground">{entry?.name}</span>
+          <span
+            data-testid="gallery-ats-badge"
+            title={atsReport
+              ? (atsReport.issues.slice(0, 3).map((issue) => issue.message).join('\n') || 'No ATS issues found')
+              : 'Checking ATS readability…'}
+            className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-xs font-semibold ${atsTone}`}
+          >
+            ATS {atsReport ? `${atsReport.score} (${atsReport.grade})` : '…'}
+          </span>
           <button
             type="button"
             onClick={onDownloadTxt}
@@ -718,7 +808,7 @@ function PreviewView({
           </select>
         </div>
         {entry?.isPhoto && (
-          <PhotoUploader />
+          <PhotoUploader onPhotoChange={onPhotoChange} />
         )}
       </div>
 
@@ -759,7 +849,7 @@ function PreviewView({
 }
 
 // ─── Photo uploader (inline component) ───────────────────────────────────────
-function PhotoUploader() {
+function PhotoUploader({ onPhotoChange }) {
   const fileRef = useRef(null)
   const handleFile = async (file) => {
     if (!file) return
@@ -774,10 +864,8 @@ function PhotoUploader() {
     const reader = new FileReader()
     reader.onload = () => {
       const dataUrl = String(reader.result || '')
-      const draft = JSON.parse(localStorage.getItem('ai_resume_draft') || localStorage.getItem('ai_portfolio_draft') || '{}')
-      const next = { ...(draft || {}), personal: { ...(draft?.personal || {}), photo: dataUrl } }
-      localStorage.setItem('ai_resume_draft', JSON.stringify(next))
-      toast.success('Photo attached — refresh to see it')
+      onPhotoChange?.(dataUrl)
+      toast.success('Photo attached')
     }
     reader.readAsDataURL(file)
   }

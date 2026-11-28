@@ -84,4 +84,27 @@ describe('ResumeBuilder — Super-Premium Features', () => {
       expect(screen.getByText(/Add Custom Section/i)).toBeTruthy()
     })
   })
+
+  test('blocks Save Resume and returns to Personal Info when required fields are empty', async () => {
+    render(
+      <MemoryRouter initialEntries={['/resume-builder/build']}>
+        <ResumeBuilder />
+      </MemoryRouter>
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /Custom Sections/i }))
+    await waitFor(() => {
+      expect(screen.getByText(/Add Custom Section/i)).toBeTruthy()
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /^Next$/i }))
+    await waitFor(() => {
+      expect(screen.getByText(/Preview & Generate/i)).toBeTruthy()
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /Save Resume/i }))
+    await waitFor(() => {
+      expect(screen.getByText(/Personal Information/i)).toBeTruthy()
+    })
+  })
 })

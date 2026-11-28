@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
+    "@jsonresume/ats-validator": "^0.3.0",
     "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
@@ -36,6 +37,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
     "lucide-react": "^0.468.0",
+    "mammoth": "^1.13.0",
     "motion": "^12.23.26",
     "pdfjs-dist": "^6.5.438",
     "react": "^19.2.6",

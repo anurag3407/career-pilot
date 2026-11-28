@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Sparkles, Loader2, Check, X, Briefcase } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { enhanceApi } from '../../services/api'
+import { tailorResumeToJob } from '../../services/resumeAi'
 
 /**
  * ResumeTailor — One-Click Resume Tailor.
@@ -35,8 +35,7 @@ export default function ResumeTailor({ resumeText, jobRole: initialRole, onTailo
     setTailored(null)
     const toastId = toast.loading('Tailoring resume to job…')
     try {
-      const res = await enhanceApi.tailorResume(resumeText, jobDescription, jobRole)
-      const text = res?.data?.tailoredText || res?.tailoredText
+      const { tailoredText: text } = await tailorResumeToJob(resumeText, jobDescription, jobRole)
       if (!text) {
         toast.error('Empty response', { id: toastId })
         return

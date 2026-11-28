@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Sparkles, Loader2, Check, X } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { enhanceApi } from '../../services/api'
+import { analyzeBulletText } from '../../services/resumeAi'
 
 /**
  * AchievementEnhancer — inline AI assistant for resume bullet points.
@@ -29,13 +29,11 @@ export default function AchievementEnhancer({ value, jobRole, onApply }) {
     setSuggestion(null)
     const toastId = toast.loading('Rewriting bullets with AI…')
     try {
-      const res = await enhanceApi.analyzeBullets(value, jobRole)
-      // The backend returns either { improvedBullets: [...] } or { bullets: [...] }
-      const improved =
-        res?.improvedBullets ||
-        res?.bullets ||
-        res?.analysis?.improvedBullets ||
-        []
+      const analysis = await analyzeBulletText(value, jobRole)
+      // Gateway + Express both return { bullets: [{ improved, ... }] }.
+      const improved = (analysis?.bullets || analysis?.data?.bullets || [])
+        .map((item) => item.improved || item.suggested || item.enhancement)
+        .filter(Boolean)
       if (!improved.length) {
         toast.error('No suggestions returned', { id: toastId })
         return

@@ -57,9 +57,10 @@ export default function Upload() {
       setUploadComplete(true)
       toast.success('Resume uploaded successfully!')
 
-      // Redirect to enhance page after a brief delay
+      // Land on the always-available View page; AI enhancement is one click
+      // away and is only offered when its backend is deployed.
       redirectTimeoutRef.current = setTimeout(() => {
-        navigate(`/enhance/${createdId}`)
+        navigate(`/resume/${createdId}`)
       }, 1500)
 
     } catch (error) {

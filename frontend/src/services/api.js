@@ -377,15 +377,58 @@ export const resumeApi = {
     return response.blob()
   },
 
-  // Convert raw text to resume
+  // Convert raw text to resume via the gateway Worker (works without the
+  // optional Express backend). Self-hosted deployments can still fall back to
+  // the legacy Express endpoint when VITE_API_BASE is configured.
   async createFromText(text, jobRole) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/from-text`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ text, jobRole })
-    })
-    return handleResponse(response)
+    const prompt = `You are an expert resume writer. Convert the following raw text into a professional, well-structured resume in strict Markdown.
+
+Target Role: ${jobRole || 'Professional'}
+
+Rules:
+1. Extract and organize information into standard sections: SUMMARY, EXPERIENCE, EDUCATION, SKILLS, PROJECTS.
+2. If some sections are missing, leave them out or infer only what is obvious.
+3. Fix grammar and spelling.
+4. Use "##" for section headings, "###" for roles/projects, bold for titles, and "-" for bullets.
+5. Output ONLY the markdown text, with no preamble, explanation, or code fences.
+
+Raw Text:
+${String(text || '').slice(0, 20000)}`
+
+    try {
+      const { text: generated } = await gatewayGenerate({
+        prompt,
+        feature: 'text-to-resume',
+        temperature: 0.3,
+      })
+      const structuredText = String(generated || '')
+        .trim()
+        .replace(/^```(?:markdown)?\s*/i, '')
+        .replace(/```\s*$/, '')
+        .trim()
+
+      if (!structuredText) {
+        throw new Error('The AI returned an empty resume. Please try again.')
+      }
+
+      return d1Resumes.create({
+        originalText: structuredText,
+        jobRole: jobRole || null,
+        title: `Resume from Text — ${new Date().toLocaleDateString()}`,
+        source: 'text-to-resume',
+      })
+    } catch (gatewayError) {
+      const expressFallback = import.meta.env.DEV || Boolean(import.meta.env.VITE_API_BASE)
+      if (!expressFallback) throw gatewayError
+
+      const headers = await getAuthHeaders()
+      const response = await fetch(`${API_BASE}/resumes/from-text`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ text, jobRole }),
+      })
+      return handleResponse(response)
+    }
   },
 
   // Get all versions of a resume (Cloudflare D1)

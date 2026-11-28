@@ -21,7 +21,7 @@ export default function TextToResume() {
       setIsLoading(true)
       const response = await resumeApi.createFromText(text, jobRole)
       toast.success('Resume created successfully!')
-      navigate(`/enhance/${response.data.id}`)
+      navigate(`/resume/${response.data.id}`)
     } catch (error) {
       toast.error(error.message || 'Failed to convert text to resume')
       setIsLoading(false)

@@ -10,7 +10,7 @@ import {
   CheckCircle2, AlertCircle, RefreshCw, X, Loader2, PenLine
 } from 'lucide-react'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { resumeApi } from '../services/api'
+import { resumeApi, uploadApi } from '../services/api'
 import { toast } from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import AchievementEnhancer from "../components/resume/AchievementEnhancer";
@@ -124,6 +124,11 @@ export default function ResumeBuilder() {
   ])
   const [customSections, setCustomSections] = useState([])
   const [sectionOrder, setSectionOrder] = useState(['education', 'experience', 'projects', 'skills'])
+  // Presentation choices live in the builder (not only inside the preview) so
+  // the saved resume reopens with the same template, accent and font.
+  const [previewTemplateId, setPreviewTemplateId] = useState('IvyLeague')
+  const [previewAccentColorId, setPreviewAccentColorId] = useState('slate')
+  const [previewFontFamilyId, setPreviewFontFamilyId] = useState('serif')
   const [viewMode, setViewMode] = useState('form')
   const [draftSavedAt, setDraftSavedAt] = useState(null)
   const [hasRestoredDraft, setHasRestoredDraft] = useState(false)
@@ -133,8 +138,6 @@ export default function ResumeBuilder() {
   const [recommendedSections, setRecommendedSections] = useState([])
   const [atsScore, setAtsScore] = useState(0)
   const [missingKeywords, setMissingKeywords] = useState([])
-  const [resumeVersions, setResumeVersions] = useState([])
-  const [selectedVersion, setSelectedVersion] = useState(null)
   
   const [recommendedSkills, setRecommendedSkills] = useState([])
   const [profileScore, setProfileScore] = useState(0)
@@ -195,6 +198,9 @@ const [goalProgress, setGoalProgress] = useState(0)
         if (Array.isArray(d.certifications) && d.certifications.length) setCertifications(d.certifications)
         if (Array.isArray(d.customSections) && d.customSections.length) setCustomSections(d.customSections)
         if (Array.isArray(d.sectionOrder) && d.sectionOrder.length) setSectionOrder(d.sectionOrder)
+        if (d.template) setPreviewTemplateId(d.template)
+        if (d.templateOptions?.accentColorId) setPreviewAccentColorId(d.templateOptions.accentColorId)
+        if (d.templateOptions?.fontFamilyId) setPreviewFontFamilyId(d.templateOptions.fontFamilyId)
         setHasRestoredDraft(true)
         setDraftSavedAt(d.savedAt || 'earlier')
       }
@@ -217,6 +223,11 @@ const [goalProgress, setGoalProgress] = useState(0)
           certifications,
           customSections,
           sectionOrder,
+          template: previewTemplateId,
+          templateOptions: {
+            accentColorId: previewAccentColorId,
+            fontFamilyId: previewFontFamilyId,
+          },
           savedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         }
         try {
@@ -226,7 +237,7 @@ const [goalProgress, setGoalProgress] = useState(0)
       }
     }, 1200)
     return () => clearTimeout(timer)
-  }, [personal, targetRole, phoneCode, phoneDigits, education, experience, projects, skills, certifications, customSections, sectionOrder])
+  }, [personal, targetRole, phoneCode, phoneDigits, education, experience, projects, skills, certifications, customSections, sectionOrder, previewTemplateId, previewAccentColorId, previewFontFamilyId])
 
   const canonicalResumeData = React.useMemo(() => {
     const fullPhone = phoneDigits ? `${phoneCode} ${phoneDigits}` : (personal.phone || '')
@@ -270,8 +281,13 @@ const [goalProgress, setGoalProgress] = useState(0)
       certifications: (certifications || []).filter(c => c.name),
       customSections: customSections || [],
       sectionOrder: sectionOrder || ['education', 'experience', 'projects', 'skills'],
+      template: previewTemplateId,
+      templateOptions: {
+        accentColorId: previewAccentColorId,
+        fontFamilyId: previewFontFamilyId,
+      },
     })
-  }, [personal, phoneCode, phoneDigits, experience, education, projects, skills, certifications, customSections, sectionOrder])
+  }, [personal, phoneCode, phoneDigits, experience, education, projects, skills, certifications, customSections, sectionOrder, previewTemplateId, previewAccentColorId, previewFontFamilyId])
 
   // ── Inline canvas document model ────────────────────────────────────────────
   // The canvas owns no state of its own: it renders these arrays and emits
@@ -543,15 +559,31 @@ const [goalProgress, setGoalProgress] = useState(0)
         populateFromStructured(structured)
         toast.success('Resume text imported!')
       } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-        const formData = new FormData()
-        formData.append('resume', file)
-        const res = await resumeApi.upload(formData)
+        // Extract in the browser (pdf.js) — the same path the Upload page
+        // uses. The old resumeApi.upload() method never existed and threw on
+        // every PDF import.
+        const res = await uploadApi.uploadPdf(file)
         const extracted = res.data?.extractedText || ''
+        if (!extracted.trim()) {
+          throw new Error('No selectable text found in that PDF. Try a DOCX or paste the text.')
+        }
         const structured = markdownToStructured(extracted, file.name.replace(/\.[^/.]+$/, ''))
         populateFromStructured(structured)
-        toast.success('PDF Resume parsed & imported!')
+        toast.success('PDF resume parsed & imported!')
+      } else if (file.name.endsWith('.docx')) {
+        // DOCX → plain text → existing markdown/structure parser. Loaded on
+        // demand so the ~500 KB mammoth bundle is not in the initial chunk.
+        const mammoth = await import('mammoth')
+        const arrayBuffer = await file.arrayBuffer()
+        const { value } = await mammoth.extractRawText({ arrayBuffer })
+        if (!value.trim()) {
+          throw new Error('No text found in that DOCX.')
+        }
+        const structured = markdownToStructured(value, file.name.replace(/\.[^/.]+$/, ''))
+        populateFromStructured(structured)
+        toast.success('DOCX resume imported!')
       } else {
-        toast.error('Please upload a PDF, JSON, Markdown, or TXT file.')
+        toast.error('Please upload a PDF, DOCX, JSON, Markdown, or TXT file.')
       }
       setShowImportModal(false)
     } catch (err) {
@@ -989,13 +1021,6 @@ useEffect(() => {
     ];
   }, [experience, education, projects]);
 
-  const restoreVersion = React.useCallback((version) => {
-    setSelectedVersion(version);
-    if (typeof toast !== 'undefined') {
-      toast.success(`Restored version from ${version.timestamp}`);
-    }
-  }, []);
-
   // ─────────────────── Automated Recommendations Engine ───────────────────
   useEffect(() => {
     const recommendations = [];
@@ -1123,6 +1148,37 @@ useEffect(() => {
       default:
         return true
     }
+  }
+
+  // Full-document gate used by "Save Resume". The per-step validator is
+  // bypassable by clicking a later stepper item, so the final action re-checks
+  // the required steps. Blank skeleton rows are ignored on purpose: a user with
+  // no education/experience can remove them or simply leave them empty.
+  function validateAll() {
+    const personalErrs = validatePersonalStep(personal, targetRole, phoneDigits)
+    setPersonalErrors(personalErrs)
+    if (hasErrors(personalErrs)) {
+      setCurrentStep(0)
+      return 'Please complete the required Personal Info fields.'
+    }
+
+    const eduRows = education.filter(e => e.school || e.degree || e.startDate || e.endDate)
+    const eduErrs = validateEducationStep(eduRows)
+    setEducationErrors(validateEducationStep(education))
+    if (hasErrors(eduErrs)) {
+      setCurrentStep(1)
+      return 'Please fix the highlighted Education fields.'
+    }
+
+    const expRows = experience.filter(e => e.title || e.company || e.startDate || e.endDate)
+    const expErrs = validateExperienceStep(expRows)
+    setExperienceErrors(validateExperienceStep(experience))
+    if (hasErrors(expErrs)) {
+      setCurrentStep(2)
+      return 'Please fix the highlighted Experience fields.'
+    }
+
+    return ''
   }
 
   function handleNext() {
@@ -1277,19 +1333,13 @@ useEffect(() => {
     return md
   }
 
-  const saveVersion = React.useCallback(() => {
-    const newVersion = {
-      id: Date.now(),
-      timestamp: new Date().toLocaleString(),
-      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
-    };
-    setResumeVersions(prev => [newVersion, ...prev]);
-    if (typeof toast !== 'undefined') {
-      toast.success("Resume version layout tracked successfully!");
-    }
-  }, [experience, education, projects, personal, skills, certifications, customSections, sectionOrder, generateMarkdown]);
-
   const handleGenerate = async () => {
+    const validationError = validateAll()
+    if (validationError) {
+      toast.error(validationError)
+      return
+    }
+
     try {
       setIsSubmitting(true)
       const markdown = generateMarkdown()
@@ -1301,12 +1351,21 @@ useEffect(() => {
         sectionOrder: sectionOrder,
         customSections: customSections,
         structuredData: canonicalResumeData,
+        template: previewTemplateId,
+        templateOptions: {
+          accentColorId: previewAccentColorId,
+          fontFamilyId: previewFontFamilyId,
+        },
+        source: 'builder',
       })
       try {
         localStorage.removeItem(DRAFT_KEY)
       } catch (_e) {}
       toast.success('Resume created successfully!')
-      navigate(`/enhance/${response.data.id}`)
+      // Land on the always-available View page (D1-only): edit, versions,
+      // ATS history, templates, share and PDF all work there. Enhance is one
+      // click away and is only offered when its AI endpoints are deployed.
+      navigate(`/resume/${response.data.id}`)
     } catch (error) {
       toast.error(error.message || 'Failed to create resume')
     } finally {
@@ -2063,15 +2122,6 @@ useEffect(() => {
               </DragDropContext>
             </div>
 
-            <div className="flex justify-end mb-4">
-  <button
-    onClick={saveVersion}
-    className="px-4 py-2 rounded-lg bg-primary text-primary-foreground"
-  >
-    Save Version
-  </button>
-</div>
-
 <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
 
   <div className="flex justify-between items-center mb-2">
@@ -2321,34 +2371,6 @@ useEffect(() => {
         >
           {section}
         </span>
-      ))}
-    </div>
-  </div>
-)}
-
-{resumeVersions.length > 0 && (
-  <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
-    <h3 className="font-semibold mb-3">
-      Resume Version History
-    </h3>
-
-    <div className="space-y-2">
-      {resumeVersions.map(version => (
-        <div
-          key={version.id}
-          className="flex justify-between items-center p-2 rounded-lg bg-background"
-        >
-          <span className="text-sm">
-            {version.timestamp}
-          </span>
-
-          <button
-            onClick={() => restoreVersion(version)}
-            className="text-primary text-sm font-medium"
-          >
-            Restore
-          </button>
-        </div>
       ))}
     </div>
   </div>
@@ -2738,7 +2760,15 @@ useEffect(() => {
           </div>
         ) : viewMode === 'preview' ? (
           <div className="flex-1 h-[calc(100vh-180px)] min-h-[700px]">
-            <LiveResumePreview resumeData={canonicalResumeData} />
+            <LiveResumePreview
+              resumeData={canonicalResumeData}
+              templateId={previewTemplateId}
+              accentColorId={previewAccentColorId}
+              fontFamilyId={previewFontFamilyId}
+              onTemplateChange={setPreviewTemplateId}
+              onAccentColorChange={setPreviewAccentColorId}
+              onFontFamilyChange={setPreviewFontFamilyId}
+            />
           </div>
         ) : viewMode === 'split' ? (
           <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
@@ -2798,7 +2828,7 @@ useEffect(() => {
                         </>
                       ) : (
                         <>
-                          <Save className="w-3.5 h-3.5" /> Generate &amp; Enhance
+                          <Save className="w-3.5 h-3.5" /> Save Resume
                         </>
                       )}
                     </button>
@@ -2817,7 +2847,15 @@ useEffect(() => {
 
             {/* Right Column: Live Template Preview */}
             <div className="sticky top-20 h-[calc(100vh-140px)] min-h-[650px]">
-              <LiveResumePreview resumeData={canonicalResumeData} />
+              <LiveResumePreview
+                resumeData={canonicalResumeData}
+                templateId={previewTemplateId}
+                accentColorId={previewAccentColorId}
+                fontFamilyId={previewFontFamilyId}
+                onTemplateChange={setPreviewTemplateId}
+                onAccentColorChange={setPreviewAccentColorId}
+                onFontFamilyChange={setPreviewFontFamilyId}
+              />
             </div>
           </div>
         ) : (
@@ -2888,7 +2926,7 @@ useEffect(() => {
                       </>
                     ) : (
                       <>
-                        <Save className="w-4 h-4" /> Generate &amp; Enhance
+                        <Save className="w-4 h-4" /> Save Resume
                       </>
                     )}
                   </button>
@@ -2921,15 +2959,15 @@ useEffect(() => {
                 </button>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Upload a PDF, JSON Resume (.json), Markdown (.md), or Plaintext (.txt) file. Our intelligent parser extracts all fields into the builder automatically.
+                Upload a PDF, DOCX, JSON Resume (.json), Markdown (.md), or Plaintext (.txt) file. PDF text is extracted in your browser; DOCX is parsed locally and nothing is uploaded to a third party.
               </p>
               <label className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 transition-colors bg-muted/20 hover:bg-muted/40">
                 <Upload className="w-8 h-8 text-primary mb-2" />
                 <span className="text-xs font-medium text-foreground">Click to upload or drag &amp; drop</span>
-                <span className="text-[10px] text-muted-foreground mt-1">PDF, JSON, MD, TXT (up to 5MB)</span>
+                <span className="text-[10px] text-muted-foreground mt-1">PDF, DOCX, JSON, MD, TXT (up to 5MB)</span>
                 <input
                   type="file"
-                  accept=".pdf,.json,.md,.txt,text/plain,application/json,application/pdf"
+                  accept=".pdf,.docx,.json,.md,.txt,text/plain,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                   onChange={handleImportFile}
                   className="hidden"
                   disabled={importingFile}

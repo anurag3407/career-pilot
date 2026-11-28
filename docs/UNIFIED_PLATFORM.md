@@ -152,19 +152,24 @@ so existing field names keep working.
 
 ## Phase-2 ports (documented, not blocking)
 
-These still call the Express backend (`VITE_API_BASE`) and need either a
-Node host (Docker/Railway) or a gateway port. The **reference pattern** for
+These are the remaining Express-backed extras; several resume paths have
+already moved to the gateway or the browser. The **reference pattern** for
 porting one is `salaryApi.estimate` (client logic) and `jobsApi.search`
 (gateway proxy):
 
-1. **AI feature endpoints** — `enhanceApi.*`, `interviewApi.*`, `roastApi.create`,
-   cover letters, README generator, LinkedIn optimizer, repo visualizer,
-   GitHub portfolio build. Port = move prompt + response contract to
-   `lib/prompts/*` + call `aiGateway.generateJson()`.
-2. **PDF upload parsing** — replace `uploadApi` with client-side pdf.js
-   extraction (backend `pdf-parse` equivalent).
-3. **Resume PDF download** — client `services/atsPdfExport.js` already exists;
-   wire `resumeApi.downloadPdf` to it for Cloudflare-only deploys.
+1. **AI feature endpoints** — ✅ resume text→document, bullet improvement,
+   job tailoring and translation now run through `services/resumeAi.js` on the
+   gateway (Express remains a fallback). Still Express-only: `enhanceApi.*`
+   analysis/stream, `interviewApi.*`, `roastApi.create`, cover letters, README
+   generator, LinkedIn optimizer, repo visualizer, GitHub portfolio build.
+   Port = move prompt + response contract to `lib/prompts/*` + call
+   `aiGateway.generateJson()`.
+2. **PDF/DOCX upload parsing** — ✅ the builder and `/upload` extract PDF text
+   with pdf.js in the browser; the builder parses DOCX with `mammoth`. The
+   Express `pdf-parse` path is no longer required for the SPA.
+3. **Resume PDF download** — ✅ `ResumeView` falls back to the client-side
+   text-layer exporter when `/api/resumes/:id/download` is unavailable. The
+   server PDF remains an optional higher-fidelity path.
 4. **Community/fellowship realtime** — the legacy Socket.IO/Appwrite path still
    needs a Worker-native channel (Durable Object or SSE); Supabase Realtime is
    no longer the target.

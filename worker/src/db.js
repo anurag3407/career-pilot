@@ -129,6 +129,11 @@ function mapRow(row) {
   if (rest.weekly_apply_target !== undefined && out.weeklyApplyTarget === undefined) {
     out.weeklyApplyTarget = rest.weekly_apply_target;
   }
+  if (rest.version_label !== undefined) {
+    // D1 stores the snapshot label in a column; the UI calls it `title`.
+    out.versionLabel = rest.version_label;
+    if (!out.title) out.title = rest.version_label;
+  }
   return out;
 }
 
@@ -383,7 +388,7 @@ async function handleResumes(request, env, url, path) {
         .first();
       if (!existing) return { data: { error: 'Version not found' }, status: 404 };
       const merged = { ...safeJsonParse(existing.data, {}), ...stripMeta(body) };
-      const label = body.versionLabel || body.label || existing.version_label;
+      const label = body.versionLabel || body.label || body.title || existing.version_label;
       await env.DB.prepare(`UPDATE resume_versions SET version_label = ?, data = ? WHERE id = ?`)
         .bind(label, JSON.stringify(merged), versionId)
         .run();
@@ -408,26 +413,41 @@ async function handleResumes(request, env, url, path) {
 
     if (method === 'GET') {
       const { results } = await env.DB.prepare(
-        `SELECT * FROM resume_versions WHERE resume_id = ? AND user_id = ? ORDER BY created_at DESC`
+        `SELECT * FROM resume_versions WHERE resume_id = ? AND user_id = ? ORDER BY created_at DESC, rowid DESC`
       )
         .bind(resumeId, auth.user.id)
         .all();
-      const list = (results || []).map(mapRow);
+      const list = (results || []).map((row, index) => {
+        const mapped = mapRow(row);
+        // `versionNumber` is derived for legacy rows created before it was
+        // stored. The list is newest-first, so the oldest row is v1.
+        return {
+          ...mapped,
+          title: mapped.title || mapped.versionLabel || `Snapshot ${results.length - index}`,
+          versionNumber: mapped.versionNumber || results.length - index,
+        };
+      });
       return { data: { success: true, data: list, versions: list }, status: 200 };
     }
 
     if (method === 'POST') {
       const body = await request.json().catch(() => ({}));
       const id = crypto.randomUUID();
-      const label = body.versionLabel || body.label || 'Snapshot';
-      const payloadData = stripMeta(body.data || body);
+      const countRow = await env.DB.prepare(
+        `SELECT COUNT(*) AS cnt FROM resume_versions WHERE resume_id = ? AND user_id = ?`
+      )
+        .bind(resumeId, auth.user.id)
+        .first();
+      const versionNumber = Number(body.versionNumber) || Number(countRow?.cnt || 0) + 1;
+      const label = body.versionLabel || body.label || body.title || `Snapshot ${versionNumber}`;
+      const payloadData = { ...stripMeta(body.data || body), versionNumber };
       await env.DB.prepare(
         `INSERT INTO resume_versions (id, resume_id, user_id, version_label, data) VALUES (?, ?, ?, ?, ?)`
       )
         .bind(id, resumeId, auth.user.id, label, JSON.stringify(payloadData))
         .run();
       const row = await env.DB.prepare(`SELECT * FROM resume_versions WHERE id = ?`).bind(id).first();
-      const mapped = mapRow(row);
+      const mapped = { ...mapRow(row), versionNumber, title: mapRow(row)?.title || label };
       return { data: { success: true, data: mapped, version: mapped }, status: 201 };
     }
   }

@@ -11,6 +11,7 @@ import {
   jobTrackerApi, resumeApi,
 } from '../../services/api'
 import { resumeDocToText } from '../../utils/resumeText'
+import { tailorResumeToJob } from '../../services/resumeAi'
 import { addDays, FOLLOW_UP_DAYS } from '../../utils/applicationFlow'
 
 const STEPS = [
@@ -141,8 +142,12 @@ export default function ApplicationPacketPanel({ job, onClose, onUpdated }) {
       // 1 — tailor the resume against this description
       setStep('tailor', 'running')
       try {
-        const res = await enhanceApi.tailorResume(resumeText, job.description || `${job.title} at ${job.company}`, job.title || '')
-        tailored = res?.data?.tailoredText || resumeText
+        const { tailoredText } = await tailorResumeToJob(
+          resumeText,
+          job.description || `${job.title} at ${job.company}`,
+          job.title || '',
+        )
+        tailored = tailoredText || resumeText
       } catch (err) {
         setStep('tailor', 'error', err.message)
         throw new Error('Resume tailoring failed: ' + (err.message || 'unknown error'))

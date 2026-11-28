@@ -55,6 +55,7 @@ subsystem, or a historical analysis.
 | Doc | Status | Contents |
 |---|---|---|
 | [ai-features.md](ai-features.md) | Current | AI workflows, 30-provider gateway, prompt/validation patterns. |
+| [RESUME_PLATFORM_ROADMAP.md](RESUME_PLATFORM_ROADMAP.md) | Current | Resume unification: OSS capability map, shipped changes, remaining phases, acceptance criteria. |
 | [portfolio-architecture.md](portfolio-architecture.md) | Current | Template registry, Studio, standalone bundle, deploy pipeline. |
 | [creating-portfolio-themes.md](creating-portfolio-themes.md) | Current | How to add a React portfolio template. |
 | [component-guide.md](component-guide.md) | Current | Frontend component/style conventions. |

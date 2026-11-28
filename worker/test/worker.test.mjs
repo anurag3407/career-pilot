@@ -158,11 +158,19 @@ describe('CareerPilot D1 Gateway — End-to-End', () => {
     const created = await call(env, '/v1/db/resumes', {
       method: 'POST',
       token: userToken,
-      body: { title: 'Platform Engineer CV', targetRole: 'Staff Engineer', summary: 'Built edge systems' },
+      body: {
+        title: 'Platform Engineer CV',
+        targetRole: 'Staff Engineer',
+        summary: 'Built edge systems',
+        template: 'TechMono',
+        templateOptions: { accentColorId: 'blue', fontFamilyId: 'mono' },
+      },
     });
     assert.equal(created.status, 200);
     const resumeId = created.data.resume.id;
     assert.equal(created.data.resume.title, 'Platform Engineer CV');
+    assert.equal(created.data.resume.template, 'TechMono');
+    assert.deepEqual(created.data.resume.templateOptions, { accentColorId: 'blue', fontFamilyId: 'mono' });
 
     // Read-merge-write partial update
     const updated = await call(env, `/v1/db/resumes/${resumeId}`, {
@@ -178,6 +186,18 @@ describe('CareerPilot D1 Gateway — End-to-End', () => {
     const forbiddenGet = await call(env, `/v1/db/resumes/${resumeId}`, { token: otherToken });
     assert.equal(forbiddenGet.status, 404);
 
+    // Public share link: only readable without auth once both flags are set.
+    const shared = await call(env, `/v1/db/resumes/${resumeId}`, {
+      method: 'PUT',
+      token: userToken,
+      body: { isPublic: true, shareToken: 'shareme123' },
+    });
+    assert.equal(shared.status, 200);
+    assert.equal(shared.data.resume.isPublic, true);
+    const publicRead = await call(env, '/v1/db/resumes/share/shareme123');
+    assert.equal(publicRead.status, 200);
+    assert.equal(publicRead.data.resume.title, 'Platform Engineer CV');
+
     // Version snapshot & restore
     const ver = await call(env, `/v1/db/resumes/${resumeId}/versions`, {
       method: 'POST',
@@ -185,12 +205,29 @@ describe('CareerPilot D1 Gateway — End-to-End', () => {
       body: { versionLabel: 'v1', data: { title: 'Restored CV Title' } },
     });
     assert.equal(ver.status, 201);
+    assert.equal(ver.data.version.versionNumber, 1);
+    assert.equal(ver.data.version.title, 'Restored CV Title');
     const restored = await call(env, `/v1/db/resumes/${resumeId}/versions/${ver.data.version.id}/restore`, {
       method: 'POST',
       token: userToken,
     });
     assert.equal(restored.status, 200);
     assert.equal(restored.data.resume.title, 'Restored CV Title');
+
+    // A second snapshot gets the next number; the newest-first list preserves
+    // both numbers and falls back to the column label for the title.
+    const ver2 = await call(env, `/v1/db/resumes/${resumeId}/versions`, {
+      method: 'POST',
+      token: userToken,
+      body: { title: 'Second snapshot', originalText: '# Second' },
+    });
+    assert.equal(ver2.status, 201);
+    assert.equal(ver2.data.version.versionNumber, 2);
+    const versionList = await call(env, `/v1/db/resumes/${resumeId}/versions`, { token: userToken });
+    assert.equal(versionList.status, 200);
+    assert.equal(versionList.data.data[0].versionNumber, 2);
+    assert.equal(versionList.data.data[0].title, 'Second snapshot');
+    assert.equal(versionList.data.data[1].versionNumber, 1);
 
     // ATS history
     const ats = await call(env, `/v1/db/resumes/${resumeId}/ats-history`, {

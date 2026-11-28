@@ -1,7 +1,7 @@
-import React, { useState, useRef, Suspense, lazy } from 'react'
+import React, { useEffect, useState, useRef, Suspense, lazy } from 'react'
 import {
   Download, FileText, FileType2, Loader2, ZoomIn, ZoomOut, Maximize2,
-  Sparkles, Palette, Type, Check, ChevronDown
+  Sparkles, Palette, Type, Check, ChevronDown, ShieldCheck, AlertTriangle
 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { resumeTemplates, COLOR_SWATCHES, FONT_PAIRINGS } from '../../data/resumeTemplates'
@@ -24,19 +24,77 @@ export default function LiveResumePreview({
   resumeData,
   defaultTemplateId = 'IvyLeague',
   className = '',
+  // Optional controlled presentation. The builder owns these so the chosen
+  // template/theme can be saved with the resume instead of resetting on every
+  // remount. When omitted, the component keeps its own state as before.
+  templateId: controlledTemplateId,
+  accentColorId: controlledAccentColorId,
+  fontFamilyId: controlledFontFamilyId,
+  onTemplateChange,
+  onAccentColorChange,
+  onFontFamilyChange,
+  showAtsCheck = true,
 }) {
-  const [templateId, setTemplateId] = useState(defaultTemplateId)
-  const [accentColorId, setAccentColorId] = useState('slate')
-  const [fontFamilyId, setFontFamilyId] = useState('serif')
+  const [internalTemplateId, setInternalTemplateId] = useState(defaultTemplateId)
+  const [internalAccentColorId, setInternalAccentColorId] = useState('slate')
+  const [internalFontFamilyId, setInternalFontFamilyId] = useState('serif')
   const [zoom, setZoom] = useState(85)
   const [exportingPdf, setExportingPdf] = useState(false)
   const [exportingDocx, setExportingDocx] = useState(false)
+  const [atsOpen, setAtsOpen] = useState(false)
+
+  const templateId = controlledTemplateId || internalTemplateId
+  const accentColorId = controlledAccentColorId || internalAccentColorId
+  const fontFamilyId = controlledFontFamilyId || internalFontFamilyId
+
+  const setTemplateId = (id) => {
+    setInternalTemplateId(id)
+    onTemplateChange?.(id)
+  }
+  const setAccentColorId = (id) => {
+    setInternalAccentColorId(id)
+    onAccentColorChange?.(id)
+  }
+  const setFontFamilyId = (id) => {
+    setInternalFontFamilyId(id)
+    onFontFamilyChange?.(id)
+  }
 
   const previewRef = useRef(null)
   const TemplateComp = templateLoaders[templateId] || templateLoaders['IvyLeague']
 
   const activeSwatch = COLOR_SWATCHES.find((s) => s.id === accentColorId) || COLOR_SWATCHES[0]
   const activeFont = FONT_PAIRINGS.find((f) => f.id === fontFamilyId) || FONT_PAIRINGS[0]
+
+  // ATS readability from the same document the exports use. This is the JSON
+  // Resume validator (semantic HTML, fonts, contact text, tables, headings…),
+  // not the heuristic keyword score. Loaded on demand to keep the builder's
+  // initial bundle light.
+  const [atsReport, setAtsReport] = useState(null)
+  useEffect(() => {
+    if (!showAtsCheck) return undefined
+    let cancelled = false
+    import('../../utils/atsReadability')
+      .then(({ checkAtsReadability }) => checkAtsReadability(resumeData || {}))
+      .then((report) => {
+        if (!cancelled) setAtsReport(report)
+      })
+      .catch(() => {
+        if (!cancelled) setAtsReport(null)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [resumeData, showAtsCheck])
+
+  const atsScore = atsReport?.score
+  const atsTone = atsScore == null
+    ? 'text-muted-foreground border-border bg-muted'
+    : atsScore >= 80
+    ? 'text-emerald-600 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
+    : atsScore >= 60
+    ? 'text-amber-600 dark:text-amber-400 border-amber-500/30 bg-amber-500/10'
+    : 'text-red-600 dark:text-red-400 border-red-500/30 bg-red-500/10'
 
   const handleDownloadPdf = async () => {
     if (!previewRef.current) return
@@ -148,6 +206,19 @@ export default function LiveResumePreview({
 
         {/* Zoom & Export Actions */}
         <div className="flex items-center gap-1.5">
+          {showAtsCheck && (
+            <button
+              type="button"
+              onClick={() => setAtsOpen((open) => !open)}
+              data-testid="ats-readability-badge"
+              title="ATS readability (JSON Resume validator)"
+              className={`px-2 py-1.5 rounded-lg border text-[11px] font-semibold inline-flex items-center gap-1 ${atsTone}`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>ATS {atsReport ? atsReport.score : '…'}</span>
+              {atsReport && <span className="opacity-70">({atsReport.grade})</span>}
+            </button>
+          )}
           <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border">
             <button
               type="button"
@@ -200,6 +271,48 @@ export default function LiveResumePreview({
           </button>
         </div>
       </div>
+
+      {showAtsCheck && atsOpen && atsReport && (
+        <div
+          data-testid="ats-readability-panel"
+          className="border-b border-border bg-card px-3 py-2.5 text-xs space-y-2 max-h-56 overflow-y-auto"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-semibold text-foreground">
+              ATS readability: {atsReport.score}/100 · {atsReport.grade}
+            </p>
+            <p className="text-muted-foreground">
+              {atsReport.passed} checks passed, {atsReport.failed} need attention
+            </p>
+          </div>
+          <p className="text-muted-foreground">{atsReport.summary}</p>
+          {atsReport.issues.length > 0 ? (
+            <ul className="space-y-1.5">
+              {atsReport.issues.slice(0, 6).map((issue, index) => (
+                <li key={`${issue.message}-${index}`} className="flex gap-1.5">
+                  <AlertTriangle
+                    className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${
+                      issue.severity === 'error'
+                        ? 'text-red-500'
+                        : issue.severity === 'warning'
+                        ? 'text-amber-500'
+                        : 'text-muted-foreground'
+                    }`}
+                  />
+                  <span className="text-muted-foreground">{issue.message}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-emerald-600 dark:text-emerald-400">
+              No issues found. This document is clean for ATS parsing.
+            </p>
+          )}
+          {atsReport.issues.length > 6 && (
+            <p className="text-muted-foreground">+{atsReport.issues.length - 6} more issue(s)</p>
+          )}
+        </div>
+      )}
 
       {/* Interactive Paper Preview Canvas */}
       <div className="flex-1 overflow-auto p-4 sm:p-6 flex items-start justify-center bg-muted/40">

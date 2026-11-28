@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
@@ -15,8 +15,19 @@ import AtsProgressChart from '../components/AtsProgressChart'
 import ResumeTranslator from '../components/resume/ResumeTranslator'
 import ResumeTailor from '../components/resume/ResumeTailor'
 import StructuredResumeEditor from '../components/resume/StructuredResumeEditor'
-import { Loader2, Edit3, Layers } from 'lucide-react'
+import { buildResumePdf } from '../services/atsPdfExport'
+import { normalizeResumeData } from '../context/ResumeContext'
+import { markdownToStructured } from '../utils/resumeParser'
+import { Loader2, Edit3, Layers, Share2, Copy, Globe } from 'lucide-react'
 import html2canvas from 'html2canvas'
+
+/** Short, URL-safe token for public share links. */
+function makeShareToken() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID().replace(/-/g, '').slice(0, 16)
+  }
+  return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`
+}
 
 export default function ResumeView() {
   const { resumeId } = useParams()
@@ -26,6 +37,7 @@ export default function ResumeView() {
   const [loading, setLoading] = useState(true)
   const [downloading, setDownloading] = useState(false)
   const [downloadingImage, setDownloadingImage] = useState(false)
+  const [shareBusy, setShareBusy] = useState(false)
   const [imageFormat, setImageFormat] = useState('png')
   const [activeTab, setActiveTab] = useState('preview') // 'preview' | 'versions' | 'ats'
   const [previewTab, setPreviewTab] = useState('enhanced') // 'enhanced' | 'original'
@@ -46,8 +58,12 @@ export default function ResumeView() {
     }
     return () => clearInterval(interval)
   }, [scoring])
-  // ── Custom sections – persisted per-resume in localStorage ───────────────
+  // ── Custom sections ────────────────────────────────────────────────────────
+  // D1 is the source of truth. localStorage is kept only as a crash buffer and
+  // as a one-time migration source for sections authored before this change.
   const STORAGE_KEY = `resume_custom_sections_${resumeId}`
+  const sectionSaveTimer = useRef(null)
+  const pendingSections = useRef(null)
   const [customSections, setCustomSections] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
@@ -57,14 +73,33 @@ export default function ResumeView() {
     }
   })
 
+  const persistSections = (sections) => {
+    resumeApi.update(resumeId, { customSections: sections }).catch(() => {
+      /* keep the local copy; the next edit retries the save */
+    })
+  }
+
   const handleSectionsChange = (sections) => {
     setCustomSections(sections)
+    setResume((prev) => (prev ? { ...prev, customSections: sections } : prev))
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(sections))
     } catch {
-      // storage quota exceeded – silently ignore
+      // storage quota exceeded – the D1 save below still runs
     }
+    pendingSections.current = sections
+    clearTimeout(sectionSaveTimer.current)
+    sectionSaveTimer.current = setTimeout(() => {
+      persistSections(sections)
+      pendingSections.current = null
+    }, 700)
   }
+
+  // Flush a pending edit when the user leaves the page.
+  useEffect(() => () => {
+    clearTimeout(sectionSaveTimer.current)
+    if (pendingSections.current) persistSections(pendingSections.current)
+  }, [resumeId])
 
   useEffect(() => {
     fetchResume()
@@ -73,10 +108,32 @@ export default function ResumeView() {
   const fetchResume = async () => {
     try {
       const response = await resumeApi.getById(resumeId)
-      setResume(response.data)
+      const record = response.data
+      setResume(record)
+
+      const serverSections = Array.isArray(record.customSections) ? record.customSections : []
+      if (serverSections.length) {
+        setCustomSections(serverSections)
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(serverSections))
+        } catch {
+          /* ignore quota errors */
+        }
+      } else {
+        // One-time migration of sections that were only ever stored locally.
+        try {
+          const legacy = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+          if (Array.isArray(legacy) && legacy.length) {
+            setCustomSections(legacy)
+            resumeApi.update(resumeId, { customSections: legacy }).catch(() => {})
+          }
+        } catch {
+          /* malformed local data – ignore */
+        }
+      }
 
       // Set default tab based on available content
-      if (!response.data.enhancedText) {
+      if (!record.enhancedText) {
         setPreviewTab('original')
       } else {
         setPreviewTab('enhanced')
@@ -100,12 +157,35 @@ export default function ResumeView() {
   }
 
   const handleDownloadPdf = async () => {
+    const toastId = toast.loading('Generating PDF…')
     try {
       setDownloading(true)
-      toast.success(
-  `Exporting with ${fontFamily} font and ${fontSize} size`
-)
-      const blob = await resumeApi.downloadPdf(resumeId, previewTab)
+
+      let blob
+      let source = 'server'
+      try {
+        // Preferred when the optional Express backend is deployed: it renders
+        // the saved markdown server-side.
+        blob = await resumeApi.downloadPdf(resumeId, previewTab)
+      } catch (serverError) {
+        // Cloudflare-only deployments have no /api/download. Build a real
+        // text-layer PDF in the browser from the same structured document the
+        // templates use, rather than failing the download.
+        source = 'client'
+        const baseText = previewTab === 'enhanced'
+          ? (resume?.enhancedText || resume?.originalText || '')
+          : (resume?.originalText || '')
+        const base = resume?.structuredData || markdownToStructured(baseText, resume?.title)
+        const structured = normalizeResumeData({
+          ...base,
+          customSections: customSections.length ? customSections : base?.customSections,
+          sectionOrder: resume?.sectionOrder || base?.sectionOrder,
+        })
+        const { bytes } = buildResumePdf(structured, {
+          font: fontFamily === 'Times New Roman' ? 'times' : 'helvetica',
+        })
+        blob = new Blob([bytes], { type: 'application/pdf' })
+      }
 
       // Create download link
       const url = window.URL.createObjectURL(blob)
@@ -119,11 +199,44 @@ export default function ResumeView() {
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
 
-      toast.success('PDF downloaded successfully!')
+      toast.success(
+        source === 'client'
+          ? 'PDF downloaded with a selectable ATS text layer'
+          : 'PDF downloaded successfully!',
+        { id: toastId },
+      )
     } catch (error) {
-      toast.error(error.message || 'Failed to download PDF')
+      toast.error(error.message || 'Failed to download PDF', { id: toastId })
     } finally {
       setDownloading(false)
+    }
+  }
+
+  const handleToggleShare = async () => {
+    if (!resume) return
+    setShareBusy(true)
+    try {
+      if (resume.isPublic) {
+        await resumeApi.update(resumeId, { isPublic: false })
+        setResume((prev) => ({ ...prev, isPublic: false }))
+        toast.success('Share link disabled')
+        return
+      }
+
+      const shareToken = resume.shareToken || makeShareToken()
+      await resumeApi.update(resumeId, { isPublic: true, shareToken })
+      setResume((prev) => ({ ...prev, isPublic: true, shareToken }))
+      const url = `${window.location.origin}/shared/${shareToken}`
+      try {
+        await navigator.clipboard.writeText(url)
+        toast.success('Share link created and copied to clipboard')
+      } catch {
+        toast.success('Share link created')
+      }
+    } catch (error) {
+      toast.error(error.message || 'Failed to update sharing')
+    } finally {
+      setShareBusy(false)
     }
   }
 
@@ -451,6 +564,37 @@ export default function ResumeView() {
                   >
                     Download .txt
                   </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleToggleShare}
+                    disabled={shareBusy}
+                  >
+                    {shareBusy ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Share2 className="w-4 h-4" />
+                    )}
+                    {resume?.isPublic ? 'Sharing on' : 'Share'}
+                  </Button>
+                  {resume?.isPublic && resume?.shareToken && (
+                    <div className="w-full mt-1 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
+                      <Globe className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                      <input
+                        readOnly
+                        aria-label="Public share link"
+                        value={`${window.location.origin}/shared/${resume.shareToken}`}
+                        onFocus={(e) => e.target.select()}
+                        className="flex-1 min-w-[220px] bg-transparent text-xs text-foreground outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(`${window.location.origin}/shared/${resume.shareToken}`)}
+                        className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-xs font-medium text-foreground hover:bg-muted"
+                      >
+                        <Copy className="w-3 h-3" /> Copy
+                      </button>
+                    </div>
+                  )}
                   <ResumeTranslator
                     resumeText={
                       previewTab === 'enhanced'
@@ -515,7 +659,13 @@ export default function ResumeView() {
 
               <div className="bg-card border border-border/40 rounded-lg p-6 min-h-96 overflow-auto shadow-lg" style={{ maxWidth: '210mm', margin: '0 auto' }}>
                 {previewTab === 'enhanced' && resume?.enhancedText ? (
-                  <div className="resume-preview max-w-none text-foreground text-sm leading-tight">
+                  <div
+                    className="resume-preview max-w-none text-foreground text-sm leading-tight"
+                    style={{
+                      fontFamily: fontFamily === 'Times New Roman' ? 'Georgia, "Times New Roman", serif' : fontFamily,
+                      fontSize: fontSize === 'Small' ? '12px' : fontSize === 'Large' ? '16px' : '14px',
+                    }}
+                  >
                     <ReactMarkdown
                       components={{
                         h1: ({ node, ...props }) => (

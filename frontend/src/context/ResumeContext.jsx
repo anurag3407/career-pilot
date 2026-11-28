@@ -26,6 +26,17 @@ import { formatPeriod } from '../utils/resumeDateFormat'
 
 const FALLBACK = dummy
 
+/**
+ * Version of the canonical resume document written by this client.
+ *
+ * The document is intentionally a superset of JSON Resume: the same personal /
+ * experience / education / projects / skills data plus the editor-only fields
+ * (sectionOrder, customSections, template, templateOptions, layout) that the
+ * templates and exports need. Bump this when a stored document needs a
+ * migration.
+ */
+export const RESUME_DOCUMENT_VERSION = 1
+
 const ResumeContext = createContext(null)
 
 export function ResumeProvider({ value, children }) {
@@ -180,7 +191,14 @@ function fromAiExtractor(raw) {
  * @returns {object} The canonical resume shape
  */
 export function normalizeResumeData(raw) {
-  const fbPersonal = { photo: '', ...(FALLBACK.personal || {}) }
+  // Only fall back to the sample resume when there is no input at all (the
+  // template gallery uses it for an empty preview). A *partial* real resume
+  // must keep its blanks: filling them with sample data would make the
+  // document look complete and would make ATS checks pass on fake contact
+  // details.
+  const fbPersonal = raw == null
+    ? { photo: '', ...(FALLBACK.personal || {}) }
+    : { photo: '' }
   const personal = normalizePersonal(raw?.personal || {}, fbPersonal)
 
   // Merge in social-links from portfolio/socials if explicit fields missing
@@ -240,7 +258,24 @@ export function normalizeResumeData(raw) {
         .sort((a, b) => a.order - b.order)
     : []
 
+  // Editor presentation choices. These are part of the document so a saved
+  // resume reopens in the template/theme the user picked instead of falling
+  // back to the gallery default. Templates ignore them; the editor and the
+  // gallery read them.
+  const template = asString(raw?.template)
+  const templateOptions = raw?.templateOptions && typeof raw.templateOptions === 'object'
+    ? {
+        accentColorId: asString(raw.templateOptions.accentColorId),
+        fontFamilyId: asString(raw.templateOptions.fontFamilyId),
+      }
+    : {}
+
+  const schemaVersion = Number.isFinite(Number(raw?.schemaVersion))
+    ? Number(raw.schemaVersion)
+    : RESUME_DOCUMENT_VERSION
+
   return {
+    schemaVersion,
     personal,
     experience,
     education,
@@ -250,6 +285,8 @@ export function normalizeResumeData(raw) {
     layout,
     sectionOrder,
     customSections,
+    template,
+    templateOptions,
   }
 }
 

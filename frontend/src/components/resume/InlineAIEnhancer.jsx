@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Check, X, RefreshCw, ArrowRight, Zap, Target, TrendingUp } from 'lucide-react'
 import { toast } from 'react-hot-toast'
-import { enhanceApi } from '../../services/api'
+import { analyzeBulletText } from '../../services/resumeAi'
 import { ACTION_VERBS } from '../../utils/realtimeAtsScorer'
 
 const POWER_ACTION_VERBS = [
@@ -39,10 +39,10 @@ export default function InlineAIEnhancer({
 
     setLoading(true)
     try {
-      // First attempt backend bullet enhancement
-      const res = await enhanceApi.analyzeBullets(text, role).catch(() => null)
-      if (res?.data?.bullets && res.data.bullets.length > 0) {
-        const item = res.data.bullets[0]
+      // First attempt the shared gateway/Express bullet enhancement
+      const analysis = await analyzeBulletText(text, role).catch(() => null)
+      if (analysis?.bullets && analysis.bullets.length > 0) {
+        const item = analysis.bullets[0]
         setSuggestion(item.suggested || item.improved || item.enhancement)
         setReason(item.reason || 'Enhanced for ATS match and measurable impact.')
       } else {

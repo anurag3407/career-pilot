@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Languages, Loader2, Copy, Check, Download } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { enhanceApi } from '../../services/api'
+import { translateResumeText } from '../../services/resumeAi'
 
 /**
  * ResumeTranslator — translates the current resume into a target language.
@@ -62,8 +62,7 @@ export default function ResumeTranslator({ resumeText, onTranslated }) {
     setResult(null)
     const toastId = toast.loading(`Translating to ${LANGUAGES.find(l => l.code === target)?.label || target}…`)
     try {
-      const res = await enhanceApi.translateResume(resumeText, target)
-      const text = res?.data?.translatedText || res?.translatedText
+      const { translatedText: text } = await translateResumeText(resumeText, target)
       if (!text) {
         toast.error('Empty response', { id: toastId })
         return

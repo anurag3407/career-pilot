@@ -616,6 +616,13 @@ export default function Enhance() {
         enhanceApi.comprehensiveAnalysis(resume.originalText, jobRole)
       ])
 
+      // In a Cloudflare-only deployment /api/* is answered by the SPA shell,
+      // which yields a 200 with HTML instead of JSON. Fail loudly rather than
+      // pretending the analysis completed with empty data.
+      if (!atsResponse?.data || typeof atsResponse.data !== 'object') {
+        throw new Error('AI analysis is not available in this deployment. Configure the Express backend or use the client-side ATS tools.')
+      }
+
       setAtsAnalysis(atsResponse.data)
       setComprehensiveAnalysis(comprehensiveResponse.data)
       setHasAnalyzed(true)
@@ -723,6 +730,14 @@ export default function Enhance() {
 
       if (!response.ok) {
         throw new Error('Failed to start enhancement stream')
+      }
+
+      // Guard against the SPA shell being served for /api on static-only
+      // deployments: it is a 200 text/html response, not an SSE stream. Without
+      // this check the empty body would overwrite enhancedText with "".
+      const contentType = response.headers.get('content-type') || ''
+      if (!contentType.includes('text/event-stream')) {
+        throw new Error('AI enhancement is not available in this deployment. Configure the Express backend or use the inline AI tools.')
       }
 
       if (!response.body) {
@@ -837,6 +852,9 @@ export default function Enhance() {
     setActiveTab('score')
     try {
       const response = await enhanceApi.scoreResume(resume.originalText)
+      if (!response?.data || typeof response.data !== 'object') {
+        throw new Error('AI scoring is not available in this deployment.')
+      }
       setScoreData(response.data)
       // Save the score back to the resume history
       await resumeApi.update(resumeId, { atsScore: response.data.overallScore })
