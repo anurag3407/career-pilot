@@ -1,7 +1,8 @@
 # Application Packets & the Weekly Loop
 
 > Nov 2026. One job application owns the resume, the letter, the interview,
-> and the follow-up. Migration: `supabase/migrations/20261115000000_application_packets.sql`.
+> and the follow-up. Live schema: `worker/migrations/0002_unified_d1_platform.sql`
+> (the Supabase migration of the same shape is legacy history).
 
 ## The problem this solves
 
@@ -11,23 +12,23 @@ the user carried the context between them. The dashboard's "next move" was a
 setup checklist; the extension saved a listing and stopped; nothing told the
 user *when* to act.
 
-## Data model (Supabase is the board's source of truth)
+## Data model (Cloudflare D1 is the board's source of truth)
 
 ### `tracked_jobs` — new columns
 
 | column | type | purpose |
 |---|---|---|
-| `resume_id` | UUID | source resume used by the packet |
-| `resume_version_id` | UUID | tailored snapshot saved into `resume_versions` |
-| `cover_letter_id` | UUID | row in `cover_letters` |
-| `interview_id` | TEXT | mock-interview session id (backend Mongo id) |
-| `applied_at` | TIMESTAMPTZ | when the user marked it applied |
-| `next_action_at` / `next_action_type` | TIMESTAMPTZ / TEXT | the follow-up calendar entry (`follow_up`) |
-| `interview_at` | TIMESTAMPTZ | scheduled real interview time (drives "interviews soon") |
-| `last_activity_at` | TIMESTAMPTZ | quiet detection |
-| `packet` | JSONB | `{ tailoredResumeText, coverLetter, questions[], followUpEmail, lastDebrief }` |
-| `offer` | JSONB | `{ base, equity, location, deadline, notes, counterEmail }` |
-| `rejection` | JSONB | `{ stage, reason, missingSkills[], gapAnalysis }` |
+| `resume_id` | TEXT | source resume used by the packet |
+| `resume_version_id` | TEXT | tailored snapshot saved into `resume_versions` |
+| `cover_letter_id` | TEXT | row in `cover_letters` |
+| `interview_id` | TEXT | mock-interview session id (`interviews.id`) |
+| `applied_at` | TEXT (ISO-8601) | when the user marked it applied |
+| `next_action_at` / `next_action_type` | TEXT | the follow-up calendar entry (`follow_up`) |
+| `interview_at` | TEXT | scheduled real interview time (drives "interviews soon") |
+| `last_activity_at` | TEXT | quiet detection |
+| `packet` | TEXT (JSON) | `{ tailoredResumeText, coverLetter, questions[], followUpEmail, lastDebrief }` |
+| `offer` | TEXT (JSON) | `{ base, equity, location, deadline, notes, counterEmail }` |
+| `rejection` | TEXT (JSON) | `{ stage, reason, missingSkills[], gapAnalysis }` |
 
 ### New tables
 
@@ -39,8 +40,10 @@ user *when* to act.
 - **`interviews`** — gained `tracked_job_id`, `next_status_suggestion`,
   `company_name`.
 
-Mongo `TrackedJob` mirrors the packet fields for REST parity (the board reads
-Supabase; the backend API stays usable).
+D1 is authoritative: the frontend board reads/writes `tracked_jobs` through
+`/v1/db/jobs`, including `packet`, `offer`, `rejection` and the calendar fields.
+The Express `TrackedJob` Mongo model mirrors the same fields for REST parity
+when the optional backend is running.
 
 ## Flows
 
@@ -66,7 +69,8 @@ badges on tracker cards.
 ### 3. Career profile
 `/career-profile` (`frontend/src/pages/CareerProfile.jsx`): master resume,
 target roles, weekly target, STAR bank CRUD. REST mirror:
-`GET/PUT /api/career-profile` (used by the extension).
+`GET/PUT /v1/db/career-profile` on the gateway (`/api/career-profile` on the
+optional Express backend; the extension uses the gateway path by default).
 
 ### 4. Interviews belong to a job
 `/mock-interview/practice?job=<id>` preloads the card's description and
@@ -75,10 +79,10 @@ card: a note ("Mock interview debrief — score X/100. Suggested next step:
 mark as applied."), `interview_id`, and `packet.lastDebrief`.
 
 ### 5. Extension = the apply moment
-`POST /api/jobs/track` (new — the extension previously hit a missing endpoint
-and 404'd) writes the Supabase row first, Mongo for parity, and is idempotent
-per `(userId, jobId)`. The popup now scores the listing against the master
-profile (`GET /api/career-profile` + keyword overlap) and offers
+`POST /v1/jobs/track` on the gateway (the extension also falls back to
+`/api/jobs/track` when pointed at the Express backend) writes the D1 row
+idempotently per `(userId, jobId)`. The popup scores the listing against the
+master profile (`GET /v1/db/career-profile` + keyword overlap) and offers
 "Save & build the packet →" which deep-links to `/job-tracker?job=<id>&packet=1`.
 
 ### 6. Outcomes

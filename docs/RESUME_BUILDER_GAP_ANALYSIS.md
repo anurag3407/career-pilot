@@ -1,5 +1,8 @@
 # Resume Studio — Workflow & Gap Analysis
 
+> **Historical snapshot.** This analysis predates the D1/Cloudflare unification.
+> See `docs/README.md` for current documentation.
+
 > How the current resume builder works end-to-end, where the two independent flows
 > (**Build from scratch** / **Enhance**) and the **drag-and-drop section** feature stand,
 > and exactly where it lags a "super-premium" resume/portfolio builder

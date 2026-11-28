@@ -1,687 +1,622 @@
 # Career Pilot Project Documentation
 
-This document is the high-level technical handbook for the whole Career Pilot repository. Use it with `README.md` for product overview, `ARCHITECTURE.md` for deeper diagrams, `docs/environment-setup.md` for environment variables, `docs/DATABASE_SCHEMA.md` for persistence details, and `API_DOCS/README.md` for endpoint-focused references.
+This document is the high-level technical handbook for the whole Career Pilot repository. Use it with `README.md` for the product overview, `ARCHITECTURE.md` for deeper diagrams, `docs/environment-setup.md` for environment variables, `docs/DATABASE_SCHEMA.md` for persistence details, and `API_DOCS/README.md` for endpoint references.
+
+**Last updated:** 2026-11-28.
 
 ## 1. Product Summary
 
-Career Pilot is a full-stack career platform that helps users create resumes, improve resume content with AI, prepare for interviews, search and track jobs, build portfolio sites, collaborate with the community, and manage career-growth workflows.
-
-Core product areas:
+Career Pilot is a full-stack career platform: resumes, AI enhancement, mock interviews, job search and tracking, portfolio publishing, GitHub intelligence, outreach, community and fellowships.
 
 | Area | Main capabilities |
 | --- | --- |
-| Resume tools | Resume upload, resume builder, AI enhancement, ATS scoring, PDF generation, sharing, versioning, comments, custom sections. |
-| Job tools | Job search, saved jobs, kanban-style tracker, alerts, weekly digest, RapidAPI-backed listings, summaries, and notifications. |
-| Portfolio tools | AI extraction from resumes, template gallery, portfolio content editing, accessibility checks, sitemap and robots output, deployment helpers. |
-| AI tools | Resume enhancement, cover letter generation, email outreach drafts, LinkedIn optimization, skill gap analysis, interview feedback, GitHub intelligence. |
-| Community | Channels, posts, comments, direct messages, scheduling, presence, and fellowship workflows. |
-| Admin and operations | Admin dashboard, bug reports, login audits, queue dashboard, metrics, rate limiting, security headers, GDPR routes. |
+| Resume tools | Upload/text-to-resume, builder, AI enhancement, ATS scoring, PDF export, sharing, versioning, 60 templates. |
+| Job tools | JSearch-powered search, kanban tracker, application packets, follow-up calendar, alerts, weekly digest. |
+| Portfolio tools | 262 React templates, AI extraction, section editor, accessibility checks, sitemap/robots, deploys to Cloudflare Pages / Netlify / GitHub Pages. |
+| AI tools | Resume enhancement, cover letters, outreach drafts, LinkedIn optimizer, skill-gap analysis, interview feedback, GitHub intelligence. 30 providers with BYOK. |
+| Community | Channels, posts, comments, DMs, scheduled posts, fellowship challenges (Express/Appwrite path). |
+| Admin/ops | Admin dashboard, bug reports, login audits, queue dashboard, metrics, rate limiting, GDPR, 2FA (Express path). |
 
 ## 2. Repository Layout
 
 ```text
 career-pilot/
-|-- README.md                    # Product overview, quick start, feature summary.
-|-- ARCHITECTURE.md              # Architecture diagrams, data flows, security, scaling notes.
-|-- package.json                 # Root npm scripts that delegate to frontend.
-|-- Docker-compose.yml           # Local multi-service orchestration.
-|-- firebase/                    # Firestore and Storage security rules plus indexes.
-|-- API_DOCS/                    # API-specific documentation by domain.
-|-- docs/                        # User, setup, feature, schema, deployment, and architecture docs.
-|-- backend/                     # Express API, Socket.IO server, models, services, routes, workers.
-|-- frontend/                    # React 19 + Vite app, UI components, pages, stores, hooks, templates.
-|-- scratch/                     # Temporary project artifacts and generated notes.
-`-- graphify-out/                # Optional generated knowledge graph when present.
+|-- README.md                    # Product overview, quick start, feature summary
+|-- ARCHITECTURE.md              # Current architecture, flows, security, deployment
+|-- API_DOCS/                    # Gateway + Express API reference
+|-- docs/                        # This handbook + setup, schema, portfolio, AI docs
+|-- frontend/                    # React 19 + Vite 7 SPA (Cloudflare Pages)
+|-- worker/                      # Cloudflare Worker gateway: auth, D1 CRUD, AI, jobs, ImageKit
+|-- backend/                     # Optional Express API for self-hosted extras
+|-- extension/                   # Chrome MV3 job tracker
+|-- supabase/                    # Legacy Supabase migrations (pre-D1)
+|-- scripts/                     # verify-deploy.mjs, gateway smoke checks
+|-- .github/workflows/           # ci-cd.yml, security.yml, release.yml
+|-- docker-compose.yml           # Legacy self-hosted stack (frontend + backend + Mongo + Redis)
+`-- package.json                 # Root scripts delegating to frontend/backend
 ```
 
 Important documentation entry points:
 
 | File | Purpose |
 | --- | --- |
-| `README.md` | Start here for the project pitch, setup, feature list, and contribution pointers. |
+| `README.md` | Product pitch, setup, features, routes. |
+| `docs/README.md` | Documentation index and freshness map. |
 | `docs/PROJECT_DOCUMENTATION.md` | This full-project technical map. |
-| `ARCHITECTURE.md` | System diagrams, service responsibilities, data flow diagrams, and infrastructure view. |
-| `docs/environment-setup.md` | Local, staging, and production environment variable guidance. |
-| `docs/user-guide.md` | End-user walkthrough with screenshots. |
-| `docs/DATABASE_SCHEMA.md` | Database collections and persistence contracts. |
-| `docs/portfolio-architecture.md` | Portfolio builder architecture and lifecycle. |
-| `docs/creating-portfolio-themes.md` | How to add portfolio templates. |
-| `API_DOCS/README.md` | API documentation index. |
-| `SECURITY.md` | Security reporting and vulnerability handling. |
-| `CONTRIBUTING.md` / `CONTRIBUTION.md` | Contributor workflow and community guidance. |
+| `ARCHITECTURE.md` | System diagrams, flows, data/security/deployment architecture. |
+| `docs/DATABASE_SCHEMA.md` | D1 tables, columns, indexes, legacy schemas. |
+| `docs/UNIFIED_PLATFORM.md` | Cloudflare Pages + Worker + D1 architecture and runbook. |
+| `docs/APPLICATION_PACKETS.md` | Packet/calendar workflow. |
+| `docs/environment-setup.md` | Environment variable matrix. |
+| `API_DOCS/README.md` | API index (gateway + Express). |
+| `API_DOCS/gateway.md` | Gateway Worker endpoint reference. |
+| `SECURITY.md` | Vulnerability disclosure policy. |
+| `CONTRIBUTING.md` | Contributor workflow. |
 
 ## 3. Runtime Architecture
 
-Career Pilot has a React frontend, an Express backend, and several external services.
+Two runtime paths share one repository.
+
+### Live path (Cloudflare)
+
+```text
+Browser (React SPA on Cloudflare Pages)
+  |
+  | /gateway/v1/*  (same-origin proxy or absolute Worker URL)
+  v
+Cloudflare Worker "careerpilot-gateway"  (worker/src/index.js)
+  |-- worker/src/auth.js  → D1 users/profiles/auth_sessions/oauth_states
+  |-- worker/src/db.js    → D1 CRUD for every platform table
+  |-- AI router           → Workers AI binding, Gemini, Anthropic, 26 OpenAI-compatible providers
+  |-- RapidAPI JSearch    → /v1/jobs/search
+  |-- ImageKit            → /v1/imagekit/auth, /v1/imagekit/upload
+  `-- /v1/health
+  |
+  v
+Cloudflare D1 "careerpilot-db" (binding DB)
+```
+
+Auth, profiles, resume/job/portfolio/career/interview CRUD, settings,
+notifications and generic AI generation run on this path. The feature-specific
+AI prompts (resume enhance, interview question/feedback generation, roast,
+cover-letter/LinkedIn/README generation) and PDF/portfolio deploy still call
+the Express `/api` endpoints; see [section 5](#5-backend-application).
+
+### Optional path (Express)
 
 ```text
 Browser
   |
-  | React Router pages, Firebase client auth, Socket.IO client
+  | /api/*  (VITE_API_BASE)
   v
-Frontend (Vite dev server or static hosting)
-  |
-  | REST API calls and WebSocket events
-  v
-Backend (Express + Socket.IO)
-  |
-  |-- MongoDB: application data, resumes, portfolios, jobs, alerts, logs
-  |-- Redis: queues, rate limiting support, background jobs, BullMQ dashboard
-  |-- Firebase Admin: token verification and Firebase integration
-  |-- External AI providers: Gemini, OpenAI, Groq, Anthropic, OpenRouter-compatible flows
-  |-- RapidAPI/JSearch and scrapers: job search inputs
-  |-- SMTP/Nodemailer: email alerts, outreach, weekly digest
-  `-- Deployment APIs: portfolio publishing workflows
+Express 4 + Socket.IO (backend/src/index.js)
+  |-- MongoDB (Mongoose): legacy feature data
+  |-- Redis + BullMQ: queues, cache, Socket.IO adapter
+  |-- Appwrite: community/fellowship (legacy)
+  |-- Supabase/Clerk: legacy auth fallback
+  |-- Puppeteer/PDFKit: resume PDFs
+  |-- Deploy services: Cloudflare Pages / Netlify / GitHub Pages
+  `-- Razorpay, Nodemailer, GitHub/LinkedIn integrations
 ```
 
-Primary backend boot sequence:
-
-1. Load environment variables and validate key production requirements.
-2. Configure Express middleware: metrics, compression, CORS, security headers, rate limiting, body parsers.
-3. Register health, metrics, Swagger, auth, resume, job, portfolio, AI, admin, and utility routes.
-4. Connect to MongoDB and optionally start GitHub portfolio sync cron.
-5. Start the HTTP server and initialize Socket.IO.
-6. Initialize community defaults, schedulers, job fetchers, digest queues, and outreach workers.
-7. Handle shutdown signals by closing Redis-managed resources before process exit.
+It authenticates D1 JWTs with `verifyD1Token` (local HMAC check or
+`/v1/auth/verify`), then falls back to Supabase and Clerk. CI builds and tests
+the backend but does not deploy it.
 
 ## 4. Frontend Application
 
 Location: `frontend/`
 
-Technology stack:
-
 | Layer | Implementation |
 | --- | --- |
 | UI runtime | React 19 |
-| Build system | Vite |
-| Routing | React Router 7 |
-| Styling | TailwindCSS 4 plus project CSS variables |
-| State | React context, hooks, and Zustand stores |
-| Realtime | Socket.IO client |
-| Forms | React Hook Form and custom components |
-| Data visualization | Chart.js, Recharts, cobe, xyflow, dagre |
-| Testing | Vitest and Testing Library |
+| Build | Vite 7 (`vite.config.js`) + standalone portfolio build (`vite.standalone.config.js`) |
+| Routing | React Router 7 (`frontend/src/App.jsx`) |
+| Styling | TailwindCSS 4 + project CSS variables |
+| State | React context + Zustand (`useAIConfigStore`, `useGithubConfigStore`, …) |
+| Auth | `context/AuthProvider.jsx` → `config/d1.js` (`d1Auth`) |
+| Data | `services/api.js` → `services/d1Data.js` (D1) or `/api` (Express extras) |
+| AI | `services/aiGateway.js` → `/gateway/v1/ai/*` |
+| Uploads | `services/imagekit.js` (gateway signature, direct ImageKit upload) |
+| PDF text | `utils/pdfExtract.js` (pdfjs-dist, client-side) |
+| PDF output | `services/atsPdfExport.js` (jsPDF/html2canvas) |
+| Tests | Vitest + Testing Library |
+| PWA | `vite-plugin-pwa` + `pwaOptions.js` |
 
-Key frontend directories:
+Key directories:
 
 | Path | Responsibility |
 | --- | --- |
-| `frontend/src/App.jsx` | Main route tree, auth route wrappers, layout composition, command palette binding. |
-| `frontend/src/main.jsx` | React entry point. |
-| `frontend/src/pages/` | Route-level screens such as Dashboard, Upload, Enhance, Jobs, Interview, Admin, Hubs, Analyzer. |
-| `frontend/src/components/` | Reusable UI and feature components. |
-| `frontend/src/components/ui/` | Primitive UI elements and shared styling utilities. |
-| `frontend/src/components/community/` | Community channels, posts, messaging, scheduling, comments. |
-| `frontend/src/components/jobs/` | Job tracker and mobile kanban UI pieces. |
-| `frontend/src/components/portfolio/` | Portfolio editor, deployment, accessibility, social links, theme selection. |
-| `frontend/src/components/portfolio/templates/` | React portfolio template implementations. |
-| `frontend/src/context/` | App-wide providers including auth, sockets, and theme. |
-| `frontend/src/hooks/` | Reusable hooks, including auth-facing hooks. |
-| `frontend/src/services/` | API client modules and service wrappers. |
-| `frontend/src/stores/` | Zustand stores. |
-| `frontend/src/utils/` | Shared utility functions. |
-| `frontend/src/__tests__/` and nested `__tests__` | Frontend test coverage. |
-| `frontend/public/` | Static assets, service worker files, redirects, template preview assets. |
+| `src/pages/` | Route screens: Dashboard, ResumeBuilder, Enhance, JobTracker, PortfolioStudio, hubs, fellowship, admin. |
+| `src/components/` | UI and feature components. |
+| `src/components/resume/templates/` | 60 resume templates. |
+| `src/components/portfolio/templates/` | 262 portfolio templates (folder per template with `index.jsx`). |
+| `src/context/` | Auth, Socket, Theme, Portfolio, Resume providers. |
+| `src/services/` | API facade, D1 data layer, AI gateway, ImageKit, PDF export. |
+| `src/stores/` | Zustand stores (AI provider config, GitHub config). |
+| `frontend/src/data/portfolioTemplates.jsx` | Filesystem-derived template registry (`import.meta.glob`). |
+| `src/standalone/` | Standalone portfolio bundle entry. |
+| `src/utils/` | PDF extraction, sanitizers, export helpers. |
+| `public/` | `_redirects`, `_headers`, icons, template previews. |
 
-Main route groups:
+Main route groups (see `frontend/src/App.jsx` for the full tree):
 
-| Route group | Examples | Notes |
-| --- | --- | --- |
-| Public | `/`, `/login`, `/register`, `/privacy`, `/terms`, `/cookies`, `/templates` | Public routes use `PublicRoute` where logged-in users should be redirected to the dashboard. |
-| Auth callbacks | `/auth/linkedin/callback`, `/auth/openrouter/callback` | OAuth/provider callback handlers. |
-| Resume | `/upload`, `/resume-builder`, `/text-to-resume`, `/enhance/:resumeId`, `/resume/:resumeId`, `/shared/:shareToken` | Protected except shared resume views. |
-| Jobs | `/jobs`, `/job-alerts`, `/job-tracker` | Search, alerts, and tracked application workflow. |
-| AI and career | `/interview-prep`, `/interview-history`, `/email-generator`, `/linkedin-optimizer`, `/skill-gap`, `/cover-letter` | AI-assisted career tools. |
-| Community | `/community`, `/hub/community`, `/fellowship/*` | Community and fellowship workflows. |
-| Portfolio | `/hub/portfolio`, `/deployments`, `/templates/*`, `/preview/:templateId` | Template browsing, previewing, editing, and deployment. |
-| Developer intelligence | GitHub dashboard, LinkedIn dashboard, repo analyzer, project visualizer | Repository and profile intelligence tools. |
-| Admin | `/admin`, `/admin/users`, `/admin/logins`, `/admin/bugs` | Protected by login on the client; backend must enforce authorization. |
+| Group | Examples |
+| --- | --- |
+| Public marketing/tools | `/`, `/resume-builder`, `/portfolio-builder`, `/resume-roast`, `/github-portfolio`, `/project-visualizer`, `/job-finder`, `/mock-interview`, `/recruiters`, `/readme-generator`, `/templates`, `/pricing` |
+| Legal | `/privacy`, `/terms`, `/cookies`, `/about` |
+| Auth | `/login`, `/register`, `/auth/callback`, `/auth/openrouter/callback`, `/auth/github/callback` |
+| Protected tools | `/dashboard`, `/dashboard/analytics`, `/upload`, `/resume-builder/build`, `/text-to-resume`, `/enhance/:resumeId`, `/resume/:resumeId`, `/resume-templates`, `/job-finder/search`, `/job-tracker`, `/job-alerts`, `/community`, `/mock-interview/practice`, `/interview-history`, `/profile`, `/security`, `/linkedin-optimizer`, `/skill-gap`, `/salary-estimate`, `/career-profile`, `/email-generator`, `/career-path`, `/outreach`, `/deployments`, `/resume-roast/analyze`, `/github-portfolio/build`, `/settings`, `/portfolio-builder/studio`, `/project-visualizer/analyze` |
+| Hubs | `/hub/resume`, `/hub/roast`, `/hub/portfolio`, `/hub/portfolio/github`, `/hub/jobs`, `/hub/career`, `/hub/community` |
+| Dashboards | `/github`, `/linkedin`, `/project-visualizer/dashboard/:sessionId` |
+| Fellowship | `/fellowship/*` (challenges, proposals, messages, verify) |
+| Admin | `/admin`, `/admin/users`, `/admin/logins`, `/admin/bugs` |
+| Public shares | `/shared/:shareToken`, `/roast/:shareToken`, `/preview/:templateId` (plus per-theme `/templates/<name>` demo routes) |
 
-Frontend development commands:
+Frontend commands:
 
 ```bash
 cd frontend
 npm install
-npm run dev
-npm run build
-npm run test
+npm run dev          # http://localhost:5173
+npm run build        # SPA + standalone portfolio bundle
+npm run build:portfolio
+npm test             # vitest run
 npm run lint
 npm run preview
 ```
 
-Root scripts delegate to the frontend:
-
-```bash
-npm install        # npm install --prefix frontend
-npm run build     # npm run build --prefix frontend
-npm run build:portfolio
-```
-
 ## 5. Backend Application
 
-Location: `backend/`
-
-Technology stack:
+Location: `backend/` (optional; only needed for self-hosted extras)
 
 | Layer | Implementation |
 | --- | --- |
-| Runtime | Node.js 18+ with ES modules |
-| HTTP framework | Express 4 |
-| Realtime | Socket.IO |
-| Database | MongoDB via Mongoose |
-| Queue/cache | Redis and BullMQ |
-| Auth | Firebase Admin token verification plus local auth-related middleware/services |
-| AI providers | Google Gemini, OpenAI, Groq, Anthropic, OpenRouter-compatible provider config |
-| File handling | Multer, Cloudinary, PDF parsing/generation, image optimization |
-| Email | Nodemailer and queue-backed notification services |
+| Runtime | Node.js 22+, ES modules |
+| HTTP | Express 4 |
+| Realtime | Socket.IO 4 |
+| Primary DB | MongoDB via Mongoose 9 (legacy features) |
+| D1 bridge | `config/d1.js` (gateway verify + REST/gateway queries) |
+| Queue/cache | Redis 7, BullMQ, Bull-Board |
+| Auth | D1 JWT → Supabase → Clerk fallback (`middleware/auth.js`) |
+| AI | Provider registry in `config/aiProviders.js`, SDKs for Gemini/OpenAI/Groq/Anthropic |
+| Files | Multer, Cloudinary, PDF parsing/generation, Sharp |
+| Email | Nodemailer + queue-backed services |
 | Docs | Swagger UI at `/api/docs` |
-| Metrics | Prometheus-compatible `/metrics` endpoint |
-| Testing | Node test runner for backend unit tests |
+| Metrics | Prometheus `/metrics` (outside `/api`) |
+| Tests | Node's built-in test runner |
 
-Key backend directories:
-
-| Path | Responsibility |
-| --- | --- |
-| `backend/src/index.js` | Express app setup, middleware, route registration, server startup, background initialization. |
-| `backend/src/config/` | Database, Redis, Firebase, Socket.IO, Swagger, AI provider configuration. |
-| `backend/src/controllers/` | Request-facing controller functions for selected route groups. |
-| `backend/src/routes/` | Express routers grouped by feature/domain. |
-| `backend/src/middleware/` | Auth, validation, upload handling, metrics, compression, CSP, rate limiting, pagination, errors. |
-| `backend/src/models/` | Mongoose models for users, resumes, jobs, portfolios, alerts, interviews, logs, and related entities. |
-| `backend/src/schemas/` | Request validation schemas for auth, resume, jobs, payments, profile, 2FA, community, and AI flows. |
-| `backend/src/services/` | Business logic, AI integrations, queues, scrapers, deployers, email, PDF, GitHub, LinkedIn, portfolio, and analysis services. |
-| `backend/src/templates/` | Email templates and server-side portfolio templates. |
-| `backend/src/utils/` | Sanitization, diffing, config safety, email config, favicon utilities. |
-| `backend/src/__tests__/` and nested `__tests__` | Backend tests. |
-| `backend/scripts/` | Operational scripts such as password migration and email/screenshot verification. |
-| `backend/tests/` | Additional integration or template tests. |
-
-Registered backend route prefixes:
+Registered route prefixes (`backend/src/index.js`):
 
 | Prefix | Domain |
 | --- | --- |
 | `/health` | Health check. |
 | `/metrics` | Prometheus metrics. |
 | `/api/docs` | Swagger UI. |
-| `/api/auth` | Authentication. |
-| `/api/auth/2fa` | Two-factor authentication. |
-| `/api/upload` | Resume and input upload handling. |
-| `/api/resumes` | Resume CRUD, sharing, versions, comments, and related operations. |
-| `/api/enhance` | Resume enhancement and AI resume operations. |
+| `/api/webhooks` | Payment/webhook handlers. |
+| `/api/auth` | Auth, OAuth, notification prefs. |
+| `/api/auth/2fa` | Two-factor setup/verify. |
+| `/api/upload` | Resume/input uploads. |
+| `/api/resumes` | Resume CRUD, sharing, versions, comments. |
+| `/api/enhance` | AI resume enhancement. |
+| `/api/roast` | Resume roast. |
 | `/api/cover-letter` | Cover letter generation. |
-| `/api/fetchjobs` | Job search/fetching. |
-| `/api/job-tracker` | Saved and tracked jobs. |
-| `/api/job-alerts` | Job alerts and notifications. |
-| `/api/community` | Community channels, messages, posts, comments. |
-| `/api/fellowship` | Fellowship challenges, proposals, onboarding, chat. |
-| `/api/interview` | Interview preparation, sessions, history, replay, analysis. |
-| `/api/recruiter` | Recruiter-facing flows. |
-| `/api/outreach` | Outreach queue and email workflows. |
-| `/api/bugs` | Bug report workflow. |
-| `/api/collaboration` | Resume collaboration features. |
-| `/api/payments` | Payments, loaded dynamically when route dependencies are available. |
-| `/api/portfolio` | Portfolio generation, templates, content, public assets, deploy flows. |
-| `/api/user-profiles` | User profile management. |
-| `/api/gdpr` | GDPR export/delete/privacy operations. |
-| `/api/search` | Search API. |
+| `/api/fetchjobs` | Job search/fetch. |
+| `/api/salary` | Salary estimation. |
+| `/api/job-tracker` | Tracked jobs. |
+| `/api/jobs` | Application packets / tracking. |
+| `/api/career-profile` | Career profile. |
+| `/api/job-alerts` | Alerts. |
+| `/api/community` | Community channels/posts/DMs. |
+| `/api/fellowship` | Challenges/proposals/chat. |
+| `/api/interview` | Interview sessions/history/replay. |
+| `/api/recruiter` | Recruiter flows. |
+| `/api/outreach` | Outreach drafts/queue. |
+| `/api/bugs` | Bug reports. |
+| `/api/collaboration` | Resume collaboration. |
+| `/api/payments` | Razorpay payments (loaded when configured). |
+| `/api/portfolio` | Portfolio generation/content/deploy. |
+| `/api/portfolio/github` | GitHub portfolio sync/build. |
+| `/api/user-profiles` | Public user profiles. |
+| `/api/gdpr` | Export/delete. |
+| `/api/search` | Search. |
 | `/api/ai` | AI utility routes. |
-| `/api/email-tracking` | Email tracking and analytics. |
+| `/api/email-tracking` | Email tracking. |
 | `/api/analyzer` | Repository analyzer. |
+| `/api/readme-generator` | GitHub README generator. |
 | `/api/project-visualizer` | Project visualizer. |
+| `/api/subscription` | Subscription/plan state. |
 | `/api/admin` | Admin APIs. |
-| `/api/admin/queues` | Bull board queue UI/routes. |
+| `/api/admin/queues` | Bull-Board UI. |
 
-Backend development commands:
+Backend commands:
 
 ```bash
 cd backend
 npm install
-npm run dev
+npm run dev       # nodemon src/index.js
 npm start
-npm test
+npm test          # node scripts/run-tests.js
 npm run lint
 ```
 
 ## 6. Data Model Overview
 
-Career Pilot uses MongoDB for primary application persistence and Firebase for auth plus selected realtime/community capabilities.
-
-Common MongoDB model groups:
-
-| Group | Representative models |
-| --- | --- |
-| Users and auth | `User`, `UserProfile`, `TwoFactor`, `LoginAttempt`, `LoginLog`. |
-| Resumes | `Resume`, `ResumeVersion`, `ResumeComment`, `ResumeShare`, `ResumeAtsHistory`. |
-| Jobs | `Job`, `JobListing`, `JobAlert`, `TrackedJob`, `NotificationLog`. |
-| Portfolio | `Portfolio`, `PortfolioVersion`, `ProjectAnalysis`, `RepoAnalysisHistory`. |
-| Community and fellowship | `Challenge`, `FellowshipProfile`, `FellowshipChat`, `Proposal`. |
-| Communications | `EmailLog`, `Outreach`, notification service records. |
-| Operations | `Bug`, `TokenUsage`, metrics/log support models. |
-
-Firestore is used for Firebase-backed user/community data such as users, channels, realtime message data, and presence-like workflows. Keep Firebase rules in `firebase/firestore.rules` and `firebase/storage.rules` aligned with backend assumptions.
-
-For exact schemas, indexes, and field-level details, use `docs/DATABASE_SCHEMA.md` and model files in `backend/src/models/`.
+- **Primary (live):** Cloudflare D1. 28 tables covering identity, resumes,
+  jobs, portfolios, career, interviews, notifications, settings, AI telemetry,
+  uploads and community. See `docs/DATABASE_SCHEMA.md`.
+- **Legacy:** Supabase Postgres migrations in `supabase/migrations/`; MongoDB
+  models in `backend/src/models/` for the Express path; Appwrite collections for
+  community; Redis for queues/cache.
+- **Convention:** user-owned rows carry `user_id`; tool documents are stored
+  verbatim in a `data TEXT` column so existing camelCase shapes keep working.
+- **Relationships:** logical only (no enforced FKs in D1), maintained by ids in
+  the Worker and frontend.
 
 ## 7. Authentication and Authorization
 
-Authentication layers:
+**Live (D1):**
 
-1. Firebase client auth signs users in on the frontend.
-2. Frontend sends Firebase tokens in `Authorization` headers for protected API calls.
-3. Backend middleware such as `verifyToken` validates the token with Firebase Admin.
-4. Client route guards redirect unauthenticated users away from protected pages.
-5. Server routes must still enforce authorization even when the frontend hides UI.
+1. The SPA signs up/logs in via `POST /v1/auth/signup|login` on the gateway.
+2. The Worker hashes passwords with PBKDF2-SHA256 (100k iterations), issues an
+   HS256 JWT (7-day TTL), and stores its `jti` in `auth_sessions`.
+3. `AuthProvider` keeps the session in `localStorage`
+   (`careerpilot:d1:session`) and hydrates the user via `/v1/auth/me`.
+4. Every `/v1/db/*` request is scoped to the authenticated `user_id`; public
+   share reads are limited to `share_token`/public portfolio slugs.
+5. Google/GitHub OAuth is enabled when the Worker has the provider secrets.
 
-Important guidance:
+**Optional (Express):** `verifyToken` accepts a D1 bearer token first
+(`verifyD1Token`), then a Supabase token, then a Clerk session. `adminOnly`
+protects admin routes using `ADMIN_EMAILS`/`ADMIN_UIDS`.
 
-- Treat frontend route protection as UX only, not security.
-- Do not expose service credentials or server-only API keys in `VITE_` variables.
-- Keep `DEV_BYPASS_AUTH` disabled outside explicit local testing.
-- Keep 2FA backup codes and TOTP secrets server-side only.
+Guidance:
+
+- Frontend route guards are UX only; server-side checks are authoritative.
+- Never put server-only secrets in `VITE_` variables.
+- Keep `DEV_BYPASS_AUTH` disabled outside local testing.
+- TOTP secrets and backup codes stay server-side.
 
 ## 8. AI Provider Architecture
 
-AI features are spread across backend services and frontend pages/components.
+Generic AI generation goes through `frontend/src/services/aiGateway.js` →
+`POST /v1/ai/generate` on the Worker. Feature-specific endpoints
+(`enhanceApi`, `interviewApi`, `roastApi`, cover-letter/LinkedIn/README
+generation) still call Express `/api/*`, which uses its own provider registry
+(`backend/src/config/aiProviders.js`).
 
-Provider sources include:
-
-| Provider/config | Typical use |
+| Mode | How it works |
 | --- | --- |
-| Google Gemini | Resume enhancement, ATS analysis, content generation, interview support. |
-| OpenAI | Optional AI provider for generation flows. |
-| Groq | Optional AI provider for fast generation flows. |
-| Anthropic | Optional provider through backend SDK usage. |
-| OpenRouter | User/provider callback and configurable model access. |
+| Platform (default) | Worker secret or the Workers AI binding supplies the key. |
+| BYOK | `useAIConfigStore` (encrypted localStorage) sends `X-AI-Provider`, `X-AI-Key`, `X-AI-Model`, `X-AI-Base-Url` per request. |
 
-AI implementation guidance:
+Provider coverage:
 
-- Keep provider-specific key handling on the backend unless a feature intentionally supports user-supplied client-side keys.
-- Prefer schema validation for all AI request payloads.
-- Fail gracefully when a provider key is absent; the app already logs development warnings for missing keys.
-- Sanitize or validate AI-generated portfolio HTML/content before persistence or rendering.
-- Add tests around prompt builders, response parsers, and fallbacks when changing AI services.
+- Native: Cloudflare Workers AI (`cloudflare`), Google Gemini, Anthropic.
+- OpenAI-compatible registry (26): OpenAI, Groq, OpenRouter, Requesty, DeepSeek,
+  Mistral, xAI, Together, Fireworks, Perplexity, Cohere, Cerebras, SambaNova,
+  Hyperbolic, Novita, Moonshot, Zhipu, DashScope, Nebius, Chutes, GitHub,
+  Ollama, LM Studio, vLLM, llama.cpp, Azure.
+- Custom: any OpenAI-compatible `baseUrl`.
+
+The frontend catalog shows 30 providers (`PROVIDER_META` in
+`useAIConfigStore.js`); keep it in sync with `PROVIDER_REGISTRY` in
+`worker/src/index.js` when adding one.
+
+Endpoints: `/v1/ai/generate`, `/v1/ai/validate-key`, `/v1/ai/models` (live
+discovery with static fallback). Usage is logged to `ai_usage`.
 
 ## 9. Resume System
 
-Resume workflow:
-
-1. User uploads a PDF or creates a resume from text/form inputs.
-2. Backend extracts text from uploaded files and validates the upload.
-3. User selects target role, experience, skills, industry, or custom instructions.
-4. AI services enhance the resume, generate summaries, and produce ATS feedback.
-5. Resume data is stored in MongoDB with versions and optional share tokens.
-6. Frontend renders previews, allows editing/reordering sections, and exports/shares output.
-
-Important modules:
-
-| Module | Responsibility |
-| --- | --- |
-| `backend/src/routes/upload.js` | PDF upload and text extraction endpoint. |
-| `backend/src/routes/resume.js` | Resume data routes. |
-| `backend/src/routes/enhance.js` | AI enhancement routes. |
-| `backend/src/services/pdfGenerator.js` | PDF generation. |
-| `backend/src/services/atsScorer.js` | ATS scoring. |
-| `backend/src/services/keywordOptimizer.js` | Keyword optimization support. |
-| `frontend/src/pages/Upload*` and `frontend/src/pages/Enhance*` | User-facing upload and enhancement experiences. |
-| `frontend/src/pages/ResumeBuilder*` | Resume creation/editing experience. |
+1. User uploads a PDF (client-side text extraction via `pdfExtract.js`) or
+   creates a resume from text/form inputs.
+2. Resume data is stored in D1 (`resumes`) through `/v1/db/resumes`.
+3. AI enhancement runs through the gateway; ATS scores are stored in
+   `resume_ats_history`; versions in `resume_versions`.
+4. The builder renders any of 60 templates and exports via `atsPdfExport.js`.
+5. Sharing uses `share_token` and the public `/shared/:shareToken` route.
+6. Express extras: server-side PDF rendering (`pdfGenerator.js`), upload route,
+   resume comments/collaboration.
 
 ## 10. Job Search, Tracking, and Alerts
 
-Job workflow:
+1. Search calls `POST /v1/jobs/search` (RapidAPI JSearch) through the gateway.
+2. Users track jobs via `/v1/db/jobs` (or the extension's `/v1/jobs/track`).
+3. The tracker is a kanban backed by `tracked_jobs`; packets, follow-up dates
+   (`next_action_at`), offers and rejections live on the same row.
+4. Alerts are stored in `job_alerts`; the Express BullMQ worker
+   (`jobAlertQueue.js`, `jobFetcher.js`) fetches/dedupes/emails matches.
+5. Weekly digest and GitHub sync cron run only on the Express path.
 
-1. User searches for jobs or configures alerts.
-2. Backend fetches listings from RapidAPI/JSearch and scraper services where applicable.
-3. User saves jobs into the tracker.
-4. Alerts and digest workers process matching jobs in the background.
-5. Email and realtime notifications notify the user.
-6. Application status is tracked through kanban-style UI.
-
-Important modules:
-
-| Module | Responsibility |
-| --- | --- |
-| `backend/src/routes/jobsRoute.js` | Job fetch/search routes. |
-| `backend/src/routes/jobTracker.js` | Tracked job routes. |
-| `backend/src/routes/jobAlerts.js` | Alert configuration and processing routes. |
-| `backend/src/services/jobFetcher.js` | Job fetcher initialization and retrieval logic. |
-| `backend/src/services/jobAlertQueue.js` | Queue-backed alert processing. |
-| `backend/src/services/weeklyDigestService.js` | Weekly digest scheduling and worker logic. |
-| `backend/src/services/scrapers/` | Scraper abstraction and provider-specific scrapers. |
-| `frontend/src/pages/JobSearch*` | Search page. |
-| `frontend/src/pages/JobTracker*` and `frontend/src/components/jobs/` | Tracker UI. |
+See `docs/APPLICATION_PACKETS.md` for the packet/calendar model.
 
 ## 11. Portfolio System
 
-Portfolio workflow:
-
-1. User selects a template or generates content from resume data.
-2. Backend AI services extract portfolio sections or enhance existing content.
-3. Frontend editor customizes sections, social links, theme, and deploy settings.
-4. Backend validates slug/content, sanitizes HTML, and saves portfolio records.
-5. Public routes serve sitemap, robots.txt, and accessibility report data.
-6. Deploy services publish to supported providers.
-
-Important modules:
-
-| Module | Responsibility |
-| --- | --- |
-| `backend/src/routes/portfolio.js` | Main portfolio REST API. |
-| `backend/src/services/portfolioTemplateEngine.js` | Template processing. |
-| `backend/src/services/deploy/` | Provider-specific deployment implementations. |
-| `backend/src/services/ai/portfolioExtractor.js` | AI extraction from resume content. |
-| `backend/src/services/ai/portfolioContentEnhancer.js` | AI content improvement. |
-| `backend/src/templates/portfolio/` | Server-side portfolio template assets and metadata. |
-| `frontend/src/components/portfolio/` | Editor, deployment modal, accessibility report, preview frame. |
-| `frontend/src/components/portfolio/templates/` | React-based portfolio templates. |
-| `docs/creating-portfolio-themes.md` | Contributor guide for new themes. |
+1. Templates are React components under
+   `frontend/src/components/portfolio/templates/*/index.jsx` (262 of them),
+   discovered automatically by `frontend/src/data/portfolioTemplates.jsx`.
+2. Each template consumes `usePortfolio()` from `PortfolioContext`.
+3. The standalone build (`vite.standalone.config.js`) emits
+   `frontend/dist-portfolio/standalone.html`, the shell the Express deployer
+   fills with the user's content.
+4. `backend/src/services/deploy/portfolioHtmlGenerator.js` builds the bundle;
+   `cloudflareDeployer.js`, `netlifyDeployer.js` and `githubPagesDeployer.js`
+   publish it.
+5. Deploy results are recorded in D1 `portfolio_deployments`; portfolio content
+   lives in `portfolios`.
+6. `docs/portfolio-architecture.md` and
+   `docs/creating-portfolio-themes.md` cover internals and authoring.
 
 ## 12. Community and Fellowship
 
-Community features include channels, posts, comments, direct messages, scheduled posts, presence-like updates, and fellowship challenge flows.
-
-Important modules:
+The live UI uses the Express/Appwrite path:
 
 | Module | Responsibility |
 | --- | --- |
-| `backend/src/routes/community.js` | Community routes. |
-| `backend/src/controllers/communityAppwriteController.js` | Appwrite-backed community initialization and logic. |
-| `backend/src/services/presenceService.js` | Presence state support. |
-| `backend/src/services/postScheduler.js` | Scheduled post initialization and processing. |
-| `backend/src/routes/fellowships.js` | Fellowship routes. |
-| `frontend/src/pages/Community*` | Community route page. |
-| `frontend/src/components/community/` | Community UI components. |
-| `frontend/src/pages/fellowship/` | Fellowship pages. |
+| `backend/src/routes/community.js` | Channels, posts, comments, DMs, presence, search. |
+| `backend/src/controllers/communityAppwriteController.js` | Appwrite-backed data access. |
+| `backend/src/services/presenceService.js` | Presence. |
+| `backend/src/services/postScheduler.js` | Scheduled posts. |
+| `backend/src/routes/fellowships.js` | Challenges, proposals, onboarding, chat. |
+| `frontend/src/pages/Community.jsx`, `components/community/` | Community UI. |
+| `frontend/src/pages/fellowship/` | Fellowship UI. |
+
+D1 already has `community_posts`/`community_comments` for a future Worker-native
+port; the frontend `communityApi` still calls `/api/community`.
 
 ## 13. Admin, Monitoring, and Operations
 
-Operational surfaces:
-
 | Surface | Location |
 | --- | --- |
-| Health check | `GET /health` |
-| Metrics | `GET /metrics` |
-| Swagger API docs | `GET /api/docs` |
-| Queue dashboard | `/api/admin/queues` |
-| Admin UI | Frontend `/admin` routes |
-| Bug reports | `/api/bugs` and admin bug views |
-| Login audit | Admin login views and login log models |
-| GDPR tools | `/api/gdpr` and `docs/GDPR_API.md` |
+| Worker health | `GET /v1/health` (D1 ready, table count, auth/ImageKit flags) |
+| Backend health | `GET /health` |
+| Metrics | `GET /metrics` (Prometheus) |
+| API docs | `GET /api/docs` (Swagger) |
+| Queue dashboard | `/api/admin/queues` (Bull-Board) |
+| Admin UI | `/admin`, `/admin/users`, `/admin/logins`, `/admin/bugs` |
+| Bug reports | `/api/bugs` |
+| GDPR | `/api/gdpr` (see `docs/GDPR_API.md`) |
+| AI usage | D1 `ai_usage` |
 
-Operational guidance:
-
-- Use `/health` for simple uptime checks.
-- Use `/metrics` for Prometheus-compatible scraping.
-- Keep queue dashboards behind backend authorization.
-- Check Redis connectivity before enabling queue-heavy features.
-- Validate email configuration at startup so alert failures are visible early.
+Guidance: keep the queue dashboard and admin routes behind authorization, check
+Redis before enabling queue features, and validate email config at startup.
 
 ## 14. Environment Variables
 
-Environment files are split by app:
+Three surfaces: frontend (`VITE_*`), Worker (`wrangler.toml` vars + secrets),
+optional backend (`backend/.env`). Full matrix in
+`docs/environment-setup.md`.
 
-```text
-backend/.env    # server-only secrets and integration credentials
-frontend/.env   # Vite-exposed client configuration only
-```
-
-Backend variables commonly used by the project:
+Frontend essentials:
 
 | Variable | Purpose |
 | --- | --- |
-| `PORT` | Backend HTTP port. |
-| `NODE_ENV` | Runtime environment: development, staging, production, test. |
-| `FRONTEND_URL` | Allowed frontend origin for CORS and CSP. Required in production. |
-| `MONGODB_URI` | MongoDB connection string. |
-| `REDIS_URL` | Redis connection string for queues/cache features. |
-| `FIREBASE_PROJECT_ID` | Firebase project used by Admin SDK. |
-| `FIREBASE_SERVICE_ACCOUNT_PATH` or equivalent service credentials | Firebase Admin authentication. |
-| `GEMINI_API_KEY` | Google Gemini AI provider. |
-| `OPENAI_API_KEY` | OpenAI provider. |
-| `GROQ_API_KEY` | Groq provider. |
-| `ANTHROPIC_API_KEY` | Anthropic provider where enabled. |
-| `RAPIDAPI_KEY` | Job search integration. |
-| `EMAIL_*` / SMTP variables | Nodemailer email delivery. |
-| `RAZORPAY_*` | Payment integration. |
-| `TOTP_ENCRYPTION_KEY` | 2FA secret encryption. |
-| `DEV_BYPASS_AUTH` | Local-only bypass flag; keep false outside development. |
-| `ENABLE_GITHUB_SYNC_CRON` | Enables/disables portfolio GitHub sync cron. |
-| `ALLOW_DEV_DB_MUTATIONS` | Enables selected development data mutation helpers. |
+| `VITE_AI_GATEWAY_URL` | Gateway base, default `/gateway/v1`. |
+| `VITE_API_URL`, `VITE_API_BASE` | Express backend (optional). |
+| `VITE_AI_GATEWAY_DEV_URL` | Dev proxy target, default `http://localhost:8787`. |
+| `VITE_MAX_SIZE_MB` | Upload limit. |
+| `VITE_DISABLE_D1_AUTH` | Disables native auth for preview builds. |
 
-Frontend variables commonly used by the project:
+Worker essentials:
 
 | Variable | Purpose |
 | --- | --- |
-| `VITE_API_URL` | Backend base URL. |
-| `VITE_API_BASE` | Backend API base, commonly `${VITE_API_URL}/api`. |
-| `VITE_FIREBASE_API_KEY` | Firebase web API key. |
-| `VITE_FIREBASE_AUTH_DOMAIN` | Firebase auth domain. |
-| `VITE_FIREBASE_PROJECT_ID` | Firebase project ID. |
-| `VITE_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket. |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase sender ID. |
-| `VITE_FIREBASE_APP_ID` | Firebase app ID. |
-| `VITE_FIREBASE_MEASUREMENT_ID` | Analytics measurement ID. |
-| `VITE_MAX_SIZE_MB` | Upload size limit used by the client. |
+| `DB`, `AI` | D1 and Workers AI bindings (not env vars; declared in `wrangler.toml`). |
+| `AUTH_SECRET` | JWT signing secret (required in production). |
+| `DEFAULT_AI_PROVIDER` | `cloudflare` by default. |
+| `ALLOWED_ORIGINS` | CORS allow-list (`*` today). |
+| Provider keys | `GEMINI_API_KEY`, `OPENAI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, `CLOUDFLARE_API_TOKEN`. |
+| Integrations | `RAPIDAPI_KEY`, `IMAGEKIT_PRIVATE_KEY`, OAuth client ids/secrets. |
 
-Rules:
+Backend essentials: `PORT`, `NODE_ENV`, `FRONTEND_URL`, `MONGODB_URI`,
+`REDIS_URL`, `CLOUDFLARE_D1_GATEWAY_URL`, `AUTH_SECRET`, legacy
+`SUPABASE_*`/`CLERK_*`/`APPWRITE_*`, AI keys, `RAPIDAPI_KEY`, `EMAIL_*`,
+`RAZORPAY_*`, deployment tokens.
 
-- Never commit `.env` files.
-- Never put server-only secrets in `VITE_` variables.
-- Use placeholders in example files, not realistic-looking credentials.
-- In production, set variables directly in the hosting provider dashboard.
+Rules: never commit `.env`; never expose server-only secrets with `VITE_`;
+use placeholders in examples.
 
 ## 15. Local Development Setup
 
 Prerequisites:
 
-- Node.js 18 or newer.
-- npm 10 or compatible npm version.
-- MongoDB instance or hosted MongoDB URI.
-- Redis instance for queues and realtime/background features.
-- Firebase project for authentication and Firebase-backed data.
-- Optional provider credentials for AI, jobs, email, payments, Cloudinary, and deployment services.
-
-Suggested setup:
+- Node.js 22+ (`.nvmrc`), npm 10+.
+- A Cloudflare account for Pages/Workers/D1, or `wrangler dev` locally.
+- Optional: MongoDB and Redis only if running the Express backend.
 
 ```bash
 git clone <repository-url>
 cd career-pilot
-npm install
-cd backend && npm install
-cd ../frontend && npm install
-```
+npm run install:all          # root + frontend + backend
+npm --prefix worker install  # gateway Worker
 
-Create env files:
-
-```bash
-cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
+# optional backend
+cp backend/.env.example backend/.env
 ```
 
-Run both apps in separate terminals:
+Run:
 
 ```bash
-cd backend
-npm run dev
+# Terminal 1 — gateway Worker (http://localhost:8787)
+cd worker && npx wrangler d1 migrations apply DB --local && npx wrangler dev
+
+# Terminal 2 — frontend (http://localhost:5173)
+cd frontend && npm run dev
+
+# Terminal 3 — optional Express backend (http://localhost:5000)
+cd backend && npm run dev
 ```
 
-```bash
-cd frontend
-npm run dev
-```
-
-Default local URLs:
+Local URLs:
 
 | Service | URL |
 | --- | --- |
 | Frontend | `http://localhost:5173` |
-| Backend | `http://localhost:5000` or configured `PORT` |
-| Health | `http://localhost:5000/health` |
+| Gateway Worker | `http://localhost:8787` |
+| Express backend | `http://localhost:5000` |
+| Backend health | `http://localhost:5000/health` |
 | Swagger | `http://localhost:5000/api/docs` |
 | Metrics | `http://localhost:5000/metrics` |
 
 ## 16. Build, Test, and Quality Checks
 
-Recommended checks before opening a pull request:
-
 ```bash
-npm run build
+# Frontend
+cd frontend && npm run lint && npm test && npm run build
+
+# Gateway Worker
+cd worker && npm test
+
+# Backend (optional)
+cd backend && npm run lint && npm test
 ```
 
-```bash
-cd frontend
-npm run test
-npm run lint
-npm run build
-```
-
-```bash
-cd backend
-npm test
-npm run lint
-```
+Root shortcuts: `npm run lint`, `npm run test:frontend`, `npm run test:backend`,
+`npm run test:worker`, `npm run test:all`, `npm run build`,
+`npm run build:portfolio`.
 
 Notes:
 
-- Root `npm run build` builds the frontend only.
-- Backend tests currently use Node's built-in test runner for selected schema/config tests.
-- Frontend tests use Vitest.
-- Linting may include pre-existing repository warnings; avoid unrelated cleanup unless the task requires it.
-- When changing docs only, run at least `npm run build` if feasible so documentation changes do not hide broken generated imports or route errors.
+- `npm run build` builds the SPA and the standalone portfolio bundle.
+- Backend portfolio-generator tests read `frontend/dist-portfolio/standalone.html`;
+  run `npm run build:portfolio` first locally (CI restores it from the frontend
+  artifact).
+- Frontend tests use Vitest; backend and worker tests use `node:test`.
+- Config files for targeted suites: `frontend/vitest-notfound.json`,
+  `frontend/vitest-reportbug.json`.
 
 ## 17. Deployment Overview
 
-Frontend deployment:
+**Primary (automated):** push to `main` → `.github/workflows/ci-cd.yml`:
+frontend lint/test/build, backend lint/test, worker tests; then D1 migrations,
+Worker deploy, Pages deploy, smoke test.
 
-- Build with `npm run build --prefix frontend`.
-- Static output is generated under `frontend/dist`.
-- `vercel.json`, `firebase.json`, Netlify redirects, and frontend nginx config support multiple hosting targets.
+**Primary (manual):** see `docs/UNIFIED_PLATFORM.md`.
 
-Backend deployment:
+**Backend (optional):** build with its Dockerfile or run `node src/index.js`
+behind any Node host; set production env vars, expose `/health`, and point
+`VITE_API_BASE` at it. Alternative static hosting configs (`vercel.json`,
+`netlify.toml`, `nginx.conf`) exist per app but are not used by the live
+pipeline.
 
-- Build step is usually dependency installation; runtime starts with `node src/index.js`.
-- Set production environment variables in the hosting dashboard.
-- Ensure `FRONTEND_URL` is an origin URL without path/query/hash.
-- Provide MongoDB, Redis, Firebase Admin, email, AI provider, and job provider credentials as needed.
-- Expose `/health` for platform health checks.
-
-Portfolio deployment:
-
-- Server deploy services support provider-specific publishing flows under `backend/src/services/deploy/`.
-- Portfolio pages rely on sanitized content, slug validation, and template assets.
-- Public portfolio metadata includes sitemap and robots routes.
+**Portfolio deploys:** Express deployers publish generated bundles to Cloudflare
+Pages, Netlify, or GitHub Pages using the user's provider token.
 
 ## 18. Security Checklist
 
-Before production deploy:
-
-- `FRONTEND_URL` is set and valid.
-- CORS allowed origins are limited to trusted frontend domains.
-- `DEV_BYPASS_AUTH=false`.
-- `.env` files are not committed.
-- Firebase rules are deployed and match the backend data model.
-- Queue dashboards and admin routes require server-side authorization.
-- Rate limiting is enabled for `/api/` routes.
-- Helmet/CSP changes are tested against login, OAuth, Firebase, Socket.IO, and template previews.
-- Server logs use presence-only secret reporting and never print raw keys.
-- Uploaded files are validated by type and size.
-- AI-generated HTML/content is sanitized before rendering or publishing.
-- Payment keys use test mode outside production and live mode only in production.
+- `AUTH_SECRET` set as a Worker secret; `ALLOWED_ORIGINS` narrowed to trusted
+  origins.
+- `DEV_BYPASS_AUTH=false` outside local development.
+- `.env` files not committed; no server secrets in `VITE_` variables.
+- Admin routes and queue dashboards require server-side authorization.
+- Rate limiting active on the gateway and Express.
+- Helmet/CSP changes tested against login, OAuth, Socket.IO and template
+  previews.
+- Uploads validated by type and size (10 MB gateway limit).
+- AI-generated HTML sanitized before rendering/publishing.
+- Payment keys in test mode outside production.
+- TOTP secrets/backup codes server-side only.
+- D1 tenant scoping covered by worker tests when touching `db.js`.
 
 ## 19. Contribution Workflow
 
-1. Create a feature branch from `main`.
-2. Read existing docs and nearby code before editing.
-3. Keep changes scoped to the issue or feature.
-4. Add or update tests when behavior changes.
-5. Update documentation when routes, env vars, data models, or setup steps change.
-6. Run relevant checks.
-7. Open a PR with a concise summary, test results, screenshots for UI changes, and migration notes if needed.
+1. Branch from `main` (`feature/…`, `fix/…`, `docs/…`).
+2. Read nearby code and the relevant docs first.
+3. Keep changes scoped; add tests when behavior changes.
+4. Update docs when routes, env vars, data models or setup change.
+5. Run the relevant lint/test/build commands.
+6. Open a PR with summary, test results, screenshots for UI changes, and
+   migration notes when applicable.
 
-Branch naming examples:
-
-```text
-feature/resume-version-compare
-fix/job-alert-deduplication
-docs/portfolio-template-guide
-```
+CI must be green: `frontend`, `backend`, `worker` jobs and, on `main`, the
+deploy job.
 
 ## 20. Common Development Tasks
 
-Add a backend route:
+**Add a gateway route**
+1. Handle the path in `worker/src/db.js` (data) or `worker/src/index.js`
+   (router/utility).
+2. Resolve the user with `authenticateRequest`; scope every query by `user_id`.
+3. Add the client method in `frontend/src/services/d1Data.js`, re-export through
+   `services/api.js` if the UI uses the facade.
+4. Add a worker test in `worker/test/`.
+5. Update `API_DOCS/gateway.md` and `docs/DATABASE_SCHEMA.md` if schema changed.
 
-1. Create or update a router in `backend/src/routes/`.
-2. Add validation schema in `backend/src/schemas/` if the route accepts input.
-3. Add controller/service logic in `backend/src/controllers/` or `backend/src/services/`.
-4. Register the route prefix in `backend/src/index.js`.
-5. Add tests for schema, service, or route behavior.
-6. Update API docs and this project documentation if the route is public.
+**Add a D1 table**
+1. Add a new `worker/migrations/000N_*.sql` (never edit an applied migration).
+2. Add CRUD handlers in `worker/src/db.js` and a client method.
+3. Apply locally (`wrangler d1 migrations apply DB --local`); CI applies remote.
+4. Document it in `docs/DATABASE_SCHEMA.md`.
 
-Add a frontend page:
+**Add an Express route**
+1. Create/update a router in `backend/src/routes/`.
+2. Add validation (`schemas/`), controller/service logic.
+3. Register the prefix in `backend/src/index.js`.
+4. Add tests and update `API_DOCS/`.
 
+**Add a frontend page**
 1. Create the page in `frontend/src/pages/`.
-2. Add reusable components under `frontend/src/components/` when needed.
-3. Add API methods under `frontend/src/services/`.
-4. Register a route in `frontend/src/App.jsx`.
-5. Add loading, empty, error, and auth states.
-6. Add or update tests.
-7. Update user docs if the feature is user-facing.
+2. Add components and API methods.
+3. Register the route in `App.jsx` (protected/public/share).
+4. Add loading/empty/error/auth states and tests.
 
-Add a portfolio template:
+**Add a portfolio template**
+1. Create `frontend/src/components/portfolio/templates/<Id>/index.jsx`.
+2. Consume `usePortfolio()`; no other global dependencies.
+3. Add a preview image under `frontend/public/template-previews/`.
+4. The registry picks it up automatically; verify gallery, preview, studio and
+   the standalone build.
+5. Follow `docs/creating-portfolio-themes.md`.
 
-1. Read `docs/creating-portfolio-themes.md`.
-2. Add frontend template components under `frontend/src/components/portfolio/templates/` if it is React-rendered.
-3. Add backend template assets under `backend/src/templates/portfolio/` if it is server-rendered/deployable.
-4. Include preview assets and metadata.
-5. Register the template in the gallery/configuration used by the app.
-6. Test preview, editor behavior, accessibility, and deployment output.
-
-Add an AI feature:
-
-1. Decide whether the provider call belongs on the backend or can use a user-supplied client key.
-2. Add request validation and size limits.
-3. Create provider-neutral service functions where possible.
-4. Handle missing provider keys gracefully.
-5. Sanitize model output when rendering HTML or markdown.
-6. Add tests for prompt construction, parser behavior, and provider fallback.
-7. Document env vars and user-facing behavior.
+**Add an AI feature**
+1. Call `aiGateway.generate()`/`generateJson()` with a feature label.
+2. Keep the prompt/response contract in the frontend or Express service.
+3. Handle missing provider/keys gracefully.
+4. Sanitize model output before rendering.
+5. Add tests for parsing/fallbacks and document the provider requirement.
 
 ## 21. Troubleshooting
 
 | Symptom | Checks |
 | --- | --- |
-| Frontend cannot call backend | Confirm `VITE_API_URL`, backend port, CORS `FRONTEND_URL`, and browser console network errors. |
-| Login fails | Confirm Firebase web config, backend Firebase Admin credentials, token headers, and auth middleware logs. |
-| AI buttons fail | Confirm provider key exists, provider headers are correct, request body matches schema, and backend logs show provider-specific errors. |
-| Job alerts do not send | Confirm Redis, MongoDB, email config, job alert active status, queue worker startup, and RapidAPI key. |
-| Socket events do not arrive | Confirm Socket.IO server initialized, frontend socket provider uses the correct backend URL, CORS allows the origin, and auth token is valid. |
-| Portfolio deployment fails | Confirm provider token, slug validity, template assets, sanitized content, and provider-specific deploy logs. |
-| Build fails on imports | Check route imports in `frontend/src/App.jsx`, template file names, and case sensitivity. |
-| Production startup fails | Confirm `FRONTEND_URL` exists and is an origin URL; check MongoDB, Redis, Firebase Admin, and email configuration. |
-| Admin pages load but APIs fail | Remember client-side admin checks are not authorization; inspect backend admin route authorization and token claims. |
+| Frontend cannot reach gateway | `VITE_AI_GATEWAY_URL`, `/gateway` proxy in `vite.config.js`, Worker on `:8787`, `wrangler dev` logs. |
+| Login fails | Worker `AUTH_SECRET`, D1 migrated, `/v1/auth/providers`, browser localStorage session, OAuth redirect URIs (`/gateway/v1/auth/oauth/<provider>/callback`). |
+| D1 errors in the dashboard | `wrangler d1 migrations apply DB --remote`, table names, `wrangler tail`. |
+| AI buttons fail | Provider key/selection in Settings, `/v1/ai/validate-key`, `X-AI-*` headers, Worker logs. |
+| Job search 503 | `RAPIDAPI_KEY` secret on the Worker. |
+| Uploads fail | `IMAGEKIT_PRIVATE_KEY`, public key/URL endpoint, file size ≤ 10 MB. |
+| Backend extras fail | Express running, `VITE_API_BASE`, CORS `FRONTEND_URL`, Mongo/Redis reachable. |
+| Job alerts do not send | Express only: Redis, Mongo, SMTP, active alert, queue worker startup, RapidAPI key. |
+| Socket events missing | Express only: Socket.IO initialized, `VITE_SOCKET_URL`, CORS, token. |
+| Portfolio deploy fails | Provider token, slug, `dist-portfolio/standalone.html`, deploy logs. |
+| CI deploy skipped | Only runs on `main` push (or manual dispatch with `deploy: true`) after all three CI jobs pass. |
 
 ## 22. Documentation Maintenance
 
-Update documentation whenever one of these changes:
+Update documentation whenever these change:
 
-- Public route, API route, or route prefix.
-- Environment variable name or required provider credential.
-- Database model fields, indexes, or ownership rules.
-- Authentication or authorization behavior.
-- Queue, cron, or background worker behavior.
-- Deployment provider, build command, or runtime requirement.
-- Portfolio template creation workflow.
+- Gateway or Express routes, or route prefixes.
+- Environment variables or required credentials.
+- D1 schema, indexes or ownership rules.
+- Auth/authorization behavior.
+- Queue, cron or background-worker behavior.
+- Deployment workflow, build command or runtime requirement.
+- Portfolio template contract.
 - User-facing feature behavior.
 
-Preferred doc destinations:
+Preferred destinations:
 
 | Change type | Destination |
 | --- | --- |
 | Product overview | `README.md` |
-| Whole-project technical map | `docs/PROJECT_DOCUMENTATION.md` |
-| API contract | `API_DOCS/` and Swagger annotations/config |
-| Environment variable | `docs/environment-setup.md` and `.env.example` files |
+| Whole-project map | `docs/PROJECT_DOCUMENTATION.md` |
+| Architecture/flows | `ARCHITECTURE.md`, `docs/UNIFIED_PLATFORM.md` |
+| API contract | `API_DOCS/` (gateway + Express) |
+| Env vars | `docs/environment-setup.md` + `.env.example` files |
 | Data model | `docs/DATABASE_SCHEMA.md` |
-| Architecture or flow | `ARCHITECTURE.md` |
-| User-facing workflow | `docs/user-guide.md` |
-| Portfolio theme workflow | `docs/creating-portfolio-themes.md` |
-| Security-sensitive behavior | `SECURITY.md` plus relevant setup docs |
+| Portfolio workflow | `docs/portfolio-architecture.md`, `docs/creating-portfolio-themes.md` |
+| Security-sensitive behavior | `SECURITY.md` + setup docs |
+
+`docs/README.md` is the index; add new documents there and mark analysis
+snapshots as historical.

@@ -1,7 +1,7 @@
 # 📁 Portfolio / Fellowship API
 
-> Base URL: `http://localhost:5000/api/fellowships`
-> All endpoints require `Authorization: Bearer <firebase_id_token>`
+> Base URL: `http://localhost:5000/api/fellowship`
+> All endpoints require `Authorization: Bearer <d1_jwt>`
 
 ---
 
@@ -21,7 +21,7 @@
 ### Get Fellowship Profile
 
 ```http
-GET /api/fellowships/profile
+GET /api/fellowship/profile
 ```
 
 **Response:**
@@ -29,7 +29,7 @@ GET /api/fellowships/profile
 {
   "success": true,
   "data": {
-    "userId": "firebase_uid",
+    "userId": "d1_user_id",
     "role": "student",
     "collegeName": "MIT",
     "bio": "CS student passionate about AI",
@@ -44,7 +44,7 @@ GET /api/fellowships/profile
 ### Create or Update Fellowship Profile
 
 ```http
-POST /api/fellowships/profile
+POST /api/fellowship/profile
 ```
 
 **Body:**
@@ -86,7 +86,7 @@ POST /api/fellowships/profile
 Sends a 6-digit OTP to verify academic/corporate email.
 
 ```http
-POST /api/fellowships/verify/send-email
+POST /api/fellowship/verify/send-email
 ```
 
 **Body:**
@@ -116,7 +116,7 @@ POST /api/fellowships/verify/send-email
 ### Confirm Verification Code
 
 ```http
-POST /api/fellowships/verify/confirm
+POST /api/fellowship/verify/confirm
 ```
 
 **Body:**
@@ -145,7 +145,7 @@ POST /api/fellowships/verify/confirm
 ### List Challenges
 
 ```http
-GET /api/fellowships/challenges
+GET /api/fellowship/challenges
 ```
 
 **Query Parameters:**
@@ -187,7 +187,7 @@ GET /api/fellowships/challenges
 ### Get Single Challenge
 
 ```http
-GET /api/fellowships/challenges/:id
+GET /api/fellowship/challenges/:id
 ```
 
 **Response:**
@@ -208,7 +208,7 @@ GET /api/fellowships/challenges/:id
 > Corporate accounts only
 
 ```http
-POST /api/fellowships/challenges
+POST /api/fellowship/challenges
 ```
 
 **Body:**
@@ -251,7 +251,7 @@ POST /api/fellowships/challenges
 > Corporate accounts only
 
 ```http
-GET /api/fellowships/my-challenges
+GET /api/fellowship/my-challenges
 ```
 
 **Response:**
@@ -269,7 +269,7 @@ GET /api/fellowships/my-challenges
 > Corporate accounts only. Also deletes all related proposals and chat rooms.
 
 ```http
-DELETE /api/fellowships/challenges/:id
+DELETE /api/fellowship/challenges/:id
 ```
 
 **Response:**
@@ -293,7 +293,7 @@ DELETE /api/fellowships/challenges/:id
 > Verified student accounts only
 
 ```http
-POST /api/fellowships/challenges/:id/apply
+POST /api/fellowship/challenges/:id/apply
 ```
 
 **Body:**
@@ -333,7 +333,7 @@ POST /api/fellowships/challenges/:id/apply
 > Student accounts only
 
 ```http
-GET /api/fellowships/my-proposals
+GET /api/fellowship/my-proposals
 ```
 
 **Response:**
@@ -360,7 +360,7 @@ GET /api/fellowships/my-proposals
 > Corporate only — challenge owner only
 
 ```http
-GET /api/fellowships/challenges/:id/proposals
+GET /api/fellowship/challenges/:id/proposals
 ```
 
 **Response:**
@@ -378,7 +378,7 @@ GET /api/fellowships/challenges/:id/proposals
 > Corporate only — accepts or rejects a student proposal
 
 ```http
-PUT /api/fellowships/proposals/:id/status
+PUT /api/fellowship/proposals/:id/status
 ```
 
 **Body:**
@@ -418,7 +418,7 @@ PUT /api/fellowships/proposals/:id/status
 Returns all active chat rooms for the authenticated user.
 
 ```http
-GET /api/fellowships/chat/rooms
+GET /api/fellowship/chat/rooms
 ```
 
 **Response:**
@@ -443,7 +443,7 @@ GET /api/fellowships/chat/rooms
 ### Get Single Chat Room
 
 ```http
-GET /api/fellowships/chat/rooms/:roomId
+GET /api/fellowship/chat/rooms/:roomId
 ```
 
 **Errors:**
@@ -455,7 +455,7 @@ GET /api/fellowships/chat/rooms/:roomId
 ### Get Room Messages
 
 ```http
-GET /api/fellowships/chat/rooms/:roomId/messages
+GET /api/fellowship/chat/rooms/:roomId/messages
 ```
 
 **Query Parameters:**
@@ -472,7 +472,7 @@ GET /api/fellowships/chat/rooms/:roomId/messages
   "data": [
     {
       "_id": "message_id",
-      "senderId": "firebase_uid",
+      "senderId": "d1_user_id",
       "senderName": "Jane Doe",
       "senderRole": "student",
       "content": "Hello! I've started on the designs.",
@@ -487,7 +487,7 @@ GET /api/fellowships/chat/rooms/:roomId/messages
 ### Send Message
 
 ```http
-POST /api/fellowships/chat/rooms/:roomId/messages
+POST /api/fellowship/chat/rooms/:roomId/messages
 ```
 
 **Body:**
@@ -516,7 +516,7 @@ POST /api/fellowships/chat/rooms/:roomId/messages
 ### Get Fellowship Stats
 
 ```http
-GET /api/fellowships/stats
+GET /api/fellowship/stats
 ```
 
 **Response (Student):**

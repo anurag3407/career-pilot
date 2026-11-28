@@ -102,9 +102,31 @@ The platform uses multiple AI providers depending on workload specialization and
 
 | Provider | Usage |
 |---|---|
-| Google Gemini | General AI workflows |
-| Groq | High-speed inference |
-| Llama 3.3 70B | Interview analysis and evaluation |
+| Cloudflare Workers AI | Default platform provider (`@cf/meta/llama-3.1-8b-instruct`, Llama 3.3 70B, DeepSeek R1 distil, Mistral, Qwen) |
+| Google Gemini | Long-context generation and analysis |
+| Anthropic Claude | Writing, evaluation and structured feedback |
+| OpenAI / Groq / OpenRouter | General and high-speed inference |
+| 25+ OpenAI-compatible providers | OpenAI, Groq, OpenRouter, Requesty, DeepSeek, Mistral, xAI, Together, Fireworks, Perplexity, Cohere, Cerebras, SambaNova, Hyperbolic, Novita, Moonshot, Zhipu, DashScope, Nebius, Chutes, GitHub Models, Ollama, LM Studio, vLLM, llama.cpp, Azure |
+| Custom endpoint | Any OpenAI-compatible `baseUrl` (BYOK) |
+
+### How providers are selected today
+
+Gateway-routed generation goes through `frontend/src/services/aiGateway.js` →
+`POST /v1/ai/generate`. Feature endpoints that predate the gateway
+(`enhanceApi`, `interviewApi`, `roastApi`, cover-letter/LinkedIn/README
+generation) still call the Express `/api/*` routes, which use
+`backend/src/config/aiProviders.js`; porting them to `aiGateway.generateJson()`
+is a phase-2 task.
+
+1. **Platform mode (default)** — the Worker injects its own key (or the Workers
+   AI binding). No user configuration.
+2. **BYOK** — Settings → AI Provider (`useAIConfigStore`, encrypted
+   localStorage) sends `X-AI-Provider`, `X-AI-Key`, `X-AI-Model`,
+   `X-AI-Base-Url` per request. The key is never persisted server-side.
+3. **Discovery** — `/v1/ai/models` does a live provider `/models` lookup with a
+   static catalog fallback; `/v1/ai/validate-key` validates a key.
+4. **Telemetry** — every successful call is written to D1 `ai_usage`
+   (`provider`, `model`, tokens, latency, `byok`, `feature`).
 
 ---
 
@@ -219,13 +241,15 @@ Ensures:
 ## Example High-Level Architecture
 
 ```txt
-Frontend
-→ API Layer
-→ AI Service Layer
-→ Provider Router
-→ AI Models
-→ Validation Layer
-→ Structured Output
+Frontend (aiGateway.js)
+→ Gateway Worker (/v1/ai/generate)
+→ Provider resolution (BYOK headers → body → DEFAULT_AI_PROVIDER)
+→ Native adapter (Cloudflare binding / Gemini / Anthropic)
+   or OpenAI-compatible adapter (26 providers / custom baseUrl)
+→ Response parser
+→ Validation / JSON extraction
+→ ai_usage ledger
+→ Frontend rendering
 ```
 
 ---

@@ -8,13 +8,11 @@ In this project, Vite is configured to use a CDN base URL for static assets duri
 
 To configure the CDN URL, set the `VITE_CDN_URL` environment variable before running the production build.
 
-Example using a `.env` file or command line:
+Set it in the shell before the build (the value is read from `process.env` by
+`vite.config.js`; a plain `.env` file is not loaded into the config):
 ```bash
-VITE_CDN_URL=https://cdn.example.com/ npm run build
-```
-Or in your `.env.production` file:
-```env
-VITE_CDN_URL=https://cdn.example.com/
+export VITE_CDN_URL=https://cdn.example.com/
+npm run build
 ```
 
 When this variable is set, Vite will automatically prefix all static asset paths (like JavaScript, CSS, and images) with the provided CDN URL in the generated HTML and CSS files. If not set, it defaults to `/`, serving assets from the same origin.

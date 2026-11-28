@@ -1,7 +1,7 @@
 # 👤 GitHub Intelligence / User Profile API
 
 > Base URL: `http://localhost:5000/api`
-> All endpoints require `Authorization: Bearer <firebase_id_token>`
+> All endpoints require `Authorization: Bearer <d1_jwt>`
 
 ---
 
@@ -19,7 +19,7 @@
 Returns the authenticated user's profile. Creates one automatically if it doesn't exist yet.
 
 ```http
-GET /api/user-profile/me
+GET /api/user-profiles/me
 ```
 
 **Response:**
@@ -27,7 +27,7 @@ GET /api/user-profile/me
 {
   "success": true,
   "profile": {
-    "uid": "firebase_uid",
+    "uid": "d1_user_id",
     "displayName": "Jane Doe",
     "bio": "Full-stack developer passionate about open source",
     "jobRole": "Software Engineer",
@@ -45,7 +45,7 @@ GET /api/user-profile/me
 ### Update My Profile
 
 ```http
-PUT /api/user-profile/me
+PUT /api/user-profiles/me
 ```
 
 **Body:**
@@ -88,7 +88,7 @@ PUT /api/user-profile/me
 Returns resume and interview counts for the authenticated user.
 
 ```http
-GET /api/user-profile/me/stats
+GET /api/user-profiles/me/stats
 ```
 
 **Response:**
@@ -109,7 +109,7 @@ GET /api/user-profile/me/stats
 Returns the last 10 published community posts by the authenticated user.
 
 ```http
-GET /api/user-profile/me/activity
+GET /api/user-profiles/me/activity
 ```
 
 **Response:**
@@ -138,7 +138,7 @@ GET /api/user-profile/me/activity
 ### Get Public Profile by UID
 
 ```http
-GET /api/user-profile/:uid
+GET /api/user-profiles/:uid
 ```
 
 **Response:**
@@ -146,7 +146,7 @@ GET /api/user-profile/:uid
 {
   "success": true,
   "profile": {
-    "uid": "firebase_uid",
+    "uid": "d1_user_id",
     "displayName": "Jane Doe",
     "bio": "Full-stack developer",
     "jobRole": "Software Engineer",
@@ -165,7 +165,7 @@ GET /api/user-profile/:uid
 ### Get Public Stats by UID
 
 ```http
-GET /api/user-profile/:uid/stats
+GET /api/user-profiles/:uid/stats
 ```
 
 **Response:**
@@ -186,7 +186,7 @@ GET /api/user-profile/:uid/stats
 Returns the last 10 published community posts by the specified user.
 
 ```http
-GET /api/user-profile/:uid/activity
+GET /api/user-profiles/:uid/activity
 ```
 
 **Response:**

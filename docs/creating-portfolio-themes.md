@@ -1,364 +1,172 @@
-# 🎨 Creating Portfolio Themes for CareerPilot
+# 🎨 Creating Portfolio Templates for CareerPilot
 
-Welcome contributors!
+**Last updated:** 2026-11-28
+**Live templates:** 262 (plus the built-in `Studio` layout)
 
-This guide explains how to create and submit custom portfolio themes for the CareerPilot Portfolio Builder.
-
----
-
-# 📁 Theme Folder Structure
-
-All portfolio themes must be placed inside:
-
-```bash
-backend/src/templates/portfolio/
-```
-
-Example:
-
-```bash
-backend/src/templates/portfolio/minimal-dark/
-```
-
-Each theme folder must contain:
-
-```bash
-minimal-dark/
-├── index.html
-├── style.css
-├── meta.json
-└── preview.png
-```
+Portfolio templates are **React components**, not server-side HTML themes. The
+gallery, preview page, Studio switcher and the standalone deploy bundle all
+discover them from the filesystem.
 
 ---
 
-# 📄 Required Files
+## 1. Where templates live
 
-## 1. `index.html`
-
-Main portfolio template file.
-
-### Requirements
-
-- Use plain HTML only
-- Support Handlebars template variables
-- Maintain semantic HTML structure
-- Ensure responsive layout
-- Keep markup clean and readable
-
-### Example
-
-```html
-<h1>{{name}}</h1>
-<p>{{title}}</p>
+```text
+frontend/src/components/portfolio/templates/
+└── My_Template_Name/
+    └── index.jsx
 ```
 
----
-
-## 2. `style.css`
-
-Contains all theme styling.
-
-### Requirements
-
-- Plain CSS only
-- No Tailwind CSS
-- No Bootstrap
-- No SCSS/SASS
-- No external UI frameworks
-- Responsive design required
+The folder name is the template id. Use PascalCase words separated by
+underscores (`Academic_Scholar`, `3D_Isometric`, `ASCII_Art_Terminal_Code`).
+The id is used in URLs, the registry, and deploy metadata — pick it once and
+do not rename it later.
 
 ---
 
-## 3. `meta.json`
+## 2. Required files
 
-Contains theme metadata.
+| File | Required | Purpose |
+|---|---|---|
+| `frontend/src/components/portfolio/templates/<Id>/index.jsx` | Yes | The template component (default export) |
+| `frontend/public/template-previews/<Id>.png` (or `/templates/<Id>.png`) | Recommended | Gallery/preview image referenced by metadata |
+| Entry in `frontend/src/data/templates.js` | Yes | Gallery metadata (`id`, `title`, `category`, `colorScheme`, `layout`, `author`, `image`, `isComplete`, `description`) |
 
-### Example
+No manual registry import is needed — `frontend/src/data/portfolioTemplates.jsx`
+uses `import.meta.glob` to lazy-load every `*/index.jsx` and merges it with the
+metadata list.
 
-```json
-{
-  "name": "Minimal Dark",
-  "description": "Clean dark portfolio theme for developers",
-  "author": "your-github-username",
-  "version": "1.0.0"
+---
+
+## 3. Component contract
+
+```jsx
+import { usePortfolio } from "../../../../context/PortfolioContext";
+
+export default function MyTemplate() {
+  const { portfolioData } = usePortfolio();
+  const { personal, hero, about, skills = [], projects = [], experience = [] } = portfolioData;
+
+  return (
+    <main>
+      <h1>{personal?.name || "Your Name"}</h1>
+      <p>{personal?.title}</p>
+      {/* sections */}
+    </main>
+  );
 }
 ```
 
-### Required Fields
+Rules:
 
-| Field | Description |
-|------|-------------|
-| `name` | Theme display name |
-| `description` | Short description of the theme |
-| `author` | GitHub username |
-| `version` | Theme version |
+1. **Default export**, no required props. `usePortfolio()` supplies normalized
+   data.
+2. Read from the normalized shape:
+   `personal {name,title,tagline,bio,location,email,phone,avatar}`,
+   `hero {title,subtitle,tagline,bio,image}`, `about {bio}`, `skills[]`,
+   `projects[]` (`title`, `description`, `techStack`, `image`, `liveUrl`,
+   `githubUrl`), `experience[]`, `education[]`, `socials`, `testimonials[]`,
+   `stats`, `contact`.
+3. **Never inject placeholder people.** The context normalizer already prevents
+   dummy data from leaking into deploy mode; do not hardcode names, quotes or
+   testimonials in the component.
+4. **Handle empty data**: render sensible empty sections instead of crashing.
+5. **Self-contained styling**: inline styles, CSS modules or Tailwind classes.
+   Do not import global CSS or depend on the dashboard theme.
+6. **No network calls** at render time (no fetch/AI). Deployment is static.
+7. **Safe links**: `target="_blank"` + `rel="noreferrer noopener"` for external
+   URLs; never `dangerouslySetInnerHTML` with user content.
+8. **Responsive and accessible**: semantic landmarks, alt text, focus styles,
+   reduced-motion respect.
+9. Framer Motion, lucide-react and other installed packages are fine; keep
+   animations cheap on mobile.
 
 ---
 
-## 4. `preview.png`
+## 4. Metadata entry
 
-Preview image used in the theme gallery.
+Add one object to `frontend/src/data/templates.js`:
 
-### Requirements
-
-- PNG format only
-- Recommended size: `1280x720`
-- Clear screenshot of the rendered theme
-
----
-
-# 🧩 Available Handlebars Variables
-
-Themes can use the following Handlebars variables.
-
-## Basic Information
-
-```handlebars
-{{name}}
-{{title}}
-{{email}}
-{{phone}}
-{{location}}
-{{bio}}
+```js
+{
+  id: "My_Template_Name",
+  title: "My Template Name",
+  category: "Portfolio",
+  colorScheme: "Dark",
+  layout: "Interactive",
+  author: "Your Name",
+  views: 0,
+  rating: 5,
+  image: "/template-previews/My_Template_Name.png",
+  createdAt: "2026-11-28",
+  isComplete: true,
+  description: "One or two sentences describing the visual concept and interactions."
+}
 ```
 
----
-
-## Social Links
-
-```handlebars
-{{github}}
-{{linkedin}}
-{{website}}
-{{twitter}}
-```
+`isComplete: true` marks it as production-ready; incomplete templates are shown
+as previews only.
 
 ---
 
-## Skills
+## 5. Preview image
 
-```handlebars
-{{#each skills}}
-  <span>{{this}}</span>
-{{/each}}
-```
+- Put a 1200×900 (or 16:10) PNG at `frontend/public/template-previews/<Id>.png`.
+- The gallery uses it; the preview route also renders the live component.
+- Keep the file under ~300 KB so the gallery stays fast.
 
 ---
 
-## Projects
-
-```handlebars
-{{#each projects}}
-  <div>
-    <h3>{{title}}</h3>
-    <p>{{description}}</p>
-    <a href="{{link}}">View Project</a>
-  </div>
-{{/each}}
-```
-
----
-
-## Experience
-
-```handlebars
-{{#each experience}}
-  <div>
-    <h3>{{role}}</h3>
-    <p>{{company}}</p>
-    <p>{{duration}}</p>
-  </div>
-{{/each}}
-```
-
----
-
-## Education
-
-```handlebars
-{{#each education}}
-  <div>
-    <h3>{{institution}}</h3>
-    <p>{{degree}}</p>
-  </div>
-{{/each}}
-```
-
----
-
-# 🎯 Design Guidelines
-
-Portfolio themes should be:
-
-- Clean and professional
-- Fully responsive
-- Accessible and readable
-- Lightweight and fast-loading
-- Easy to customize
-
----
-
-## Recommended Practices
-
-- Use semantic HTML tags
-- Maintain consistent spacing and typography
-- Use CSS variables where appropriate
-- Keep animations subtle
-- Test on multiple screen sizes
-
----
-
-# 🚫 What NOT to Do
-
-Do NOT:
-
-- Use React, Vue, or Angular
-- Add npm dependencies
-- Use Tailwind CSS
-- Use Bootstrap
-- Add build tools
-- Add server-side code
-- Include unnecessary large assets
-- Hardcode contributor-specific data
-
-Themes must work using only:
-
-- HTML
-- CSS
-- Handlebars variables
-
----
-
-# 🧪 Testing Your Theme Locally
-
-## 1. Add Theme Folder
-
-Place your theme inside:
-
-```bash
-backend/src/templates/portfolio/
-```
-
----
-
-## 2. Verify Required Files
-
-Ensure the following files exist:
-
-- `index.html`
-- `style.css`
-- `meta.json`
-- `preview.png`
-
----
-
-## 3. Start the Development Servers
-
-Backend:
-
-```bash
-cd backend
-npm run dev
-```
-
-Frontend:
+## 6. Verify locally
 
 ```bash
 cd frontend
 npm run dev
 ```
 
----
+| Check | URL |
+|---|---|
+| Gallery | `http://localhost:5173/templates` |
+| Live preview | `http://localhost:5173/preview/<Id>` |
+| Studio switcher | `http://localhost:5173/portfolio-builder/studio` |
 
-## 4. Test the Theme
-
-Verify that:
-
-- The theme renders correctly
-- Layout is responsive
-- Handlebars variables display properly
-- Styles load without issues
-- No assets are broken
-
----
-
-# 📤 How to Submit Your Theme
-
-## 1. Fork the Repository
+Then build the deployable shell:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/career-pilot.git
+npm run build:portfolio
+# emits frontend/dist-portfolio/standalone.html + assets/
 ```
 
+The backend portfolio-generator tests read that file; CI rebuilds it in the
+frontend job and restores it for the backend job.
+
 ---
 
-## 2. Create a New Branch
+## 7. Deploy path
 
-```bash
-git checkout -b feat/add-portfolio-theme
+```text
+template component
+  → PortfolioContext (normalized data)
+  → standalone bundle (vite.standalone.config.js)
+  → backend portfolioHtmlGenerator (fills window.__PORTFOLIO_DATA__)
+  → cloudflare / netlify / github-pages deployer
 ```
 
----
-
-## 3. Add Your Theme
-
-Place the completed theme folder inside:
-
-```bash
-backend/src/templates/portfolio/
-```
+The deployer must never include gallery/dummy content: the normalizer checks
+`window.__PORTFOLIO_DATA__` and user content before falling back to the demo
+data.
 
 ---
 
-## 4. Commit Changes
+## 8. Submission checklist
 
-Example:
-
-```bash
-git commit -m "feat(portfolio): add minimal dark portfolio theme"
-```
-
----
-
-## 5. Open a Pull Request
-
-Your PR should include:
-
-- Use the repository PR template and complete all relevant sections
-- Theme screenshots
-- `preview.png`
-- Responsive testing confirmation
-- Short explanation of the design
----
-
-# ✅ Code Review Criteria
-
-Themes will be reviewed based on:
-
-| Criteria | Description |
-|------|-------------|
-| Responsiveness | Works across mobile, tablet, and desktop |
-| Accessibility | Proper readability and contrast |
-| Performance | Lightweight and optimized |
-| Code Quality | Clean HTML and CSS structure |
-| Compatibility | Correct Handlebars variable usage |
-| Visual Quality | Professional and polished design |
-
----
-
-# 💡 Contributor Tips
-
-- Review existing themes before creating a new one
-- Keep designs unique and maintainable
-- Avoid excessive animations
-- Use consistent spacing and typography
-- Test thoroughly before submitting
-
----
-
-# 🙌 Thank You
-
-Thank you for contributing to CareerPilot!
-
-Your portfolio themes help users showcase their skills and projects professionally.
+- [ ] Folder `frontend/src/components/portfolio/templates/<Id>/index.jsx`
+- [ ] Default export renders with empty and full data
+- [ ] Metadata entry in `frontend/src/data/templates.js`
+- [ ] Preview image in `frontend/public/template-previews/`
+- [ ] No hardcoded people/testimonials
+- [ ] Links safe; no raw HTML injection
+- [ ] Responsive at 375 px and 1440 px
+- [ ] Gallery, preview and Studio all load it
+- [ ] `npm run build:portfolio` succeeds
+- [ ] `npm test` (frontend) passes

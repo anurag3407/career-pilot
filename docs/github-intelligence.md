@@ -1,5 +1,14 @@
 # 🐙 GitHub Intelligence Module
 
+> **Status (2026-11-28):** the analysis algorithms in this document are still
+> representative, but the transport changed. Authentication is now a **D1 JWT**
+> (`worker/src/auth.js`), the Express API listens on `:5000`, and the GitHub
+> features are spread across these prefixes:
+> `/api/auth/github/*`, `/api/analyzer`, `/api/portfolio/github`,
+> `/api/readme-generator`, `/api/project-visualizer`.
+> Examples below that reference `/api/github` or Firebase are legacy; see
+> `API_DOCS/README.md` for the authoritative route map.
+
 Developer documentation for the GitHub Intelligence subsystem, which provides deep repository analysis, health scoring, technology stack detection, and portfolio integration capabilities.
 
 ---
@@ -22,7 +31,7 @@ Developer documentation for the GitHub Intelligence subsystem, which provides de
 
 - GitHub Personal Access Token (PAT) or OAuth App registration
 - Backend running Node.js with Express
-- Firebase for user authentication
+- D1 auth via the gateway Worker (Express also accepts Supabase/Clerk legacy tokens)
 
 ### Configuration
 
@@ -32,9 +41,9 @@ Add the following variables to your `.env` file:
 
 ```bash
 # GitHub OAuth Configuration
-GITHUB_OAUTH_CLIENT_ID=your_oauth_client_id_here
-GITHUB_OAUTH_CLIENT_SECRET=your_oauth_client_secret_here
-GITHUB_OAUTH_REDIRECT_URI=http://localhost:5001/api/auth/github/callback
+GITHUB_CLIENT_ID=your_oauth_client_id_here
+GITHUB_CLIENT_SECRET=your_oauth_client_secret_here
+GITHUB_OAUTH_REDIRECT_URI=http://localhost:5000/api/auth/github/callback
 
 # GitHub API Configuration
 GITHUB_API_TOKEN=your_personal_access_token_here
@@ -59,8 +68,8 @@ GITHUB_API_RATE_WINDOW=3600000
    - Click "Register application"
 
 3. **Retrieve Credentials**
-   - Copy the **Client ID** → `GITHUB_OAUTH_CLIENT_ID`
-   - Generate a **Client Secret** → `GITHUB_OAUTH_CLIENT_SECRET`
+   - Copy the **Client ID** → `GITHUB_CLIENT_ID`
+   - Generate a **Client Secret** → `GITHUB_CLIENT_SECRET`
    - Store securely in your `.env` file
 
 ### Required Scopes
@@ -109,7 +118,7 @@ stateStore.delete(state);
 ```javascript
 export const getGitHubAuthUrl = (state) => {
   const params = new URLSearchParams({
-    client_id: process.env.GITHUB_OAUTH_CLIENT_ID,
+    client_id: process.env.GITHUB_CLIENT_ID,
     redirect_uri: process.env.GITHUB_OAUTH_REDIRECT_URI,
     scope: 'repo,user,read:user,public_repo,workflow,read:org',
     state,
@@ -129,8 +138,8 @@ export const exchangeCodeForToken = async (code) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      client_id: process.env.GITHUB_OAUTH_CLIENT_ID,
-      client_secret: process.env.GITHUB_OAUTH_CLIENT_SECRET,
+      client_id: process.env.GITHUB_CLIENT_ID,
+      client_secret: process.env.GITHUB_CLIENT_SECRET,
       code,
       redirect_uri: process.env.GITHUB_OAUTH_REDIRECT_URI,
     }),
@@ -245,13 +254,26 @@ export const decryptToken = (encryptedToken) => {
 
 ## API Endpoints Reference
 
+> **Current route map (2026-11-28).** The design examples below use a legacy
+> `/api/github/*` shape. The shipped routes are:
+>
+> | Feature | Current route(s) | Auth |
+> |---|---|---|
+> | GitHub OAuth | `POST /api/auth/github/start`, `GET /api/auth/github/callback`, `DELETE /api/auth/github/disconnect`, `GET /api/auth/github/status` | D1 JWT (start/disconnect/status), state (callback) |
+> | Repo analyzer | `POST /api/analyzer/ingest`, `GET /api/analyzer/history`, `GET /api/analyzer/file-content`, `POST /api/analyzer/chat` | D1 JWT |
+> | Portfolio builds | `POST /api/portfolio/github/repos`, `POST /api/portfolio/github/validate-token`, `POST /api/portfolio/github/build`, `GET /api/portfolio/github/history` | D1 JWT |
+> | README generator | `GET /api/readme-generator/templates`, `POST /api/readme-generator/fetch-profile`, `POST /api/readme-generator/generate` | mixed (`fetch-profile`/`generate` require D1 JWT) |
+> | Project visualizer | `POST /api/project-visualizer/analyze`, `GET /api/project-visualizer/analysis/:sessionId`, `…/file`, `…/contributors`, `…/commits`, `POST …/chat`, `…/interview-prep`, `GET /api/project-visualizer/history` | D1 JWT |
+>
+> The gateway also exposes `/v1/db/github-builds` for stored builds.
+
 ### Base URL
 ```
-http://localhost:5001/api/github
+http://localhost:5000/api
 ```
 
 ### Authentication
-All endpoints require `Authorization: Bearer <firebase_id_token>` header unless otherwise noted.
+All endpoints require `Authorization: Bearer <d1_jwt>` header unless otherwise noted.
 
 ---
 
@@ -266,7 +288,7 @@ GET /api/auth/github
 
 **Example:**
 ```bash
-curl http://localhost:5001/api/auth/github
+curl http://localhost:5000/api/auth/github
 ```
 
 ---
@@ -286,12 +308,12 @@ GET /api/auth/github/callback?code=CODE&state=STATE
   "success": true,
   "message": "GitHub authentication successful",
   "user": {
-    "uid": "firebase_uid",
+    "uid": "d1_user_id",
     "username": "github_username",
     "avatar": "https://avatars.githubusercontent.com/u/...",
     "email": "user@example.com"
   },
-  "token": "firebase_id_token"
+  "token": "d1_jwt"
 }
 ```
 
@@ -311,7 +333,7 @@ POST /api/github/analyze/repo
 
 **Headers:**
 ```
-Authorization: Bearer <firebase_id_token>
+Authorization: Bearer <d1_jwt>
 Content-Type: application/json
 ```
 
@@ -1564,7 +1586,7 @@ sequenceDiagram
     Backend->>Database: Store encrypted token<br/>& user profile
     Database->>Backend: Confirm storage
 
-    Backend->>Backend: Create Firebase session token
+    Backend->>Backend: Create D1 session token
     Backend->>Frontend: Redirect with token
     Frontend->>Frontend: Save token & update UI
 
@@ -1573,7 +1595,7 @@ sequenceDiagram
     rect rgb(200, 220, 240)
     Note over Backend,GitHub: Subsequent API Calls
     User->>Frontend: Request GitHub data
-    Frontend->>Backend: API call with Firebase token
+    Frontend->>Backend: API call with D1 token
     Backend->>Database: Retrieve encrypted GitHub token
     Database->>Backend: Return token
     Backend->>Backend: Decrypt GitHub token
@@ -1594,7 +1616,7 @@ sequenceDiagram
 7. **Token Exchange**: Backend exchanges authorization code for access token
 8. **Profile Fetch**: Backend fetches user profile using access token
 9. **Data Storage**: Encrypted token and profile data stored in database
-10. **Session Creation**: Firebase session token created for user
+10. **Session Creation**: D1 session token created for user
 11. **Redirect**: User redirected to dashboard with authenticated session
 12. **API Calls**: Subsequent API calls use stored (decrypted) GitHub token
 

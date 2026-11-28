@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to **Career Pilot**! 🚀
 
-Career Pilot is an AI-powered Resume Builder built with React, Vite, TailwindCSS, Firebase, and modern web technologies. We welcome contributions of all sizes, whether it's fixing bugs, improving documentation, enhancing the UI, or implementing new features.
+Career Pilot is an AI-powered career platform built with React 19, Vite 7 and TailwindCSS 4, backed by a Cloudflare Worker + D1 gateway (with an optional Express backend for self-hosted extras). We welcome contributions of all sizes, whether it's fixing bugs, improving documentation, enhancing the UI, or implementing new features.
 
 ---
 
@@ -39,22 +39,20 @@ Before contributing, make sure you have:
 
 #### Basic Requirements
 
-- Node.js 18.0 or higher
-- npm
-- Git
-- A GitHub account
+- Node.js 22+ (see `.nvmrc`) and npm 10+
+- Git and a GitHub account
+- A Cloudflare account (free) for Pages/Workers/D1, or `wrangler dev` locally
 
-#### Additional Requirements
+#### Optional Requirements
 
-Depending on the area you contribute to, additional services may be required:
+Depending on the area you contribute to:
 
-- Firebase credentials (authentication and local testing)
-- MongoDB (database-related features)
-- Redis (caching and background services)
-- AI provider API keys (OpenAI / Gemini / Groq)
-- RapidAPI key (job-search-related features)
+- AI provider keys (Cloudflare Workers AI works by default; BYOK supports 30 providers)
+- RapidAPI key (job search)
+- ImageKit keys (uploads)
+- MongoDB + Redis (only for the optional Express backend extras)
 
-> Note: For complete backend setup instructions and environment configuration, refer to CONTRIBUTION.md.
+> Full env matrix: [`docs/environment-setup.md`](docs/environment-setup.md).
 
 ---
 
@@ -87,25 +85,36 @@ git remote -v
 ### 4. Install Dependencies
 
 ```bash
-npm install
+npm run install:all          # root + frontend + backend
+npm --prefix worker install  # gateway Worker
 ```
 
 ### 5. Configure Environment Variables
 
 ```bash
-cp .env.example .env
+cp frontend/.env.example frontend/.env
+# Optional Express backend only:
+cp backend/.env.example backend/.env
 ```
 
-Fill in the required Firebase and API configuration values.
+The frontend defaults (`VITE_AI_GATEWAY_URL=/gateway/v1`) work with the local
+Worker. Set Worker secrets with `npx wrangler secret put <NAME>` (see
+`worker/wrangler.toml`).
 
-### 6. Start the Development Server
+### 6. Start the Development Servers
 
 ```bash
+# Terminal 1 — gateway Worker + local D1
+cd worker
+npx wrangler d1 migrations apply DB --local
+npx wrangler dev            # http://localhost:8787
+
+# Terminal 2 — SPA
 cd frontend
-npm run dev
+npm run dev                 # http://localhost:5173
 ```
 
-The application should now be available locally.
+The SPA is at `http://localhost:5173`; `/gateway` proxies to the Worker.
 
 ---
 
@@ -168,17 +177,20 @@ refactor/form-handling
 
 ## ✅ Before Submitting
 
-Run the following commands:
+Run the checks for the area you touched:
 
 ```bash
-cd frontend
+# Frontend
+cd frontend && npm run lint && npm test && npm run build
 
-# Run lint checks
-npm run lint
+# Gateway Worker
+cd worker && npm test
 
-# Create a production build
-npm run build
+# Optional Express backend
+cd backend && npm run lint && npm test
 ```
+
+From the root: `npm run lint`, `npm run test:all`, `npm run build`.
 
 Ensure:
 
@@ -186,6 +198,8 @@ Ensure:
 - No lint errors
 - No unnecessary console logs
 - No unused imports
+- New gateway routes scope D1 queries by `user_id`
+- New routes/env vars are reflected in docs and `API_DOCS/`
 
 ---
 
@@ -198,7 +212,7 @@ Examples:
 ```bash
 feat: add resume preview component
 
-fix: resolve firebase auth redirect issue
+fix: resolve D1 auth redirect issue
 
 docs: update installation guide
 

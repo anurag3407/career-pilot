@@ -1,5 +1,8 @@
 # Product Gap Report — Resume Studio & Portfolio Studio
 
+> **Historical snapshot (Nov 2026).** This is a product analysis, not a contract.
+> Stack and route details may be out of date; see `docs/README.md` for current docs.
+
 Date: 5 November 2026
 Method: every claim below was read out of the current source tree, not out of the README. Leader
 capability data is from primary product/pricing pages as of Nov 2026 (sources in section 7).

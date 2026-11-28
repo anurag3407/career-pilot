@@ -12,10 +12,11 @@ The following versions of **Career Pilot** are currently supported with security
 
 Career Pilot employs a defense-in-depth strategy to prevent Cross-Site Request Forgery (CSRF) and Cross-Site WebSocket Hijacking (CSWSH) attacks:
 
-1. **Bearer Tokens over Cookies**: The primary application API relies on Supabase / Bearer JWT auth tokens passed via the `Authorization: Bearer` header rather than cookies. Since standard web browsers do not automatically attach custom headers to cross-origin requests, this architecture natively mitigates classic CSRF vectors.
-2. **CORS Restrictions**: Express middleware enforces strict CORS policies on the REST API, permitting requests only from explicit, known origins (e.g., the configured frontend URL).
+1. **Bearer Tokens over Cookies**: The platform uses D1-native HS256 JWTs issued by the gateway Worker (`worker/src/auth.js`) and passed via the `Authorization: Bearer` header rather than cookies. Since browsers do not automatically attach custom headers to cross-origin requests, this architecture natively mitigates classic CSRF vectors. Sessions are tracked in `auth_sessions` and revoked on logout; the optional Express backend accepts the same token (Supabase/Clerk are legacy fallbacks).
+2. **CORS Restrictions**: The Worker applies `ALLOWED_ORIGINS` (set an explicit list in production), and Express enforces strict CORS on `/api/*`, permitting only the configured frontend origin.
 3. **Socket.IO Origin Enforcement**: WebSocket connections are protected by an `allowRequest` hook that strictly validates the `Origin` header during the connection handshake. This ensures that an attacker cannot open a WebSocket connection on behalf of a victim from a malicious domain.
-4. **Basic Auth Origin Checks**: Administrative routes using HTTP Basic Auth (such as BullMQ Dashboard) enforce a strict `Origin`/`Referer` check for all state-changing methods (`POST`, `PUT`, `DELETE`). This prevents an attacker from abusing cached Basic Auth credentials via cross-site requests.
+4. **Tenant Isolation & Rate Limits**: every `/v1/db/*` query is scoped to the authenticated `user_id`; the Worker rate-limits 240 requests/min per IP (20/min for AI). Uploads are capped at 10 MB and provider keys live only in Wrangler secrets.
+5. **Basic Auth Origin Checks**: Administrative routes using HTTP Basic Auth (such as BullMQ Dashboard) enforce a strict `Origin`/`Referer` check for all state-changing methods (`POST`, `PUT`, `DELETE`). This prevents an attacker from abusing cached Basic Auth credentials via cross-site requests.
 
 ## Reporting a Vulnerability
 
@@ -25,6 +26,7 @@ Instead, report it responsibly by:
 
 * 📧 Reaching out to the maintainer directly via their GitHub profile.
 * 💬 Sending a private message through GitHub's messaging or social links listed in the profile.
+* 🔐 Using GitHub Security Advisories (Security → Report a vulnerability) when enabled on the repository.
 
 ### What to Include in Your Report
 

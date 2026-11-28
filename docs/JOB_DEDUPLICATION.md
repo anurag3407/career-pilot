@@ -1,5 +1,8 @@
 # Job Deduplication Engine
 
+> **Scope:** the optional Express backend job pipeline (`backend/src/services/`).
+> The D1 gateway stores tracked jobs directly and does not run this engine.
+
 ## Overview
 
 Career Pilot aggregates job listings from RapidAPI JSearch and registered local scrapers. Different providers may return the same vacancy with different identifiers, formatting, URLs, or metadata, which can otherwise result in duplicate storage and repeated job-alert delivery.

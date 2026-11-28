@@ -1,7 +1,7 @@
 # 🚀 Deployment & Security API
 
-> Base URL: `http://localhost:5001/api`
-> All endpoints require `Authorization: Bearer <firebase_id_token>`
+> Base URL: `http://localhost:5000/api`
+> All endpoints require `Authorization: Bearer <d1_jwt>`
 
 ---
 
@@ -294,7 +294,7 @@ POST /api/auth/2fa/disable
 
 ### Verify TOTP Code
 
-Used during login to confirm the TOTP code after Firebase authentication.
+Used during login to confirm the TOTP code after D1 authentication.
 
 > ⚠️ Rate limited to **5 attempts per 15 minutes** per user to prevent brute force.
 

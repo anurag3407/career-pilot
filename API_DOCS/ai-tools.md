@@ -1,7 +1,7 @@
 # 🤖 AI Career Tools API
 
 > Base URL: `http://localhost:5000/api`
-> All endpoints require `Authorization: Bearer <firebase_id_token>`
+> All endpoints require `Authorization: Bearer <d1_jwt>`
 
 ---
 

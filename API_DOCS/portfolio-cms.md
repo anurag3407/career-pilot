@@ -21,9 +21,9 @@ Welcome to the Portfolio CMS API endpoints documentation. This API provides rout
 ## Quickstart Guide
 
 1. **Get an Authentication Token:**
-   Most protected endpoints require a Firebase ID Token. Obtain this token from the frontend Firebase Auth SDK upon logging in:
+   Most protected endpoints require a D1 JWT. Obtain this token from the frontend D1 auth client (`d1Auth`) upon logging in:
    ```javascript
-   const token = await firebase.auth().currentUser.getIdToken();
+   const token = await getD1AccessToken(); // from src/config/d1.js
    ```
 
 2. **Make a Request:**
@@ -303,6 +303,6 @@ Standard error responses follow this format:
 | Status Code | Description | Endpoint(s) | Typical Causes |
 |-------------|-------------|-------------|----------------|
 | `400`       | Bad Request | Enhancement, Performance, Sitemap | Missing required fields (`sectionType`, `content`), invalid format or invalid slug string. |
-| `401`       | Unauthorized| Enhancement, Performance | Missing or invalid Firebase Bearer token. |
+| `401`       | Unauthorized| Enhancement, Performance | Missing or invalid D1 bearer token. |
 | `404`       | Not Found   | Sitemap, Robots, Bandwidth | The specified `slug` does not correspond to an existing portfolio template. |
 | `500`       | Server Error| (All) | Backend logic failure, database, or file-system error. |

@@ -1,5 +1,8 @@
 # Redis API Response Cache
 
+> **Scope:** the optional Express backend (`backend/src/middleware/cacheLayer.js`).
+> The Cloudflare gateway uses D1 directly and does not use Redis.
+
 ## Overview
 
 Career Pilot uses a reusable Redis-backed Express middleware to cache selected read-only API responses.

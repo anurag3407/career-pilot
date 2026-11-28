@@ -1,5 +1,6 @@
-````md
 # Frontend Component Style Guide
+
+**Last updated:** 2026-11-28. Components live in `frontend/src/components/`; primitives in `frontend/src/components/ui/`.
 
 ## Overview
 
@@ -228,4 +229,3 @@ Maintain subtle motion and avoid excessive animation complexity.
 - Use descriptive prop names
 - Maintain consistent file structure
 - Keep UI responsive and accessible
-````
