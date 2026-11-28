@@ -13,6 +13,8 @@
     "test": "npm run test --prefix backend && npm run test --prefix frontend",
     "test:backend": "npm run test --prefix backend",
     "test:frontend": "npm run test --prefix frontend",
+    "test:worker": "npm test --prefix worker",
+    "test:all": "npm run test:backend && npm run test:frontend && npm run test:worker",
     "install:frontend": "npm install --prefix frontend",
     "install:backend": "npm install --prefix backend",
     "install:all": "npm install && npm run install:frontend && npm run install:backend"

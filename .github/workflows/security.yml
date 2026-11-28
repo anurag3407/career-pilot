@@ -1,0 +1,72 @@
+name: Security
+
+# One scanner per signal: dependency-review blocks risky PRs, OSV publishes
+# SARIF for everything else. Snyk/npm-audit duplicates were retired.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    # Weekly, Monday 03:00 UTC
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  dependency-review:
+    name: dependency-review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: always
+          deny-licenses: GPL-2.0, GPL-3.0, AGPL-3.0
+
+  osv-scan:
+    name: osv-scan
+    # Fork PRs cannot write to the Security tab; dependency-review still covers them.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run OSV Scanner
+        uses: google/osv-scanner-action/osv-scanner-action@v1.9.2
+        # Visibility, not a gate: the repo already carries a large Dependabot
+        # backlog, so block only on dependency-review for PRs.
+        continue-on-error: true
+        with:
+          scan-args: |-
+            --format=sarif
+            --output=osv-results.sarif
+            ./
+
+      - name: Upload SARIF to the Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() && hashFiles('osv-results.sarif') != ''
+        with:
+          sarif_file: osv-results.sarif
+          category: osv-scanner
