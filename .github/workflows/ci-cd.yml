@@ -60,7 +60,7 @@ jobs:
         run: npm run build
 
       - name: Upload SPA build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: frontend-dist
           path: frontend/dist
@@ -70,7 +70,7 @@ jobs:
       # Only the files portfolioHtmlGenerator reads: standalone.html + assets/.
       # Keeps the backend artifact small (the full bundle embeds ~73 MB of previews).
       - name: Upload portfolio shell
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: portfolio-shell
           path: |
