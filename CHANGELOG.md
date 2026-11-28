@@ -1,3 +1,10 @@
+# [1.288.0](https://github.com/anurag3407/career-pilot/compare/v1.287.0...v1.288.0) (2026-11-28)
+
+
+### Features
+
+* enhance worker tests with model discovery and validation scenarios ([a585ad2](https://github.com/anurag3407/career-pilot/commit/a585ad2e1db8218ed078856ec4624fce8d2b403a))
+
 # [1.287.0](https://github.com/anurag3407/career-pilot/compare/v1.286.0...v1.287.0) (2026-11-27)
 
 
