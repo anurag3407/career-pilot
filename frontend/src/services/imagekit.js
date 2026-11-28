@@ -3,6 +3,8 @@
  * Provides unified, free object storage for profile avatars, resume PDFs, and exports.
  */
 
+import { getD1AccessToken } from '../config/d1';
+
 const GATEWAY_URL = import.meta.env.VITE_AI_GATEWAY_URL || '/gateway/v1';
 
 export const IMAGEKIT_PUBLIC_KEY = import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY || 'public_HbKrLXFCb5VWNjz7jBfAteEOhBM=';
@@ -17,6 +19,7 @@ export const IMAGEKIT_URL_ENDPOINT = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT 
  * @param {string} [options.folder='/uploads'] - ImageKit folder (e.g. '/avatars', '/resumes')
  * @param {string[]} [options.tags=[]] - Tags to attach
  * @param {string} [options.userId] - Current user id
+ * @param {AbortSignal} [options.signal] - Optional abort signal
  * @param {Function} [options.onProgress] - Optional progress callback (0-100)
  * @returns {Promise<{ url: string, fileId: string, name: string, thumbnail: string }>}
  */
@@ -26,13 +29,14 @@ export async function uploadToImageKit({
   folder = '/uploads',
   tags = [],
   userId = '',
+  signal,
   onProgress,
 }) {
   if (onProgress) onProgress(20);
 
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('fileName', fileName || `file_${Date.now()}`);
+  formData.append('fileName', fileName || file?.name || `file_${Date.now()}`);
   formData.append('folder', folder);
   if (tags && tags.length > 0) {
     formData.append('tags', Array.isArray(tags) ? tags.join(',') : tags);
@@ -46,11 +50,20 @@ export async function uploadToImageKit({
   if (userId) {
     headers['X-User-Id'] = userId;
   }
+  try {
+    const token = await getD1AccessToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+  } catch {
+    // ignore auth token lookup errors
+  }
 
   const response = await fetch(endpoint, {
     method: 'POST',
     headers,
     body: formData,
+    signal,
   });
 
   if (onProgress) onProgress(85);

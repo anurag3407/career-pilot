@@ -1,8 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import { resumeApi } from "../services/api";
+import { resumeApi, uploadApi } from "../services/api";
+import { isPdfFile } from "../utils/pdfExtract";
 
 const TONES = ["formal", "conversational", "enthusiastic"];
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5002";
+const API_BASE =
+  import.meta.env.VITE_API_BASE ||
+  (import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL.replace(/\/$/, "")}/api`
+    : "/api");
 
 const CoverLetter = () => {
   const fileInputRef = useRef(null);
@@ -61,17 +66,10 @@ const CoverLetter = () => {
     }
   };
 
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-
   const handleFileChange = async (file) => {
     if (!file) return;
-    if (!file.name.endsWith(".pdf") && !file.name.endsWith(".txt")) {
+    const isTxt = file.name?.toLowerCase().endsWith(".txt") || file.type === "text/plain";
+    if (!isPdfFile(file) && !isTxt) {
       setError("Please upload a PDF or TXT file.");
       return;
     }
@@ -82,23 +80,16 @@ const CoverLetter = () => {
     try {
       let text = "";
 
-      if (file.name.endsWith(".txt")) {
-        text = await new Promise((resolve) => {
+      if (isTxt) {
+        text = await new Promise((resolve, reject) => {
           const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
+          reader.onload = (e) => resolve(String(e.target?.result || ""));
+          reader.onerror = () => reject(new Error("Failed to read TXT file"));
           reader.readAsText(file);
         });
       } else {
-        // PDF → base64 → Groq extracts text
-        const base64PDF = await toBase64(file);
-        const res = await fetch(`${API_URL}/api/cover-letter/extract-resume`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ base64PDF }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Extraction failed");
-        text = data.resumeText || "";
+        const res = await uploadApi.extractText(file);
+        text = res?.data?.text || res?.text || "";
       }
 
       if (!text || text.trim().length < 20) {
@@ -133,7 +124,7 @@ const CoverLetter = () => {
     setCoverLetter("");
 
     try {
-      const res = await fetch(`${API_URL}/api/cover-letter/generate-text`, {
+      const res = await fetch(`${API_BASE}/cover-letter/generate-text`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -157,7 +148,7 @@ const CoverLetter = () => {
 
   const handleDownloadPDF = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/cover-letter/download-pdf`, {
+      const res = await fetch(`${API_BASE}/cover-letter/download-pdf`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ coverLetter }),

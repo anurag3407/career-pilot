@@ -145,7 +145,14 @@ const app = express();
 // Ensure DB connection for serverless/Vercel requests
 app.use(async (req, res, next) => {
   const path = req.path.toLowerCase();
-  const isDbOptional = path.startsWith('/api/ai/models') || path.startsWith('/api/ai/validate-key') || path.startsWith('/api/ai/openrouter') || path === '/health' || path === '/api/health';
+  const isDbOptional =
+    path.startsWith('/api/ai/models') ||
+    path.startsWith('/api/ai/validate-key') ||
+    path.startsWith('/api/ai/openrouter') ||
+    path === '/api/upload' ||
+    path === '/api/upload/extract-text' ||
+    path === '/health' ||
+    path === '/api/health';
 
   try {
     await connectDB();

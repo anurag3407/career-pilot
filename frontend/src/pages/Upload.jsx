@@ -14,6 +14,7 @@ export default function Upload() {
   const redirectTimeoutRef = useRef(null)
 
   const [_file, setFile] = useState(null)
+  const [dropzoneKey, setDropzoneKey] = useState(0)
   const [loading, setLoading] = useState(false)
   const [uploadComplete, setUploadComplete] = useState(false)
 
@@ -32,24 +33,33 @@ export default function Upload() {
     try {
       // Upload and extract text
       const response = await uploadApi.uploadPdf(selectedFile, { signal: controller.signal })
-      const extractedText = response.data.extractedText
+      const extractedText = response.data?.extractedText
+      if (!extractedText || !extractedText.trim()) {
+        throw new Error('Could not extract text from this PDF.')
+      }
 
       // Create resume automatically
       const resumeTitle = `Resume - ${new Date().toLocaleDateString()}`
       const resumeResponse = await resumeApi.create(
         {
           originalText: extractedText,
-          title: resumeTitle
+          title: resumeTitle,
+          ...(response.data?.pdfUrl ? { pdfUrl: response.data.pdfUrl } : {})
         },
         { signal: controller.signal }
       )
+
+      const createdId = resumeResponse?.data?.id || resumeResponse?.resume?.id || resumeResponse?.id
+      if (!createdId) {
+        throw new Error('Resume was parsed, but saving it failed. Please try again.')
+      }
 
       setUploadComplete(true)
       toast.success('Resume uploaded successfully!')
 
       // Redirect to enhance page after a brief delay
       redirectTimeoutRef.current = setTimeout(() => {
-        navigate(`/enhance/${resumeResponse.data.id}`)
+        navigate(`/enhance/${createdId}`)
       }, 1500)
 
     } catch (error) {
@@ -60,6 +70,7 @@ export default function Upload() {
       const message = error.response?.data?.error || error.message || 'Failed to upload resume'
       toast.error(message)
       setFile(null)
+      setDropzoneKey((k) => k + 1)
     } finally {
       setLoading(false)
       uploadControllerRef.current = null
@@ -75,6 +86,7 @@ export default function Upload() {
     setLoading(false)
     setUploadComplete(false)
     setFile(null)
+    setDropzoneKey((k) => k + 1)
   }
 
   useEffect(() => {
@@ -231,7 +243,7 @@ export default function Upload() {
             </div>
 
             <DropZone
-              key={_file ? 'uploading' : 'empty'}
+              key={dropzoneKey}
               onFileSelect={handleFileSelect}
               disabled={loading}
               maxSizeMB={5}

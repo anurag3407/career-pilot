@@ -36,7 +36,7 @@ const storage = multer.diskStorage({
 
 // File filter for PDF only
 const fileFilter = (req, file, cb) => {
-  const allowedMimeTypes = ['application/pdf'];
+  const allowedMimeTypes = ['application/pdf', 'application/x-pdf'];
   const allowedExtensions = ['.pdf'];
   
   const ext = path.extname(file.originalname).toLowerCase();

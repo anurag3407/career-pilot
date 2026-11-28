@@ -57,7 +57,7 @@ export async function getD1AccessToken() {
   return session?.access_token || null;
 }
 
-export async function d1Fetch(path, { method = 'GET', body, headers = {}, requireAuth = false } = {}) {
+export async function d1Fetch(path, { method = 'GET', body, headers = {}, requireAuth = false, signal } = {}) {
   const token = await getD1AccessToken();
   if (requireAuth && !token) {
     const err = new Error('Not authenticated');
@@ -75,6 +75,7 @@ export async function d1Fetch(path, { method = 'GET', body, headers = {}, requir
     method,
     headers: reqHeaders,
     body: body === undefined ? undefined : (body instanceof FormData ? body : JSON.stringify(body)),
+    signal,
   });
 
   const data = await res.json().catch(() => ({}));

@@ -1,11 +1,15 @@
 import { io } from 'socket.io-client';
 import { createSocketOptions } from './socketOptions.js';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002';
+const SOCKET_URL = (import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || '').trim();
 
 let socket = null;
 
 export const initializeSocket = async () => {
+  if (!SOCKET_URL) {
+    return null;
+  }
+
   /**
    * Reuse the existing instance even when it is still connecting or currently
    * reconnecting. Checking only socket.connected would allow concurrent calls
@@ -123,9 +127,17 @@ export const initializeSocket = async () => {
     'connect_error',
     (error) => {
       const msg = error?.message || '';
-      if (msg.includes('xhr poll error') || msg.includes('404') || msg.includes('websocket error')) {
-        // Real-time Socket.IO server is not available on serverless hosts (Vercel/Netlify). Disconnect gracefully.
+      if (
+        msg.includes('xhr poll error') ||
+        msg.includes('404') ||
+        msg.includes('websocket error') ||
+        msg.includes('ECONNREFUSED')
+      ) {
+        // Real-time Socket.IO server is not available on serverless hosts. Disconnect gracefully.
         socketInstance.disconnect();
+        if (socket === socketInstance) {
+          socket = null;
+        }
       } else {
         console.warn(
           'Socket connection note:',

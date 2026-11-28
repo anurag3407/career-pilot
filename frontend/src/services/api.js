@@ -23,6 +23,8 @@ import {
   validateKey as gatewayValidateKey,
 } from './aiGateway'
 import { estimateSalaryClient } from '../lib/salaryEstimator'
+import { extractTextFromPdf } from '../utils/pdfExtract'
+import { uploadToImageKit } from './imagekit'
 
 export const apiEvents = new EventTarget();
 
@@ -170,6 +172,12 @@ async function handleResponse(response) {
     throw error;
   }
 
+  if (contentType.includes('text/html')) {
+    const error = new Error('API endpoint unavailable (received HTML instead of JSON)');
+    error.status = 502;
+    throw error;
+  }
+
   return data || {};
 }
 // ============ AUTH API ============
@@ -188,40 +196,64 @@ export const authApi = {
 
 // ============ UPLOAD API ============
 export const uploadApi = {
-  // Upload PDF and extract text
+  // Upload PDF and extract text client-side (+ best-effort ImageKit storage via gateway)
   async uploadPdf(file, options = {}) {
-    const token = await getD1AuthToken();
-    const formData = new FormData()
-    formData.append('resume', file)
+    const { text, pageCount, info } = await extractTextFromPdf(file, {
+      signal: options.signal,
+    });
 
+    let pdfUrl = null;
+    try {
+      const ikResult = await uploadToImageKit({
+        file,
+        fileName: file.name || `resume_${Date.now()}.pdf`,
+        folder: '/resumes',
+        tags: ['resume'],
+        signal: options.signal,
+      });
+      pdfUrl = ikResult?.url || null;
+    } catch (err) {
+      if (err?.name === 'AbortError' || options.signal?.aborted) {
+        throw err;
+      }
+      // Best-effort storage: extraction + D1 resume creation still succeed without ImageKit
+    }
 
-    const response = await fetch(`${API_BASE}/upload`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
+    const resumeId =
+      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `resume_${Date.now()}`;
+
+    return {
+      success: true,
+      data: {
+        resumeId,
+        originalFilename: file.name || 'resume.pdf',
+        size: file.size || 0,
+        extractedText: text,
+        pageCount,
+        pdfUrl,
+        metadata: {
+          info,
+          uploadedAt: new Date().toISOString(),
+        },
       },
-      body: formData,
-      signal: options.signal
-    })
-    return handleResponse(response)
+    };
   },
 
-  // Extract text from PDF (re-process)
+  // Extract text from PDF client-side (re-process)
   async extractText(file, options = {}) {
-    const token = await getD1AuthToken();
-    const formData = new FormData()
-    formData.append('resume', file)
+    const { text, pageCount } = await extractTextFromPdf(file, {
+      signal: options.signal,
+    });
 
-
-    const response = await fetch(`${API_BASE}/upload/extract-text`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
+    return {
+      success: true,
+      data: {
+        text,
+        pageCount,
       },
-      body: formData,
-      signal: options.signal
-    })
-    return handleResponse(response)
+    };
   }
 }
 
@@ -878,9 +910,10 @@ export const githubAuthApi = {
 // ============ AI API ============
 // AI meta routes through the gateway Worker (single AI configuration point).
 export const aiApi = {
-  // Get AI models for a specific provider
-  async getModels(provider) {
-    return gatewayModels(provider)
+  // Get AI models for a provider (live from the endpoint when credentials are
+  // supplied, static catalog otherwise)
+  async getModels(provider, config = {}) {
+    return gatewayModels(provider, config)
   },
 
   // Validate an API key against its provider (lightweight, no token usage)

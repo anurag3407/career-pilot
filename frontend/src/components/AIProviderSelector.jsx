@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAIConfigStore, PROVIDER_META } from '../stores/useAIConfigStore';
 import { Sparkles, ChevronDown, Check, Settings } from 'lucide-react';
@@ -11,13 +11,18 @@ export default function AIProviderSelector() {
   const setActiveProvider = useAIConfigStore((s) => s.setActiveProvider);
   const containerRef = useRef(null);
 
-  // Get validated providers plus built-in Cloudflare AI platform provider
-  const validatedProviders = Array.from(new Set([
+  // Configured providers (keyed or keyless local endpoints) plus the
+  // platform-default Cloudflare AI.
+  const validatedProviders = useMemo(() => Array.from(new Set([
     'cloudflare',
-    ...Object.entries(providers)
-      .filter(([_, data]) => data.validated)
-      .map(([id]) => id)
-  ]));
+    ...Object.keys(providers).filter((id) => {
+      if (providers[id]?.apiKey) return true;
+      const meta = PROVIDER_META[id];
+      return Boolean(
+        meta && meta.requiresKey === false && (providers[id]?.baseUrl || meta.baseUrl)
+      );
+    }),
+  ])), [providers]);
 
   const activeMeta = activeProviderId ? PROVIDER_META[activeProviderId] : null;
 

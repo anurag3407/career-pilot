@@ -17,6 +17,9 @@ router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (
   try {
     const fileBuffer = await fs.readFile(req.file.path);
     const pdfData = await pdfParse(fileBuffer);
+    if (!pdfData.text || !pdfData.text.trim()) {
+      throw new ApiError(400, 'Could not extract text from PDF. The file may be image-based or empty.');
+    }
     const resumeId = uuidv4();
 
     res.json({
@@ -34,6 +37,7 @@ router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (
       }
     });
   } catch (error) {
+    if (error instanceof ApiError) throw error;
     console.error('PDF parsing error:', error);
     throw new ApiError(400, 'Failed to parse PDF. Please ensure the file is a valid PDF document.');
   } finally {
@@ -55,6 +59,9 @@ router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHan
   try {
     const fileBuffer = await fs.readFile(req.file.path);
     const pdfData = await pdfParse(fileBuffer);
+    if (!pdfData.text || !pdfData.text.trim()) {
+      throw new ApiError(400, 'Could not extract text from PDF. The file may be image-based or empty.');
+    }
 
     res.json({
       success: true,
@@ -64,6 +71,7 @@ router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHan
       }
     });
   } catch (error) {
+    if (error instanceof ApiError) throw error;
     console.error('PDF text extraction error:', error);
     throw new ApiError(400, 'Failed to extract text from PDF');
   } finally {

@@ -104,8 +104,14 @@ export async function generateJson(opts = {}) {
   return parseJson(text);
 }
 
-export const getModels = (provider) =>
-  request(`/ai/models?provider=${encodeURIComponent(provider)}`, { method: 'GET' });
+/**
+ * Fetch the model list for a provider.
+ * When `apiKey`/`baseUrl` are supplied the gateway performs a live /models
+ * lookup (so custom endpoints return their real models); otherwise it falls
+ * back to the static catalog.
+ */
+export const getModels = (provider, config = {}) =>
+  request('/ai/models', { body: { provider, ...config } });
 
 export const validateKey = (provider, apiKey, config = {}) =>
   request('/ai/validate-key', { body: { provider, apiKey, ...config } });

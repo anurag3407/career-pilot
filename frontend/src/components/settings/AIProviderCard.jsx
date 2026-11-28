@@ -11,6 +11,10 @@ import {
   Loader2,
   Sparkles,
   Trash2,
+  RefreshCw,
+  Wifi,
+  Save,
+  Link2,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { cn } from '../../lib/utils';
@@ -19,12 +23,15 @@ import { aiApi } from '../../services/api';
 import { decryptKey } from '../../utils/encryption';
 import { generateRandomString, generateCodeChallenge } from '../../utils/pkce';
 
+const MANUAL_MODEL = '__manual__';
+
 export default function AIProviderCard({ providerId, isActive, onActivate }) {
   const meta = PROVIDER_META[providerId];
   const providerData = useAIConfigStore((s) => s.providers[providerId]);
   const setProviderKey = useAIConfigStore((s) => s.setProviderKey);
   const setProviderModel = useAIConfigStore((s) => s.setProviderModel);
   const setProviderBaseUrl = useAIConfigStore((s) => s.setProviderBaseUrl);
+  const setProviderModels = useAIConfigStore((s) => s.setProviderModels);
   const markValidated = useAIConfigStore((s) => s.markValidated);
   const removeProvider = useAIConfigStore((s) => s.removeProvider);
 
@@ -32,67 +39,84 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
   const [showKey, setShowKey] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
+  const [manualModel, setManualModel] = useState('');
+  const [manualMode, setManualMode] = useState(false);
   const [baseUrl, setBaseUrl] = useState('');
   const [isValidating, setIsValidating] = useState(false);
   const [validationResult, setValidationResult] = useState(null); // 'success' | 'error' | null
-  const [dynamicModels, setDynamicModels] = useState([]);
+  const [testResult, setTestResult] = useState(null); // detailed result from the gateway
+  const [fetchedModels, setFetchedModels] = useState([]);
   const [loadingModels, setLoadingModels] = useState(false);
+  const [modelsInfo, setModelsInfo] = useState(null); // { count, source, warning }
   const cardRef = useRef(null);
 
   const hasKey = !!providerData?.apiKey;
   const isValidated = !!providerData?.validated;
+  const isKeyless = meta.requiresKey === false;
+  const showBaseUrl = Boolean(meta.showBaseUrl || meta.customEndpoint);
+  const effectiveBaseUrl = (baseUrl || meta.baseUrl || '').trim();
+  const isConfigured = hasKey || isValidated || (isKeyless && !!effectiveBaseUrl);
+  const canTest = isKeyless ? !!effectiveBaseUrl : !!apiKey.trim();
 
-  // Hydrate local state from store when expanding
+  // Hydrate local state from the store when the card is expanded.
   useEffect(() => {
-    if (expanded && providerData) {
-      const decrypted = providerData.apiKey ? decryptKey(providerData.apiKey) : '';
-      setApiKey(decrypted);
-      setSelectedModel(
-        providerData.model || meta.defaultModel || ''
-      );
-      setBaseUrl(providerData.baseUrl || '');
-    }
-  }, [expanded, providerData, meta.defaultModel]);
+    if (!expanded) return;
+    const entry = useAIConfigStore.getState().providers[providerId];
+    setApiKey(entry?.apiKey ? decryptKey(entry.apiKey) : '');
+    setSelectedModel(entry?.model || meta.defaultModel || '');
+    setBaseUrl(entry?.baseUrl || meta.baseUrl || '');
+    setFetchedModels(entry?.modelList || []);
+    setManualMode(false);
+    setManualModel('');
+    setTestResult(null);
+    setModelsInfo(null);
+    setValidationResult(entry?.validated ? 'success' : null);
+  }, [expanded, providerId, meta.defaultModel, meta.baseUrl]);
 
-  // Fetch models for OpenRouter when expanded
+  // Auto-load OpenRouter's live catalog when expanded (it changes often).
   useEffect(() => {
-    if (expanded && providerId === 'openrouter' && dynamicModels.length === 0) {
-      setLoadingModels(true);
-      aiApi
-        .getModels('openrouter')
-        .then((res) => {
-          const fetched = res.models || res.data || [];
-          const fetchedNames = Array.isArray(fetched)
-            ? fetched.map((m) => (typeof m === 'string' ? m : m.id || m.name))
-            : [];
-          if (fetchedNames.length > 0) {
-            const metaIds = new Set((meta.models || []).map((m) => (typeof m === 'object' && m !== null ? m.id : String(m))));
-            const newNames = fetchedNames.filter((id) => !metaIds.has(id));
-            const merged = [...(meta.models || []), ...newNames];
-            setDynamicModels(merged);
-          }
-        })
-        .catch(() => {
-          // Fallback — keep meta.models
-        })
-        .finally(() => setLoadingModels(false));
-    }
-  }, [expanded, providerId, dynamicModels.length, meta.models]);
+    if (!expanded) return;
+    if (providerId !== 'openrouter') return;
+    if (fetchedModels.length > 0) return;
+    const key = useAIConfigStore.getState().providers[providerId]?.apiKey;
+    if (!key) return;
 
-  const handleModelSelect = (newModel) => {
-    setSelectedModel(newModel);
-    if (hasKey || isValidated) {
-      setProviderModel(providerId, newModel);
-      toast.success(`${meta.name} model set to: ${newModel}`);
-    }
-  };
+    let cancelled = false;
+    setLoadingModels(true);
+    aiApi
+      .getModels('openrouter', { apiKey: decryptKey(key), baseUrl: '' })
+      .then((res) => {
+        if (cancelled) return;
+        const models = Array.isArray(res?.models) ? res.models : [];
+        if (models.length > 0) {
+          setFetchedModels(models);
+          setProviderModels('openrouter', models);
+          setModelsInfo({ count: models.length, source: res.source || 'live' });
+        }
+      })
+      .catch(() => {
+        // Keep the static catalog on failure
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingModels(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [expanded, providerId, fetchedModels.length, setProviderModels]);
+
+  const displayModels = useMemo(() => {
+    if (fetchedModels.length > 0) return fetchedModels;
+    if (providerData?.modelList?.length > 0) return providerData.modelList;
+    return meta.models || [];
+  }, [fetchedModels, providerData?.modelList, meta.models]);
 
   // Categorize models into Free and Paid with pricing metadata & ensure unique IDs
   const normalizedModels = useMemo(() => {
-    const rawList = providerId === 'openrouter' && dynamicModels.length > 0 ? dynamicModels : meta.models || [];
     const modelMap = new Map();
 
-    for (const item of rawList) {
+    for (const item of displayModels) {
       if (!item) continue;
       const isObj = typeof item === 'object' && item !== null && item.id;
       const id = isObj ? item.id : String(item);
@@ -102,29 +126,25 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
         const name = isObj ? (item.name || id) : id;
         const price = isObj ? (item.price || (isFree ? 'Free' : 'Paid')) : (isFree ? 'Free' : 'Paid');
 
-        modelMap.set(id, {
-          id,
-          name,
-          isFree,
-          price
-        });
+        modelMap.set(id, { id, name, isFree, price });
       }
     }
 
     return Array.from(modelMap.values());
-  }, [providerId, dynamicModels, meta.models]);
+  }, [displayModels]);
 
   const freeModels = useMemo(() => normalizedModels.filter((m) => m.isFree), [normalizedModels]);
   const paidModels = useMemo(() => normalizedModels.filter((m) => !m.isFree), [normalizedModels]);
 
-  const selectedModelObj = useMemo(() => {
-    return normalizedModels.find((m) => m.id === selectedModel);
-  }, [normalizedModels, selectedModel]);
+  const selectedModelObj = useMemo(
+    () => normalizedModels.find((m) => m.id === selectedModel),
+    [normalizedModels, selectedModel]
+  );
 
   // ---- Handlers ----
 
   const handleHeaderClick = () => {
-    if ((hasKey || providerId === 'cloudflare') && !expanded) {
+    if (isConfigured && !expanded) {
       onActivate(providerId);
     }
   };
@@ -136,36 +156,120 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
     if (expanded) setValidationResult(null);
   };
 
-  const handleValidate = async () => {
-    if (!apiKey.trim()) {
+  /** Persist key / model / base URL without touching the network. */
+  const persistConfig = ({ validated } = {}) => {
+    if (apiKey.trim()) setProviderKey(providerId, apiKey.trim());
+    setProviderModel(providerId, selectedModel || meta.defaultModel || '');
+    if (showBaseUrl) setProviderBaseUrl(providerId, baseUrl.trim() || meta.baseUrl || '');
+    if (validated !== undefined) markValidated(providerId, validated);
+  };
+
+  const handleSave = () => {
+    const canSaveWithoutKey = providerId === 'cloudflare';
+    if (!apiKey.trim() && !isKeyless && !canSaveWithoutKey) {
       toast.error('Please enter an API key');
+      return;
+    }
+    if (isKeyless && !effectiveBaseUrl) {
+      toast.error('Please enter a base URL');
+      return;
+    }
+    persistConfig({ validated: isValidated });
+    setValidationResult(isValidated ? 'success' : validationResult);
+    toast.success(`${meta.name} configuration saved`);
+  };
+
+  /** Fetch the live model list from the provider (or the custom endpoint). */
+  const handleFetchModels = async ({ silent = false } = {}) => {
+    if (!canTest) {
+      if (!silent) {
+        toast.error(isKeyless ? 'Enter a base URL first' : 'Enter an API key first');
+      }
+      return;
+    }
+
+    setLoadingModels(true);
+    setModelsInfo(null);
+    try {
+      const res = await aiApi.getModels(providerId, {
+        apiKey: apiKey.trim(),
+        baseUrl: effectiveBaseUrl,
+        model: selectedModel,
+      });
+      const models = Array.isArray(res?.models) ? res.models : [];
+
+      if (models.length > 0) {
+        setFetchedModels(models);
+        setProviderModels(providerId, models);
+        setModelsInfo({ count: models.length, source: res.source || 'live', warning: res.warning });
+        if (!selectedModel || !models.includes(selectedModel)) {
+          setSelectedModel(models[0]);
+        }
+        if (!silent) {
+          if (res.warning) {
+            toast(`Using the built-in model list — ${res.warning}`, { icon: 'ℹ️' });
+          } else {
+            toast.success(`${models.length} models fetched from ${meta.name}`);
+          }
+        }
+      } else {
+        setModelsInfo({
+          count: 0,
+          source: res?.source || 'static',
+          warning: res?.warning || 'The endpoint returned no models',
+        });
+        if (!silent) toast.error(res?.warning || 'No models returned by the endpoint');
+      }
+    } catch (err) {
+      setModelsInfo({ count: 0, source: 'error', warning: err?.message || 'Failed to fetch models' });
+      if (!silent) toast.error(err?.message || 'Failed to fetch models');
+    } finally {
+      setLoadingModels(false);
+    }
+  };
+
+  /** Test the connection end to end and keep the result visible in the card. */
+  const handleTestConnection = async () => {
+    if (!canTest) {
+      toast.error(isKeyless ? 'Enter a base URL first' : 'Please enter an API key');
       return;
     }
 
     setIsValidating(true);
     setValidationResult(null);
+    setTestResult(null);
 
     try {
-      const res = await aiApi.validateKey(providerId, apiKey.trim(), { baseUrl: baseUrl.trim(), model: selectedModel });
+      const res = await aiApi.validateKey(providerId, apiKey.trim(), {
+        baseUrl: effectiveBaseUrl,
+        model: selectedModel,
+      });
+
       if (res && res.valid) {
-        // Save to store
-        setProviderKey(providerId, apiKey.trim());
-        setProviderModel(providerId, selectedModel || meta.defaultModel);
-        if (meta.customEndpoint) {
-          setProviderBaseUrl(providerId, baseUrl.trim());
+        const models = Array.isArray(res.models) ? res.models : [];
+        if (models.length > 0) {
+          setFetchedModels(models);
+          setProviderModels(providerId, models);
+          setModelsInfo({ count: models.length, source: res.source, warning: res.warning });
+          if (!selectedModel || (res.modelAvailable === false && !models.includes(selectedModel))) {
+            setSelectedModel(models[0]);
+          }
         }
-        markValidated(providerId, true);
+        persistConfig({ validated: true });
         setValidationResult('success');
-        toast.success(`${meta.name} key validated & saved!`);
+        setTestResult(res);
+        toast.success(`Connected to ${meta.name}`);
       } else {
         markValidated(providerId, false);
         setValidationResult('error');
-        toast.error(res?.error || `Invalid ${meta.name} API key`);
+        setTestResult(res || { error: 'Connection failed' });
+        toast.error(res?.error || res?.warning || `Could not reach ${meta.name}`);
       }
     } catch (err) {
       markValidated(providerId, false);
       setValidationResult('error');
-      toast.error(err?.message || `Invalid ${meta.name} API key`);
+      setTestResult({ error: err?.message || 'Connection failed' });
+      toast.error(err?.message || `Could not reach ${meta.name}`);
     } finally {
       setIsValidating(false);
     }
@@ -180,9 +284,9 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
 
       const callbackUrl = `${window.location.origin}/auth/openrouter/callback`;
       const authUrl = `https://openrouter.ai/auth?callback_url=${encodeURIComponent(callbackUrl)}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-      
+
       window.location.href = authUrl;
-    } catch (err) {
+    } catch {
       toast.error('Failed to initiate OpenRouter OAuth connection');
     }
   };
@@ -191,7 +295,10 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
     removeProvider(providerId);
     setApiKey('');
     setBaseUrl('');
+    setFetchedModels([]);
+    setModelsInfo(null);
     setValidationResult(null);
+    setTestResult(null);
     toast.success(`${meta.name} key removed`);
   };
 
@@ -204,10 +311,12 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
           <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
         </span>
       );
-    if (hasKey)
+    if (isConfigured)
       return <span className="inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500" />;
     return null;
   };
+
+  const hasFreePaidSplit = freeModels.length > 0 && paidModels.length > 0;
 
   return (
     <motion.div
@@ -240,7 +349,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
         onClick={handleHeaderClick}
         className={cn(
           'relative flex items-center gap-4 px-5 py-4 cursor-pointer select-none',
-          hasKey && !expanded && 'hover:bg-white/[0.02]'
+          isConfigured && !expanded && 'hover:bg-white/[0.02]'
         )}
       >
         {/* Provider Icon */}
@@ -259,6 +368,11 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
               <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-400 border border-cyan-500/20">
                 <Sparkles className="h-3 w-3" />
                 Active
+              </span>
+            )}
+            {isKeyless && (
+              <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400 border border-emerald-500/20">
+                No key
               </span>
             )}
           </div>
@@ -331,12 +445,22 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                 </div>
               )}
 
+              {/* Provider hint */}
+              {meta.hint && (
+                <p className="rounded-lg border border-border/60 bg-muted/30 px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
+                  {meta.hint}
+                </p>
+              )}
+
               {/* API Key Input Header / Option 2 */}
               <div className="space-y-1.5">
                 <label className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <Key className="h-3.5 w-3.5" />
                     {providerId === 'openrouter' ? 'Option 2: Enter API Key Manually' : 'API Key'}
+                    {isKeyless && (
+                      <span className="text-[10px] font-normal text-muted-foreground/70">(optional)</span>
+                    )}
                   </span>
                 </label>
                 <div className="relative">
@@ -344,7 +468,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                     type={showKey ? 'text' : 'password'}
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
-                    placeholder={`Enter your ${meta.name} API key`}
+                    placeholder={isKeyless ? 'Optional — most local endpoints need no key' : `Enter your ${meta.name} API key`}
                     className={cn(
                       'w-full rounded-lg border bg-background/60 px-3 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground/50',
                       'border-border focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30',
@@ -366,34 +490,57 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                 </div>
               </div>
 
-              {/* Base URL Input for Custom Endpoints */}
-              {meta.customEndpoint && (
-                <div className="space-y-1.5 mt-4">
-                  <label className="text-xs font-medium text-muted-foreground">
-                    Base URL (e.g., http://localhost:11434/v1)
+              {/* Base URL Input for Custom / Local / Azure endpoints */}
+              {showBaseUrl && (
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <Link2 className="h-3.5 w-3.5" />
+                    Base URL
+                    {meta.requiresBaseUrl ? (
+                      <span className="text-[10px] font-bold text-amber-400">required</span>
+                    ) : (
+                      <span className="text-[10px] font-normal text-muted-foreground/70">(OpenAI-compatible /v1 root)</span>
+                    )}
                   </label>
                   <input
                     type="url"
                     value={baseUrl}
                     onChange={(e) => setBaseUrl(e.target.value)}
-                    placeholder="Enter custom endpoint base URL"
+                    placeholder={meta.baseUrl || 'https://your-endpoint.example.com/v1'}
                     className={cn(
                       'w-full rounded-lg border bg-background/60 px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50',
                       'border-border focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30',
                       'transition-colors'
                     )}
                   />
+                  <p className="text-[11px] text-muted-foreground/70">
+                    Models are fetched from <code className="rounded bg-muted px-1 py-0.5">{`${effectiveBaseUrl || '…'}/models`}</code>
+                  </p>
                 </div>
               )}
 
               {/* Model Selector */}
-              <div className="space-y-2 mt-4">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
                     <Sparkles className="h-3.5 w-3.5 text-violet-400" />
-                    Selected Model {providerId === 'openrouter' && '(OAuth & API Key)'}
+                    Selected Model
                   </label>
                   <div className="flex items-center gap-2">
+                    {modelsInfo && (
+                      <span
+                        className={cn(
+                          'text-[10px] font-bold px-2 py-0.5 rounded-full border',
+                          modelsInfo.count > 0
+                            ? 'bg-sky-500/10 text-sky-400 border-sky-500/30'
+                            : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                        )}
+                      >
+                        {modelsInfo.count > 0
+                          ? `${modelsInfo.count} ${modelsInfo.source === 'live' ? 'live' : ''} models`
+                          : 'No models found'}
+                      </span>
+                    )}
                     {selectedModelObj && (
                       <span
                         className={cn(
@@ -415,44 +562,87 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                 </div>
 
                 {normalizedModels.length > 0 ? (
-                  <select
-                    value={selectedModel}
-                    onChange={(e) => handleModelSelect(e.target.value)}
-                    className={cn(
-                      'w-full rounded-lg border bg-background/60 px-3 py-2.5 text-sm text-foreground',
-                      'border-border focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30',
-                      'appearance-none cursor-pointer transition-colors'
-                    )}
-                  >
-                    {freeModels.length > 0 && (
-                      <optgroup label="🎁 Free Models (Zero Cost / $0)">
-                        {freeModels.map((m) => (
+                  <div className="space-y-2">
+                    <select
+                      value={manualMode ? MANUAL_MODEL : selectedModel}
+                      onChange={(e) => {
+                        if (e.target.value === MANUAL_MODEL) {
+                          setManualMode(true);
+                          return;
+                        }
+                        setManualMode(false);
+                        setSelectedModel(e.target.value);
+                        if (hasKey || isValidated) {
+                          setProviderModel(providerId, e.target.value);
+                        }
+                      }}
+                      className={cn(
+                        'w-full rounded-lg border bg-background/60 px-3 py-2.5 text-sm text-foreground',
+                        'border-border focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30',
+                        'appearance-none cursor-pointer transition-colors'
+                      )}
+                    >
+                      {selectedModel && !normalizedModels.some((m) => m.id === selectedModel) && (
+                        <option value={selectedModel}>{selectedModel} (current)</option>
+                      )}
+                      {hasFreePaidSplit ? (
+                        <>
+                          <optgroup label="🎁 Free Models (Zero Cost / $0)">
+                            {freeModels.map((m) => (
+                              <option key={m.id} value={m.id}>
+                                {m.name} ({m.price})
+                              </option>
+                            ))}
+                          </optgroup>
+                          <optgroup label="💳 Paid Models (Credit Balance Required)">
+                            {paidModels.map((m) => (
+                              <option key={m.id} value={m.id}>
+                                {m.name} — {m.price}
+                              </option>
+                            ))}
+                          </optgroup>
+                        </>
+                      ) : (
+                        normalizedModels.map((m) => (
                           <option key={m.id} value={m.id}>
-                            {m.name} ({m.price})
+                            {m.name}
                           </option>
-                        ))}
-                      </optgroup>
+                        ))
+                      )}
+                      <option value={MANUAL_MODEL}>✏️ Other — enter a model id manually</option>
+                    </select>
+
+                    {manualMode && (
+                      <input
+                        type="text"
+                        value={manualModel}
+                        onChange={(e) => setManualModel(e.target.value)}
+                        onBlur={() => {
+                          if (manualModel.trim()) {
+                            setSelectedModel(manualModel.trim());
+                            setProviderModel(providerId, manualModel.trim());
+                          }
+                        }}
+                        placeholder="e.g. my-deployment-name or org/model-id"
+                        autoFocus
+                        className={cn(
+                          'w-full rounded-lg border bg-background/60 px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50',
+                          'border-border focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30',
+                          'transition-colors'
+                        )}
+                      />
                     )}
-                    {paidModels.length > 0 && (
-                      <optgroup label="💳 Paid Models (Credit Balance Required)">
-                        {paidModels.map((m) => (
-                          <option key={m.id} value={m.id}>
-                            {m.name} — {m.price}
-                          </option>
-                        ))}
-                      </optgroup>
-                    )}
-                  </select>
+                  </div>
                 ) : loadingModels ? (
                   <div className="flex items-center gap-2 rounded-lg border border-border bg-background/60 px-3 py-2.5 text-sm text-muted-foreground">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Loading OpenRouter models & pricings…
+                    Fetching models from {meta.name}…
                   </div>
                 ) : (
                   <input
                     type="text"
                     value={selectedModel}
-                    onChange={(e) => handleModelSelect(e.target.value)}
+                    onChange={(e) => setSelectedModel(e.target.value)}
                     placeholder="e.g. openai/gpt-4o-mini"
                     className={cn(
                       'w-full rounded-lg border bg-background/60 px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50',
@@ -461,108 +651,164 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                     )}
                   />
                 )}
-                {providerId === 'openrouter' && (
-                  <p className="text-[11px] text-muted-foreground pt-0.5">
-                    Models are categorized into 🎁 <b>Free</b> models (e.g., Gemini 2.0 Flash Free, DeepSeek R1 Free) and 💳 <b>Paid</b> models with real-time pricing tags per 1M prompt tokens.
+
+                <div className="flex items-center justify-between gap-2 pt-0.5">
+                  <p className="text-[11px] text-muted-foreground">
+                    {meta.customEndpoint || meta.showBaseUrl
+                      ? 'Models come straight from the endpoint. Test before saving if you want to verify reachability.'
+                      : 'Fetched live from the provider when a key is present; static list otherwise.'}
                   </p>
-                )}
+                  <button
+                    type="button"
+                    onClick={() => handleFetchModels()}
+                    disabled={loadingModels || !canTest}
+                    title={!canTest ? 'Add an API key or base URL to fetch live models' : 'Fetch models from the provider'}
+                    className={cn(
+                      'inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border bg-background/60 px-2.5 py-1.5 text-[11px] font-semibold text-foreground/80 transition-colors',
+                      'hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50'
+                    )}
+                  >
+                    <RefreshCw className={cn('h-3.5 w-3.5', loadingModels && 'animate-spin')} />
+                    {loadingModels ? 'Fetching…' : 'Fetch models'}
+                  </button>
+                </div>
               </div>
 
               {/* Actions Row */}
-              <div className="flex items-center justify-between gap-3 pt-1">
+              <div className="flex items-center justify-between gap-3 pt-1 flex-wrap">
                 {/* Get Key Link */}
-                <a
-                  href={meta.keyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs font-medium text-primary/80 transition-colors hover:text-primary"
-                >
-                  Get API key
-                  <ExternalLink className="h-3 w-3" />
-                </a>
+                {meta.keyUrl ? (
+                  <a
+                    href={meta.keyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-primary/80 transition-colors hover:text-primary"
+                  >
+                    Get API key
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                ) : (
+                  <span className="text-[11px] text-muted-foreground">Self-hosted endpoint</span>
+                )}
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-2">
-                  {hasKey && (
+                <div className="flex items-center gap-2 flex-wrap justify-end">
+                  {isConfigured && (
                     <button
                       onClick={handleDelete}
                       className="inline-flex items-center justify-center p-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors"
-                      title="Delete API Key"
+                      title="Delete configuration"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   )}
-                  {providerId === 'cloudflare' && !isActive && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onActivate('cloudflare');
-                        toast.success('Cloudflare AI set as active provider!');
-                      }}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-orange-500/30 bg-orange-500/15 hover:bg-orange-500/25 px-3 py-2 text-xs font-semibold text-orange-400 transition-colors"
-                    >
-                      <Sparkles className="h-3.5 w-3.5" />
-                      Set Active
-                    </button>
-                  )}
-                  {/* Validate & Save Button */}
+
                   <button
-                    onClick={handleValidate}
-                    disabled={isValidating || !apiKey.trim()}
+                    type="button"
+                    onClick={handleTestConnection}
+                    disabled={isValidating || !canTest}
                     className={cn(
-                      'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200',
-                      'bg-primary text-primary-foreground hover:bg-primary/90',
-                      'disabled:cursor-not-allowed disabled:opacity-50',
-                      'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-card'
+                      'inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/60 px-3 py-2 text-xs font-semibold text-foreground/80 transition-colors',
+                      'hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50'
                     )}
                   >
                     {isValidating ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Validating…
-                      </>
-                    ) : validationResult === 'success' ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Wifi className="h-3.5 w-3.5" />
+                    )}
+                    {isValidating ? 'Testing…' : 'Test connection'}
+                  </button>
+
+                  <button
+                    onClick={handleSave}
+                    className={cn(
+                      'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200',
+                      'bg-primary text-primary-foreground hover:bg-primary/90',
+                      'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-card'
+                    )}
+                  >
+                    {validationResult === 'success' ? (
                       <>
                         <CheckCircle2 className="h-4 w-4 text-green-400" />
-                        Saved!
+                        Saved
                       </>
                     ) : validationResult === 'error' ? (
                       <>
                         <XCircle className="h-4 w-4 text-red-400" />
-                        Failed
+                        Save anyway
                       </>
                     ) : (
                       <>
-                        <Key className="h-4 w-4" />
-                        Validate & Save
+                        <Save className="h-4 w-4" />
+                        Save
                       </>
                     )}
                   </button>
                 </div>
               </div>
 
-              {/* Validation result feedback */}
+              {/* Test result feedback */}
               <AnimatePresence>
-                {validationResult === 'success' && (
+                {testResult && (
                   <motion.div
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="flex items-center gap-2 rounded-lg bg-green-500/10 border border-green-500/20 px-3 py-2 text-xs text-green-400"
+                    className={cn(
+                      'rounded-lg border px-3 py-2.5 text-xs',
+                      validationResult === 'success'
+                        ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                        : 'bg-red-500/10 border-red-500/20 text-red-400'
+                    )}
                   >
-                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                    API key is valid. You're all set!
-                  </motion.div>
-                )}
-                {validationResult === 'error' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="flex items-center gap-2 rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs text-red-400"
-                  >
-                    <XCircle className="h-3.5 w-3.5 shrink-0" />
-                    Invalid key. Double-check and try again.
+                    <div className="flex items-start gap-2">
+                      {validationResult === 'success' ? (
+                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                      ) : (
+                        <XCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                      )}
+                      <div className="min-w-0 space-y-1">
+                        {validationResult === 'success' ? (
+                          <>
+                            <p className="font-semibold">
+                              Connection OK
+                              {typeof testResult.latencyMs === 'number' && (
+                                <span className="font-normal opacity-80"> · {testResult.latencyMs} ms</span>
+                              )}
+                              {typeof testResult.modelCount === 'number' && (
+                                <span className="font-normal opacity-80"> · {testResult.modelCount} models</span>
+                              )}
+                            </p>
+                            {testResult.modelAvailable === false && (
+                              <p className="text-amber-400">
+                                The selected model wasn't in the list returned by the endpoint — double-check the id.
+                              </p>
+                            )}
+                            {testResult.warning && (
+                              <p className="text-amber-400/90">{testResult.warning}</p>
+                            )}
+                            {!isActive && (
+                              <button
+                                type="button"
+                                onClick={() => onActivate(providerId)}
+                                className="mt-1 inline-flex items-center gap-1 rounded-md border border-green-500/30 bg-green-500/10 px-2 py-1 text-[11px] font-semibold text-green-300 hover:bg-green-500/20 transition-colors"
+                              >
+                                <Sparkles className="h-3 w-3" />
+                                Use this provider
+                              </button>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <p className="font-semibold">Connection failed</p>
+                            <p className="break-words opacity-90">
+                              {testResult.error || testResult.warning || 'The gateway could not reach this provider.'}
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

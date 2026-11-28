@@ -8,6 +8,7 @@ import Button from '../components/Button';
 import BodyLanguageTips from '../components/BodyLanguageTips';
 import VoiceToTextButton from '../components/VoiceToTextButton';
 import { interviewApi, uploadApi, resumeApi, jobTrackerApi, careerProfileApi } from '../services/api';
+import { isPdfFile } from '../utils/pdfExtract';
 import ConfidenceMeter from "../components/ConfidenceMeter";
 import {DEFAULT_PROGRESS,updateDifficulty} from '../utils/interviewDifficulty';
 import LearningRecommendations from "../components/LearningRecommendations";
@@ -567,7 +568,7 @@ export default function InterviewPrep() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.type !== 'application/pdf') {
+    if (!isPdfFile(file)) {
       setResumeError('Please upload a PDF file');
       return;
     }

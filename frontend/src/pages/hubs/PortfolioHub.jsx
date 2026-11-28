@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Globe, Rocket, LayoutTemplate, Github, Upload, Loader2, Check, ExternalLink } from 'lucide-react'
 import { portfolioApi, uploadApi } from '../../services/api'
+import { isPdfFile } from '../../utils/pdfExtract'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
 import { Link, useNavigate } from 'react-router-dom'
@@ -59,7 +60,7 @@ export default function PortfolioHub() {
     const file = event.target.files?.[0]
     if (!file) return
 
-    if (file.type !== 'application/pdf') {
+    if (!isPdfFile(file)) {
       toast.error('Please upload a PDF file.')
       return
     }

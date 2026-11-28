@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 import { Upload, FileText, Loader2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { uploadApi } from '../../services/api';
+import { isPdfFile } from '../../utils/pdfExtract';
 import { cn } from '../../lib/utils';
 
 const MAX_TEXT = 50_000;
@@ -32,7 +33,7 @@ export default function RoastInput({
   const handlePdf = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.type !== 'application/pdf') {
+    if (!isPdfFile(file)) {
       toast.error('Please upload a PDF file');
       return;
     }

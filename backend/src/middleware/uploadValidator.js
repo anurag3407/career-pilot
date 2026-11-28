@@ -9,6 +9,11 @@ const ALLOWED_TYPES = {
     magicBytes: [0x25, 0x50, 0x44, 0x46], // %PDF
     offset: 0,
   },
+  'application/x-pdf': {
+    extension: '.pdf',
+    magicBytes: [0x25, 0x50, 0x44, 0x46], // %PDF
+    offset: 0,
+  },
 };
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

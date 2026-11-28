@@ -93,8 +93,13 @@ export const resumeData = {
     return d1Fetch(`/db/resumes/share/${encodeURIComponent(shareToken)}`, { method: 'GET' });
   },
 
-  async create(payload) {
-    return d1Fetch('/db/resumes', { method: 'POST', body: payload, requireAuth: true });
+  async create(payload, options = {}) {
+    return d1Fetch('/db/resumes', {
+      method: 'POST',
+      body: payload,
+      requireAuth: true,
+      signal: options?.signal,
+    });
   },
 
   async update(resumeId, payload) {

@@ -9,11 +9,16 @@ export default function FileUpload({ onFileSelect, disabled = false, maxSizeMB =
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     if (rejectedFiles && rejectedFiles.length > 0) {
       rejectedFiles.forEach((file) => {
-        if (file.file.size > maxSizeBytes) {
+        const code = file.errors?.[0]?.code
+        if (code === 'file-too-large' || file.file.size > maxSizeBytes) {
           const fileSizeMB = (file.file.size / (1024 * 1024)).toFixed(2)
           toast.error(
             `File "${file.file.name}" (${fileSizeMB}MB) exceeds the maximum limit of ${maxSizeMB}MB`
           )
+        } else if (code === 'file-invalid-type') {
+          toast.error(`"${file.file.name}" is not a PDF file`)
+        } else {
+          toast.error(`"${file.file.name}" could not be uploaded`)
         }
       })
       return

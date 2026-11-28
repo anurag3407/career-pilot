@@ -51,8 +51,8 @@ function setupEnv() {
   };
 }
 
-async function call(env, routePath, { method = 'GET', body, token } = {}) {
-  const headers = { 'CF-Connecting-IP': '127.0.0.1' };
+async function call(env, routePath, { method = 'GET', body, token, headers: extraHeaders = {} } = {}) {
+  const headers = { 'CF-Connecting-IP': '127.0.0.1', ...extraHeaders };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -309,5 +309,223 @@ describe('CareerPilot D1 Gateway — End-to-End', () => {
     assert.equal(out.status, 200);
     const me = await call(env, '/v1/auth/me', { token: userToken });
     assert.equal(me.status, 401);
+  });
+
+  test('Model discovery: static catalog covers every registered provider', async () => {
+    const res = await call(env, '/v1/ai/models?provider=all');
+    assert.equal(res.status, 200);
+    assert.equal(res.data.source, 'static');
+    for (const id of [
+      'cloudflare',
+      'gemini',
+      'anthropic',
+      'openai',
+      'groq',
+      'openrouter',
+      'deepseek',
+      'mistral',
+      'xai',
+      'together',
+      'ollama',
+      'lmstudio',
+      'vllm',
+      'custom',
+    ]) {
+      assert.ok(Array.isArray(res.data.models[id]), `missing static catalog for ${id}`);
+    }
+    assert.ok(res.data.models.deepseek.includes('deepseek-chat'));
+  });
+
+  test('Model discovery: live /models lookup for custom endpoints', async () => {
+    const origFetch = globalThis.fetch;
+    const seen = [];
+    globalThis.fetch = async (url) => {
+      seen.push(String(url));
+      if (String(url).startsWith('https://llm.example.com/v1')) {
+        return new Response(
+          JSON.stringify({ object: 'list', data: [{ id: 'my-model-a' }, { id: 'my-model-b' }] }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      return origFetch(url);
+    };
+
+    try {
+      const res = await call(env, '/v1/ai/models', {
+        method: 'POST',
+        body: { provider: 'custom', baseUrl: 'https://llm.example.com/v1/' },
+      });
+      assert.equal(res.status, 200);
+      assert.equal(res.data.source, 'live');
+      assert.deepEqual(res.data.models, ['my-model-a', 'my-model-b']);
+      assert.equal(res.data.count, 2);
+      assert.ok(seen.some((u) => u === 'https://llm.example.com/v1/models'));
+    } finally {
+      globalThis.fetch = origFetch;
+    }
+  });
+
+  test('Validate key: custom endpoint without a key reports models and latency', async () => {
+    const origFetch = globalThis.fetch;
+    globalThis.fetch = async (url) => {
+      if (String(url).startsWith('https://llm.example.com/v1')) {
+        return new Response(
+          JSON.stringify({ data: [{ id: 'local-llama' }, { id: 'local-qwen' }] }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      return origFetch(url);
+    };
+
+    try {
+      const res = await call(env, '/v1/ai/validate-key', {
+        method: 'POST',
+        body: { provider: 'custom', baseUrl: 'https://llm.example.com/v1', model: 'local-llama' },
+      });
+      assert.equal(res.status, 200);
+      assert.equal(res.data.valid, true);
+      assert.equal(res.data.source, 'live');
+      assert.equal(res.data.modelCount, 2);
+      assert.equal(res.data.modelAvailable, true);
+      assert.equal(typeof res.data.latencyMs, 'number');
+      assert.ok(res.data.models.includes('local-qwen'));
+    } finally {
+      globalThis.fetch = origFetch;
+    }
+  });
+
+  test('Model discovery: explicit empty credentials never reuse the active provider key', async () => {
+    const origFetch = globalThis.fetch;
+    let authorization = 'unset';
+    globalThis.fetch = async (url, init = {}) => {
+      if (String(url).startsWith('https://llm.example.com/v1')) {
+        authorization = init.headers?.Authorization ?? init.headers?.authorization ?? 'none';
+        return new Response(
+          JSON.stringify({ data: [{ id: 'keyless-model' }] }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      return origFetch(url);
+    };
+
+    try {
+      const res = await call(env, '/v1/ai/models', {
+        method: 'POST',
+        headers: { 'X-AI-Key': 'active-provider-secret', 'X-AI-Provider': 'openai' },
+        body: { provider: 'custom', apiKey: '', baseUrl: 'https://llm.example.com/v1' },
+      });
+      assert.equal(res.status, 200);
+      assert.equal(res.data.source, 'live');
+      assert.equal(authorization, 'none');
+    } finally {
+      globalThis.fetch = origFetch;
+    }
+  });
+
+  test('Validate key: falls back to a 1-token chat probe when /models is unavailable', async () => {
+    const origFetch = globalThis.fetch;
+    const calls = [];
+    globalThis.fetch = async (url, init = {}) => {
+      const u = String(url);
+      if (u.startsWith('https://deploy.example.com/v1/models')) {
+        calls.push('models');
+        return new Response(JSON.stringify({ error: { message: 'Not found' } }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      if (u.startsWith('https://deploy.example.com/v1/chat/completions')) {
+        calls.push('chat');
+        assert.equal(init.method, 'POST');
+        return new Response(
+          JSON.stringify({ choices: [{ message: { content: 'OK' } }], usage: {} }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      return origFetch(url);
+    };
+
+    try {
+      const res = await call(env, '/v1/ai/validate-key', {
+        method: 'POST',
+        body: {
+          provider: 'custom',
+          apiKey: 'test-key',
+          baseUrl: 'https://deploy.example.com/v1',
+          model: 'my-deployment',
+        },
+      });
+      assert.equal(res.status, 200);
+      assert.equal(res.data.valid, true);
+      assert.equal(res.data.source, 'chat-probe');
+      assert.match(res.data.warning, /1-token completion/);
+      assert.deepEqual(calls, ['models', 'chat']);
+    } finally {
+      globalThis.fetch = origFetch;
+    }
+  });
+
+  test('Validate key: providers that require a key fail fast with a clear error', async () => {
+    const res = await call(env, '/v1/ai/validate-key', {
+      method: 'POST',
+      body: { provider: 'openai' },
+    });
+    assert.equal(res.status, 200);
+    assert.equal(res.data.valid, false);
+    assert.match(res.data.error, /API key/i);
+  });
+
+  test('ImageKit upload validates multipart files and falls back to File.name', async () => {
+    const ikEnv = { ...env, IMAGEKIT_PRIVATE_KEY: 'private_test_key' };
+
+    // Missing file in multipart form data -> 400
+    const emptyForm = new FormData();
+    const missingRes = await worker.fetch(
+      new Request('https://gateway.test/gateway/v1/imagekit/upload', {
+        method: 'POST',
+        headers: { 'CF-Connecting-IP': '127.0.0.1' },
+        body: emptyForm,
+      }),
+      ikEnv
+    );
+    assert.equal(missingRes.status, 400);
+
+    // Multipart upload with File.name and no explicit fileName field succeeds
+    const origFetch = globalThis.fetch;
+    globalThis.fetch = async (url) => {
+      if (String(url).includes('upload.imagekit.io')) {
+        return new Response(
+          JSON.stringify({
+            fileId: 'ik_file_1',
+            name: 'resume.pdf',
+            url: 'https://ik.imagekit.io/demo/resumes/resume.pdf',
+            size: 12,
+            fileType: 'non-image',
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      return origFetch(url);
+    };
+
+    try {
+      const form = new FormData();
+      form.append('file', new File(['%PDF-1.4'], 'resume.pdf', { type: 'application/pdf' }));
+      form.append('folder', '/resumes');
+      const okRes = await worker.fetch(
+        new Request('https://gateway.test/gateway/v1/imagekit/upload', {
+          method: 'POST',
+          headers: { 'CF-Connecting-IP': '127.0.0.1', 'X-User-Id': userId },
+          body: form,
+        }),
+        ikEnv
+      );
+      assert.equal(okRes.status, 200);
+      const data = await okRes.json();
+      assert.equal(data.success, true);
+      assert.equal(data.url, 'https://ik.imagekit.io/demo/resumes/resume.pdf');
+    } finally {
+      globalThis.fetch = origFetch;
+    }
   });
 });
